@@ -3,6 +3,7 @@ import { HashRouter } from "react-router-dom";
 import { lazy } from "react";
 import { Lazy } from "./lazy";
 import Header from "@/components/header";
+import Tests from "@/views/tests";
 
 const Home = lazy(() => import("@/views/home"));
 const Docs = lazy(() => import("@/views/docs"));
@@ -31,6 +32,16 @@ function Routers() {
                   <Lazy>
                     <Docs />
                   </Lazy>
+                }
+              />
+              <Route
+                path="test"
+                children={
+                  <>
+                    <Route path="UseReactive" element={<Tests.UseReactive />} />
+                    <Route path="UseReactor" element={<Tests.UseReactor />} />
+                    <Route path="UseReactorListener" element={<Tests.UseReactorListener />} />
+                  </>
                 }
               />
             </>

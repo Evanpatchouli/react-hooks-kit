@@ -2,6 +2,7 @@
   "name": "@evanpatchouli/react-hooks-kit",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/#/",
   "scripts": {
     "build": "react-app-rewired build",
     "eject": "react-app-rewired eject",
