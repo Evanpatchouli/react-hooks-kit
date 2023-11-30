@@ -1,60 +1,100 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-type Watcher<T> = (value: any, state: T) => void;
-type Watch<T> = (key: keyof T, watcher: Watcher<T>) => void;
+type Watcher<T> = (state: T) => void;
 
-function deepProxy<T>(
+function deepProxy<T extends object>(
   obj: T,
+  stateRef: React.MutableRefObject<T>,
   setState: React.Dispatch<React.SetStateAction<T>>
-): T {
-  // @ts-ignore
+) {
+  for (let key in obj) {
+    if (typeof obj[key] === "object" && obj[key] !== null) {
+      obj[key] = deepProxy(obj[key] as any, stateRef, setState) as any;
+    }
+  }
+
   return new Proxy(obj, {
-    get(target, property, receiver) {
-      const value = Reflect.get(target, property, receiver);
-      if (typeof value === "object" && value !== null) {
-        return deepProxy(value, setState);
-      }
-      return value;
+    get(target, prop) {
+      // @ts-ignore
+      return target[prop];
     },
-    set(target, property, value) {
-      setState((prevState) => ({
-        ...prevState,
-        [property as string]: value,
-      }));
+    set(target, prop, value) {
+      // @ts-ignore
+      target[prop] = value;
+      setState({ ...stateRef.current });
       return true;
     },
   });
 }
 
+function shallowProxy<T extends object>(
+  obj: T,
+  stateRef: React.MutableRefObject<T>,
+  setState: React.Dispatch<React.SetStateAction<T>>
+) {
+  return new Proxy(obj, {
+    get(target, prop) {
+      // @ts-ignore
+      return target[prop];
+    },
+    set(target, prop, value) {
+      // @ts-ignore
+      target[prop] = value;
+      setState({ ...stateRef.current });
+      return true;
+    },
+  });
+}
+
+/**
+ * #### params
+ * - **initialState** - Only supports object type as reactive data source.
+ * If given a non-object type, it will return the original value
+ * - **deep** - If the second parameter is typeof `boolean`, it means whether the object is deeply reactive.
+ * If the second parameter is typeof `function`, it means that the callback function will be triggered when the state changes.
+ * - **callback** - Watcher callback function, which will be triggered when the state changes
+ * #### FAQs
+ * - Why not use `useMemo`? Use `useMemo` to return a new object, which will cause the object to be re-rendered every time,
+ * and the object will be re-rendered every time it is used.
+ * - Why did not the state change when I change the property deconstructed from the state?
+ * Because the deconstructed property is a copy of the original object, it will not trigger the state change.
+ */
 function useReactive<T>(
   initialState: T,
-  ...args: Array<Watcher<T> | Watch<T>>
+  deep?: boolean | Watcher<T>,
+  ...callbacks: Array<Watcher<T>>
 ): T {
-  const [state, setState] = useState(initialState);
-  const watchers = args.filter(
-    (arg): arg is Watcher<T> => typeof arg === "function"
-  );
-  const watch = (key: keyof T, watcher: Watcher<T>) => {
-    watchers.push((value: any, state: T) => {
-      // @ts-ignore
-      if (key in state) {
-        watcher(state[key], state);
-      }
-    });
-  };
-
-  args
-    .filter((arg): arg is Watch<T> => typeof arg === "function")
-    .forEach((watchFunc) => {
-      // @ts-ignore
-      watchFunc(watch);
-    });
+  const [state, setState] = useState<T>(initialState);
+  const stateRef = useRef(state);
 
   useEffect(() => {
-    watchers.forEach((watcher) => watcher(state, state));
+    stateRef.current = state;
   }, [state]);
 
-  return deepProxy(state, setState);
+  useEffect(() => {
+    if (typeof deep === "function") {
+      callbacks.unshift(deep);
+    }
+    callbacks.forEach((callback) => callback(stateRef.current));
+  }, [stateRef.current, callbacks]);
+
+  if (typeof initialState !== "object" || initialState === null) {
+    return stateRef.current;
+  }
+
+  let reactiveState =
+    deep === false
+      ? shallowProxy(
+          initialState,
+          stateRef as React.MutableRefObject<T & object>,
+          setState as React.Dispatch<React.SetStateAction<T & object>>
+        )
+      : deepProxy(
+          stateRef.current as T & object,
+          stateRef as React.MutableRefObject<T & object>,
+          setState as React.Dispatch<React.SetStateAction<T & object>>
+        );
+  return reactiveState;
 }
 
 export default useReactive;

@@ -1,13 +1,8 @@
-import useReactive from "@hooks/.temp/useReactive";
+import useReactive from "@hooks/useReactive";
 import { Button } from "@mui/material";
 import { useState } from "react";
 
 export default function UseReactive() {
-  const [t, tick] = useState(0);
-  const upd = () => {
-    tick((v) => v + 1);
-  };
-
   let num = useReactive(0);
 
   let obj = useReactive(
@@ -21,9 +16,6 @@ export default function UseReactive() {
       console.log(v);
     }
   );
-  let {
-    a: { b },
-  } = obj;
   const objActions = {
     add: () => {
       obj.a.b++;
