@@ -16,7 +16,7 @@ export default function UseReactorListener() {
   };
   return (
     <div>
-      <h1>UseReactor</h1>
+      <h1>UseReactorListener</h1>
       <Button variant="outlined" onClick={numActions.plus}>
         {numValue}
       </Button>

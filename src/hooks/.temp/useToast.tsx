@@ -48,7 +48,12 @@ function useToast(config: ToastConfig = {}) {
             position: toastConfig.position,
             ...toastConfig.style,
             color: toastConfig.color,
+            left: "50%",
+            top: toastConfig.placement === "center" ? "50%" : "10%",
+            transform: toastConfig.placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)",
             backgroundColor: toastConfig.bgColor,
+            padding: "4px 12px",
+            borderRadius: "4px",
           }}
           className={toastConfig.className}
         >
