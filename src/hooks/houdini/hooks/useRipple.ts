@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import rippleWorklet from "./houdini/ripple-worklet";
+import rippleWorklet from "../worklet/ripple-worklet";
 
 export type RippleConfig = {
   color?: React.CSSProperties["color"];
@@ -46,10 +46,7 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const startTime = performance.now();
-      button.style.setProperty(
-        "--ripple-color",
-        config.color ?? "rgba(31, 143, 255, 0.5)"
-      );
+      button.style.setProperty("--ripple-color", config.color ?? "rgba(31, 143, 255, 0.5)");
       button.style.setProperty("--ripple-x", `${x}px`);
       button.style.setProperty("--ripple-y", `${y}px`);
       button.style.setProperty("--ripple-time", "0");

@@ -1,18 +1,15 @@
 import { ExpandLess, ExpandMore, FunctionsOutlined } from "@mui/icons-material";
-import {
-  Collapse,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-} from "@mui/material";
+import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
 import "./index.css";
 import { useState } from "react";
 import Overview from "./views/overview";
 import ArticleNavigator from "@components/article-navigator";
 import DocNavigator from "@components/doc-navigator";
 import { useMeta } from "@/hooks/useMeta";
+import linkTo from "@/utils/linkTo";
+import { Route, Routes } from "react-router";
+import DocsIndex from "./docs.index";
+import * as View from "./views/index";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -162,10 +159,6 @@ export default function Docs() {
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useReactor" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
                   <ListItemText primary="useWatch" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
@@ -302,37 +295,26 @@ export default function Docs() {
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useForm" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useLazy" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useLazyImg" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useLazyAudio" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useLazyVedio" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
                   <ListItemText primary="useColor" />
                 </ListItemButton>
 
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useRipple" />
+                  <ListItemText primary="useToast" />
                 </ListItemButton>
 
+                <ListItemButton
+                  sx={{ pl: 4 }}
+                  onClick={() => {
+                    linkTo("/docs/useRipple", true);
+                  }}
+                >
+                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemText primary="useRipple" />
+                </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useToast" />
+                  <ListItemText primary="useParticle" />
                 </ListItemButton>
               </List>
             </Collapse>
@@ -370,7 +352,70 @@ export default function Docs() {
         </List>
       </div>
       <div className="Docs-Main">
-        <Overview />
+        <Routes>
+          <Route
+            path="/"
+            children={
+              <>
+                <Route path="" element={<View.UseRipple />} />
+                <Route path="/overview" element={<Overview />} />
+                <Route path="installation" element={<Overview />} />
+                <Route path="usage" element={<Overview />} />
+                <Route path="faqs" element={<Overview />} />
+                <Route path="support" element={<Overview />} />
+
+                <Route path="useLoading" element={<Overview />} />
+                <Route path="useMeta" element={<Overview />} />
+                <Route path="useReactive" element={<Overview />} />
+                <Route path="useReactor" element={<Overview />} />
+                <Route path="useReactorStore" element={<Overview />} />
+                <Route path="useReactorStoreContext" element={<Overview />} />
+                <Route path="useReactorStoreRef" element={<Overview />} />
+                <Route path="useTickState" element={<Overview />} />
+                <Route path="usePrevious" element={<Overview />} />
+
+                <Route path="useTicker" element={<Overview />} />
+                <Route path="useDebounce" element={<Overview />} />
+                <Route path="useThrottle" element={<Overview />} />
+                <Route path="useReactorListener" element={<Overview />} />
+                <Route path="useWatch" element={<Overview />} />
+                <Route path="useWatchGetter" element={<Overview />} />
+
+                <Route path="usePromise" element={<Overview />} />
+                <Route path="useFetch" element={<Overview />} />
+                <Route path="useGenerator" element={<Overview />} />
+
+                <Route path="useForceUpdate" element={<Overview />} />
+                <Route path="useForm" element={<Overview />} />
+                <Route path="useLazy" element={<Overview />} />
+                <Route path="useLazyImg" element={<Overview />} />
+                <Route path="useLazyAudio" element={<Overview />} />
+                <Route path="useLazyVedio" element={<Overview />} />
+                <Route path="useMixRef" element={<Overview />} />
+                <Route path="useSafe" element={<Overview />} />
+                <Route path="useLocalStorage" element={<Overview />} />
+                <Route path="useIndexDB" element={<Overview />} />
+
+                <Route path="useMount" element={<Overview />} />
+                <Route path="useBeforeMount" element={<Overview />} />
+                <Route path="useAfterMount" element={<Overview />} />
+                <Route path="useUnMount" element={<Overview />} />
+
+                <Route path="useTheme" element={<Overview />} />
+                <Route path="useColor" element={<Overview />} />
+                <Route path="useForceUpdate" element={<Overview />} />
+                <Route path="useClickAway" element={<Overview />} />
+                <Route path="useKeyPress" element={<Overview />} />
+                <Route path="useToast" element={<View.Overview />} />
+                <Route path="useRipple" element={<View.UseRipple />} />
+                <Route path="useParticle" element={<View.UseParticle />} />
+
+                <Route path="useSingleton" element={<Overview />} />
+                <Route path="useWhyDidYouUpdate" element={<Overview />} />
+              </>
+            }
+          />
+        </Routes>
         <ArticleNavigator />
       </div>
       <div className="Docs-Right">

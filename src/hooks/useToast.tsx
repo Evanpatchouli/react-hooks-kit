@@ -68,12 +68,10 @@ function useToast(config: ToastConfig = {}) {
             color: _config.color,
             left: "50%",
             top: _config.placement === "center" ? "50%" : "10%",
-            transform:
-              _config.placement === "center"
-                ? "translate(-50%, -50%)"
-                : "translateX(-50%)",
+            transform: _config.placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)",
             backgroundColor: _config.bgColor,
             padding: "4px 12px",
+            paddingBottom: "6px",
             borderRadius: "4px",
             fontSize: "14px",
           }}
@@ -95,12 +93,9 @@ function useToast(config: ToastConfig = {}) {
     toastRef.current?.(text, config);
   }, []) as Toast;
 
-  toast.top = (text: string, config: ToastConfig = {}) =>
-    toast(text, { ...config, placement: "top" });
-  toast.center = (text: string, config: ToastConfig = {}) =>
-    toast(text, { ...config, placement: "center" });
-  toast.bottom = (text: string, config: ToastConfig = {}) =>
-    toast(text, { ...config, placement: "bottom" });
+  toast.top = (text: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "top" });
+  toast.center = (text: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "center" });
+  toast.bottom = (text: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "bottom" });
 
   return toast;
 }

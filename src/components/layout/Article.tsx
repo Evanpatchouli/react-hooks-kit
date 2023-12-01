@@ -1,4 +1,5 @@
-import { Stack, Typography } from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
+import CodeBox from "../code-box";
 
 type ArticleProps = {
   title: string;
@@ -19,6 +20,28 @@ export const Body: React.FC<{ children?: React.ReactNode }> = ({ children }) => 
     <Typography variant="body1" gutterBottom>
       {children}
     </Typography>
+  );
+};
+
+export const Demo: React.FC<{ children?: React.ReactNode; code?: string; lang?: "ts" | "tsx" }> = ({
+  children,
+  code,
+  lang,
+}) => {
+  return (
+    <div className="Demo">
+      <Card
+        style={{
+          padding: "2rem",
+        }}
+      >
+        {children}
+      </Card>
+      {/* <Button variant="outlined" ref={particleRef}>
+        Particle
+      </Button> */}
+      <CodeBox lang={lang}>{code}</CodeBox>
+    </div>
   );
 };
 

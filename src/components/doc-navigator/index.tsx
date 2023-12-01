@@ -20,13 +20,13 @@ export default function DocNavigator() {
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>Eat</TimelineContent>
+        <TimelineContent>Usage</TimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
-        <TimelineContent>Code</TimelineContent>
+        <TimelineContent>Considerations</TimelineContent>
       </TimelineItem>
     </Timeline>
   );
