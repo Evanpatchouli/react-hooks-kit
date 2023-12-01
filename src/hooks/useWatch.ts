@@ -1,20 +1,28 @@
 import { useState, useEffect, useRef } from "react";
+import { PathArray, PathInto } from "./utils/types";
 
 type Callback<V = any> = (newValue: V, oldValue: V) => void;
 
-function get(object: object, path: string[]) {
-  return path.reduce(
-    //@ts-ignore
-    (obj, key) => (obj && obj[key] !== "undefined" ? obj[key] : undefined),
-    object
-  );
+function get(object: object, path: string[] | string) {
+  if (typeof path === "string") {
+    path = path.split(".");
+  }
+
+  let obj = object;
+  for (let i = 0; i < path.length; i++) {
+    let key = path[i];
+    // @ts-ignore
+    while (obj[key] === undefined && i + 1 < path.length) {
+      key += "." + path[++i];
+    }
+    // @ts-ignore
+    obj = obj[key];
+  }
+
+  return obj;
 }
 
-type Path<T, Key extends keyof any = keyof T> = Key extends keyof T
-  ? T[Key] extends object
-    ? [Key, ...Path<T[Key]>] | [Key] | []
-    : [Key] | []
-  : never;
+type Path<T, K extends keyof any = keyof T> = PathArray<T, K> | PathInto<T>;
 
 function isEqual(a: any, b: any): boolean {
   if (a === b) return true;

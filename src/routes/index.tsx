@@ -27,7 +27,7 @@ function Routers() {
                 }
               />
               <Route
-                path="docs"
+                path="docs/*"
                 element={
                   <Lazy>
                     <Docs />
@@ -40,7 +40,10 @@ function Routers() {
                   <>
                     <Route path="UseReactive" element={<Tests.UseReactive />} />
                     <Route path="UseReactor" element={<Tests.UseReactor />} />
-                    <Route path="UseReactorListener" element={<Tests.UseReactorListener />} />
+                    <Route
+                      path="UseReactorListener"
+                      element={<Tests.UseReactorListener />}
+                    />
                     <Route path="UseParticle" element={<Tests.UseParticle />} />
                   </>
                 }
