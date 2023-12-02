@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 type Callback<V = any> = (newValue: V, oldValue: V) => void;
 
-function get(object: object, path: string[]) {
+function get(object: object, path: string[], strict: boolean = false) {
   return path.reduce(
     //@ts-ignore
     (obj, key) => (obj && obj[key] !== "undefined" ? obj[key] : undefined),
