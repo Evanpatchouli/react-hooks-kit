@@ -20,6 +20,13 @@ export default function DocNavigator() {
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
+        <TimelineContent>Description</TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineDot />
+          <TimelineConnector />
+        </TimelineSeparator>
         <TimelineContent>Usage</TimelineContent>
       </TimelineItem>
       <TimelineItem>
@@ -27,6 +34,18 @@ export default function DocNavigator() {
           <TimelineDot />
         </TimelineSeparator>
         <TimelineContent>Considerations</TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineDot />
+        </TimelineSeparator>
+        <TimelineContent>Best practice</TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineDot />
+        </TimelineSeparator>
+        <TimelineContent>Best practice</TimelineContent>
       </TimelineItem>
     </Timeline>
   );

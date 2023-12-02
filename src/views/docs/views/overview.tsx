@@ -1,8 +1,6 @@
 import useConsoleLog from "@/hooks/useConsoleLog";
-import useReactive from "@/hooks/useReactive";
 import useTheme from "@/hooks/useTheme";
 import useWatch from "@/hooks/useWatch";
-import useWatchGetter from "@/hooks/useWatchGetter";
 import Article, { Body } from "@components/layout/Article";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -29,9 +27,6 @@ export default function Overview() {
   const c__c2__c3_x = useWatch(num, "c.c2.c3.x", (a, b) => {
     console.log(`num.c.c2.["c3.x"]: ${a} -> ${b}`);
   });
-  const num__a = useWatchGetter(() => {
-    return num.a;
-  }, setNum);
   return (
     <Article title="Overview" desc={desc}>
       <Body>
@@ -60,9 +55,6 @@ export default function Overview() {
       </Button>
       <Button variant="contained" color="success">
         {c__c2__c3_x}
-      </Button>
-      <Button variant="contained" color="success">
-        {num__a}
       </Button>
       <div>
         {logs

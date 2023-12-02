@@ -1,5 +1,7 @@
 import { Card, Stack, Typography } from "@mui/material";
 import CodeBox from "../code-box";
+import useLocaleSelector from "@/locale/locale.selector";
+import { DetailedHTMLProps, LiHTMLAttributes } from "react";
 
 type ArticleProps = {
   title: string;
@@ -42,6 +44,16 @@ export const Demo: React.FC<{ children?: React.ReactNode; code?: string; lang?: 
       </Button> */}
       <CodeBox lang={lang}>{code}</CodeBox>
     </div>
+  );
+};
+
+export const Consideration: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+  const $consideration = useLocaleSelector("$article.Consideration");
+  return (
+    <>
+      <SubTitle>{$consideration}</SubTitle>
+      <Body>{children}</Body>
+    </>
   );
 };
 
