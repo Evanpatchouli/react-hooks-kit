@@ -6,24 +6,43 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 
 const View = () => {
-  const [step, guide] = useGuide([
-    {
-      ids: ["logs"],
-      name: "guide",
-      renders: [
-        {
-          id: "logs",
-          render(id, name, data, ids) {
-            return (
-              <div>
-                {id} {name} {data}
-              </div>
-            );
+  const [step, guide] = useGuide(
+    [
+      {
+        ids: ["logs"],
+        name: "guide",
+        renders: [
+          {
+            id: "logs",
+            render(id, name, data, ids) {
+              return (
+                <div
+                  onClick={() => {
+                    guide.stop();
+                  }}
+                  style={{
+                    width: "fit-content",
+                  }}
+                >
+                  {id} {name} {data} : ☝️ click close guide
+                </div>
+              );
+            },
           },
-        },
-      ],
-    },
-  ]);
+        ],
+      },
+    ],
+    undefined,
+    {
+      containerStyle: {
+        backgroundColor: "#fff",
+        zIndex: "9999",
+        padding: "10px 20px",
+        borderRadius: "6px",
+        cursor: "pointer",
+      },
+    }
+  );
   const logs = useConsoleLog();
   const [num, setNum] = useState({
     a: 1,
