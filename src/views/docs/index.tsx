@@ -1,5 +1,12 @@
 import { ExpandLess, ExpandMore, FunctionsOutlined } from "@mui/icons-material";
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
+import {
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+} from "@mui/material";
 import "./index.css";
 import { useState } from "react";
 import Overview from "./views/overview";
@@ -25,9 +32,14 @@ export default function Docs() {
     8: false,
   });
 
-  useUrl((v) => {
+  const { params } = useUrl<
+    "http://localhost:3000/#/docs/*?id=1&theme=dark&lang=en",
+    "auto",
+    ["lang"],
+    ["theme"]
+  >((v) => {
     console.log(v);
-  });
+  }, "docs url listener", true);
   return (
     <div className="Docs">
       <div className="Docs-Left">
@@ -61,7 +73,10 @@ export default function Docs() {
             <List component="div" disablePadding>
               <ListItemButton sx={{ pl: 4 }}>
                 <ListItemIcon>🧐</ListItemIcon>
-                <ListItemText primary="Overview" onClick={() => linkTo("/docs/overview", true)} />
+                <ListItemText
+                  primary="Overview"
+                  onClick={() => linkTo("/docs/overview", true)}
+                />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
                 <ListItemIcon>⬇️</ListItemIcon>
@@ -169,7 +184,10 @@ export default function Docs() {
                   <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useThrottle" />
                 </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }} onClick={() => linkTo("/docs/useWatch", true)}>
+                <ListItemButton
+                  sx={{ pl: 4 }}
+                  onClick={() => linkTo("/docs/useWatch", true)}
+                >
                   <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useWatch" />
                 </ListItemButton>
