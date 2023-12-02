@@ -1,29 +1,43 @@
 import { useState, useEffect, useRef } from "react";
+import { PathArray, PathInto } from "./utils/types";
 
 type Callback<V = any> = (newValue: V, oldValue: V) => void;
 
-function get(object: object, path: string[], strict: boolean = false) {
-  return path.reduce(
-    //@ts-ignore
-    (obj, key) => (obj && obj[key] !== "undefined" ? obj[key] : undefined),
-    object
-  );
+function get(object: object, path: string[] | string, strict: boolean = false) {
+  if (typeof path === "string") {
+    path = path.split(".");
+  }
+
+  if (!strict) {
+    return path.reduce(
+      //@ts-ignore
+      (obj, key) => (obj && obj[key] !== "undefined" ? obj[key] : undefined),
+      object
+    );
+  }
+
+  let obj = object;
+  for (let i = 0; i < path.length; i++) {
+    let key = path[i];
+    // @ts-ignore
+    while (obj[key] === undefined && i + 1 < path.length) {
+      key += "." + path[++i];
+    }
+    // @ts-ignore
+    obj = obj[key];
+  }
+
+  return obj;
 }
 
-type Path<T, Key extends keyof any = keyof T> = Key extends keyof T
-  ? T[Key] extends object
-    ? [Key, ...Path<T[Key]>] | [Key] | []
-    : [Key] | []
-  : never;
+type Path<T, K extends keyof any = keyof T> = PathArray<T, K> | PathInto<T>;
 
 function isEqual(a: any, b: any): boolean {
   if (a === b) return true;
 
-  if (a instanceof Date && b instanceof Date)
-    return a.getTime() === b.getTime();
+  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
 
-  if (!a || !b || (typeof a !== "object" && typeof b !== "object"))
-    return a === b;
+  if (!a || !b || (typeof a !== "object" && typeof b !== "object")) return a === b;
 
   if (a.prototype !== b.prototype) return false;
 
@@ -33,11 +47,11 @@ function isEqual(a: any, b: any): boolean {
   return keys.every((k) => isEqual(a[k], b[k]));
 }
 
-function useWatch<
-  V extends unknown = any,
-  T extends object = {},
-  P extends Path<T> = Path<T>
->(object: T, path: P, callback: Callback<V>) {
+function useWatch<V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(
+  object: T,
+  path: P,
+  callback: Callback<V>
+) {
   const [value, setValue] = useState<V>(get(object, path as any) as V);
   const oldValueRef = useRef(value);
 

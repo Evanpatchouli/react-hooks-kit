@@ -1,5 +1,12 @@
 import { ExpandLess, ExpandMore, FunctionsOutlined } from "@mui/icons-material";
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
+import {
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+} from "@mui/material";
 import "./index.css";
 import { useState } from "react";
 import Overview from "./views/overview";
@@ -10,6 +17,7 @@ import linkTo from "@/utils/linkTo";
 import { Route, Routes } from "react-router";
 import DocsIndex from "./docs.index";
 import * as View from "./views/index";
+import useUrl from "@/hooks/useUrl";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -23,6 +31,10 @@ export default function Docs() {
     7: false,
     8: false,
   });
+
+  useUrl((v) => {
+    console.log(v);
+  });
   return (
     <div className="Docs">
       <div className="Docs-Left">
@@ -31,7 +43,14 @@ export default function Docs() {
           component="nav"
           aria-labelledby="nested-list-subheader"
           subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
+            <ListSubheader
+              component="div"
+              id="nested-list-subheader"
+              onClick={() => {
+                linkTo("/docs", true);
+              }}
+              style={{ cursor: "pointer" }}
+            >
               Docs of react-hooks-kit
             </ListSubheader>
           }
@@ -41,36 +60,39 @@ export default function Docs() {
               setOpen(0, !open[0]);
             }}
           >
-            <ListItemIcon>⚓</ListItemIcon>
+            <ListItemIcon>📖</ListItemIcon>
             <ListItemText primary="Getting started" />
             {open[0] ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={open[0]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>⚓</ListItemIcon>
-                <ListItemText primary="Overview" />
+                <ListItemIcon>🧐</ListItemIcon>
+                <ListItemText
+                  primary="Overview"
+                  onClick={() => linkTo("/docs/overview", true)}
+                />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>⚓</ListItemIcon>
+                <ListItemIcon>⬇️</ListItemIcon>
                 <ListItemText primary="Installation" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>⚓</ListItemIcon>
+                <ListItemIcon>🫰</ListItemIcon>
                 <ListItemText primary="Usage" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>⚓</ListItemIcon>
+                <ListItemIcon>❓</ListItemIcon>
                 <ListItemText primary="FAQs" />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
-                <ListItemIcon>⚓</ListItemIcon>
+                <ListItemIcon>💰</ListItemIcon>
                 <ListItemText primary="Support" />
               </ListItemButton>
             </List>
           </Collapse>
           <ListItemButton>
-            <ListItemIcon>⚓</ListItemIcon>
+            <ListItemIcon>📧</ListItemIcon>
             <ListItemText primary="Sent mail" />
           </ListItemButton>
           <ListItemButton>
@@ -93,42 +115,42 @@ export default function Docs() {
                 setOpen(1, !open[1]);
               }}
             >
-              <ListItemIcon>⚓</ListItemIcon>
+              <ListItemIcon>💾</ListItemIcon>
               <ListItemText primary="Stateful hooks" />
               {open[1] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[1]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useLoading" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useMeta" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useReactive" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useReactor" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useReactorStore" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useReactorStoreContext" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useReactorStoreRef" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useTickState" />
                 </ListItemButton>
               </List>
@@ -139,31 +161,39 @@ export default function Docs() {
                 setOpen(2, !open[2]);
               }}
             >
-              <ListItemIcon>⚓</ListItemIcon>
+              <ListItemIcon>♻️</ListItemIcon>
               <ListItemText primary="Callback hooks" />
               {open[2] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[2]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useTicker" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useDebounce" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useThrottle" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useWatch" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useWatchGetter" />
+                </ListItemButton>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useReactorListener" />
+                </ListItemButton>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useResize" />
                 </ListItemButton>
               </List>
             </Collapse>
@@ -173,22 +203,22 @@ export default function Docs() {
                 setOpen(3, !open[3]);
               }}
             >
-              <ListItemIcon>⚓</ListItemIcon>
+              <ListItemIcon>⌚</ListItemIcon>
               <ListItemText primary="Promise hooks" />
               {open[3] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[3]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="usePromise" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useFetch" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useGenerator" />
                 </ListItemButton>
               </List>
@@ -199,50 +229,50 @@ export default function Docs() {
                 setOpen(4, !open[4]);
               }}
             >
-              <ListItemIcon>⚓</ListItemIcon>
+              <ListItemIcon>🛠️</ListItemIcon>
               <ListItemText primary="Utils hooks" />
               {open[4] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[4]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useForceUpdate" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useForm" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useLazy" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useLazyImg" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useLazyAudio" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useLazyVedio" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useMixRef" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useSafe" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useLocalStorage" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useIndexDB" />
                 </ListItemButton>
               </List>
@@ -253,26 +283,22 @@ export default function Docs() {
                 setOpen(5, !open[5]);
               }}
             >
-              <ListItemIcon>⚓</ListItemIcon>
+              <ListItemIcon>🔮</ListItemIcon>
               <ListItemText primary="Lifetime hooks" />
               {open[5] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[5]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useMount" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useBeforeMount" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useAfterMount" />
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useMount" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useUnMount" />
                 </ListItemButton>
               </List>
@@ -283,23 +309,23 @@ export default function Docs() {
                 setOpen(6, !open[6]);
               }}
             >
-              <ListItemIcon>⚓</ListItemIcon>
+              <ListItemIcon>🎉</ListItemIcon>
               <ListItemText primary="UI & UX hooks" />
               {open[6] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[6]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useTheme" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useColor" />
                 </ListItemButton>
 
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useToast" />
                 </ListItemButton>
 
@@ -309,11 +335,11 @@ export default function Docs() {
                     linkTo("/docs/useRipple", true);
                   }}
                 >
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useRipple" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useParticle" />
                 </ListItemButton>
               </List>
@@ -324,27 +350,27 @@ export default function Docs() {
                 setOpen(7, !open[7]);
               }}
             >
-              <ListItemIcon>⚓</ListItemIcon>
+              <ListItemIcon>🪄</ListItemIcon>
               <ListItemText primary="Other hooks" />
               {open[7] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[7]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useMount" />
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useAny" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useBeforeMount" />
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useConsoleLog" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useAfterMount" />
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useSingleton" />
                 </ListItemButton>
                 <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon>⚓</ListItemIcon>
-                  <ListItemText primary="useUnMount" />
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useWhyDidYouUpdate" />
                 </ListItemButton>
               </List>
             </Collapse>
@@ -357,7 +383,7 @@ export default function Docs() {
             path="/"
             children={
               <>
-                <Route path="" element={<View.UseRipple />} />
+                <Route path="" element={<DocsIndex />} />
                 <Route path="/overview" element={<Overview />} />
                 <Route path="installation" element={<Overview />} />
                 <Route path="usage" element={<Overview />} />
