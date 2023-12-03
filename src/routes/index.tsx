@@ -19,6 +19,14 @@ function Routers() {
           children={
             <>
               <Route
+                path=""
+                element={
+                  <Lazy>
+                    <Home />
+                  </Lazy>
+                }
+              />
+              <Route
                 path="home"
                 element={
                   <Lazy>

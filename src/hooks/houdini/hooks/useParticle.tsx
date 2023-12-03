@@ -6,11 +6,15 @@ export type ParticleConfig = {
   duration?: number;
   trigger?: "click" | "mousedown" | "pointerdown";
   num?: number;
+  size?: number;
 };
 
 let isWorkletRegistered = false;
 
-function useParticle<T extends HTMLElement = HTMLButtonElement>(config: ParticleConfig = {}) {
+function useParticle<T extends HTMLElement = HTMLButtonElement>(
+  config: ParticleConfig = {},
+  enable: boolean = true
+) {
   const ref = useRef<T>(null);
   const mounted = useRef<boolean>(false);
 
@@ -40,9 +44,11 @@ function useParticle<T extends HTMLElement = HTMLButtonElement>(config: Particle
     const duration = config.duration || 500;
     const color = config.color || null;
     const num = config.num || 10;
+    const size = config.size ?? 3;
 
     let animationFrameId: number | null = null;
     const handleTrigger = (event: MouseEvent | PointerEvent) => {
+      if (!enable) return;
       const x = event.clientX - element.getBoundingClientRect().left;
       const y = event.clientY - element.getBoundingClientRect().top;
       const startTime = performance.now();
@@ -50,8 +56,15 @@ function useParticle<T extends HTMLElement = HTMLButtonElement>(config: Particle
 
       element.style.setProperty("--particle-x", `${x}px`);
       element.style.setProperty("--particle-y", `${y}px`);
-      element.style.setProperty("--particle-color", null === color ? null : color);
-      element.style.setProperty("--particle-time", `${performance.now() / duration}`); // "0"
+      element.style.setProperty("--particle-size", `${size}`);
+      element.style.setProperty(
+        "--particle-color",
+        null === color ? null : color
+      );
+      element.style.setProperty(
+        "--particle-time",
+        `${performance.now() / duration}`
+      ); // "0"
       element.style.setProperty("--particle-num", `${num}`); // "10"
 
       element.style.backgroundImage = "paint(particle)";

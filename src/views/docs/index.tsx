@@ -1,4 +1,5 @@
 import { ExpandLess, ExpandMore, FunctionsOutlined } from "@mui/icons-material";
+import docsMap from "./docs.map";
 import {
   Collapse,
   List,
@@ -7,9 +8,8 @@ import {
   ListItemText,
   ListSubheader,
 } from "@mui/material";
-import "./index.css";
 import { useState } from "react";
-import Overview from "./views/overview";
+import * as GettingStarted from "./views/getting-started";
 import ArticleNavigator from "@components/article-navigator";
 import DocNavigator from "@components/doc-navigator";
 import { useMeta } from "@/hooks/useMeta";
@@ -18,6 +18,8 @@ import { Route, Routes } from "react-router";
 import DocsIndex from "./docs.index";
 import * as View from "./views/index";
 import useUrl from "@/hooks/useUrl";
+import "./index.css";
+import { Option } from "@/utils/types";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -32,14 +34,6 @@ export default function Docs() {
     8: false,
   });
 
-  const { params } = useUrl<
-    "http://localhost:3000/#/docs/*?id=1&theme=dark&lang=en",
-    "auto",
-    ["lang"],
-    ["theme"]
-  >((v) => {
-    console.log(v);
-  }, "docs url listener", true);
   return (
     <div className="Docs">
       <div className="Docs-Left">
@@ -183,6 +177,13 @@ export default function Docs() {
                 <ListItemButton sx={{ pl: 4 }}>
                   <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useThrottle" />
+                </ListItemButton>
+                <ListItemButton
+                  sx={{ pl: 4 }}
+                  onClick={() => linkTo("/docs/useUrl?locale=en", true)}
+                >
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary="useUrl" />
                 </ListItemButton>
                 <ListItemButton
                   sx={{ pl: 4 }}
@@ -391,61 +392,199 @@ export default function Docs() {
             path="/"
             children={
               <>
+                {Object.entries(docsMap).map(([_module, views]) => {
+                  const module: keyof typeof docsMap = _module as any;
+                  Object.entries(views).map(([ViewElem, meta]) => {
+                    // console.log(
+                    //   `${module} ${ViewElem} ${JSON.stringify(meta)}`
+                    // );
+                    let ElemRender: Option<React.FC> = void 0;
+                    switch (module) {
+                      case "GettingStarted":
+                        if (ViewElem in GettingStarted) {
+                          ElemRender =
+                            GettingStarted[
+                              ViewElem as keyof typeof GettingStarted
+                            ];
+                        }
+                        break;
+                      case "SentMail":
+                        break;
+                      case "Draft":
+                        break;
+                      case "StatefulHooks":
+                        break;
+                      case "CallbackHooks":
+                        break;
+                      case "LifetimeHooks":
+                        break;
+                      case "PromiseHooks":
+                        break;
+                      case "UtilsHooks":
+                        break;
+                      case "UiUxHooks":
+                        break;
+                      case "OtherHooks":
+                        break;
+                      default:
+                        if (ViewElem in View) {
+                          ElemRender = View[ViewElem as keyof typeof View];
+                        }
+                        break;
+                    }
+                    if (ElemRender) {
+                      console.log(`path ${meta.path} View ${ViewElem}`);
+                    }
+                    return ElemRender ? (
+                      <Route path={meta.path} element={<ElemRender />} />
+                    ) : (
+                      void 0
+                    );
+                  });
+                })}
                 <Route path="" element={<DocsIndex />} />
-                <Route path="/overview" element={<Overview />} />
-                <Route path="installation" element={<Overview />} />
-                <Route path="usage" element={<Overview />} />
-                <Route path="faqs" element={<Overview />} />
-                <Route path="support" element={<Overview />} />
+                {/* <Route path="/overview" element={<GettingStarted.Overview />} />
+                <Route
+                  path="installation"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route path="usage" element={<GettingStarted.Overview />} />
+                <Route path="faqs" element={<GettingStarted.Overview />} />
+                <Route path="support" element={<GettingStarted.Overview />} />
 
-                <Route path="useLoading" element={<Overview />} />
-                <Route path="useMeta" element={<Overview />} />
-                <Route path="useReactive" element={<Overview />} />
-                <Route path="useReactor" element={<Overview />} />
-                <Route path="useReactorStore" element={<Overview />} />
-                <Route path="useReactorStoreContext" element={<Overview />} />
-                <Route path="useReactorStoreRef" element={<Overview />} />
-                <Route path="useTickState" element={<Overview />} />
-                <Route path="usePrevious" element={<Overview />} />
+                <Route
+                  path="useLoading"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route path="useMeta" element={<GettingStarted.Overview />} />
+                <Route
+                  path="useReactive"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useReactor"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useReactorStore"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useReactorStoreContext"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useReactorStoreRef"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useTickState"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="usePrevious"
+                  element={<GettingStarted.Overview />}
+                />
 
-                <Route path="useTicker" element={<Overview />} />
-                <Route path="useDebounce" element={<Overview />} />
-                <Route path="useThrottle" element={<Overview />} />
-                <Route path="useReactorListener" element={<Overview />} />
+                <Route path="useTicker" element={<GettingStarted.Overview />} />
+                <Route
+                  path="useDebounce"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useThrottle"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route path="useUrl" element={<View.UseUrl />} />
                 <Route path="useWatch" element={<View.UseWatch />} />
-                <Route path="useWatchGetter" element={<Overview />} />
+                <Route
+                  path="useWatchGetter"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useReactorListener"
+                  element={<GettingStarted.Overview />}
+                />
 
-                <Route path="usePromise" element={<Overview />} />
-                <Route path="useFetch" element={<Overview />} />
-                <Route path="useGenerator" element={<Overview />} />
+                <Route
+                  path="usePromise"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route path="useFetch" element={<GettingStarted.Overview />} />
+                <Route
+                  path="useGenerator"
+                  element={<GettingStarted.Overview />}
+                />
 
-                <Route path="useForceUpdate" element={<Overview />} />
-                <Route path="useForm" element={<Overview />} />
-                <Route path="useLazy" element={<Overview />} />
-                <Route path="useLazyImg" element={<Overview />} />
-                <Route path="useLazyAudio" element={<Overview />} />
-                <Route path="useLazyVedio" element={<Overview />} />
-                <Route path="useMixRef" element={<Overview />} />
-                <Route path="useSafe" element={<Overview />} />
-                <Route path="useLocalStorage" element={<Overview />} />
-                <Route path="useIndexDB" element={<Overview />} />
+                <Route
+                  path="useForceUpdate"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route path="useForm" element={<GettingStarted.Overview />} />
+                <Route path="useLazy" element={<GettingStarted.Overview />} />
+                <Route
+                  path="useLazyImg"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useLazyAudio"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useLazyVedio"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route path="useMixRef" element={<GettingStarted.Overview />} />
+                <Route path="useSafe" element={<GettingStarted.Overview />} />
+                <Route
+                  path="useLocalStorage"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useIndexDB"
+                  element={<GettingStarted.Overview />}
+                />
 
-                <Route path="useMount" element={<Overview />} />
-                <Route path="useBeforeMount" element={<Overview />} />
-                <Route path="useAfterMount" element={<Overview />} />
-                <Route path="useUnMount" element={<Overview />} />
+                <Route path="useMount" element={<GettingStarted.Overview />} />
+                <Route
+                  path="useBeforeMount"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useAfterMount"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useUnMount"
+                  element={<GettingStarted.Overview />}
+                />
 
-                <Route path="useTheme" element={<Overview />} />
-                <Route path="useColor" element={<Overview />} />
-                <Route path="useForceUpdate" element={<Overview />} />
-                <Route path="useClickAway" element={<Overview />} />
-                <Route path="useKeyPress" element={<Overview />} />
+                <Route path="useTheme" element={<GettingStarted.Overview />} />
+                <Route path="useColor" element={<GettingStarted.Overview />} />
+                <Route
+                  path="useForceUpdate"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useClickAway"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useKeyPress"
+                  element={<GettingStarted.Overview />}
+                />
                 <Route path="useToast" element={<View.Overview />} />
                 <Route path="useRipple" element={<View.UseRipple />} />
                 <Route path="useParticle" element={<View.UseParticle />} />
 
-                <Route path="useSingleton" element={<Overview />} />
-                <Route path="useWhyDidYouUpdate" element={<Overview />} />
+                <Route
+                  path="useSingleton"
+                  element={<GettingStarted.Overview />}
+                />
+                <Route
+                  path="useWhyDidYouUpdate"
+                  element={<GettingStarted.Overview />}
+                /> */}
               </>
             }
           />

@@ -1,4 +1,3 @@
-import useConsoleLog from "@/hooks/useConsoleLog";
 import useGuide from "@/hooks/useGuide";
 import useWatch from "@/hooks/useWatch";
 import { PathValue } from "@/hooks/utils/types";
@@ -24,7 +23,8 @@ const View = () => {
                     width: "fit-content",
                   }}
                 >
-                  {id} {name} {data} : ☝️ click close guide
+                  {name} {data} : only the first not work (☝️ click here to
+                  close )
                 </div>
               );
             },
@@ -43,7 +43,7 @@ const View = () => {
       },
     }
   );
-  const logs = useConsoleLog();
+  const logs: any[] = [];
   const [num, setNum] = useState({
     a: 1,
     b: 2,
@@ -114,7 +114,8 @@ const View = () => {
         <Button variant="contained" color="success">
           c__c2__c3_x$strict: {c__c2__c3_x$strict}
         </Button>{" "}
-        set strict mode to <code>true</code> works, but may cause energy consumption.
+        set strict mode to <code>true</code> works, but may cause energy
+        consumption.
       </div>
       <div
         css={$css({
@@ -124,7 +125,8 @@ const View = () => {
         <Button variant="contained" color="success">
           c__c2__c3_x$array: {c__c2__c3_x$array}
         </Button>{" "}
-        <strong>Most suggested</strong>: use array to access the special key "c3.x".
+        <strong>Most suggested</strong>: use array to access the special key
+        "c3.x".
       </div>
       <div id="logs">
         {logs

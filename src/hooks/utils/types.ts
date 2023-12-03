@@ -1,3 +1,5 @@
+import { Prettify } from "../typings";
+
 // 过滤掉symbol
 type GetKeyType<T> = T extends string | number ? T : never;
 
@@ -32,9 +34,12 @@ type IsAny<T, R = IsNever<T>> = 1 | 2 extends R ? true : false;
 
 type IsPlainType<T> = T extends Date | RegExp | Math ? false : true;
 
+/**
+ * - D - The maximum depth to traverse. Defaults to `20`.
+ */
 export type PathInto<
   T,
-  D extends number = 10000,
+  D extends number = 20,
   V extends string = "",
   L extends any[] = []
 > = L["length"] extends D
@@ -53,13 +58,27 @@ export type PathInto<
           ? PathIntoObject<T, D, V, L>
           : V);
 
-export type PathArray<T, K extends keyof any = keyof T> = K extends keyof T
+/**
+ * - Depth - The maximum depth to traverse. Defaults to `20`.
+ */
+export type PathArray<
+  T,
+  K extends keyof any = keyof T,
+  Depth extends number = 20
+> = Depth extends 0
+  ? never
+  : K extends keyof T
   ? T[K] extends object
-    ? [K, ...PathArray<T[K]>] | [K] | []
+    ? [K, ...PathArray<T[K], keyof T[K], Depth>] | [K] | []
     : [K] | []
   : never;
 
-type Path<T, K extends keyof any = keyof T> = PathArray<T, K> | PathInto<T>;
+/**
+ * - D - The maximum depth to traverse. Defaults to `20`.
+ */
+type Path<T, K extends keyof any = keyof T, D extends number = 20> =
+  | PathArray<T, K, D>
+  | PathInto<T>;
 
 export type PathValue<
   T,
@@ -86,11 +105,11 @@ type ToNumber<
  * ### Parameters
  * - S - The string to convert, like `"http://localhost?id=1&name=evan"`.
  * - Mode - The mode to use when converting: `"string"` | `"fuzzy"` | `"auto"` | `"strict"` | `"any"` = `"auto"`.
- * 
+ *
  * - StrictParams - The parameters to treat as strict.
- * 
+ *
  * - FuzzyParams - The parameters to treat as fuzzy.
- * 
+ *
  * @return A query parameter object
  */
 export type ParseQueryString<
@@ -98,11 +117,13 @@ export type ParseQueryString<
   Mode extends "string" | "fuzzy" | "auto" | "strict" | "any" = "auto",
   StrictParams extends string[] = [],
   FuzzyParams extends string[] = []
-> = S extends `${infer _Prefix}?${infer Params}`
-  ? Params extends ""
-    ? {}
-    : MergeParams<SplitParams<Params>, Mode, StrictParams, FuzzyParams>
-  : MergeParams<SplitParams<S>, Mode, StrictParams, FuzzyParams>;
+> = Prettify<
+  S extends `${infer _Prefix}?${infer Params}`
+    ? Params extends ""
+      ? {}
+      : MergeParams<SplitParams<Params>, Mode, StrictParams, FuzzyParams>
+    : MergeParams<SplitParams<S>, Mode, StrictParams, FuzzyParams>
+>;
 
 type SplitParams<S extends string> = S extends `${infer E}&${infer Rest}`
   ? [E, ...SplitParams<Rest>]
