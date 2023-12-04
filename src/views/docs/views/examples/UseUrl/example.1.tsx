@@ -12,6 +12,7 @@ const View = () => {
     <>
       <span>url params: </span>
       <code>{JSON.stringify(params, null, 2)}</code>
+      <span style={{ color: "gainsboro" }}> ( try to change query params in broswer location bar )</span>
     </>
   );
 };
@@ -31,6 +32,7 @@ const View = () => {
     <>
       <span>url params: </span>
       <code>{JSON.stringify(params, null, 2)}</code>
+      <span>( try to change query params in broswer location bar )</span>
     </>
   );
 };

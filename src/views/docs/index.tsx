@@ -1,13 +1,6 @@
 import { ExpandLess, ExpandMore, FunctionsOutlined } from "@mui/icons-material";
 import docsMap from "./docs.map";
-import {
-  Collapse,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-} from "@mui/material";
+import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
 import { useState } from "react";
 import * as GettingStarted from "./views/getting-started";
 import ArticleNavigator from "@components/article-navigator";
@@ -67,10 +60,7 @@ export default function Docs() {
             <List component="div" disablePadding>
               <ListItemButton sx={{ pl: 4 }}>
                 <ListItemIcon>🧐</ListItemIcon>
-                <ListItemText
-                  primary="Overview"
-                  onClick={() => linkTo("/docs/overview", true)}
-                />
+                <ListItemText primary="Overview" onClick={() => linkTo("/docs/overview", true)} />
               </ListItemButton>
               <ListItemButton sx={{ pl: 4 }}>
                 <ListItemIcon>⬇️</ListItemIcon>
@@ -178,17 +168,11 @@ export default function Docs() {
                   <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useThrottle" />
                 </ListItemButton>
-                <ListItemButton
-                  sx={{ pl: 4 }}
-                  onClick={() => linkTo("/docs/useUrl?locale=en", true)}
-                >
+                <ListItemButton sx={{ pl: 4 }} onClick={() => linkTo("/docs/useUrl?locale=en", true)}>
                   <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useUrl" />
                 </ListItemButton>
-                <ListItemButton
-                  sx={{ pl: 4 }}
-                  onClick={() => linkTo("/docs/useWatch", true)}
-                >
+                <ListItemButton sx={{ pl: 4 }} onClick={() => linkTo("/docs/useWatch", true)}>
                   <ListItemIcon></ListItemIcon>
                   <ListItemText primary="useWatch" />
                 </ListItemButton>
@@ -394,53 +378,48 @@ export default function Docs() {
               <>
                 {Object.entries(docsMap).map(([_module, views]) => {
                   const module: keyof typeof docsMap = _module as any;
-                  Object.entries(views).map(([ViewElem, meta]) => {
-                    // console.log(
-                    //   `${module} ${ViewElem} ${JSON.stringify(meta)}`
-                    // );
-                    let ElemRender: Option<React.FC> = void 0;
-                    switch (module) {
-                      case "GettingStarted":
-                        if (ViewElem in GettingStarted) {
-                          ElemRender =
-                            GettingStarted[
-                              ViewElem as keyof typeof GettingStarted
-                            ];
-                        }
-                        break;
-                      case "SentMail":
-                        break;
-                      case "Draft":
-                        break;
-                      case "StatefulHooks":
-                        break;
-                      case "CallbackHooks":
-                        break;
-                      case "LifetimeHooks":
-                        break;
-                      case "PromiseHooks":
-                        break;
-                      case "UtilsHooks":
-                        break;
-                      case "UiUxHooks":
-                        break;
-                      case "OtherHooks":
-                        break;
-                      default:
-                        if (ViewElem in View) {
-                          ElemRender = View[ViewElem as keyof typeof View];
-                        }
-                        break;
+                  return Object.entries(views as { [x: string]: { route: string; title: string } }).map(
+                    ([ViewElem, meta]) => {
+                      // console.log(
+                      //   `${module} ${ViewElem} ${JSON.stringify(meta)}`
+                      // );
+                      let ElemRender: Option<React.FC> = void 0;
+                      switch (module) {
+                        case "GettingStarted":
+                          if (ViewElem in GettingStarted) {
+                            ElemRender = GettingStarted[ViewElem as keyof typeof GettingStarted];
+                          }
+                          break;
+                        // case "SentMail":
+                        //   break;
+                        // case "Draft":
+                        //   break;
+                        // case "StatefulHooks":
+                        //   break;
+                        // case "CallbackHooks":
+                        //   break;
+                        // case "LifetimeHooks":
+                        //   break;
+                        // case "PromiseHooks":
+                        //   break;
+                        // case "UtilsHooks":
+                        //   break;
+                        // case "UiUxHooks":
+                        //   break;
+                        // case "OtherHooks":
+                        //   break;
+                        default:
+                          if (ViewElem in View) {
+                            ElemRender = View[ViewElem as keyof typeof View];
+                          }
+                          // console.log(`${ViewElem}`, View[ViewElem as keyof typeof View] ? true : false);
+                          break;
+                      }
+                      console.log(`${ViewElem} route: ${meta.route}`);
+                      return ElemRender ? <Route path={meta.route} element={<ElemRender />} /> : void 0;
+                      // return <Route path="/overview" element={<GettingStarted.Overview />} />;
                     }
-                    if (ElemRender) {
-                      console.log(`path ${meta.path} View ${ViewElem}`);
-                    }
-                    return ElemRender ? (
-                      <Route path={meta.path} element={<ElemRender />} />
-                    ) : (
-                      void 0
-                    );
-                  });
+                  );
                 })}
                 <Route path="" element={<DocsIndex />} />
                 {/* <Route path="/overview" element={<GettingStarted.Overview />} />

@@ -1,6 +1,6 @@
 export default {
   GettingStarted: {
-    OverView: {
+    Overview: {
       route: "overview",
       title: "Overview",
     },

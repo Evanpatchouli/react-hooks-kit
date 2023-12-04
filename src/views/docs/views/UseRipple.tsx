@@ -1,18 +1,15 @@
-import CodeBox from "@/components/code-box";
-import CopyIcon from "@/components/copy-icon";
+import { useEffect } from "react";
 import Article, { Body, Demo, SubTitle } from "@/components/layout/Article";
 import useRipple from "@/hooks/houdini/hooks/useRipple";
-import { FileCopyOutlined } from "@mui/icons-material";
-import { Button, Card } from "@mui/material";
-import { useState } from "react";
+import pkg from "@/../package.json";
 
 const codes = [
   `
 const Demo1 = () => {
-  const particleRef = useRipple<HTMLDivElement>();
+  const useRippleRef = useRipple<HTMLDivElement>();
   return (
     <div
-      ref={particleRef}
+      ref={useRippleRef}
     >
       Click to render ripple effect
     </div>
@@ -22,14 +19,19 @@ const Demo1 = () => {
 ];
 
 function UseRipple() {
-  const particleRef = useRipple<HTMLDivElement>();
-  const desc = "useParticle is a hook for using houdini particle effect.";
+  useEffect(() => {
+    document.title = `useRipple - ${pkg.homepage}`;
+  }, []);
+
+  const useRippleRef = useRipple<HTMLDivElement>();
+  const desc = "useRipple is a hook for using houdini particle effect.";
+
   return (
     <Article title="UseRipple" desc={desc}>
       <Body>A hook to render ripple effect by using houdini paintWorklet.</Body>
       <SubTitle>Usage</SubTitle>
       <Demo code={codes[0]}>
-        <div css={styles.demo1} ref={particleRef}>
+        <div css={styles.demo1} ref={useRippleRef}>
           Click to render ripple effect
         </div>
       </Demo>
