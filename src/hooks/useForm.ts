@@ -4,7 +4,8 @@ const useForm = <T = any>(
     {
       value: T[keyof T] | undefined | null;
       required?: boolean;
-      validator?: (value?: T[keyof T] | null) => string | undefined;
+      validator?: (value?: T[keyof T] | null) => Promise<string | undefined>;
+      setter?: (v: T[keyof T] | undefined | null) => void;
     }
   >,
   formRef: React.RefObject<HTMLFormElement>
@@ -59,7 +60,11 @@ const useForm = <T = any>(
     set: (
       key: keyof FormSchema,
       value: FormSchema[keyof FormSchema]["value"]
-    ) => (formSchema[key].value = value),
+    ) => {
+      if ("setter" in formSchema[key]) {
+        formSchema[key].setter?.(value);
+      }
+    },
     sets: (
       data: Partial<{ [K in keyof FormSchema]: FormSchema[K]["value"] }>
     ) => {
@@ -73,28 +78,53 @@ const useForm = <T = any>(
     validate: (key: keyof FormSchema) => {
       const validator = formSchema[key].validator;
       const value = formController.get(key);
-      if (value === undefined || value === null || `${value}`.trim() === "") {
-        if (formSchema[key].required) {
-          console.warn(`${String(key)} is required`, "warning");
-          return false;
+      return new Promise<boolean>((rs, rj) => {
+        if (value === undefined || value === null || `${value}`.trim() === "") {
+          if (formSchema[key].required) {
+            console.warn(`${String(key)} is required`, "warning");
+            return rs(false);
+          }
         }
-      }
-      if (validator) {
-        const error = validator(value);
-        if (error) {
-          console.warn(error, "warning");
-          return false;
+        if (validator) {
+          const error = validator(value);
+          error
+            .then((v) => {
+              if (v) {
+                console.warn(error, "warning");
+                return rs(false);
+              } else {
+                return rs(true);
+              }
+            })
+            .catch((err) => {
+              console.warn(error, "warning");
+              rs(false);
+            });
+          if (error) {
+            console.warn(error, "warning");
+            return false;
+          }
+        } else {
+          rs(true);
         }
-      }
-      return true;
+      });
     },
-    validates: (keys?: (keyof FormSchema)[]) => {
-      if (keys) {
-        return keys.every((key) => formController.validate(key));
+    validates: async (keys?: (keyof FormSchema)[]) => {
+      if (!keys) {
+        keys = Object.keys(formSchema) as (keyof FormSchema)[];
       }
-      return Object.keys(formSchema).every((key) =>
-        formController.validate(key as keyof FormSchema)
-      );
+      if (keys) {
+        const results = await Promise.all(
+          keys.map((key) => formController.validate(key))
+        );
+        if (results.some((r) => !r)) {
+          return Promise.resolve(false);
+        } else {
+          return Promise.resolve(true);
+        }
+      } else {
+        return Promise.resolve(true);
+      }
     },
     gets: (keys?: (keyof FormSchema)[]) => {
       const data = new FormData(formRef.current as HTMLFormElement);
