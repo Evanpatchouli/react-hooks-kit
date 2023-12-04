@@ -1,7 +1,7 @@
 import useUrl from "@/hooks/useUrl";
 
 const View = () => {
-  const { params } = useUrl(
+  const { params } = useUrl<"?id=2">(
     () => {
       console.log("url changed");
     },
@@ -12,7 +12,10 @@ const View = () => {
     <>
       <span>url params: </span>
       <code>{JSON.stringify(params, null, 2)}</code>
-      <span style={{ color: "gainsboro" }}> ( try to change query params in broswer location bar )</span>
+      <span style={{ color: "gainsboro" }}>
+        {" "}
+        ( try to change query params in broswer location bar )
+      </span>
     </>
   );
 };
@@ -21,7 +24,7 @@ const code = `
 import useUrl from "@/hooks/useUrl";
 
 const View = () => {
-  const { params } = useUrl(
+  const { params } = useUrl<"?id=2">(
     () => {
       console.log("url changed");
     },

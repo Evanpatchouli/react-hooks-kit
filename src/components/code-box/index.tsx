@@ -70,7 +70,7 @@ cursor: pointer;
 padding: 8px 6px 2px 6px;
 border-radius: 4px;
 &:hover {
-  background-color: #111;
+  background-color: #333;
 }
 `;
 

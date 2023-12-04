@@ -22,6 +22,8 @@
 .Docs-Left-Menu {
   position: fixed;
   top: 60px;
+  max-height: calc(100vh - 68px);
+  overflow: auto;
 }
 
 .Docs-Main {
