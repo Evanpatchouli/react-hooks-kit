@@ -7,22 +7,28 @@
 
 .Docs-Left,
 .Docs-Right {
+  position: relative;
   width: 300px;
   min-width: 300px;
+  min-height: 100vh;
 }
 
 .Docs-Left,
 .Docs-Main,
 .Docs-Right {
-  overflow-y: scroll;
   overflow: auto;
+}
+
+.Docs-Left-Menu {
+  position: fixed;
+  top: 60px;
 }
 
 .Docs-Main {
   flex: 1 1 auto;
-  margin: 0 200px;
   max-width: 1200px;
+  margin: 0 200px;
   @media screen and (max-width: 1600px) {
-    margin: 0 100px;   
+    margin: 0 100px;
   }
 }

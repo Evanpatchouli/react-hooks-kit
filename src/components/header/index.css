@@ -10,4 +10,8 @@
   z-index: 1000;
   box-sizing: border-box;
   height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }

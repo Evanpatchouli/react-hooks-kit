@@ -8,9 +8,9 @@ import { css as $$css } from "@emotion/react";
 import { useState } from "react";
 import "./index.css";
 
-const CodeBox = (props: { children?: string; lang?: "ts" | "tsx" }) => {
+const CodeBox = (props: { children?: string; lang?: "ts" | "tsx"; defaultOpen?: boolean }) => {
   const toast = useToast();
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(props.defaultOpen || false);
   const clickCode = () => setShow(!show);
   const copyCode = () => {
     copy(
@@ -26,7 +26,17 @@ const CodeBox = (props: { children?: string; lang?: "ts" | "tsx" }) => {
   return (
     <div css={CodeBoxStyle}>
       <div css={CopyIconStyle}>{show && <CopyIcon onClick={copyCode} />}</div>
-      <Code show={show} theme="materialDark" lang={props.lang ?? "tsx"}>
+      <Code
+        style={{
+          transition: show ? "transform 0.3s ease-in-out" : "none",
+          transform: show ? "scaleY(1)" : "scaleY(0)",
+          transformOrigin: "top",
+          height: show ? "auto" : "0",
+          padding: show ? "1rem" : "0",
+        }}
+        theme="vscDarkPlus"
+        lang={props.lang ?? "tsx"}
+      >
         {props.children}
       </Code>
       <div css={ToolbarStyle}>

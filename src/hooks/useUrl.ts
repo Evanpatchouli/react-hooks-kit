@@ -8,9 +8,7 @@ type UrlInfo<T extends Record<string, any>> = {
 } & Location &
   History;
 
-type UrlChangeCallback<T extends Record<string, any>> = (
-  urlInfo: UrlInfo<T>
-) => void;
+type UrlChangeCallback<T extends Record<string, any>> = (urlInfo: UrlInfo<T>) => void;
 
 function getParams<T>(
   url: string,
@@ -68,6 +66,13 @@ function getParams<T>(
   return params as T;
 }
 
+// 全局的事件监听器
+const listeners = new Set<Function>();
+
+window.addEventListener("popstate", () => {
+  listeners.forEach((listener) => listener());
+});
+
 /**
  * ## useUrl hook
  * Converts a string to a query parameter object. Return an object merged with location, history, params and name.
@@ -112,18 +117,10 @@ function useUrl<
   immediate?: boolean,
   config: {
     mode?: "string" | "auto";
-    autoParams?: (
-      | keyof (T extends string ? ParseQueryString<T> : ApplyMode<T>)
-      | (string & {})
-    )[];
-    stringifyParams?: (
-      | keyof (T extends string ? ParseQueryString<T> : ApplyMode<T>)
-      | (string & {})
-    )[];
+    autoParams?: (keyof (T extends string ? ParseQueryString<T> : ApplyMode<T>) | (string & {}))[];
+    stringifyParams?: (keyof (T extends string ? ParseQueryString<T> : ApplyMode<T>) | (string & {}))[];
     custom?: {
-      [K in keyof (T extends string ? ParseQueryString<T> : ApplyMode<T>)]?: (
-        value: string | undefined
-      ) => any;
+      [K in keyof (T extends string ? ParseQueryString<T> : ApplyMode<T>)]?: (value: string | undefined) => any;
     };
   } = {}
 ): UrlInfo<
@@ -155,10 +152,7 @@ function useUrl<
     >
   >(getUrlInfo() as any);
 
-  const memoizedConfig = useMemo(
-    () => config,
-    [config.mode, config.autoParams, config.stringifyParams, config.custom]
-  );
+  const memoizedConfig = useMemo(() => config, [config.mode, config.autoParams, config.stringifyParams, config.custom]);
 
   useEffect(() => {
     if (immediate) {
@@ -175,10 +169,12 @@ function useUrl<
       callback?.(urlInfo as any);
     };
 
-    window.addEventListener("popstate", handlePopState);
+    // 在组件挂载时注册回调函数
+    listeners.add(handlePopState);
 
     return () => {
-      window.removeEventListener("popstate", handlePopState);
+      // 在组件卸载时注销回调函数
+      listeners.delete(handlePopState);
     };
   }, [callback]);
 

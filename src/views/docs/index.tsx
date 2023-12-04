@@ -1,4 +1,4 @@
-import { ExpandLess, ExpandMore, FunctionsOutlined } from "@mui/icons-material";
+import { ExpandLess, ExpandMore, FunctionsOutlined, HourglassEmptyOutlined } from "@mui/icons-material";
 import docsMap from "./docs.map";
 import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
 import { useState } from "react";
@@ -13,6 +13,8 @@ import * as View from "./views/index";
 import useUrl from "@/hooks/useUrl";
 import "./index.css";
 import { Option } from "@/utils/types";
+import pickLastUrlPath from "@/utils/pickLastUrlPath";
+import Deving from "@/components/Deving";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -27,10 +29,14 @@ export default function Docs() {
     8: false,
   });
 
+  const url = useUrl();
+  const curRoute = pickLastUrlPath(url.hash);
+
   return (
     <div className="Docs">
       <div className="Docs-Left">
         <List
+          className="Docs-Left-Menu"
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -58,33 +64,49 @@ export default function Docs() {
           </ListItemButton>
           <Collapse in={open[0]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton
+                sx={{ pl: 4 }}
+                selected={curRoute === "overview"}
+                onClick={() => linkTo("/docs/overview", true)}
+              >
                 <ListItemIcon>🧐</ListItemIcon>
-                <ListItemText primary="Overview" onClick={() => linkTo("/docs/overview", true)} />
+                <ListItemText primary="Overview" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton
+                sx={{ pl: 4 }}
+                selected={curRoute === "installation"}
+                onClick={() => linkTo("/docs/installation", true)}
+              >
                 <ListItemIcon>⬇️</ListItemIcon>
                 <ListItemText primary="Installation" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton
+                sx={{ pl: 4 }}
+                selected={curRoute === "usage"}
+                onClick={() => linkTo("/docs/usage", true)}
+              >
                 <ListItemIcon>🫰</ListItemIcon>
                 <ListItemText primary="Usage" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton sx={{ pl: 4 }} selected={curRoute === "faqs"} onClick={() => linkTo("/docs/faqs", true)}>
                 <ListItemIcon>❓</ListItemIcon>
                 <ListItemText primary="FAQs" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }}>
+              <ListItemButton
+                sx={{ pl: 4 }}
+                selected={curRoute === "support"}
+                onClick={() => linkTo("/docs/support", true)}
+              >
                 <ListItemIcon>💰</ListItemIcon>
                 <ListItemText primary="Support" />
               </ListItemButton>
             </List>
           </Collapse>
-          <ListItemButton>
+          <ListItemButton selected={curRoute === "sent-mail"} onClick={() => linkTo("/docs/sent-mail", true)}>
             <ListItemIcon>📧</ListItemIcon>
             <ListItemText primary="Sent mail" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton selected={curRoute === "draft"} onClick={() => linkTo("/docs/draft", true)}>
             <ListItemIcon>⚓</ListItemIcon>
             <ListItemText primary="Drafts" />
           </ListItemButton>
@@ -110,38 +132,18 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[1]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useLoading" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useMeta" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useReactive" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useReactor" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useReactorStore" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useReactorStoreContext" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useReactorStoreRef" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useTickState" />
-                </ListItemButton>
+                {Object.entries(docsMap.StatefulHooks).map(([, { route }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Collapse>
 
@@ -156,38 +158,18 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[2]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useTicker" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useDebounce" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useThrottle" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }} onClick={() => linkTo("/docs/useUrl?locale=en", true)}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useUrl" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }} onClick={() => linkTo("/docs/useWatch", true)}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useWatch" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useWatchGetter" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useReactorListener" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useResize" />
-                </ListItemButton>
+                {Object.entries(docsMap.CallbackHooks).map(([, { route }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Collapse>
 
@@ -202,18 +184,18 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[3]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="usePromise" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useFetch" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useGenerator" />
-                </ListItemButton>
+                {Object.entries(docsMap.PromiseHooks).map(([, { route }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Collapse>
 
@@ -228,46 +210,18 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[4]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useForceUpdate" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useForm" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useLazy" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useLazyImg" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useLazyAudio" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useLazyVedio" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useMixRef" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useSafe" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useLocalStorage" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useIndexDB" />
-                </ListItemButton>
+                {Object.entries(docsMap.UtilsHooks).map(([, { route }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Collapse>
 
@@ -282,18 +236,18 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[5]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useBeforeMount" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useMount" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useUnMount" />
-                </ListItemButton>
+                {Object.entries(docsMap.LifetimeHooks).map(([, { route }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Collapse>
 
@@ -308,33 +262,18 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[6]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useTheme" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useColor" />
-                </ListItemButton>
-
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useToast" />
-                </ListItemButton>
-
-                <ListItemButton
-                  sx={{ pl: 4 }}
-                  onClick={() => {
-                    linkTo("/docs/useRipple", true);
-                  }}
-                >
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useRipple" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useParticle" />
-                </ListItemButton>
+                {Object.entries(docsMap.UiUxHooks).map(([, { route }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Collapse>
 
@@ -349,22 +288,18 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[7]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useAny" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useConsoleLog" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useSingleton" />
-                </ListItemButton>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemIcon></ListItemIcon>
-                  <ListItemText primary="useWhyDidYouUpdate" />
-                </ListItemButton>
+                {Object.entries(docsMap.OtherHooks).map(([, { route }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon></ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
               </List>
             </Collapse>
           </List>
@@ -376,6 +311,7 @@ export default function Docs() {
             path="/"
             children={
               <>
+                <Route path="" element={<DocsIndex />} />
                 {Object.entries(docsMap).map(([_module, views]) => {
                   const module: keyof typeof docsMap = _module as any;
                   return Object.entries(views as { [x: string]: { route: string; title: string } }).map(
@@ -415,155 +351,16 @@ export default function Docs() {
                           // console.log(`${ViewElem}`, View[ViewElem as keyof typeof View] ? true : false);
                           break;
                       }
-                      console.log(`${ViewElem} route: ${meta.route}`);
-                      return ElemRender ? <Route path={meta.route} element={<ElemRender />} /> : void 0;
+                      // console.log(`${ViewElem} route: ${meta.route}`);
+                      return ElemRender ? (
+                        <Route path={meta.route} element={<ElemRender />} />
+                      ) : (
+                        <Route path={meta.route} element={<Deving />} />
+                      );
                       // return <Route path="/overview" element={<GettingStarted.Overview />} />;
                     }
                   );
                 })}
-                <Route path="" element={<DocsIndex />} />
-                {/* <Route path="/overview" element={<GettingStarted.Overview />} />
-                <Route
-                  path="installation"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route path="usage" element={<GettingStarted.Overview />} />
-                <Route path="faqs" element={<GettingStarted.Overview />} />
-                <Route path="support" element={<GettingStarted.Overview />} />
-
-                <Route
-                  path="useLoading"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route path="useMeta" element={<GettingStarted.Overview />} />
-                <Route
-                  path="useReactive"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useReactor"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useReactorStore"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useReactorStoreContext"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useReactorStoreRef"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useTickState"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="usePrevious"
-                  element={<GettingStarted.Overview />}
-                />
-
-                <Route path="useTicker" element={<GettingStarted.Overview />} />
-                <Route
-                  path="useDebounce"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useThrottle"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route path="useUrl" element={<View.UseUrl />} />
-                <Route path="useWatch" element={<View.UseWatch />} />
-                <Route
-                  path="useWatchGetter"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useReactorListener"
-                  element={<GettingStarted.Overview />}
-                />
-
-                <Route
-                  path="usePromise"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route path="useFetch" element={<GettingStarted.Overview />} />
-                <Route
-                  path="useGenerator"
-                  element={<GettingStarted.Overview />}
-                />
-
-                <Route
-                  path="useForceUpdate"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route path="useForm" element={<GettingStarted.Overview />} />
-                <Route path="useLazy" element={<GettingStarted.Overview />} />
-                <Route
-                  path="useLazyImg"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useLazyAudio"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useLazyVedio"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route path="useMixRef" element={<GettingStarted.Overview />} />
-                <Route path="useSafe" element={<GettingStarted.Overview />} />
-                <Route
-                  path="useLocalStorage"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useIndexDB"
-                  element={<GettingStarted.Overview />}
-                />
-
-                <Route path="useMount" element={<GettingStarted.Overview />} />
-                <Route
-                  path="useBeforeMount"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useAfterMount"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useUnMount"
-                  element={<GettingStarted.Overview />}
-                />
-
-                <Route path="useTheme" element={<GettingStarted.Overview />} />
-                <Route path="useColor" element={<GettingStarted.Overview />} />
-                <Route
-                  path="useForceUpdate"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useClickAway"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useKeyPress"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route path="useToast" element={<View.Overview />} />
-                <Route path="useRipple" element={<View.UseRipple />} />
-                <Route path="useParticle" element={<View.UseParticle />} />
-
-                <Route
-                  path="useSingleton"
-                  element={<GettingStarted.Overview />}
-                />
-                <Route
-                  path="useWhyDidYouUpdate"
-                  element={<GettingStarted.Overview />}
-                /> */}
               </>
             }
           />
