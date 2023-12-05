@@ -22,6 +22,7 @@ export default function Overview() {
   const [thumb, setThumb] = useToogle();
 
   const effectRef = useParticle({}, !thumb);
+
   return (
     <Article title="Overview" desc={desc}>
       <SubTitle>Introduction</SubTitle>

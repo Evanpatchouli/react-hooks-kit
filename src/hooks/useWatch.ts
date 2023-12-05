@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { PathArray, PathInto, PathValue } from "./utils/types";
+import isEqual from "./utils/isEqual";
 
 type Callback<V = any> = (newValue: V, oldValue: V) => void;
 type Getter<V = any, T extends object = {}> = (object: T, ...args: any[]) => V | undefined;
@@ -34,20 +35,6 @@ function get(object: object, path?: string[] | string, strict: boolean = false) 
 
 export type Path<T, K extends keyof any = keyof T> = PathArray<T, K> | PathInto<T>;
 
-function isEqual(a: any, b: any): boolean {
-  if (a === b) return true;
-
-  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
-
-  if (!a || !b || (typeof a !== "object" && typeof b !== "object")) return a === b;
-
-  if (a.prototype !== b.prototype) return false;
-
-  const keys = Object.keys(a);
-  if (keys.length !== Object.keys(b).length) return false;
-
-  return keys.every((k) => isEqual(a[k], b[k]));
-}
 
 interface Config {
   strict?: boolean;

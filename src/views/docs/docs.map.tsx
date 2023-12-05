@@ -214,9 +214,9 @@ export default {
     },
   },
   OtherHooks: {
-    UseAny: {
-      route: "useAny",
-      title: "UseAny",
+    UseProtect: {
+      route: "useProtect",
+      title: "UseProtect",
     },
     UseConsoleLog: {
       route: "useConsoleLog",
@@ -226,9 +226,25 @@ export default {
       route: "useSingleTon",
       title: "UseSingleTon",
     },
+    UseMediaQuery: {
+      route: "useMediaQuery",
+      title: "UseMediaQuery",
+    },
+    UseBroadCastChannel: {
+      route: "useBroadCastChannel",
+      title: "UseBroadCastChannel",
+    },
+    UseNetwork: {
+      route: "useNetWork",
+      title: "UseNetWork",
+    },
     UseWhyDidYouUpdate: {
       route: "useWhyDidYouUpdate",
       title: "UseWhyDidYouUpdate",
+    },
+    UseEyeDropper: {
+      route: "useEyeDropper",
+      title: "UseEyeDropper",
     },
   },
 } as const;
