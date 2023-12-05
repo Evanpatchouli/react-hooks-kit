@@ -47,7 +47,15 @@ export default function DocNavigator() {
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
-        <TimelineContent>Best practice</TimelineContent>
+        <TimelineContent
+          sx={{ cursor: "pointer" }}
+          onClick={() => {
+            const element = document.getElementById("apis");
+            element?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          Hook's Apis
+        </TimelineContent>
       </TimelineItem>
     </Timeline>
   );

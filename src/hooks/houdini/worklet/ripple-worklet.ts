@@ -6,16 +6,17 @@ const rippleWorklet = URL.createObjectURL(
       "ripple",
       class {
         static get inputProperties() {
-          return ["--ripple-x", "--ripple-y", "--ripple-color", "--ripple-time"];
+          return ["--ripple-x", "--ripple-y", "--ripple-color", "--ripple-time", "--ripple-alpha-min"];
         }
         paint(ctx, geom, properties) {
           const x = parseFloat(properties.get("--ripple-x").toString());
           const y = parseFloat(properties.get("--ripple-y").toString());
           const color = properties.get("--ripple-color").toString();
           const time = parseFloat(properties.get("--ripple-time").toString());
+          const alphaMin = parseFloat(properties.get("--ripple-alpha-min").toString());
   
           ctx.fillStyle = color;
-          ctx.globalAlpha = Math.max(1 - time, 0);
+          ctx.globalAlpha = Math.max(Math.max(1 - time, alphaMin), 0);
           ctx.arc(x, y, geom.width * time, 0, 2 * Math.PI);
           ctx.fill();
         }

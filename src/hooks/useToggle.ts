@@ -5,7 +5,7 @@ export type ToggleState<T = true, F = false> = {
   false: F;
 };
 
-export default function useToogle<T = true, F = false>(
+export default function useToggle<T = true, F = false>(
   initial?: boolean,
   map?: Partial<ToggleState<T, F>>
 ): [

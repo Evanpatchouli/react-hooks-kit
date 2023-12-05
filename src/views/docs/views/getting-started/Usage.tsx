@@ -4,11 +4,12 @@ import { LegacyRef, useEffect, useState } from "react";
 import pkg from "@/../package.json";
 import Code from "@/components/code";
 import WasHelpful from "@/components/layout/WasHelpful";
-import useToogle from "@/hooks/useToogle";
+import useToogle from "@/hooks/useToggle";
 import useRipple from "@/hooks/houdini/hooks/useRipple";
 import CodeBox from "@/components/code-box";
 
-const desc = "@evanpatchouli/react-hooks-kit is library for making it easy to use react hooks.";
+const desc =
+  "@evanpatchouli/react-hooks-kit is library for making it easy to use react hooks.";
 
 const code = `
 import { useToogle } from "@evanpatchouli/react-hooks-kit";
@@ -38,7 +39,7 @@ const Switcher = () => {
     <button
       style={{
         ...staticStyles.button,
-        border: \`1px solid \${isOn ? "dodgerblue" : "gainsboro"}\`,
+        border: \`1px solid \${isOn ? "dodgerblue" : "gray"}\`,
       }}
       onClick={toggle}
     >
@@ -46,7 +47,7 @@ const Switcher = () => {
         style={{
           ...staticStyles.text,
           left: isOn ? "100%" : "0",
-          color: isOn ? "dodgerblue" : "gainsboro",
+          color: isOn ? "dodgerblue" : "gray",
           transform: \`translate(\${isOn ? "calc(-8px - 100%)" : "calc(8px)"}, -50%)\`,
         }}
       >
@@ -82,7 +83,7 @@ const Switcher = () => {
     <button
       style={{
         ...staticStyles.button,
-        border: `1px solid ${isOn ? "dodgerblue" : "gainsboro"}`,
+        border: `1px solid ${isOn ? "dodgerblue" : "gray"}`,
       }}
       onClick={toggle}
     >
@@ -90,8 +91,10 @@ const Switcher = () => {
         style={{
           ...staticStyles.text,
           left: isOn ? "100%" : "0",
-          color: isOn ? "dodgerblue" : "gainsboro",
-          transform: `translate(${isOn ? "calc(-8px - 100%)" : "calc(8px)"}, -50%)`,
+          color: isOn ? "dodgerblue" : "gray",
+          transform: `translate(${
+            isOn ? "calc(-8px - 100%)" : "calc(8px)"
+          }, -50%)`,
         }}
       >
         {isOn ? "ON" : "OFF"}
@@ -103,19 +106,19 @@ const Switcher = () => {
 const code2 = `
 import { useToogle, useRipple } from "@evanpatchouli/react-hooks-kit";
 
-const Switcher = () => {
+const RippleSwitcher = () => {
   const [isOn, toggle] = useToogle();
   const ref = useRipple<HTMLButtonElement>({
-    color: "dodgerblue",
-    duration: 300,
+    color: "hsla(210, 100%, 56%, 0.557)",
+    duration: 500,
     trigger: "mousedown",
   });
   return (
     <button
-    ref={ref}
+      ref={ref}
       style={{
         ...staticStyles.button,
-        border: \`1px solid \${isOn ? "dodgerblue" : "gainsboro"}\`,
+        border: \`1px solid \${isOn ? "dodgerblue" : "gray"}\`,
       }}
       onClick={toggle}
     >
@@ -123,8 +126,12 @@ const Switcher = () => {
         style={{
           ...staticStyles.text,
           left: isOn ? "100%" : "0",
-          color: isOn ? "dodgerblue" : "gainsboro",
-          transform: \`translate(\${isOn ? "calc(-8px - 100%)" : "calc(8px)"}, -50%)\`,
+          color: isOn ? "blue" : "gainsboro",
+          transform: \`translate(\${isOn ? "calc(-2px - 100%)" : "calc(2px)"}, -50%)\`,
+          backgroundColor: isOn ? 'hsla(210, 100%, 56%, 0.557)' : "gray",
+          padding: '0 4px',
+          lineHeight: '1.4rem',
+          borderRadius: '12px',
         }}
       >
         {isOn ? "ON" : "OFF"}
@@ -138,7 +145,7 @@ const RippleSwitcher = () => {
   const [isOn, toggle] = useToogle();
   const ref = useRipple<HTMLButtonElement>({
     color: "hsla(210, 100%, 56%, 0.557)",
-    duration: 300,
+    duration: 500,
     trigger: "mousedown",
   });
   return (
@@ -146,7 +153,7 @@ const RippleSwitcher = () => {
       ref={ref}
       style={{
         ...staticStyles.button,
-        border: `1px solid ${isOn ? "dodgerblue" : "gainsboro"}`,
+        border: `1px solid ${isOn ? "dodgerblue" : "gray"}`,
       }}
       onClick={toggle}
     >
@@ -154,8 +161,14 @@ const RippleSwitcher = () => {
         style={{
           ...staticStyles.text,
           left: isOn ? "100%" : "0",
-          color: isOn ? "dodgerblue" : "gainsboro",
-          transform: `translate(${isOn ? "calc(-8px - 100%)" : "calc(8px)"}, -50%)`,
+          color: isOn ? "blue" : "gainsboro",
+          transform: `translate(${
+            isOn ? "calc(-2px - 100%)" : "calc(2px)"
+          }, -50%)`,
+          backgroundColor: isOn ? "hsla(210, 100%, 56%, 0.557)" : "gray",
+          padding: "0 4px",
+          lineHeight: "1.4rem",
+          borderRadius: "12px",
         }}
       >
         {isOn ? "ON" : "OFF"}

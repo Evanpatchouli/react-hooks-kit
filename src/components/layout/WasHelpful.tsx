@@ -1,5 +1,5 @@
 import useParticle from "@/hooks/houdini/hooks/useParticle";
-import useToogle from "@/hooks/useToogle";
+import useToogle from "@/hooks/useToggle";
 import { ThumbUpAlt, ThumbUpOffAlt } from "@mui/icons-material";
 import { Button } from "@mui/material";
 

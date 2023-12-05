@@ -9,15 +9,27 @@ type ArticleProps = {
   children?: React.ReactNode;
 };
 
-export const SubTitle: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const SubTitle: React.FC<{
+  children?: React.ReactNode;
+  id?: string;
+}> = ({ children, id }) => {
   return (
-    <Typography variant="h5" component={"h6"} gutterBottom marginTop="40px" fontWeight="bold">
+    <Typography
+      id={id}
+      variant="h5"
+      component={"h6"}
+      gutterBottom
+      marginTop="40px"
+      fontWeight="bold"
+    >
       {children}
     </Typography>
   );
 };
 
-export const Body: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const Body: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <Typography variant="body1" gutterBottom>
       {children}
@@ -25,11 +37,11 @@ export const Body: React.FC<{ children?: React.ReactNode }> = ({ children }) => 
   );
 };
 
-export const Demo: React.FC<{ children?: React.ReactNode; code?: string; lang?: "ts" | "tsx" }> = ({
-  children,
-  code,
-  lang,
-}) => {
+export const Demo: React.FC<{
+  children?: React.ReactNode;
+  code?: string;
+  lang?: "ts" | "tsx";
+}> = ({ children, code, lang }) => {
   return (
     <div className="Demo">
       <Card
@@ -47,11 +59,13 @@ export const Demo: React.FC<{ children?: React.ReactNode; code?: string; lang?: 
   );
 };
 
-export const Consideration: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const Consideration: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   const $consideration = useLocaleSelector("$article.Consideration");
   return (
     <>
-      <SubTitle>{$consideration}</SubTitle>
+      <SubTitle id="consider">{$consideration}</SubTitle>
       <Body>{children}</Body>
     </>
   );
@@ -60,7 +74,13 @@ export const Consideration: React.FC<{ children?: React.ReactNode }> = ({ childr
 export default function Article(props: ArticleProps) {
   return (
     <>
-      <Typography variant="h4" component={"h1"} gutterBottom marginTop="40px" fontWeight="bold">
+      <Typography
+        variant="h4"
+        component={"h1"}
+        gutterBottom
+        marginTop="40px"
+        fontWeight="bold"
+      >
         {props.title}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>

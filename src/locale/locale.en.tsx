@@ -169,6 +169,31 @@ const locale_en = {
       </ol>
     ),
   },
+
+  useToggle: {
+    desc: "A hook to toggle boolean state.",
+    detail: (
+      <>
+        useToggle is a hook that is used to toggle boolean state:
+        <h4>Parameters : </h4>
+        <ol>
+          <li><strong>initialValue</strong> (?) : boolean, default is false</li>
+          <li><strong>valueMap</strong> (?) : the returned value map</li>
+          <ul>
+            <li><strong>true</strong> (?) : the value when state is true, default is true</li>
+            <li><strong>false</strong> (?) : the value when state is false, default is false</li>
+          </ul>
+        </ol>
+        For example:
+      </>
+    ),
+    consideration: (
+      <ol>
+        <Li>initialValue is type of boolean</Li>
+      </ol>
+    ),
+    $p1: "configure the value mapping",
+  }
 } as const;
 
 export default locale_en;
