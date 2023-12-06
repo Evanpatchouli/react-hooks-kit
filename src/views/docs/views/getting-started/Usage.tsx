@@ -7,9 +7,7 @@ import WasHelpful from "@/components/layout/WasHelpful";
 import useToogle from "@/hooks/useToggle";
 import useRipple from "@/hooks/houdini/hooks/useRipple";
 import CodeBox from "@/components/code-box";
-import ApiTable from "@/components/api-table";
 import UseToggleApi from "../hooks-apis/useToggle.api";
-import useEventEmitter from "@/hooks/useEventEmitter";
 
 const desc = "@evanpatchouli/react-hooks-kit is library for making it easy to use react hooks.";
 
@@ -175,56 +173,6 @@ const RippleSwitcher = () => {
   );
 };
 
-const Evt1 = () => {
-  const emitter = useEventEmitter("emitter1", "evt2", () => {
-    console.log("emitter1 got : evt2");
-  });
-  return (
-    <button
-      onClick={() => {
-        emitter.emit("evt1", {
-          name: "evanpatchouli",
-          age: 23,
-        });
-      }}
-    >
-      Evt1
-    </button>
-  );
-};
-
-const Evt2 = () => {
-  const emitter = useEventEmitter<{
-    emitter2: string;
-  }>("emitter2", "evt1", (args) => {
-    console.log("emitter2 got : evt1", args);
-  });
-  return (
-    <button
-      onClick={() => {
-        emitter.emit("evt2", "evt2");
-      }}
-    >
-      Evt2
-    </button>
-  );
-};
-
-const Evt3 = () => {
-  const emitter = useEventEmitter("emitter3", "evt1", (args) => {
-    console.log("emitter3 got : evt1", args);
-  });
-  return (
-    <button
-      onClick={() => {
-        emitter.unsubscribeAll();
-      }}
-    >
-      Evt3
-    </button>
-  );
-};
-
 export default function Usage() {
   useEffect(() => {
     document.title = `Usage - ${pkg.homepage}`;
@@ -233,9 +181,6 @@ export default function Usage() {
   return (
     <Article title="Usage" desc={desc}>
       <SubTitle>npm</SubTitle>
-      <Evt1 />
-      <Evt2 />
-      <Evt3 />
       <p>Take "useToggle" as an example, you can use it to make a Switcher:</p>
       <Body>
         <Switcher />
