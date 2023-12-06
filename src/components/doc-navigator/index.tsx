@@ -50,7 +50,7 @@ export default function DocNavigator() {
         <TimelineContent
           sx={{ cursor: "pointer" }}
           onClick={() => {
-            const element = document.getElementById("apis");
+            const element = document.getElementById("hook-api");
             element?.scrollIntoView({ behavior: "smooth" });
           }}
         >

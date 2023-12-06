@@ -12,14 +12,16 @@ type ArticleProps = {
 export const SubTitle: React.FC<{
   children?: React.ReactNode;
   id?: string;
-}> = ({ children, id }) => {
+  low?: boolean;
+  top?: string;
+}> = ({ children, id, low, top }) => {
   return (
     <Typography
       id={id}
-      variant="h5"
-      component={"h6"}
+      variant={low ? "h6" : "h5"}
+      component={low ? "h6" : "h6"}
       gutterBottom
-      marginTop="40px"
+      marginTop={top ?? "40px"}
       fontWeight="bold"
     >
       {children}
@@ -27,9 +29,7 @@ export const SubTitle: React.FC<{
   );
 };
 
-export const Body: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+export const Body: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <Typography variant="body1" gutterBottom>
       {children}
@@ -59,13 +59,11 @@ export const Demo: React.FC<{
   );
 };
 
-export const Consideration: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+export const Consideration: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const $consideration = useLocaleSelector("$article.Consideration");
   return (
     <>
-      <SubTitle id="consider">{$consideration}</SubTitle>
+      <SubTitle id="hook-consider">{$consideration}</SubTitle>
       <Body>{children}</Body>
     </>
   );
@@ -74,17 +72,11 @@ export const Consideration: React.FC<{ children?: React.ReactNode }> = ({
 export default function Article(props: ArticleProps) {
   return (
     <>
-      <Typography
-        variant="h4"
-        component={"h1"}
-        gutterBottom
-        marginTop="40px"
-        fontWeight="bold"
-      >
+      <Typography variant="h4" component={"h1"} gutterBottom marginTop="40px" fontWeight="bold">
         {props.title}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        {props.desc}
+        <div id="hook-desc">{props.desc}</div>
       </Typography>
       <div>{props.children}</div>
       <Stack

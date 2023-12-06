@@ -1,10 +1,5 @@
 import useLocaleSelector from "@/locale/locale.selector";
-import Article, {
-  Body,
-  Consideration,
-  Demo,
-  SubTitle,
-} from "@components/layout/Article";
+import Article, { Body, Consideration, Demo, SubTitle } from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "../examples/UseToggle/example.1";
 import example2 from "../examples/UseToggle/example.2";
@@ -21,17 +16,14 @@ export default function UseToggle() {
   }, []);
 
   return (
-    <Article
-      title={hooksName.replace(/([A-Z])/g, (str) => str.toUpperCase())}
-      desc={$desc}
-    >
+    <Article title={hooksName.replace(/([A-Z])/g, (str) => str.toUpperCase())} desc={$desc}>
       <Body>{$detail}</Body>
       <Demo code={example1.code}>{<example1.View />}</Demo>
       <SubTitle>Value map</SubTitle>
       <p>{$p1}</p>
       <Demo code={example2.code}>{<example2.View />}</Demo>
       <Consideration>{$consider}</Consideration>
-      <SubTitle id="apis">useToggle Apis</SubTitle>
+      <SubTitle id="hook-api">useToggle Apis</SubTitle>
     </Article>
   );
 }

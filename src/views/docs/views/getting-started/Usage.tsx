@@ -7,9 +7,10 @@ import WasHelpful from "@/components/layout/WasHelpful";
 import useToogle from "@/hooks/useToggle";
 import useRipple from "@/hooks/houdini/hooks/useRipple";
 import CodeBox from "@/components/code-box";
+import ApiTable from "@/components/api-table";
+import UseToggleApi from "../hooks-apis/useToggle.api";
 
-const desc =
-  "@evanpatchouli/react-hooks-kit is library for making it easy to use react hooks.";
+const desc = "@evanpatchouli/react-hooks-kit is library for making it easy to use react hooks.";
 
 const code = `
 import { useToogle } from "@evanpatchouli/react-hooks-kit";
@@ -92,9 +93,7 @@ const Switcher = () => {
           ...staticStyles.text,
           left: isOn ? "100%" : "0",
           color: isOn ? "dodgerblue" : "gray",
-          transform: `translate(${
-            isOn ? "calc(-8px - 100%)" : "calc(8px)"
-          }, -50%)`,
+          transform: `translate(${isOn ? "calc(-8px - 100%)" : "calc(8px)"}, -50%)`,
         }}
       >
         {isOn ? "ON" : "OFF"}
@@ -162,9 +161,7 @@ const RippleSwitcher = () => {
           ...staticStyles.text,
           left: isOn ? "100%" : "0",
           color: isOn ? "blue" : "gainsboro",
-          transform: `translate(${
-            isOn ? "calc(-2px - 100%)" : "calc(2px)"
-          }, -50%)`,
+          transform: `translate(${isOn ? "calc(-2px - 100%)" : "calc(2px)"}, -50%)`,
           backgroundColor: isOn ? "hsla(210, 100%, 56%, 0.557)" : "gray",
           padding: "0 4px",
           lineHeight: "1.4rem",
@@ -177,9 +174,9 @@ const RippleSwitcher = () => {
   );
 };
 
-export default function Overview() {
+export default function Usage() {
   useEffect(() => {
-    document.title = `overview - ${pkg.homepage}`;
+    document.title = `Usage - ${pkg.homepage}`;
   }, []);
 
   return (
@@ -196,6 +193,7 @@ export default function Overview() {
         <CodeBox>{code2}</CodeBox>
       </Body>
       <strong>Now, you get a cool RippleSwitcher!</strong>
+      <UseToggleApi />
       <WasHelpful />
     </Article>
   );
