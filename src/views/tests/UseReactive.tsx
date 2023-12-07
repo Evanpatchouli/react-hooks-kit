@@ -18,11 +18,13 @@ export default function UseReactive() {
   );
   const objActions = {
     add: () => {
-      obj.a.b++;
+      // @ts-ignore
+      obj.a.value.b++;
       // b++;
       // upd();
     },
     sub: () => {
+      // @ts-ignore
       obj.a.b--;
       // upd();
     },

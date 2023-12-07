@@ -134,7 +134,7 @@ export default function Code(props: EvpCodeProps) {
           renderer={props.renderer}
           CodeTag={props.CodeTag}
         >
-          {`${props.children?.replace("\n", "")}`}
+          {`${props.children?.replace("", "")}`}
         </Highlight>
       ) : (
         void 0

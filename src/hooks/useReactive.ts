@@ -5,26 +5,70 @@ type Watcher<T> = (state: T) => void;
 function deepProxy<T extends object>(
   obj: T,
   stateRef: React.MutableRefObject<T>,
-  setState: React.Dispatch<React.SetStateAction<T>>
+  setState: React.Dispatch<React.SetStateAction<T>>,
+  root?: any
 ) {
+  const proxyObj = {} as any;
+
   for (let key in obj) {
     if (typeof obj[key] === "object" && obj[key] !== null) {
-      obj[key] = deepProxy(obj[key] as any, stateRef, setState) as any;
+      proxyObj[key] = { value: deepProxy(obj[key] as any, stateRef, setState) };
+    } else {
+      proxyObj[key] = { value: obj[key] };
     }
   }
 
-  return new Proxy(obj, {
+  const valueProxy = new Proxy(proxyObj, {
     get(target, prop) {
-      // @ts-ignore
-      return target[prop];
+      return target[prop]?.value;
     },
     set(target, prop, value) {
+      console.log("target", target);
+      console.log("prop", prop);
+      console.log("value", value);
+      target[prop]["value"] = value;
+      // 更新 stateRef.current
+      const obj = unwrap(deProxy(target));
       // @ts-ignore
-      target[prop] = value;
+      // stateRef.current = {
+      //   ...obj,
+      // };
+      console.log(obj);
+      // 使用 setState 函数来修改 state 的值
       setState({ ...stateRef.current });
       return true;
     },
   });
+
+  return valueProxy;
+}
+
+function deProxy(proxyObj: any) {
+  const obj = {} as any;
+
+  for (let key in proxyObj) {
+    if (typeof proxyObj[key] === "object" && proxyObj[key] !== null) {
+      obj[key] = deProxy(proxyObj[key]);
+    } else {
+      obj[key] = proxyObj[key];
+    }
+  }
+
+  return obj;
+}
+
+function unwrap(obj: any) {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+
+  const unwrappedObj = {} as any;
+
+  for (let key in obj) {
+    unwrappedObj[key] = obj[key].value;
+  }
+
+  return unwrappedObj;
 }
 
 function shallowProxy<T extends object>(
@@ -46,6 +90,14 @@ function shallowProxy<T extends object>(
   });
 }
 
+type ReactiveState<T, D extends boolean> = D extends true
+  ? {
+      [K in keyof T]: T[K] extends object ? { value: ReactiveState<T[K], D> } : { value: T[K] };
+    }
+  : {
+      [K in keyof T]: { value: T[K] };
+    };
+
 /**
  * #### params
  * - **initialState** - Only supports object type as reactive data source.
@@ -59,11 +111,12 @@ function shallowProxy<T extends object>(
  * - Why did not the state change when I change the property deconstructed from the state?
  * Because the deconstructed property is a copy of the original object, it will not trigger the state change.
  */
-function useReactive<T>(
+function useReactive<T, D extends boolean = true>(
   initialState: T,
-  deep?: boolean | Watcher<T>,
+  deep?: D | Watcher<T>,
   ...callbacks: Array<Watcher<T>>
 ): T {
+  // ReactiveState<T, D>
   const [state, setState] = useState<T>(initialState);
   const stateRef = useRef(state);
 
@@ -79,7 +132,7 @@ function useReactive<T>(
   }, [stateRef.current, callbacks]);
 
   if (typeof initialState !== "object" || initialState === null) {
-    return stateRef.current;
+    return stateRef.current as any;
   }
 
   let reactiveState =

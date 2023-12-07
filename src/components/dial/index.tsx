@@ -47,8 +47,8 @@ export default function Dial() {
           setAlertContent(
             <span>
               <span>{"Please press "}</span>
-              <strong>{keys.join("+ ")}</strong>
-              <span>{" to bookmark this site. ✨"}</span>
+              <strong>{keys.join(" + ")}</strong>
+              <span>{" to bookmark site. ✨"}</span>
             </span>
           );
           setAlertOpen(true);

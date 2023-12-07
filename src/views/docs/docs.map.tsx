@@ -200,6 +200,10 @@ export default {
       route: "useToast",
       title: "UseToast",
     },
+    UseGuide: {
+      route: "useGuide",
+      title: "UseGuide",
+    },
     UseRipple: {
       route: "useRipple",
       title: "UseRipple",

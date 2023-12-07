@@ -45,9 +45,7 @@ export class Reactor<T = any> implements ReactorModel {
  * @param target listened Reactive store
  * @returns unlistener
  */
-export function listen<T = any>(
-  target: Omit<Reactor<T>, "_state" | "_setState">
-) {
+export function listen<T = any>(target: Omit<Reactor<T>, "_state" | "_setState">) {
   return {
     then: (...fns: ((value: T) => any)[]) => {
       const fn = (value: T) => fns.forEach((f) => f(value));

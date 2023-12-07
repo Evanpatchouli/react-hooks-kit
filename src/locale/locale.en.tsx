@@ -258,6 +258,26 @@ const locale_en = {
     ),
     $p1: "You can use loading in count way, that means you can plus or minus loading value, and the loading state will be true when the value is greater than 0, otherwise false.",
   },
+
+  useGuide: {
+    desc: "",
+    detail: <></>,
+    consideration: <ol></ol>,
+  },
+
+  useMeta: {
+    desc: "",
+    detail: <></>,
+    consideration: <ol></ol>,
+  },
+
+  useReactive: {
+    desc: "",
+    detail: <></>,
+    consideration: <ol></ol>,
+    $p1: "",
+  },
+  __end: "end of locale mappings, please do not delete this line",
 } as const;
 
 export default locale_en;
