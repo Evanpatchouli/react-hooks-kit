@@ -1,5 +1,6 @@
 import React from "react";
 import { CropRotate } from "@mui/icons-material";
+import Loading from "@/components/Loading";
 
 export function Lazy(props: { children: React.ReactNode }) {
   return (
@@ -12,19 +13,8 @@ export function Lazy(props: { children: React.ReactNode }) {
             left: "50%",
             transform: "translate(-50%, -50%)",
           }}
-          css={$css`
-            @keyframes rotate {
-              0% {
-                transform: rotate(0deg);
-              }
-              100% {
-                transform: rotate(360deg);
-              }
-            }
-            animation: rotate 1s linear infinite;
-          `}
         >
-          <CropRotate />
+          <Loading />
         </div>
       }
     >

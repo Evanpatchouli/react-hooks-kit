@@ -15,6 +15,7 @@ import "./index.css";
 import { Option } from "@/utils/types";
 import pickLastUrlPath from "@/utils/pickLastUrlPath";
 import Deving from "@/components/Deving";
+import Dial from "@/components/dial";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -369,6 +370,7 @@ export default function Docs() {
       </div>
       <div className="Docs-Right">
         <DocNavigator />
+        <Dial />
       </div>
     </div>
   );

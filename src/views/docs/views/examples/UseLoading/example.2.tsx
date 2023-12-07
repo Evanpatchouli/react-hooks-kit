@@ -1,11 +1,34 @@
 import Loading from "@/components/Loading";
 import { useLoading } from "@/hooks/useLoading";
 import { Button } from "@mui/material";
+import { useState } from "react";
 
 const View = () => {
-  const { loading, plusLoading, minusLoading } = useLoading({
-    load: false,
+  const [options, setOptions] = useState({
+    setType: "override" as "override" | "spread", // default
+    zeroFalse: true, // default
   });
+
+  const toggleSetType = () => {
+    setOptions((prev) => ({
+      ...prev,
+      setType: prev.setType === "override" ? "spread" : "override",
+    }));
+  };
+
+  const toggleZeroFalse = () => {
+    setOptions((prev) => ({
+      ...prev,
+      zeroFalse: !prev.zeroFalse,
+    }));
+  };
+
+  const { loading, plusLoading, minusLoading } = useLoading(
+    {
+      load: false,
+    },
+    options
+  );
   return (
     <div
       css={$css`
@@ -13,6 +36,14 @@ const View = () => {
       align-items: center;
       `}
     >
+      <div>
+        <Button css={$css`display: block; text-transform: none;`} onClick={toggleSetType}>
+          setType : {options?.setType}
+        </Button>
+        <Button css={$css`display: block; text-transform: none;`} onClick={toggleZeroFalse}>
+          zeroFalse : {`${options?.zeroFalse}`}
+        </Button>
+      </div>
       <Button
         onClick={() => {
           minusLoading("load");
@@ -22,9 +53,11 @@ const View = () => {
       </Button>
       <div
         css={$css`
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: 60px;
+        border: 2px solid gray;
         position: relative;
+        border-radius: 50%;
         `}
       >
         <div
@@ -53,12 +86,35 @@ const View = () => {
 const code = `
 import Loading from "@/components/Loading";
 import { useLoading } from "@/hooks/useLoading";
-import { Switch } from "@mui/material";
+import { Button } from "@mui/material";
+import { useState } from "react";
 
 const View = () => {
-  const { loading, plusLoading, minusLoading } = useLoading({
-    load: false,
+  const [options, setOptions] = useState({
+    setType: "override" as "override" | "spread", // default
+    zeroFalse: true, // default
   });
+
+  const toggleSetType = () => {
+    setOptions((prev) => ({
+      ...prev,
+      setType: prev.setType === "override" ? "spread" : "override",
+    }));
+  };
+
+  const toggleZeroFalse = () => {
+    setOptions((prev) => ({
+      ...prev,
+      zeroFalse: !prev.zeroFalse,
+    }));
+  };
+
+  const { loading, plusLoading, minusLoading } = useLoading(
+    {
+      load: false,
+    },
+    options
+  );
   return (
     <div
       css={$css\`
@@ -66,6 +122,14 @@ const View = () => {
       align-items: center;
       \`}
     >
+      <div>
+        <Button css={$css\`display: block; text-transform: none;\`} onClick={toggleSetType}>
+          setType : {options?.setType}
+        </Button>
+        <Button css={$css\`display: block; text-transform: none;\`} onClick={toggleZeroFalse}>
+          zeroFalse : {\`\${options?.zeroFalse}\`}
+        </Button>
+      </div>
       <Button
         onClick={() => {
           minusLoading("load");
@@ -75,9 +139,11 @@ const View = () => {
       </Button>
       <div
         css={$css\`
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: 60px;
+        border: 2px solid gray;
         position: relative;
+        border-radius: 50%;
         \`}
       >
         <div

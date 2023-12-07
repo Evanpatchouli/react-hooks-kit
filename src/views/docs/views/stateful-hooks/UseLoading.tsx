@@ -1,15 +1,10 @@
 import useLocaleSelector from "@/locale/locale.selector";
-import Article, {
-  Body,
-  Consideration,
-  Demo,
-  SubTitle,
-} from "@components/layout/Article";
+import Article, { Body, Consideration, Demo, SubTitle } from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "../examples/UseLoading/example.1";
 import example2 from "../examples/UseLoading/example.2";
+import UseLoadingApi from "../hooks-apis/useLoading.api";
 import pkg from "@/../package.json";
-import UseToggleApi from "../hooks-apis/useToggle.api";
 
 export default function UseLoading() {
   const hooksName = "useLoading";
@@ -22,10 +17,7 @@ export default function UseLoading() {
   }, []);
 
   return (
-    <Article
-      title={hooksName.replace(/([A-Z])/g, (str) => str.toUpperCase())}
-      desc={$desc}
-    >
+    <Article title={hooksName.replace(/([A-Z])/g, (str) => str.toUpperCase())} desc={$desc}>
       <Body>{$detail}</Body>
       <Demo code={example1.code}>{<example1.View />}</Demo>
       <SubTitle>Counter mode</SubTitle>
@@ -33,7 +25,7 @@ export default function UseLoading() {
       <Demo code={example2.code}>{<example2.View />}</Demo>
       <Consideration>{$consider}</Consideration>
       {/* <SubTitle id="hook-api">Api of {hooksName}</SubTitle> */}
-      <UseToggleApi />
+      <UseLoadingApi />
     </Article>
   );
 }

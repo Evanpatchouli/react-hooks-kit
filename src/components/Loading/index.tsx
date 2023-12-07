@@ -7,6 +7,7 @@ interface LoadingProps<T> {
   theme?: "dark" | "gray" | "blue" | "yellow" | "green" | "purple" | "red";
   /** 16 bit color, will override theme */
   color?: T extends `#${infer U}` ? U : never;
+  disableHeartBit?: boolean;
 }
 
 const LoadColor = {
@@ -19,15 +20,11 @@ const LoadColor = {
   red: "#f44336",
 };
 
-export default function Loading<T>({ on, theme, color }: LoadingProps<T>) {
+export default function Loading<T>({ on, theme, color, disableHeartBit }: LoadingProps<T>) {
   useEffect(() => {
-    if (color && !/^#[0-9a-fA-F]{6}$/.test(color))
-      throw new Error("color must be 16 bit color");
+    if (color && !/^#[0-9a-fA-F]{6}$/.test(color)) throw new Error("color must be 16 bit color");
   }, []);
-  const loadColor = useMemo(
-    () => color || LoadColor[theme ?? "blue"],
-    [color, theme]
-  );
+  const loadColor = useMemo(() => color || LoadColor[theme ?? "blue"], [color, theme]);
   const loadColor2 = useMemo(() => loadColor + "81", [loadColor]);
   return on ? (
     <div
@@ -38,7 +35,7 @@ export default function Loading<T>({ on, theme, color }: LoadingProps<T>) {
         "--loading-color2": `${loadColor2}`,
       }}
     >
-      <div />
+      <div style={{ animationPlayState: disableHeartBit ? "paused" : "running" }} />
       <div />
       <div />
       <div />

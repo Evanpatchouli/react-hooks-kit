@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Collapse } from "@mui/material";
 import { CodeOutlined, ContentCopy, GitHub } from "@mui/icons-material";
 import Code from "../code";
 import CopyIcon from "../copy-icon";
@@ -26,19 +26,12 @@ const CodeBox = (props: { children?: string; lang?: "ts" | "tsx"; defaultOpen?: 
   return (
     <div css={CodeBoxStyle}>
       <div css={CopyIconStyle}>{show && <CopyIcon onClick={copyCode} />}</div>
-      <Code
-        style={{
-          transition: show ? "transform 0.3s ease-in-out" : "none",
-          transform: show ? "scaleY(1)" : "scaleY(0)",
-          transformOrigin: "top",
-          height: show ? "auto" : "0",
-          padding: show ? "1rem" : "0",
-        }}
-        theme="vscDarkPlus"
-        lang={props.lang ?? "tsx"}
-      >
-        {props.children}
-      </Code>
+      <Collapse in={show}>
+        <Code theme="vscDarkPlus" lang={props.lang ?? "tsx"}>
+          {props.children}
+        </Code>
+      </Collapse>
+
       <div css={ToolbarStyle}>
         <Button className="CodexBoxBtn" onClick={clickCode} size="small">
           <CodeOutlined />

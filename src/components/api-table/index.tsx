@@ -12,10 +12,11 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { Chip } from "@mui/material";
 
 type DataProps = {
   name: string;
-  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object";
+  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object;
   defaultValue?: any;
   desc: React.ReactNode;
   details?: React.ReactNode;
@@ -31,10 +32,82 @@ type DataPreHandled = {
   properties: DataPreHandled[];
 };
 
+const StringTag = <Chip label="string" color="primary" />;
+const NumberTag = <Chip label="number" color="secondary" />;
+const BooleanTag = <Chip label="boolean" color="success" />;
+const ObjectTag = <Chip label="object" color="info" />;
+const ReactNodeTag = <Chip label="ReactNode" color="warning" />;
+const UndefinedTag = <Chip label="undefined" color="info" variant="outlined" />;
+const NullTag = <Chip label="null" color="error" variant="outlined" />;
+const AnyTag = <Chip label="any" color="secondary" variant="outlined" />;
+const UnknownTag = <Chip label="unknown" color="error" />;
+const NeverTag = <Chip label="never" color="error" />;
+const VoidTag = <Chip label="void" color="primary" variant="outlined" />;
+const SymbolTag = <Chip label="symbol" color="error" />;
+const BigIntTag = <Chip label="bigint" color="error" />;
+const FunctionTag = <Chip label="function" color="primary" variant="outlined" />;
+const ArrayTag = <Chip label="array" color="error" />;
+
+const Tag = (type: string | object): any => {
+  if (typeof type === "object") {
+    return type;
+  }
+  if (!type.includes("|") && !type.includes("&")) {
+    switch (type) {
+      case "string":
+        return StringTag;
+      case "number":
+        return NumberTag;
+      case "boolean":
+        return BooleanTag;
+      case "object":
+        return ObjectTag;
+      case "ReactNode":
+        return ReactNodeTag;
+      case "undefined":
+        return UndefinedTag;
+      case "null":
+        return NullTag;
+      case "any":
+        return AnyTag;
+      case "void":
+        return VoidTag;
+      case "function":
+        return FunctionTag;
+      default:
+        return <Chip label={type} color="default" />;
+    }
+  } else {
+    // 拆分后递归调用
+    if (type.includes("|")) {
+      return type
+        .split("|")
+        .map((t) => Tag(t.trim()))
+        .map((t, idx, arr) => (
+          <React.Fragment key={t.props.label}>
+            {t}
+            {arr.length - 1 === idx ? null : " | "}
+          </React.Fragment>
+        ));
+    }
+    if (type.includes("&")) {
+      return type
+        .split("&")
+        .map((t) => Tag(t.trim()))
+        .map((t, idx, arr) => (
+          <React.Fragment key={t.props.label}>
+            {t}
+            {arr.length - 1 === idx ? null : " & "}
+          </React.Fragment>
+        ));
+    }
+  }
+};
+
 const preHandleData = ({ name, type, defaultValue, desc, details, properties }: DataProps): DataPreHandled => {
   return {
     name,
-    type,
+    type: Tag(type),
     defaultValue: [undefined, null].includes(defaultValue) ? (
       <span css={$css`color: gainsboro`}>{defaultValue}</span>
     ) : typeof defaultValue === "boolean" ? (
@@ -42,20 +115,27 @@ const preHandleData = ({ name, type, defaultValue, desc, details, properties }: 
     ) : typeof defaultValue === "string" ? (
       `"${defaultValue}"`
     ) : typeof defaultValue === "object" ? (
-      `{ ${Object.keys(defaultValue).map((key) => `${key}: ${defaultValue[key]}`)} }`
+      (() => {
+        try {
+          return `{ ${Object.keys(defaultValue).map((key) => `${key}: ${defaultValue[key]}`)} }`;
+        } catch (error) {
+          return defaultValue;
+        }
+      })()
     ) : defaultValue === "--" ? (
       "--"
     ) : (
       defaultValue
     ),
     desc,
+    details,
     properties: properties?.map((prop) => preHandleData(prop)) || [],
   };
 };
 
 function createData(
   name: string,
-  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object",
+  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object,
   defaultValue?: any,
   desc?: React.ReactNode,
   details?: React.ReactNode,
@@ -66,6 +146,7 @@ function createData(
     type,
     defaultValue,
     desc,
+    details,
     properties,
   });
 }
@@ -98,6 +179,7 @@ function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "retu
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
+              {row.details}
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
@@ -153,7 +235,7 @@ export default function ApiTable(
     },
   };
   const rows = props.rows?.map((row) =>
-    createData(row.name, row.type, row.defaultValue, row.desc, null, row.properties ?? [])
+    createData(row.name, row.type, row.defaultValue, row.desc, row.details, row.properties ?? [])
   );
   return (
     <TableContainer component={Paper}>
