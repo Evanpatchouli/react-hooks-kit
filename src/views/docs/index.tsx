@@ -16,6 +16,7 @@ import { Option } from "@/utils/types";
 import pickLastUrlPath from "@/utils/pickLastUrlPath";
 import Deving from "@/components/Deving";
 import Dial from "@/components/dial";
+import { Title } from "@/components/layout/Article";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -356,7 +357,15 @@ export default function Docs() {
                       return ElemRender ? (
                         <Route path={meta.route} element={<ElemRender />} />
                       ) : (
-                        <Route path={meta.route} element={<Deving />} />
+                        <Route
+                          path={meta.route}
+                          element={
+                            <>
+                              <Title>{meta.title}</Title>
+                              <Deving />
+                            </>
+                          }
+                        />
                       );
                       // return <Route path="/overview" element={<GettingStarted.Overview />} />;
                     }

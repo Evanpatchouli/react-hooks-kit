@@ -69,6 +69,14 @@ export const Consideration: React.FC<{ children?: React.ReactNode }> = ({ childr
   );
 };
 
+export const Title: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+  return (
+    <Typography variant="h4" component={"h1"} gutterBottom marginTop="40px" fontWeight="bold">
+      {children}
+    </Typography>
+  );
+};
+
 export default function Article(props: ArticleProps) {
   return (
     <>
