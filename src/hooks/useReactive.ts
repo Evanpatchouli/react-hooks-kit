@@ -1,46 +1,55 @@
 import { useState, useEffect, useRef } from "react";
+import useForceUpdate from "./useForceUpdate";
+import isEqual from "./utils/isEqual";
 
 type Watcher<T> = (state: T) => void;
 
-function deepProxy<T extends object>(
-  obj: T,
-  stateRef: React.MutableRefObject<T>,
-  setState: React.Dispatch<React.SetStateAction<T>>,
-  root?: any
-) {
+type ProxyObj<T> = {
+  [P in keyof T]: {
+    value: T[P];
+  };
+};
+
+// @ts-ignore
+export class Reactive<T extends object> {
+  constructor(obj: T, fsr?: Function) {
+    const instance = new Proxy(obj, {
+      // @ts-ignore
+      get(target: ProxyObj<T>, prop: keyof T) {
+        return target[prop]?.value;
+      },
+      // @ts-ignore
+      set(target: ProxyObj<T>, prop: keyof T, value: T[keyof T]) {
+        if (!isEqual(target[prop]["value"], value)) {
+          const update = () => {
+            target[prop]["value"] = value; // unwrap(deProxy(target))
+            fsr?.();
+          };
+          update();
+          // requestAnimationFrame(update);
+        }
+        return true;
+      },
+    }) as T;
+    instance.toString = () => {
+      return "[object Object]";
+    };
+    return instance;
+  }
+}
+
+function deepProxy<T extends object>(obj: T, fsr: Function) {
   const proxyObj = {} as any;
 
   for (let key in obj) {
     if (typeof obj[key] === "object" && obj[key] !== null) {
-      proxyObj[key] = { value: deepProxy(obj[key] as any, stateRef, setState) };
+      proxyObj[key] = { value: deepProxy(obj[key] as any, fsr) };
     } else {
       proxyObj[key] = { value: obj[key] };
     }
   }
 
-  const valueProxy = new Proxy(proxyObj, {
-    get(target, prop) {
-      return target[prop]?.value;
-    },
-    set(target, prop, value) {
-      console.log("target", target);
-      console.log("prop", prop);
-      console.log("value", value);
-      target[prop]["value"] = value;
-      // 更新 stateRef.current
-      const obj = unwrap(deProxy(target));
-      // @ts-ignore
-      // stateRef.current = {
-      //   ...obj,
-      // };
-      console.log(obj);
-      // 使用 setState 函数来修改 state 的值
-      setState({ ...stateRef.current });
-      return true;
-    },
-  });
-
-  return valueProxy;
+  return new Reactive(proxyObj, fsr);
 }
 
 function deProxy(proxyObj: any) {
@@ -71,11 +80,7 @@ function unwrap(obj: any) {
   return unwrappedObj;
 }
 
-function shallowProxy<T extends object>(
-  obj: T,
-  stateRef: React.MutableRefObject<T>,
-  setState: React.Dispatch<React.SetStateAction<T>>
-) {
+function shallowProxy<T extends object>(obj: T, fsr?: Function) {
   return new Proxy(obj, {
     get(target, prop) {
       // @ts-ignore
@@ -84,19 +89,11 @@ function shallowProxy<T extends object>(
     set(target, prop, value) {
       // @ts-ignore
       target[prop] = value;
-      setState({ ...stateRef.current });
+      fsr?.();
       return true;
     },
   });
 }
-
-type ReactiveState<T, D extends boolean> = D extends true
-  ? {
-      [K in keyof T]: T[K] extends object ? { value: ReactiveState<T[K], D> } : { value: T[K] };
-    }
-  : {
-      [K in keyof T]: { value: T[K] };
-    };
 
 /**
  * #### params
@@ -116,13 +113,8 @@ function useReactive<T, D extends boolean = true>(
   deep?: D | Watcher<T>,
   ...callbacks: Array<Watcher<T>>
 ): T {
-  // ReactiveState<T, D>
-  const [state, setState] = useState<T>(initialState);
-  const stateRef = useRef(state);
-
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  const fsr = useForceUpdate();
+  const stateRef = useRef(initialState);
 
   useEffect(() => {
     if (typeof deep === "function") {
@@ -131,23 +123,18 @@ function useReactive<T, D extends boolean = true>(
     callbacks.forEach((callback) => callback(stateRef.current));
   }, [stateRef.current, callbacks]);
 
-  if (typeof initialState !== "object" || initialState === null) {
-    return stateRef.current as any;
-  }
+  useEffect(() => {
+    let reactiveState: any = null;
+    if (deep === false) {
+      reactiveState = shallowProxy(initialState as any, fsr);
+    } else {
+      reactiveState = deepProxy(initialState as any, fsr);
+    }
+    stateRef.current = reactiveState;
+    fsr();
+  }, []);
 
-  let reactiveState =
-    deep === false
-      ? shallowProxy(
-          initialState,
-          stateRef as React.MutableRefObject<T & object>,
-          setState as React.Dispatch<React.SetStateAction<T & object>>
-        )
-      : deepProxy(
-          stateRef.current as T & object,
-          stateRef as React.MutableRefObject<T & object>,
-          setState as React.Dispatch<React.SetStateAction<T & object>>
-        );
-  return reactiveState;
+  return stateRef.current;
 }
 
 export default useReactive;

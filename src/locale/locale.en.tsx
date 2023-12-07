@@ -272,9 +272,24 @@ const locale_en = {
   },
 
   useReactive: {
-    desc: "",
-    detail: <></>,
-    consideration: <ol></ol>,
+    desc: "A hook to make your object reactive.",
+    detail: <>
+      useReactive is a hook that is used to make your object reactive:
+      <h4>Parameters : </h4>
+      <ol>
+        <li>
+          <strong>initialValue</strong> : object
+        </li>
+        <li>
+          <strong>deep</strong> (?) : boolean, default is true
+        </li>
+      </ol>
+      For example:
+    </>,
+    consideration: <ol>
+      <Li>initialValue is type of object</Li>
+      <Li>deep is type of boolean</Li>
+    </ol>,
     $p1: "",
   },
   __end: "end of locale mappings, please do not delete this line",

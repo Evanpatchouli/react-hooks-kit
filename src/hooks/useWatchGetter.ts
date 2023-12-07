@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 function WatchGetterInterval<T>(
   getter: () => T,
-  interval: number = 1000,
+  interval: number = 1000 / 60,
   ...setters: ((value: any) => void)[]
 ): T {
   const [value, setValue] = useState(getter());
