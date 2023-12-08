@@ -292,6 +292,19 @@ const locale_en = {
     </ol>,
     $p1: "",
   },
+  
+  useReactor: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $p1: "",
+  },
   __end: "end of locale mappings, please do not delete this line",
 } as const;
 

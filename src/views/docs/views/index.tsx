@@ -4,6 +4,7 @@ export { default as SentMail } from "./SentMail";
 export { default as UseToggle } from "./stateful-hooks/UseToggle";
 export { default as UseLoading } from "./stateful-hooks/UseLoading";
 export { default as UseReactive } from "./stateful-hooks/UseReactive";
+export { default as UseReactor } from "./stateful-hooks/UseReactor";
 export { default as UseRipple } from "./UseRipple";
 export { default as UseParticle } from "./UseParticle";
 export { default as UseWatch } from "./UseWatch";

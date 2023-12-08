@@ -1,13 +1,18 @@
-import { UniqueKey } from "@/utils";
 import { useState, useEffect, useCallback } from "react";
+import UKey from "./utils/Ukey";
 
 type Item<T extends object = {}> = T;
 type ItemExtended<T extends object = {}> = Item<T> & {
   _id: any;
 };
-type SortFunction<T extends object = {}> = (a: Item, b: ItemExtended<T>) => number;
+type SortFunction<T extends object = {}> = (
+  a: Item,
+  b: ItemExtended<T>
+) => number;
 type FilterFunction<T extends object = {}> = (item: ItemExtended<T>) => boolean;
-type RenderFunction<T extends object = {}> = (item: ItemExtended<T>) => JSX.Element;
+type RenderFunction<T extends object = {}> = (
+  item: ItemExtended<T>
+) => JSX.Element;
 
 interface UseListOptions<T extends object = {}> {
   idKey?: string;
@@ -35,14 +40,19 @@ function useList<T extends object = {}>(
 ] {
   const [items, setItems] = useState<ItemExtended<T>[]>(
     // @ts-ignore
-    [...initialItems].map((item) => ({ ...item, [options.idKey || "_id"]: UniqueKey() }))
+    [...initialItems].map((item) => ({
+      ...item,
+      [options.idKey || "_id"]: UKey(),
+    }))
   );
-  const [originalItems, setOriginalItems] = useState<Item<T>[]>([...initialItems]);
+  const [originalItems, setOriginalItems] = useState<Item<T>[]>([
+    ...initialItems,
+  ]);
 
   useEffect(() => {
     // 去除 唯一id 再设置
     const newItems = items.map((item) => {
-      const _item = { ...item };
+      const _item: any = { ...item };
       if (_item[options.idKey || "_id"]) {
         delete _item[options.idKey || "_id"];
       }
@@ -54,7 +64,7 @@ function useList<T extends object = {}>(
 
   const save = useCallback(() => {
     const newItems = items.map((item) => {
-      const _item = { ...item };
+      const _item: any = { ...item };
       if (_item[options.idKey || "_id"]) {
         delete _item[options.idKey || "_id"];
       }
@@ -67,14 +77,19 @@ function useList<T extends object = {}>(
   const addItem = useCallback(
     (item: Item) => {
       // @ts-ignore
-      setItems((prevItems) => [...prevItems, { ...item, [options.idKey || "_id"]: UniqueKey() }]);
+      setItems((prevItems) => [
+        ...prevItems,
+        { ...item, [options.idKey || "_id"]: UKey() },
+      ]);
     },
     [options.idKey]
   );
 
   const removeItem = useCallback(
     (id: string | number) => {
-      setItems((prevItems) => prevItems.filter((item) => item[options.idKey || "_id"] !== id));
+      setItems((prevItems) =>
+        prevItems.filter((item: any) => item[options.idKey || "_id"] !== id)
+      );
     },
     [options.idKey]
   );

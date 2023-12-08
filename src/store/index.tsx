@@ -11,7 +11,9 @@ const useStore = () => {
   return storeModel;
 };
 
-export function useStoreSelector<T = any>(path?: PathInto<typeof storeModel> | PathArray<typeof storeModel>) {
+export function useStoreSelector<T = any>(
+  path?: PathInto<typeof storeModel> | PathArray<typeof storeModel>
+) {
   const storeModel = useStore();
   if (!path) {
     return storeModel;
@@ -19,10 +21,19 @@ export function useStoreSelector<T = any>(path?: PathInto<typeof storeModel> | P
   return getter(storeModel, path as any) as T;
 }
 
-export const useStoreAction = <K extends keyof typeof storeAction, V = (typeof storeAction)[K]>(action: K) => {
+export const useStoreAction = <
+  K extends keyof typeof storeAction,
+  V = (typeof storeAction)[K]
+>(
+  action: K
+) => {
   const storeModel = useStore();
   // @ts-ignore
-  return (storeModel[action] ? storeModel[action] : () => {}) as (typeof storeModel)[K];
+  return (
+    // @ts-ignore
+    storeModel[action] ? storeModel[action] : () => {}
+    // @ts-ignore
+  ) as (typeof storeModel)[K];
 };
 
 export default useStore;
