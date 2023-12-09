@@ -1,9 +1,10 @@
 import Code from "@/components/code";
-import useReactive from "@/hooks/useReactive";
-import useReactor from "@/hooks/useReactor";
+import useReactor, { listen } from "@/hooks/useReactor";
+import useToast from "@/hooks/useToast";
 import { Button } from "@mui/material";
 
 const View = () => {
+  const toast = useToast();
   const obj = useReactor(
     {
       name: "John",
@@ -22,35 +23,39 @@ const View = () => {
     },
     [
       {
-        name: "getName",
+        name: "toastWordCupWin",
         action: (state) => {
-          console.log("getName", state.name);
+          toast(obj.get("messi.game.wordCup.win")?.toString());
+          console.log(obj);
         },
       },
     ]
   );
+  listen(obj).then((v) => {
+    console.log("listen", v);
+  })
   return (
     <>
       <Button
         onClick={() => {
-          obj.dispatch<"getName">("getName");
+          obj.dispatch<"toastWordCupWin">("toastWordCupWin");
         }}
       >
-        obj.getName
+        toast
       </Button>
       <Button
         onClick={() => {
-          obj.set("messi.game.wordCup.win", !obj.get('messi.game.wordCup.win'));
+          obj.set("messi.game.wordCup.win", !obj.get("messi.game.wordCup.win"));
         }}
       >
-        obj.more.score++
+        set wordCup.win (render)
       </Button>
       <Button
         onClick={() => {
           obj.value.messi.game.wordCup.win = !obj.value.messi.game.wordCup.win;
         }}
       >
-        console.log(obj.age)
+        assign wordCup.win (not render)
       </Button>
       <Code theme="oneLight" lang="json">
         {JSON.stringify(obj, null, 2)}
@@ -61,11 +66,13 @@ const View = () => {
 
 const code = `
 import Code from "@/components/code";
-import useReactive from "@/hooks/useReactive";
+import useReactor from "@/hooks/useReactor";
+import useToast from "@/hooks/useToast";
 import { Button } from "@mui/material";
 
 const View = () => {
-  const obj = useReactive(
+  const toast = useToast();
+  const obj = useReactor(
     {
       name: "John",
       age: 20,
@@ -81,31 +88,38 @@ const View = () => {
         },
       },
     },
-    true
+    [
+      {
+        name: "toastWordCupWin",
+        action: (state) => {
+          toast(obj.get("messi.game.wordCup.win")?.toString());
+          console.log(obj);
+        },
+      },
+    ]
   );
   return (
     <>
       <Button
         onClick={() => {
-          obj.age = Math.random() * 100;
-          // console.log(obj);
+          obj.dispatch<"toastWordCupWin">("toastWordCupWin");
         }}
       >
-        obj.age++
+        toast
       </Button>
       <Button
         onClick={() => {
-          obj.more.score++;
+          obj.set("messi.game.wordCup.win", !obj.get("messi.game.wordCup.win"));
         }}
       >
-        obj.more.score++
+        set wordCup.win (render)
       </Button>
       <Button
         onClick={() => {
-          obj.messi.game.wordCup.win = !obj.messi.game.wordCup.win;
+          obj.value.messi.game.wordCup.win = !obj.value.messi.game.wordCup.win;
         }}
       >
-        console.log(obj.age)
+        assign wordCup.win (not render)
       </Button>
       <Code theme="oneLight" lang="json">
         {JSON.stringify(obj, null, 2)}

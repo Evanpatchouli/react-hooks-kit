@@ -19,7 +19,7 @@ export default function UseReactive() {
   const objActions = {
     add: () => {
       // @ts-ignore
-      obj.a.value.b++;
+      obj.a.b++;
       // b++;
       // upd();
     },

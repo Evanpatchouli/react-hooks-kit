@@ -38,7 +38,7 @@ const defaultConfig: ToastConfig = {
 };
 
 interface Toast {
-  (text: string, config?: ToastConfig): void;
+  (text?: string, config?: ToastConfig): void;
   top: (text: string, config?: ToastConfig) => void;
   center: (text: string, config?: ToastConfig) => void;
   bottom: (text: string, config?: ToastConfig) => void;
@@ -89,13 +89,13 @@ function useToast(config: ToastConfig = {}) {
     [toastConfig]
   ) as Toast;
 
-  const toast: Toast = useCallback((text: string, config: ToastConfig = {}) => {
+  const toast: Toast = useCallback((text?: string, config: ToastConfig = {}) => {
     toastRef.current?.(text, config);
   }, []) as Toast;
 
-  toast.top = (text: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "top" });
-  toast.center = (text: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "center" });
-  toast.bottom = (text: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "bottom" });
+  toast.top = (text?: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "top" });
+  toast.center = (text?: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "center" });
+  toast.bottom = (text?: string, config: ToastConfig = {}) => toast(text, { ...config, placement: "bottom" });
 
   return toast;
 }

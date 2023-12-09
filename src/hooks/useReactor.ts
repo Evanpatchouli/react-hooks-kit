@@ -1,7 +1,8 @@
 import React from "react";
 import isEqual from "./utils/isEqual";
-import cloneDeep from "@/hooks/utils/cloneDeep";
+import cloneDeep from "./utils/cloneDeep";
 import { PathArray, PathInto } from "./utils/types";
+import getter from "./utils/get";
 
 export interface ReactorModel<T = any> {
   value: T;
@@ -23,6 +24,21 @@ export type Path<T, K extends keyof any = keyof T> =
   | PathArray<T, K>
   | PathInto<T>;
 
+/**
+ * Reactor is a state management tool based on React Hooks.
+ * - Only invoke set or reassign value will cause the view to update.
+ * - Directly change deep properties of the state will not cause the view to update, but it has been stored in memory, then last time the view is updated, the view will be updated.
+ * - Reactor is a reactive object, which means that you can get the value of the state through the get method, and the value will be updated when the state changes.
+ * - Reactor is a proxy object, which means that you can directly get the value of the state through the dot syntax, and the value will be updated when the state changes.
+ * - Reactor is a cloneable object, which means that you can clone a Reactor object through the clone method, and the cloned object will have the same state as the original object.
+ * - Reactor is a resettable object, which means that you can reset the state of the Reactor object to the default value through the reset method.
+ * - Reactor is a dispatchable object, which means that you can dispatch an action through the dispatch method, and the action will be executed by the corresponding plugin.
+ * - Reactor is a serializable object, which means that you can serialize the Reactor object through the toJSON method.
+ * - Reactor is a subscribable object, which means that you can subscribe to the Reactor object through the subscribe method, and the listener will be called when the state changes.
+ * - Reactor is a listenable object, which means that you can listen to the Reactor object through the listen method, and the listener will be called when the state changes.
+ * - Reactor is a pluginable object, which means that you can add a plugin to the Reactor object through the use method, and the plugin will be executed when the state changes.
+ *
+ */
 export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
   implements ReactorModel
 {
@@ -90,11 +106,11 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
     return new Reactor(this._state, this._setState, this._plugins);
   }
 
-  get(path?: Path<T>) {
+  get(path?: Path<T>, strict: boolean = true) {
     if (!path) return this._state;
     try {
       // @ts-ignore
-      return path.split(".").reduce((acc, cur) => acc[cur], this._state);
+      return getter(this._state, path, strict ?? true);
     } catch (e) {
       console.warn(e);
       return undefined;
@@ -151,6 +167,12 @@ export function listen<T = any>(
   };
 }
 
+/**
+ * useReactor is a React Hook that returns a Reactor instance.
+ * @param initialValue
+ * @param plugins
+ * @returns Reactor instance
+ */
 export const useReactor = <T = any>(
   initialValue: T,
   plugins?: ReactorPlugin<T>[]
