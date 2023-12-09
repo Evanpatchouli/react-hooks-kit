@@ -22,12 +22,10 @@ function useParticle<T extends HTMLElement = HTMLButtonElement>(
     if (mounted.current) return;
     try {
       if ("paintWorklet" in CSS && !isWorkletRegistered) {
-        if (!isWorkletRegistered) {
-          // @ts-ignore
-          CSS.paintWorklet.addModule(particleWorklet); // "houdini/ripple.js"
-          isWorkletRegistered = true;
-        }
-      } else {
+        // @ts-ignore
+        CSS.paintWorklet.addModule(particleWorklet); // "houdini/ripple.js"
+        isWorkletRegistered = true;
+      } else if (!isWorkletRegistered) {
         console.warn("Your browser doesn't support CSS Paint API");
       }
     } catch (error) {

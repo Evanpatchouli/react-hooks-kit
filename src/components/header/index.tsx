@@ -26,7 +26,7 @@ export default function Header() {
           />
         </div>
         <a href="#" style={{ fontSize: "18px", fontWeight: "bold" }}>
-          {new Text("react-hook-kit").data}
+          {new Text("react-hooks-kit").data}
         </a>
         <span>v{pkg.version}</span>
       </Box>

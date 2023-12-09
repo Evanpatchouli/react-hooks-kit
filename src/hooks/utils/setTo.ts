@@ -50,6 +50,6 @@ export default function setTo(
     temp2 = temp2[key];
   });
 
-  if (lastKey) temp2[lastKey] = val;
+  if (lastKey || lastKey === 0) temp2[lastKey] = val;
   return newObj;
 }
