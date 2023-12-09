@@ -208,6 +208,10 @@ export default {
       route: "useGuide",
       title: "UseGuide",
     },
+    UseVirtualArea: {
+      route: "useVirtualArea",
+      title: "UseVirtualArea",
+    },
     UseRipple: {
       route: "useRipple",
       title: "UseRipple",

@@ -1,7 +1,7 @@
 import useLocaleSelector from "@/locale/locale.selector";
 import Article, { Body, Consideration, Demo } from "@components/layout/Article";
 import { useEffect } from "react";
-import example1 from "./examples/UseWatch/example.1";
+import example1 from "../examples/UseWatch/example.1";
 import pkg from "@/../package.json";
 
 export default function UseWatch() {

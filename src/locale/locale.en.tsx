@@ -400,6 +400,23 @@ const locale_en = {
     consideration: <ol></ol>,
     $p1: "",
   },
+  
+  useVirtualArea: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $apis: {
+      params: {},
+      return: {},
+    },
+  },
   __end: "end of locale mappings, please do not delete this line",
 } as const;
 
