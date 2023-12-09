@@ -29,7 +29,51 @@ export const SubTitle: React.FC<{
   );
 };
 
-export const Body: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const FAQs: React.FC<{
+  children?: React.ReactNode;
+  top?: string;
+}> = ({ children, top }) => {
+  return (
+    <>
+      <Typography
+        id="hook-faqs"
+        variant="h5"
+        component="h5"
+        gutterBottom
+        marginTop={top ?? "40px"}
+        fontWeight="bold"
+      >
+        FAQs
+      </Typography>
+      {children}
+    </>
+  );
+};
+
+export const Usage: React.FC<{
+  children?: React.ReactNode;
+  top?: string;
+}> = ({ children, top }) => {
+  return (
+    <>
+      <Typography
+        id="hook-usage"
+        variant="h5"
+        component="h5"
+        gutterBottom
+        marginTop={top ?? "40px"}
+        fontWeight="bold"
+      >
+        Usage
+      </Typography>
+      {children}
+    </>
+  );
+};
+
+export const Body: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <Typography variant="body1" gutterBottom>
       {children}
@@ -59,7 +103,9 @@ export const Demo: React.FC<{
   );
 };
 
-export const Consideration: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const Consideration: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   const $consideration = useLocaleSelector("$article.Consideration");
   return (
     <>
@@ -69,9 +115,17 @@ export const Consideration: React.FC<{ children?: React.ReactNode }> = ({ childr
   );
 };
 
-export const Title: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const Title: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
   return (
-    <Typography variant="h4" component={"h1"} gutterBottom marginTop="40px" fontWeight="bold">
+    <Typography
+      variant="h4"
+      component={"h1"}
+      gutterBottom
+      marginTop="40px"
+      fontWeight="bold"
+    >
       {children}
     </Typography>
   );
@@ -80,7 +134,13 @@ export const Title: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
 export default function Article(props: ArticleProps) {
   return (
     <>
-      <Typography variant="h4" component={"h1"} gutterBottom marginTop="40px" fontWeight="bold">
+      <Typography
+        variant="h4"
+        component={"h1"}
+        gutterBottom
+        marginTop="40px"
+        fontWeight="bold"
+      >
         {props.title}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>

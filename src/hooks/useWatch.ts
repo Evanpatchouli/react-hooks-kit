@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { PathArray, PathInto, PathValue } from "./utils/types";
 import isEqual from "./utils/isEqual";
-import get from "./utils/get";
+import get from "./utils/getFrom";
 
 type Callback<V = any> = (newValue: V, oldValue: V) => void;
 type Getter<V = any, T extends object = {}> = (object: T, ...args: any[]) => V | undefined;

@@ -76,13 +76,22 @@ export type PathArray<
 /**
  * - D - The maximum depth to traverse. Defaults to `20`.
  */
-type Path<T, K extends keyof any = keyof T, D extends number = 20> =
+export type Path<T, K extends keyof any = keyof T, D extends number = 20> =
   | PathArray<T, K, D>
-  | PathInto<T>;
+  | PathInto<T>
+  | keyof T;
+
+type NumberLike<S extends string> = S extends `${infer T}${infer R}`
+  ? T extends "-" | "+"
+    ? NumberLike<R>
+    : T extends `${number}`
+    ? NumberLike<R>
+    : false
+  : true;
 
 export type PathValue<
   T,
-  P extends Path<T>
+  P extends Path<T> | keyof T
 > = P extends `${infer Key}.${infer Rest}`
   ? Key extends keyof T
     ? Rest extends Path<T[Key]>
@@ -93,12 +102,30 @@ export type PathValue<
     : never
   : P extends keyof T
   ? T[P]
+  : P extends `${infer N}`
+  ? N extends keyof T
+    ? T[N]
+    : NumberLike<N> extends true
+    ? ToNumber<N> extends keyof T
+      ? T[ToNumber<N>]
+      : undefined
+    : undefined
   : undefined;
+
+type Subtract<X extends number, Y extends number> = [
+  ...Array<Y>,
+  ...Array<X>
+]["length"];
 
 type ToNumber<
   S extends string,
-  T extends any[] = []
-> = S extends `${T["length"]}` ? T["length"] : ToNumber<S, [...T, any]>;
+  T extends any[] = [],
+  D extends number = 20
+> = T["length"] extends D
+  ? never
+  : S extends `${T["length"]}`
+  ? T["length"]
+  : ToNumber<S, [...T, any], Subtract<D, 1>>;
 
 /**
  * Converts a string to a query parameter object.

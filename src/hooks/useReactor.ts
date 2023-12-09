@@ -1,8 +1,9 @@
 import React from "react";
 import isEqual from "./utils/isEqual";
 import cloneDeep from "./utils/cloneDeep";
-import { PathArray, PathInto } from "./utils/types";
-import getter from "./utils/get";
+import { Path } from "./utils/types";
+import getter from "./utils/getFrom";
+import setTo from "./utils/setTo";
 
 export interface ReactorModel<T = any> {
   value: T;
@@ -19,10 +20,6 @@ export type ReactorPlugin<T = any> = {
 };
 
 type PluginNames<T extends ReactorPlugin[]> = T[number]["name"];
-
-export type Path<T, K extends keyof any = keyof T> =
-  | PathArray<T, K>
-  | PathInto<T>;
 
 /**
  * Reactor is a state management tool based on React Hooks.
@@ -49,10 +46,17 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
   private _defaultValue: T | undefined = undefined;
   private _plugins: P[] = [];
   private _listeners: Listener<Readonly<T>>[] = [];
+  private _deepCloneWhenSet: boolean = false;
 
-  constructor(state: T, setState?: any, plugins?: P[]) {
+  constructor(
+    state: T,
+    setState?: any,
+    plugins?: P[],
+    deepSet: boolean = false
+  ) {
     this._state = state;
     setState ? (this._setState = setState) : void 0;
+    this._deepCloneWhenSet = deepSet;
     plugins ? (this._plugins = plugins) : void 0;
     // 绑定所有的 onAction 到每个 action 上，最后将 action 按照 plugn.name 绑定到 this
     this._plugins.forEach((plugin) => {
@@ -106,7 +110,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
     return new Reactor(this._state, this._setState, this._plugins);
   }
 
-  get(path?: Path<T>, strict: boolean = true) {
+  get<P extends Path<T> = Path<T>>(path?: P, strict: boolean = true) {
     if (!path) return this._state;
     try {
       // @ts-ignore
@@ -117,17 +121,13 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
     }
   }
 
-  set(path: Path<T>, value: any) {
-    const newState = cloneDeep(this._state);
-    // @ts-ignore
-    const paths = path.split(".");
-    let current = newState;
-    for (let i = 0; i < paths.length - 1; i++) {
-      // @ts-ignore
-      current = current[paths[i]];
-    }
-    // @ts-ignore
-    current[paths[paths.length - 1]] = value;
+  set<P extends Path<T> = Path<T>>(path: P, value: any, deepSet?: boolean) {
+    const newState = setTo(
+      this._state,
+      path as any,
+      value,
+      deepSet ?? this._deepCloneWhenSet
+    );
     this.setValue(newState);
   }
 

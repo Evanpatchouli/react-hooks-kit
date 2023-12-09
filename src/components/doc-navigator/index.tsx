@@ -17,44 +17,84 @@ export default function DocNavigator() {
         },
       }}
     >
-      <TimelineItem>
+      <TimelineItem
+        onClick={() => {
+          const element = document.getElementById("hook-desc");
+          element?.scrollIntoView({ behavior: "smooth" });
+        }}
+      >
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>Description</TimelineContent>
+        <TimelineContent>
+          <div style={{ cursor: "pointer" }}>Description</div>
+        </TimelineContent>
       </TimelineItem>
-      <TimelineItem>
+      <TimelineItem
+        onClick={() => {
+          const element = document.getElementById("hook-usage");
+          element?.scrollIntoView({ behavior: "smooth" });
+        }}
+      >
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
         </TimelineSeparator>
-        <TimelineContent>Usage</TimelineContent>
+        <TimelineContent>
+          <div style={{ cursor: "pointer" }}>Usage</div>
+        </TimelineContent>
       </TimelineItem>
-      <TimelineItem>
+      <TimelineItem
+        onClick={() => {
+          const element = document.getElementById("hook-consider");
+          element?.scrollIntoView({ behavior: "smooth" });
+        }}
+      >
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
-        <TimelineContent>Considerations</TimelineContent>
+        <TimelineContent>
+          <div style={{ cursor: "pointer" }}>Considerations</div>
+        </TimelineContent>
       </TimelineItem>
-      <TimelineItem>
+      <TimelineItem
+        onClick={() => {
+          const element = document.getElementById("hook-best");
+          element?.scrollIntoView({ behavior: "smooth" });
+        }}
+      >
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
-        <TimelineContent>Best practice</TimelineContent>
+        <TimelineContent>
+          <div style={{ cursor: "pointer" }}>Best practice</div>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem
+        onClick={() => {
+          const element = document.getElementById("hook-faqs");
+          element?.scrollIntoView({ behavior: "smooth" });
+        }}
+      >
+        <TimelineSeparator>
+          <TimelineDot />
+        </TimelineSeparator>
+        <TimelineContent>
+          <div style={{ cursor: "pointer" }}>FAQs</div>
+        </TimelineContent>
       </TimelineItem>
       <TimelineItem>
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
         <TimelineContent
-          sx={{ cursor: "pointer" }}
           onClick={() => {
             const element = document.getElementById("hook-api");
             element?.scrollIntoView({ behavior: "smooth" });
           }}
         >
-          Hook's Apis
+          <div style={{ cursor: "pointer" }}>Hook's Apis</div>
         </TimelineContent>
       </TimelineItem>
     </Timeline>

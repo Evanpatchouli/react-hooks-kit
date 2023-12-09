@@ -46,6 +46,10 @@ export default {
       route: "useMeta",
       title: "UseMeta",
     },
+    UseList: {
+      route: "useList",
+      title: "UseList",
+    },
     UseReactive: {
       route: "useReactive",
       title: "UseReactive",

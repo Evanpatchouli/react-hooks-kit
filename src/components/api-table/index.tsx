@@ -16,7 +16,14 @@ import { Chip } from "@mui/material";
 
 type DataProps = {
   name: string;
-  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object;
+  type:
+    | "number"
+    | "string"
+    | "ReactNode"
+    | "boolean"
+    | (string & {})
+    | "object"
+    | object;
   defaultValue?: any;
   desc: React.ReactNode;
   details?: React.ReactNode;
@@ -45,7 +52,9 @@ const NeverTag = <Chip label="never" color="error" />;
 const VoidTag = <Chip label="void" color="primary" variant="outlined" />;
 const SymbolTag = <Chip label="symbol" color="error" />;
 const BigIntTag = <Chip label="bigint" color="error" />;
-const FunctionTag = <Chip label="function" color="primary" variant="outlined" />;
+const FunctionTag = (
+  <Chip label="function" color="primary" variant="outlined" />
+);
 const ArrayTag = <Chip label="array" color="error" />;
 
 const Tag = (type: string | object): any => {
@@ -104,7 +113,14 @@ const Tag = (type: string | object): any => {
   }
 };
 
-const preHandleData = ({ name, type, defaultValue, desc, details, properties }: DataProps): DataPreHandled => {
+const preHandleData = ({
+  name,
+  type,
+  defaultValue,
+  desc,
+  details,
+  properties,
+}: DataProps): DataPreHandled => {
   return {
     name,
     type: Tag(type),
@@ -117,7 +133,9 @@ const preHandleData = ({ name, type, defaultValue, desc, details, properties }: 
     ) : typeof defaultValue === "object" ? (
       (() => {
         try {
-          return `{ ${Object.keys(defaultValue).map((key) => `${key}: ${defaultValue[key]}`)} }`;
+          return `{ ${Object.keys(defaultValue).map(
+            (key) => `${key}: ${defaultValue[key]}`
+          )} }`;
         } catch (error) {
           return defaultValue;
         }
@@ -135,7 +153,14 @@ const preHandleData = ({ name, type, defaultValue, desc, details, properties }: 
 
 function createData(
   name: string,
-  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object,
+  type:
+    | "number"
+    | "string"
+    | "ReactNode"
+    | "boolean"
+    | (string & {})
+    | "object"
+    | object,
   defaultValue?: any,
   desc?: React.ReactNode,
   details?: React.ReactNode,
@@ -151,7 +176,10 @@ function createData(
   });
 }
 
-function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "return" }) {
+function Row(props: {
+  row: ReturnType<typeof createData>;
+  type?: "param" | "return";
+}) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -172,7 +200,9 @@ function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "retu
           {row.name}
         </TableCell>
         <TableCell align="center">{row.type}</TableCell>
-        {props.type === "param" && <TableCell align="center">{row.defaultValue}</TableCell>}
+        {props.type === "param" && (
+          <TableCell align="center">{row.defaultValue}</TableCell>
+        )}
         <TableCell align="right">{row.desc}</TableCell>
       </TableRow>
       <TableRow>
@@ -181,20 +211,22 @@ function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "retu
             <Box sx={{ margin: 1 }}>
               {row.details}
               <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: "bold" }}>name</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
-                      type
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
-                      default
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="right">
-                      description
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+                {row.properties.length <= 0 ?? (
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: "bold" }}>name</TableCell>
+                      <TableCell sx={{ fontWeight: "bold" }} align="center">
+                        type
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: "bold" }} align="center">
+                        default
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: "bold" }} align="right">
+                        description
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                )}
                 <TableBody>
                   {row.properties.map((prop) => (
                     <TableRow key={prop.name}>
@@ -202,7 +234,11 @@ function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "retu
                         {prop.name}
                       </TableCell>
                       <TableCell align="center">{prop.type}</TableCell>
-                      {props.type === "param" && <TableCell align="center">{prop.defaultValue}</TableCell>}
+                      {props.type === "param" && (
+                        <TableCell align="center">
+                          {prop.defaultValue}
+                        </TableCell>
+                      )}
                       <TableCell align="right">{prop.desc}</TableCell>
                     </TableRow>
                   ))}
@@ -235,7 +271,14 @@ export default function ApiTable(
     },
   };
   const rows = props.rows?.map((row) =>
-    createData(row.name, row.type, row.defaultValue, row.desc, row.details, row.properties ?? [])
+    createData(
+      row.name,
+      row.type,
+      row.defaultValue,
+      row.desc,
+      row.details,
+      row.properties ?? []
+    )
   );
   return (
     <TableContainer component={Paper}>
@@ -243,7 +286,9 @@ export default function ApiTable(
         <TableHead>
           <TableRow>
             <TableCell {...headCellAttrs} />
-            <TableCell {...headCellAttrs}>{props?.return ? "ReturnValue" : "Parameters"}</TableCell>
+            <TableCell {...headCellAttrs}>
+              {props?.return ? "ReturnValue" : "Parameters"}
+            </TableCell>
             <TableCell {...headCellAttrs} align="center">
               type
             </TableCell>
@@ -259,7 +304,11 @@ export default function ApiTable(
         </TableHead>
         <TableBody>
           {rows?.map((row) => (
-            <Row key={row.name} row={row} type={props.return ? "return" : "param"} />
+            <Row
+              key={row.name}
+              row={row}
+              type={props.return ? "return" : "param"}
+            />
           ))}
         </TableBody>
       </Table>

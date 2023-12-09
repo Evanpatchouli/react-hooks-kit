@@ -1,11 +1,23 @@
 export default function get(
   object: object,
-  path?: string[] | string,
+  path?: (string | number | symbol)[] | string | number | symbol,
   strict: boolean = false
 ) {
   if (!path) return undefined;
-  if (typeof path === "string") {
-    path = path.split(".");
+  if (!Array.isArray(path)) {
+    switch (typeof path) {
+      case "string":
+        path = path.split(".");
+        break;
+      case "number":
+        path = [path];
+        break;
+      case "symbol":
+        path = [path.toString()];
+        break;
+      default:
+        throw new Error("Invalid path");
+    }
   }
 
   if (!strict) {
@@ -21,6 +33,7 @@ export default function get(
     let key = path[i];
     // @ts-ignore
     while (obj[key] === undefined && i + 1 < path.length) {
+      // @ts-ignore
       key += "." + path[++i];
     }
     // @ts-ignore
