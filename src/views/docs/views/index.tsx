@@ -5,6 +5,7 @@ export { default as UseToggle } from "./stateful-hooks/UseToggle";
 export { default as UseLoading } from "./stateful-hooks/UseLoading";
 export { default as UseMeta } from "./stateful-hooks/UseMeta";
 export { default as UseList } from "./stateful-hooks/UseList";
+export { default as UseTree } from "./stateful-hooks/UseTree";
 export { default as UseReactive } from "./stateful-hooks/UseReactive";
 export { default as UseReactor } from "./stateful-hooks/UseReactor";
 

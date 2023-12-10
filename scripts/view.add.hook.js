@@ -227,7 +227,7 @@ export default function ${capitalizeComponentName}() {
   fs.writeFile(
     path.join(
       __dirname,
-      "src",
+      "../src",
       "views",
       "docs",
       "views",

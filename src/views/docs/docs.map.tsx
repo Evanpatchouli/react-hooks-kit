@@ -50,6 +50,10 @@ export default {
       route: "useList",
       title: "UseList",
     },
+    UseTree: {
+      route: "useTree",
+      title: "UseTree",
+    },
     UseReactive: {
       route: "useReactive",
       title: "UseReactive",

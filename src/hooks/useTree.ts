@@ -9,7 +9,13 @@ type TreeNode<K extends string | number = "_id"> = {
 
 interface UseTreeOptions {
   idKey?: string | number;
-  renderNode?: (node: TreeNode) => React.JSX.Element | React.ReactNode;
+  renderNode?: (
+    node: TreeNode,
+    idKey: any,
+    level: number,
+    parentNode: TreeNode | null,
+    tree: TreeNode
+  ) => React.JSX.Element | React.ReactNode;
   filterFn?: (node: TreeNode) => boolean;
 }
 
@@ -27,10 +33,19 @@ const useTree = (
     throw new Error("You must provide an idKey to useTree");
   }
 
-  const traverse = (node: TreeNode, callback: (node: TreeNode) => any) => {
-    const result = callback(node);
+  const traverse = (
+    node: TreeNode,
+    callback: (
+      node: TreeNode,
+      level: number,
+      parentNode: TreeNode | null
+    ) => any,
+    level: number = 0,
+    parentNode: TreeNode | null = null
+  ) => {
+    const result = callback(node, level, parentNode);
     const childrenResults: any = node.children.map((child) =>
-      traverse(child, callback)
+      traverse(child, callback, level + 1, node)
     );
     const final = [result, ...childrenResults];
 
@@ -64,6 +79,11 @@ const useTree = (
     setTree({ ...tree });
   };
 
+  /**
+   * Only works for the first node found
+   * @param nodeId
+   * @returns
+   */
   const findNode = (nodeId: string): TreeNode | null => {
     let foundNode = null;
     traverse(tree, (currentNode) => {
@@ -74,6 +94,11 @@ const useTree = (
     return foundNode;
   };
 
+  /**
+   * Get all nodes that match the filter
+   * @param filter
+   * @returns
+   */
   const searchTree = (filter: string | ((node: TreeNode) => boolean)) => {
     let filterFn: any;
 
@@ -94,6 +119,11 @@ const useTree = (
     return result.filter((node: TreeNode) => node !== null);
   };
 
+  /**
+   * Move a node from one parent to another
+   * @param sourceNodeId
+   * @param targetNodeId
+   */
   const moveNode = (sourceNodeId: string, targetNodeId: string) => {
     let sourceNode = null;
     traverse(tree, (currentNode) => {
@@ -111,11 +141,16 @@ const useTree = (
     addNode(sourceNode, targetNodeId);
   };
 
+  /**
+   * Render the tree
+   */
   const render = useCallback(() => {
     if (!renderNode) {
       throw new Error("You must provide a renderNode function to useTree");
     }
-    return traverse(tree, renderNode);
+    return traverse(tree, (node, level, parentNode) => {
+      return renderNode(node, idKey, level, parentNode, tree);
+    });
   }, [tree, renderNode]);
 
   useEffect(() => {
