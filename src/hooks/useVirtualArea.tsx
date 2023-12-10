@@ -22,6 +22,7 @@ export interface VirtualAreaOptions<
   renderItem: React.ReactNode | ((item: any) => React.ReactNode);
   itemComponent?: I;
   itemComponentProps?: React.JSX.IntrinsicElements[I];
+  renderNoData?: React.ReactNode | (() => React.ReactNode);
   renderLoader?: React.ReactNode | (() => React.ReactNode);
   renderUnLoaded?: React.ReactNode | (() => React.ReactNode);
   loaderComponent?: L;
@@ -41,6 +42,7 @@ export function useVirtualArea(
     renderItem,
     itemComponent,
     itemComponentProps,
+    renderNoData,
     renderLoader,
     renderUnLoaded,
     loaderComponent,
@@ -63,7 +65,7 @@ export function useVirtualArea(
   }, [loading, hasMore, loadMoreItems]);
 
   useEffect(() => {
-    var options = {
+    const options = {
       root: null,
       rootMargin: "20px",
       threshold: 1.0,
@@ -114,6 +116,15 @@ export function useVirtualArea(
     return (
       <Container {..._containerComponentProps}>
         {typeof renderTop === "function" ? renderTop() : renderTop}
+        {
+          /** @ts-ignore */
+          (items || []).length === 0 &&
+            (typeof renderNoData === "function"
+              ? renderNoData()
+              : renderNoData === void 0
+              ? "No data"
+              : renderNoData)
+        }
         {items.map((item, index) => (
           <Item key={index} {...itemComponentProps}>
             {typeof renderItem === "function" ? renderItem(item) : renderItem}
@@ -124,12 +135,16 @@ export function useVirtualArea(
           {loading &&
             (typeof renderLoader === "function"
               ? renderLoader()
-              : renderLoader ?? "Loading...")}
+              : renderLoader === void 0
+              ? "Loading..."
+              : renderLoader)}
           {!loading &&
             !hasMore &&
             (typeof renderUnLoaded === "function"
               ? renderUnLoaded()
-              : renderUnLoaded ?? "No more data")}
+              : renderUnLoaded === void 0
+              ? "No more data"
+              : renderUnLoaded)}
         </Loader>
         {typeof renderBottom === "function" ? renderBottom() : renderBottom}
       </Container>

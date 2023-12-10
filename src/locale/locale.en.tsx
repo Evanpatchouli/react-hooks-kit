@@ -353,8 +353,8 @@ const locale_en = {
         <Li>
           <strong>A</strong>: When deepSet is true, the state will be deep
           cloned when setting the state, otherwise it will be shallow cloned.
-          Deepclone is slower than shallowclone, but it is safer. Therefore, when
-          the state object is huge, you should avoid using deepSet unless
+          Deepclone is slower than shallowclone, but it is safer. Therefore,
+          when the state object is huge, you should avoid using deepSet unless
           necessary.
         </Li>
       </ul>
@@ -400,19 +400,82 @@ const locale_en = {
     consideration: <ol></ol>,
     $p1: "",
   },
-  
+
   useVirtualArea: {
-    desc: "",
+    desc: "A hook to render huge list in a virtual area way.",
     detail: (
       <>
+        useVirtualArea is a hook that is used to render huge list in a virtual
+        area way:
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>options</strong> : object
+          </li>
+          <li>
+            <strong>dependencies</strong> : array
+          </li>
+        </ol>
+        For example:
       </>
     ),
     $p1: "",
     consideration: (
       <ol>
+        <Li>options is type of object</Li>
+        <Li>dependencies is type of array</Li>
+        <Li>options.items is required</Li>
+        <Li>options.renderItem is required</Li>
+        <Li>options.hasMore is required</Li>
+        <Li>options.loadMoreItems is required</Li>
+        <Li>options.height is required</Li>
       </ol>
     ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Why useVirtualArea instead of useState?
+        </Li>
+        <Li>
+          <strong>A</strong>: Because useVirtualArea makes it more efficient to
+          render huge list in a virtual area way.
+        </Li>
+        <br />
+        <Li>
+          <strong>Q</strong>: What is virtual area?
+        </Li>
+        <Li>
+          <strong>A</strong>: Virtual area is a virtual area in your page that
+          is used to render huge list. It is not really a area, but a concept.
+        </Li>
+        <br />
+        <Li>
+          <strong>Q</strong>: How about the performance?
+        </Li>
+        <Li>
+          <strong>A</strong>: It is much more efficient than using useState to
+          render huge list. You can try it by yourself. The performance is
+          similar to react-window.
+        </Li>
+      </ul>
+    ),
     $apis: {
+      generics: (
+        <ul>
+          <li>
+            <strong>C</strong>: extends keyof React.JSX.IntrinsicElements.
+            Default: "div"
+          </li>
+          <li>
+            <strong>I</strong>: extends keyof React.JSX.IntrinsicElements.
+            Default: "div"
+          </li>
+          <li>
+            <strong>L</strong>: extends keyof React.JSX.IntrinsicElements.
+            Default: "div"
+          </li>
+        </ul>
+      ),
       params: {},
       return: {},
     },

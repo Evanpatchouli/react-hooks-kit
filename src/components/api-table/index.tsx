@@ -211,7 +211,7 @@ function Row(props: {
             <Box sx={{ margin: 1 }}>
               {row.details}
               <Table size="small" aria-label="purchases">
-                {row.properties.length <= 0 ?? (
+                {row.properties.length <= 0 ? null : (
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ fontWeight: "bold" }}>name</TableCell>
