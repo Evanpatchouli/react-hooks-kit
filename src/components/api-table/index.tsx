@@ -218,9 +218,11 @@ function Row(props: {
                       <TableCell sx={{ fontWeight: "bold" }} align="center">
                         type
                       </TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }} align="center">
-                        default
-                      </TableCell>
+                      {!(props?.type === "return") && (
+                        <TableCell sx={{ fontWeight: "bold" }} align="center">
+                          default
+                        </TableCell>
+                      )}
                       <TableCell sx={{ fontWeight: "bold" }} align="right">
                         description
                       </TableCell>
