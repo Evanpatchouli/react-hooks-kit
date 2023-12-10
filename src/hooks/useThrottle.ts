@@ -65,12 +65,37 @@ function throttle<R = void>(
   return _throttle;
 }
 
+const emptyFn = () => {};
+
 export default function useThrottle<R = void>(
   fn: (args: any[]) => R,
   interval: number = 200,
   options: ThrottleOptions = { leading: true, trailing: false }
 ) {
+  if (typeof fn !== "function") {
+    throw new Error("fn must be a function");
+  }
+  if (typeof interval !== "number") {
+    throw new Error("interval must be a number");
+  }
+  if (typeof options !== "object") {
+    throw new Error("options must be a object");
+  }
+  if (options.leading === false && options.trailing === false) {
+    throw new Error(
+      "options.leading and options.trailing cannot be false at the same time"
+    );
+  }
+  if (options.callback && typeof options.callback !== "function") {
+    throw new Error("options.callback must be a function");
+  }
   const throttleFn = useMemo(() => {
+    if (interval < 0) {
+      return emptyFn as any as ReturnType<typeof throttle<R>>;
+    }
+    if (interval === 0) {
+      return fn as any as ReturnType<typeof throttle<R>>;
+    }
     return throttle(fn, interval, options);
   }, [fn, interval, options]);
 

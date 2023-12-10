@@ -44,12 +44,16 @@ function Routers() {
                 }
               />
               <Route
-                path="test"
+                path="test/*"
                 children={
                   <>
+                    <Route path="" element={<Tests.Nightly />} />
                     <Route path="UseReactive" element={<Tests.UseReactive />} />
                     <Route path="UseReactor" element={<Tests.UseReactor />} />
-                    <Route path="UseReactorListener" element={<Tests.UseReactorListener />} />
+                    <Route
+                      path="UseReactorListener"
+                      element={<Tests.UseReactorListener />}
+                    />
                     <Route path="UseParticle" element={<Tests.UseParticle />} />
                   </>
                 }

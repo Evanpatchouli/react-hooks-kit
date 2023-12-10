@@ -48,12 +48,26 @@ export function debounce<R = void>(
   return _debounce;
 }
 
+const emptyFn = () => {};
+
 export default function useDebounce<R = void>(
   fn: (args: any[]) => R,
   delay: number = 200,
   immediate: boolean = false,
   callback?: (result: ReturnType<typeof fn>) => void
 ) {
+  if (typeof fn !== "function") {
+    throw new Error("fn must be a function");
+  }
+  if (typeof delay !== "number") {
+    throw new Error("delay must be a number");
+  }
+  if (delay < 0) {
+    return emptyFn as ReturnType<typeof debounce<R>>;
+  }
+  if (delay === 0) {
+    return fn as any as ReturnType<typeof debounce<R>>;
+  }
   const debounceFn = useMemo(() => {
     return debounce(fn, delay, immediate, callback);
   }, [fn, delay, immediate, callback]);
