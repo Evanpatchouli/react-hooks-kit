@@ -9,7 +9,8 @@
     "start": "react-app-rewired start",
     "test": "react-app-rewired test",
     "locale:add": "node scripts/locale.add.mod.js",
-    "locale:add:mod": "node scripts/locale.add.mod.js"
+    "locale:add:mod": "node scripts/locale.add.mod.js",
+    "view:add:hook": "node scripts/view.add.hook.js"
   },
   "browserslist": {
     "production": [

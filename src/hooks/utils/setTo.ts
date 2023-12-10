@@ -32,7 +32,7 @@ export default function setTo(
       current = current[keys[i]];
     }
     // @ts-ignore
-    current[paths[keys.length - 1]] = value;
+    current[keys[keys.length - 1]] = val;
     return newObj;
   }
 

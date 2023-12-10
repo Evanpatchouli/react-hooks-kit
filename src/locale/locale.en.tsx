@@ -387,18 +387,66 @@ const locale_en = {
     $p1: "",
   },
 
-  useReactor: {
-    desc: "",
-    detail: <></>,
-    consideration: <ol></ol>,
-    $p1: "",
-  },
-
   useList: {
-    desc: "",
+    desc: "A hook to manage list state.",
     detail: <></>,
-    consideration: <ol></ol>,
-    $p1: "",
+    consideration: (
+      <ol>
+        <Li>
+          <strong>initialValue</strong> : array
+        </Li>
+        <Li>
+          <strong>options</strong> : object
+        </Li>
+      </ol>
+    ),
+    $p1: "Just render the temporary list view.",
+    $p2: "Control the temporary list data, as you see, the original list data is still. Only when you save the list, will the original list get updated.",
+    $faqs: (
+      <>
+        <Li>
+          <strong>Q</strong>: Why useList instead of useState?
+        </Li>
+        <Li>
+          <strong>A</strong>: Because useList makes it easier to manage list
+          state.
+        </Li>
+        <br />
+        <Li>
+          <strong>Q</strong>: What abilities does useList have?
+        </Li>
+        <Li>
+          <strong>A</strong>: useList has lots of abilities:
+          <ol>
+            <li>
+              <strong>render</strong>: render the list view
+            </li>
+            <li>
+              <strong>isolation</strong>: isolate the view data and original
+              data.
+            </li>
+            <li>
+              <strong>control</strong>: provide many ways to control the list
+              data.
+            </li>
+            <li>
+              <strong>backtracking</strong>: provide ability to trace back the
+              list data.
+            </li>
+            <li>
+              <strong>pagination</strong>: provide ability to paginate the list
+              data.
+            </li>
+            <span>...</span>
+          </ol>
+        </Li>
+      </>
+    ),
+    $apis: {
+      generics: <ul></ul>,
+      params: {},
+      return: {},
+    },
   },
 
   useVirtualArea: {
@@ -479,6 +527,13 @@ const locale_en = {
       params: {},
       return: {},
     },
+  },
+
+  useReactor: {
+    desc: "",
+    detail: <></>,
+    consideration: <ol></ol>,
+    $p1: "",
   },
   __end: "end of locale mappings, please do not delete this line",
 } as const;

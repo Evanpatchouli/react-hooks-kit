@@ -27,7 +27,7 @@ function useList<T extends object = {}>(
   dependencies: any[],
   options: UseListOptions<T>
 ): [
-  Item<T>[],
+  ItemExtended<T>[],
   {
     readonly updateItems: (newItems: Item<T>[]) => void;
     readonly addItem: (item: Item<T>) => void;
