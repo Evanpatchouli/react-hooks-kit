@@ -7,6 +7,12 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import "./index.css";
 
 export default function DocNavigator() {
+  const clickItem = (id: string) => {
+    return () => {
+      const element = document.getElementById(id);
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+  };
   return (
     <Timeline
       className="doc-navigator-line"
@@ -18,10 +24,8 @@ export default function DocNavigator() {
       }}
     >
       <TimelineItem
-        onClick={() => {
-          const element = document.getElementById("hook-desc");
-          element?.scrollIntoView({ behavior: "smooth" });
-        }}
+        css={$css`&:hover { color: dodgerblue; }`}
+        onClick={clickItem("hook-desc")}
       >
         <TimelineSeparator>
           <TimelineDot />
@@ -32,10 +36,8 @@ export default function DocNavigator() {
         </TimelineContent>
       </TimelineItem>
       <TimelineItem
-        onClick={() => {
-          const element = document.getElementById("hook-usage");
-          element?.scrollIntoView({ behavior: "smooth" });
-        }}
+        css={$css`&:hover { color: dodgerblue; }`}
+        onClick={clickItem("hook-usage")}
       >
         <TimelineSeparator>
           <TimelineDot />
@@ -46,10 +48,8 @@ export default function DocNavigator() {
         </TimelineContent>
       </TimelineItem>
       <TimelineItem
-        onClick={() => {
-          const element = document.getElementById("hook-consider");
-          element?.scrollIntoView({ behavior: "smooth" });
-        }}
+        css={$css`&:hover { color: dodgerblue; }`}
+        onClick={clickItem("hook-consider")}
       >
         <TimelineSeparator>
           <TimelineDot />
@@ -59,10 +59,8 @@ export default function DocNavigator() {
         </TimelineContent>
       </TimelineItem>
       <TimelineItem
-        onClick={() => {
-          const element = document.getElementById("hook-best");
-          element?.scrollIntoView({ behavior: "smooth" });
-        }}
+        css={$css`&:hover { color: dodgerblue; }`}
+        onClick={clickItem("hook-best")}
       >
         <TimelineSeparator>
           <TimelineDot />
@@ -72,10 +70,8 @@ export default function DocNavigator() {
         </TimelineContent>
       </TimelineItem>
       <TimelineItem
-        onClick={() => {
-          const element = document.getElementById("hook-faqs");
-          element?.scrollIntoView({ behavior: "smooth" });
-        }}
+        css={$css`&:hover { color: dodgerblue; }`}
+        onClick={clickItem("hook-faqs")}
       >
         <TimelineSeparator>
           <TimelineDot />
@@ -89,10 +85,8 @@ export default function DocNavigator() {
           <TimelineDot />
         </TimelineSeparator>
         <TimelineContent
-          onClick={() => {
-            const element = document.getElementById("hook-api");
-            element?.scrollIntoView({ behavior: "smooth" });
-          }}
+          css={$css`&:hover { color: dodgerblue; }`}
+          onClick={clickItem("hook-api")}
         >
           <div style={{ cursor: "pointer" }}>Hook's Apis</div>
         </TimelineContent>

@@ -107,6 +107,7 @@ import Article, {
   FAQs,
   SubTitle,
   Usage,
+  Best
 } from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "@/views/docs/views/examples/${capitalizeComponentName}/example.1";
@@ -117,6 +118,7 @@ export default function ${capitalizeComponentName}() {
   const hooksName = "${componentName}";
   const $desc = useLocaleSelector(\`\${hooksName}.desc\`);
   const $detail = useLocaleSelector(\`\${hooksName}.detail\`);
+  const $best = useLocaleSelector(\`\${hooksName}.$best\`);
   const $consider = useLocaleSelector(\`\${hooksName}.consideration\`);
   const $p1 = useLocaleSelector(\`\${hooksName}.$p1\`);
   const $faqs = useLocaleSelector(\`\${hooksName}.$faqs\`);
@@ -126,16 +128,16 @@ export default function ${capitalizeComponentName}() {
 
   return (
     <Article
-      title={hooksName.replace(/([A-Z])/g, (str) => str.toUpperCase())}
+      title={hooksName}
       desc={$desc}
     >
       <Body>{$detail}</Body>
       <Usage>
         <Demo code={example1.code}>{<example1.View />}</Demo>
+        <p>{$p1}</p>
       </Usage>
-
-      <p>{$p1}</p>
       <Consideration>{$consider}</Consideration>
+      <Best>{$best}</Best>
       <FAQs>{$faqs}</FAQs>
       <${capitalizeComponentName}Api />
     </Article>

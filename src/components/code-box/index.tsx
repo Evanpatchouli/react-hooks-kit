@@ -8,7 +8,11 @@ import { css as $$css } from "@emotion/react";
 import { useState } from "react";
 import "./index.css";
 
-const CodeBox = (props: { children?: string; lang?: "ts" | "tsx"; defaultOpen?: boolean }) => {
+const CodeBox = (props: {
+  children?: string;
+  lang?: "ts" | "tsx";
+  defaultOpen?: boolean;
+}) => {
   const toast = useToast();
   const [show, setShow] = useState(props.defaultOpen || false);
   const clickCode = () => setShow(!show);
@@ -55,7 +59,7 @@ position: relative;
 
 const CopyIconStyle = $$css`
 position: absolute;
-top: 6px;
+top: 16px;
 right: 8px;
 z-index: 1;
 color: gray;
@@ -64,6 +68,10 @@ padding: 8px 6px 2px 6px;
 border-radius: 4px;
 &:hover {
   background-color: #333;
+}
+&:active {
+  transition: background-color 0.1s ease-in-out;
+  background-color: #444;
 }
 `;
 

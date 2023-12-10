@@ -50,6 +50,27 @@ export const FAQs: React.FC<{
   );
 };
 
+export const Best: React.FC<{
+  children?: React.ReactNode;
+  top?: string;
+}> = ({ children, top }) => {
+  return (
+    <>
+      <Typography
+        id="hook-best"
+        variant="h5"
+        component="h5"
+        gutterBottom
+        marginTop={top ?? "40px"}
+        fontWeight="bold"
+      >
+        Best Practice
+      </Typography>
+      {children}
+    </>
+  );
+};
+
 export const Usage: React.FC<{
   children?: React.ReactNode;
   top?: string;

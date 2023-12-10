@@ -372,10 +372,25 @@ const locale_en = {
             <strong>initialValue</strong> : object
           </li>
           <li>
-            <strong>deep</strong> (?) : boolean, default is true
+            <strong>deep</strong> (?) : boolean, Whether to deep reactive,
+            default is true
           </li>
         </ol>
         For example:
+      </>
+    ),
+    $best: (
+      <>
+        <ul>
+          <Li>
+            <strong>Better performance</strong> : Use shallow reactive, and
+            define a property to rerender.
+          </Li>
+          <Li>
+            <strong>Better reactive</strong> : Use deep reactive, rerender every
+            when property changes.
+          </Li>
+        </ul>
       </>
     ),
     consideration: (
@@ -385,6 +400,38 @@ const locale_en = {
       </ol>
     ),
     $p1: "",
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Why useReactive instead of useState?
+        </Li>
+        <Li>
+          <strong>A</strong>: Because useReactive simplifies the process of
+          making object reactive. That is you can play react.js like Vue.js.
+        </Li>
+        <br />
+        <Li>
+          <strong>Q</strong>: What's the difference of deep or not?
+        </Li>
+        <Li>
+          <strong>A</strong>: When deep is true, the object will be deep
+          reactive, otherwise it will be shallow reactive. Deep reactive means
+          every properties on object will get proxied. Shallow reactive means
+          only the first level properties will get proxied.
+        </Li>
+      </ul>
+    ),
+    $apis: {
+      generics: (
+        <ul>
+          <li>
+            <strong>T</strong>: extends keyof object
+          </li>
+        </ul>
+      ),
+      params: {},
+      return: {},
+    },
   },
 
   useList: {
@@ -402,6 +449,13 @@ const locale_en = {
     ),
     $p1: "Just render the temporary list view.",
     $p2: "Control the temporary list data, as you see, the original list data is still. Only when you save the list, will the original list get updated.",
+    $best: (
+      <ul>
+        <Li>
+          <strong>Best management</strong> : Use isolation and control together.
+        </Li>
+      </ul>
+    ),
     $faqs: (
       <>
         <Li>

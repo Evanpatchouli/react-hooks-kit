@@ -36,9 +36,8 @@ querier.question("Please input the module name: ", (moduleName) => {
       <ol>
       </ol>
     ),
-    $faqs: (<>
-      <ul></ul>
-    </>),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
     $apis: {
       generics: (<></>),
       params: {},

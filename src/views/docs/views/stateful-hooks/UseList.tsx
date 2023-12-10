@@ -1,12 +1,5 @@
 import useLocaleSelector from "@/locale/locale.selector";
-import Article, {
-  Body,
-  Consideration,
-  Demo,
-  FAQs,
-  SubTitle,
-  Usage,
-} from "@components/layout/Article";
+import * as Article from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "@/views/docs/views/examples/UseList/example.1";
 import example2 from "@/views/docs/views/examples/UseList/example.2";
@@ -21,26 +14,28 @@ export default function UseList() {
   const $p1 = useLocaleSelector(`${hooksName}.$p1`);
   const $p2 = useLocaleSelector(`${hooksName}.$p2`);
   const $faqs = useLocaleSelector(`${hooksName}.$faqs`);
+  const $best = useLocaleSelector(`${hooksName}.$best`);
+
   useEffect(() => {
     document.title = `${hooksName} - ${pkg.homepage}`;
   }, []);
 
   return (
-    <Article
+    <Article.default
       title={hooksName.replace(/([A-Z])/g, (str) => str.toUpperCase())}
       desc={$desc}
     >
-      <Body>{$detail}</Body>
-      <Usage>
+      <Article.Body>{$detail}</Article.Body>
+      <Article.Usage>
         <p>{$p1}</p>
-        <Demo code={example1.code}>{<example1.View />}</Demo>
+        <Article.Demo code={example1.code}>{<example1.View />}</Article.Demo>
         <p>{$p2}</p>
-        <Demo code={example2.code}>{<example2.View />}</Demo>
-      </Usage>
-
-      <Consideration>{$consider}</Consideration>
-      <FAQs>{$faqs}</FAQs>
+        <Article.Demo code={example2.code}>{<example2.View />}</Article.Demo>
+      </Article.Usage>
+      <Article.Consideration>{$consider}</Article.Consideration>
+      <Article.Best>{$best}</Article.Best>
+      <Article.FAQs>{$faqs}</Article.FAQs>
       <UseListApi />
-    </Article>
+    </Article.default>
   );
 }

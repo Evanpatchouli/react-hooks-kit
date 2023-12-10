@@ -1,7 +1,16 @@
 import useLocaleSelector from "@/locale/locale.selector";
-import Article, { Body, Consideration, Demo, SubTitle } from "@components/layout/Article";
+import Article, {
+  Best,
+  Body,
+  Consideration,
+  Demo,
+  FAQs,
+  SubTitle,
+  Usage,
+} from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "../examples/UseReactive/example.1";
+import UseReactiveApi from "../hooks-apis/useReactive.api";
 import pkg from "@/../package.json";
 
 export default function UseToggle() {
@@ -10,19 +19,24 @@ export default function UseToggle() {
   const $detail = useLocaleSelector(`${hooksName}.detail`);
   const $consider = useLocaleSelector(`${hooksName}.consideration`);
   const $p1 = useLocaleSelector(`${hooksName}.$p1`);
+  const $best = useLocaleSelector(`${hooksName}.$best`);
+  const $faqs = useLocaleSelector(`${hooksName}.$faqs`);
+
   useEffect(() => {
     document.title = `${hooksName} - ${pkg.homepage}`;
   }, []);
 
   return (
-    <Article title={hooksName.replace(/([A-Z])/g, (str) => str.toUpperCase())} desc={$desc}>
+    <Article title={hooksName} desc={$desc}>
       <Body>{$detail}</Body>
-      <Demo code={example1.code}>{<example1.View />}</Demo>
-      <SubTitle>Value map</SubTitle>
-      <p>{$p1}</p>
+      <Usage>
+        <Demo code={example1.code}>{<example1.View />}</Demo>
+        <p>{$p1}</p>
+      </Usage>
       <Consideration>{$consider}</Consideration>
-      {/* <SubTitle id="hook-api">Api of {hooksName}</SubTitle> */}
-      {/* <UseToggleApi /> */}
+      <Best children={$best} />
+      <FAQs children={$faqs} />
+      <UseReactiveApi />
     </Article>
   );
 }
