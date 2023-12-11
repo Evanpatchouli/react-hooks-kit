@@ -35,7 +35,7 @@ function useList<T extends object = {}>(
     readonly removeItem: (id: string | number) => void;
     readonly removeItems: (ids: (string | number)[]) => void;
     readonly save: () => void;
-    readonly reset: (items?: Item[]) => void;
+    readonly reset: (items?: Item<T>[]) => void;
     readonly filteredItems: Item<T>[];
     readonly originalItems: Item<T>[];
     readonly render: () => React.ReactNode;
