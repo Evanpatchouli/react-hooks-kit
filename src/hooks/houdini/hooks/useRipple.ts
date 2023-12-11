@@ -1,5 +1,6 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, RefObject } from "react";
 import rippleWorklet from "../worklet/ripple-worklet";
+import useBatchHooks from "@/hooks/useBatchHooks";
 
 export type RippleConfig = {
   color?: React.CSSProperties["color"];
@@ -87,10 +88,5 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
 
   return ref;
 };
-
-export function useRipples(count: number = 1, config?: RippleConfig) {
-  const refs = Array.from({ length: count }, () => useRipple(config));
-  return refs;
-}
 
 export default useRipple;

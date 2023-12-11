@@ -13,5 +13,8 @@ export { default as UseRipple } from "./ui-ux-hooks/UseRipple";
 export { default as UseParticle } from "./ui-ux-hooks/UseParticle";
 export { default as UseWatch } from "./callback-hooks/UseWatch";
 export { default as UseUrl } from "./callback-hooks/UseUrl";
-export { default as UseProtect } from "./other/UseProtect";
 export { default as UseVirtualArea } from "./ui-ux-hooks/UseVirtualArea";
+
+// Other hooks
+export { default as UseProtect } from "./other/UseProtect";
+export { default as UseBatchHooks } from "./other/UseBatchHooks";

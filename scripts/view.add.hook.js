@@ -146,8 +146,8 @@ export default function ${capitalizeComponentName}() {
 `;
 
   const dirs = [
-    path.join(__dirname, "src", "views", "docs", "views"),
-    path.join(__dirname, "src", "views", "docs", "views", "hook-apis"),
+    path.join(__dirname, "../src", "views", "docs", "views"),
+    path.join(__dirname, "../src", "views", "docs", "views", "hooks-apis"),
     path.join(
       __dirname,
       "../src",

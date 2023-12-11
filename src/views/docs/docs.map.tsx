@@ -234,6 +234,10 @@ export default {
       route: "useProtect",
       title: "UseProtect",
     },
+    UseBatchHooks: {
+      route: "useBatchHooks",
+      title: "UseBatchHooks",
+    },
     UseConsoleLog: {
       route: "useConsoleLog",
       title: "UseConsoleLog",
