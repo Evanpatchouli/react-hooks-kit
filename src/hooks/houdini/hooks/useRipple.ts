@@ -47,10 +47,7 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
       const y = event.clientY - rect.top;
       const alphaMin = config.alphaMin ?? 0.3;
       const startTime = performance.now();
-      button.style.setProperty(
-        "--ripple-color",
-        config.color ?? "rgba(31, 143, 255, 0.5)"
-      );
+      button.style.setProperty("--ripple-color", config.color ?? "rgba(31, 143, 255, 0.5)");
       button.style.setProperty("--ripple-x", `${x}px`);
       button.style.setProperty("--ripple-y", `${y}px`);
       button.style.setProperty("--ripple-time", "0");
@@ -72,8 +69,7 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    const hiddenRipple = () =>
-      button.style.setProperty("--ripple-alpha-min", "0");
+    const hiddenRipple = () => button.style.setProperty("--ripple-alpha-min", "0");
 
     button.addEventListener(config.trigger ?? "mousedown", handleClick);
     button.addEventListener("mouseup", hiddenRipple);
@@ -91,5 +87,10 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
 
   return ref;
 };
+
+export function useRipples(count: number = 1, config?: RippleConfig) {
+  const refs = Array.from({ length: count }, () => useRipple(config));
+  return refs;
+}
 
 export default useRipple;

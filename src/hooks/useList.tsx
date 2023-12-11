@@ -7,7 +7,11 @@ type ItemExtended<T extends object = {}> = Item<T> & {
 };
 type SortFunction<T extends object = {}> = (a: Item, b: ItemExtended<T>) => number;
 type FilterFunction<T extends object = {}> = (item: ItemExtended<T>) => boolean;
-type RenderFunction<T extends object = {}> = (item: ItemExtended<T>) => JSX.Element;
+type RenderFunction<T extends object = {}> = (
+  item: ItemExtended<T>,
+  index: number,
+  array: ItemExtended<T>[]
+) => JSX.Element;
 type RenderNoData = (() => JSX.Element | React.ReactNode) | JSX.Element | React.ReactNode;
 
 interface UseListOptions<T extends object = {}> {
@@ -170,9 +174,9 @@ function useList<T extends object = {}>(
       originalItems,
       render: () => {
         return filteredItems?.length
-          ? filteredItems.map((item: any) => {
+          ? filteredItems.map((item: any, idx, array) => {
               return options.renderFn ? (
-                <Fragment key={item[options.idKey || "_id"]}>{options.renderFn(item)}</Fragment>
+                <Fragment key={item[options.idKey || "_id"]}>{options.renderFn(item, idx, array)}</Fragment>
               ) : null;
             })
           : options.renderNoData
