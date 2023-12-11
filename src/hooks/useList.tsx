@@ -35,7 +35,7 @@ function useList<T extends object = {}>(
     readonly removeItem: (id: string | number) => void;
     readonly removeItems: (ids: (string | number)[]) => void;
     readonly save: () => void;
-    readonly reset: () => void;
+    readonly reset: (items?: Item[]) => void;
     readonly filteredItems: Item<T>[];
     readonly originalItems: Item<T>[];
     readonly render: () => React.ReactNode;
@@ -108,15 +108,28 @@ function useList<T extends object = {}>(
     [options.idKey]
   );
 
-  const reset = useCallback(() => {
-    setItems(
-      // @ts-ignore
-      [...originalItems].map((item) => ({
-        ...item,
-        [options.idKey || "_id"]: UKey(),
-      }))
-    );
-  }, [originalItems]);
+  const reset = useCallback(
+    (items?: Item[]) => {
+      if (items !== void 0) {
+        setItems(
+          // @ts-ignore
+          [...items].map((item) => ({
+            ...item,
+            [options.idKey || "_id"]: UKey(),
+          }))
+        );
+        return;
+      }
+      setItems(
+        // @ts-ignore
+        [...originalItems].map((item) => ({
+          ...item,
+          [options.idKey || "_id"]: UKey(),
+        }))
+      );
+    },
+    [originalItems]
+  );
 
   const updateItems = useCallback((newItems: Item<T>[]) => {
     if (newItems.some((item: any) => [void 0, null].includes(item[options.idKey || "_id"]))) {
