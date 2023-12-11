@@ -25,6 +25,7 @@ export default function Nightly() {
         </button>
         <button onClick={() => memento.rollback()}>rollback</button>
         <button onClick={() => memento.forward()}>forward</button>
+        <button onClick={() => memento.clear()}>clear</button>
         <label css={$css`display: block;`}>
           state:
           <span>{state}</span>

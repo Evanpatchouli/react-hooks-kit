@@ -111,6 +111,12 @@ const useMemento = (initialState: any, config?: Config) => {
     });
   };
 
+  const clear = () => {
+    setState({ idKey: Ukey(), data: null });
+    setHistory([]);
+    setMementos([]);
+  }
+
   return [
     state.data,
     setNewState,
@@ -123,6 +129,7 @@ const useMemento = (initialState: any, config?: Config) => {
       goToHistory,
       goToMemento,
       clearHistory,
+      clear,
       history,
       mementos,
     },
