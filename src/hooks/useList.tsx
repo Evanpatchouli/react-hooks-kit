@@ -5,14 +5,9 @@ type Item<T extends object = {}> = T;
 type ItemExtended<T extends object = {}> = Item<T> & {
   _id: any;
 };
-type SortFunction<T extends object = {}> = (
-  a: Item,
-  b: ItemExtended<T>
-) => number;
+type SortFunction<T extends object = {}> = (a: Item, b: ItemExtended<T>) => number;
 type FilterFunction<T extends object = {}> = (item: ItemExtended<T>) => boolean;
-type RenderFunction<T extends object = {}> = (
-  item: ItemExtended<T>
-) => JSX.Element;
+type RenderFunction<T extends object = {}> = (item: ItemExtended<T>) => JSX.Element;
 
 interface UseListOptions<T extends object = {}> {
   idKey?: string;
@@ -53,9 +48,7 @@ function useList<T extends object = {}>(
       [options.idKey || "_id"]: UKey(),
     }))
   );
-  const [originalItems, setOriginalItems] = useState<Item<T>[]>([
-    ...initialItems,
-  ]);
+  const [originalItems, setOriginalItems] = useState<Item<T>[]>([...initialItems]);
 
   useEffect(() => {
     // 去除 唯一id 再设置
@@ -85,10 +78,7 @@ function useList<T extends object = {}>(
   const addItem = useCallback(
     (item: Item) => {
       // @ts-ignore
-      setItems((prevItems) => [
-        ...prevItems,
-        { ...item, [options.idKey || "_id"]: UKey() },
-      ]);
+      setItems((prevItems) => [...prevItems, { ...item, [options.idKey || "_id"]: UKey() }]);
     },
     [options.idKey]
   );
@@ -98,9 +88,7 @@ function useList<T extends object = {}>(
       if (id === void 0 || id === null) {
         throw new Error("idKey is required to removeItem in list");
       }
-      setItems((prevItems) =>
-        prevItems.filter((item: any) => item[options.idKey || "_id"] !== id)
-      );
+      setItems((prevItems) => prevItems.filter((item: any) => item[options.idKey || "_id"] !== id));
     },
     [options.idKey]
   );
@@ -115,16 +103,17 @@ function useList<T extends object = {}>(
   );
 
   const reset = useCallback(() => {
-    // @ts-ignore
-    setItems([...originalItems]);
+    setItems(
+      // @ts-ignore
+      [...originalItems].map((item) => ({
+        ...item,
+        [options.idKey || "_id"]: UKey(),
+      }))
+    );
   }, [originalItems]);
 
   const updateItems = useCallback((newItems: Item<T>[]) => {
-    if (
-      newItems.some((item: any) =>
-        [void 0, null].includes(item[options.idKey || "_id"])
-      )
-    ) {
+    if (newItems.some((item: any) => [void 0, null].includes(item[options.idKey || "_id"]))) {
       throw new Error("idKey is required to updateItem in list");
     }
     // @ts-ignore
@@ -137,10 +126,7 @@ function useList<T extends object = {}>(
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPage = useMemo(() => {
-    return Math.max(
-      1,
-      Math.ceil(filteredItems.length / (options?.itemsPerPage ?? 10))
-    );
+    return Math.max(1, Math.ceil(filteredItems.length / (options?.itemsPerPage ?? 10)));
   }, [filteredItems.length, options.itemsPerPage]);
 
   const goToPage = useCallback(
@@ -183,9 +169,7 @@ function useList<T extends object = {}>(
       render: () => {
         return filteredItems.map((item: any) => {
           return options.renderFn ? (
-            <Fragment key={item[options.idKey || "_id"]}>
-              {options.renderFn(item)}
-            </Fragment>
+            <Fragment key={item[options.idKey || "_id"]}>{options.renderFn(item)}</Fragment>
           ) : null;
         });
       },
