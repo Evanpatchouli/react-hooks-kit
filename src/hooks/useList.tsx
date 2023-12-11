@@ -8,12 +8,14 @@ type ItemExtended<T extends object = {}> = Item<T> & {
 type SortFunction<T extends object = {}> = (a: Item, b: ItemExtended<T>) => number;
 type FilterFunction<T extends object = {}> = (item: ItemExtended<T>) => boolean;
 type RenderFunction<T extends object = {}> = (item: ItemExtended<T>) => JSX.Element;
+type RenderNoData = (() => JSX.Element | React.ReactNode) | JSX.Element | React.ReactNode;
 
 interface UseListOptions<T extends object = {}> {
   idKey?: string;
   sortFn?: SortFunction<T>;
   filterFn?: FilterFunction<T>;
   renderFn?: RenderFunction<T>;
+  renderNoData?: RenderNoData;
   itemsPerPage?: number;
 }
 
@@ -167,11 +169,17 @@ function useList<T extends object = {}>(
       filteredItems,
       originalItems,
       render: () => {
-        return filteredItems.map((item: any) => {
-          return options.renderFn ? (
-            <Fragment key={item[options.idKey || "_id"]}>{options.renderFn(item)}</Fragment>
-          ) : null;
-        });
+        return filteredItems?.length
+          ? filteredItems.map((item: any) => {
+              return options.renderFn ? (
+                <Fragment key={item[options.idKey || "_id"]}>{options.renderFn(item)}</Fragment>
+              ) : null;
+            })
+          : options.renderNoData
+          ? typeof options.renderNoData === "function"
+            ? options.renderNoData()
+            : options.renderNoData
+          : null;
       },
       pagedItems,
       currentPage,
