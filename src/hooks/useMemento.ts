@@ -101,8 +101,8 @@ const useMemento = (initialState: any, config?: Config) => {
       if (history.some((item) => item.idKey === pre.idKey)) {
         return newState;
       }
-      setHistory((history) => {
-        if (history.length >= historySize) {
+      setHistory((h) => {
+        if (history.length -1 === historySize) {
           return [...history.slice(1), pre];
         }
         return [...history, pre];
