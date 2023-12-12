@@ -1,7 +1,18 @@
-import { ExpandLess, ExpandMore, FunctionsOutlined, HourglassEmptyOutlined } from "@mui/icons-material";
+import {
+  ExpandLess,
+  ExpandMore,
+  FunctionsOutlined,
+  HourglassEmptyOutlined,
+} from "@mui/icons-material";
 import docsMap from "./docs.map";
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
-import { useState } from "react";
+import {
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+} from "@mui/material";
 import * as GettingStarted from "./views/getting-started";
 import ArticleNavigator from "@components/article-navigator";
 import DocNavigator from "@components/doc-navigator";
@@ -17,6 +28,7 @@ import pickLastUrlPath from "@/utils/pickLastUrlPath";
 import Deving from "@/components/Deving";
 import Dial from "@/components/dial";
 import { Title } from "@/components/layout/Article";
+import Status from "@/components/Status";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -90,7 +102,11 @@ export default function Docs() {
                 <ListItemIcon>🫰</ListItemIcon>
                 <ListItemText primary="Usage" />
               </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }} selected={curRoute === "faqs"} onClick={() => linkTo("/docs/faqs", true)}>
+              <ListItemButton
+                sx={{ pl: 4 }}
+                selected={curRoute === "faqs"}
+                onClick={() => linkTo("/docs/faqs", true)}
+              >
                 <ListItemIcon>❓</ListItemIcon>
                 <ListItemText primary="FAQs" />
               </ListItemButton>
@@ -104,11 +120,17 @@ export default function Docs() {
               </ListItemButton>
             </List>
           </Collapse>
-          <ListItemButton selected={curRoute === "sent-mail"} onClick={() => linkTo("/docs/sent-mail", true)}>
+          <ListItemButton
+            selected={curRoute === "sent-mail"}
+            onClick={() => linkTo("/docs/sent-mail", true)}
+          >
             <ListItemIcon>📧</ListItemIcon>
             <ListItemText primary="Sent mail" />
           </ListItemButton>
-          <ListItemButton selected={curRoute === "draft"} onClick={() => linkTo("/docs/draft", true)}>
+          <ListItemButton
+            selected={curRoute === "draft"}
+            onClick={() => linkTo("/docs/draft", true)}
+          >
             <ListItemIcon>⚓</ListItemIcon>
             <ListItemText primary="Drafts" />
           </ListItemButton>
@@ -134,18 +156,22 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[1]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.StatefulHooks).map(([, { route }]) => {
-                  return (
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      selected={curRoute === route}
-                      onClick={() => linkTo(`/docs/${route}`, true)}
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary={route} />
-                    </ListItemButton>
-                  );
-                })}
+                {Object.entries(docsMap.StatefulHooks).map(
+                  ([, { route, status }]) => {
+                    return (
+                      <ListItemButton
+                        sx={{ pl: 4 }}
+                        selected={curRoute === route}
+                        onClick={() => linkTo(`/docs/${route}`, true)}
+                      >
+                        <ListItemIcon>
+                          <Status type={status} />
+                        </ListItemIcon>
+                        <ListItemText primary={route} />
+                      </ListItemButton>
+                    );
+                  }
+                )}
               </List>
             </Collapse>
 
@@ -160,18 +186,22 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[2]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.CallbackHooks).map(([, { route }]) => {
-                  return (
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      selected={curRoute === route}
-                      onClick={() => linkTo(`/docs/${route}`, true)}
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary={route} />
-                    </ListItemButton>
-                  );
-                })}
+                {Object.entries(docsMap.CallbackHooks).map(
+                  ([, { route, status }]) => {
+                    return (
+                      <ListItemButton
+                        sx={{ pl: 4 }}
+                        selected={curRoute === route}
+                        onClick={() => linkTo(`/docs/${route}`, true)}
+                      >
+                        <ListItemIcon>
+                          <Status type={status} />
+                        </ListItemIcon>
+                        <ListItemText primary={route} />
+                      </ListItemButton>
+                    );
+                  }
+                )}
               </List>
             </Collapse>
 
@@ -186,18 +216,22 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[3]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.PromiseHooks).map(([, { route }]) => {
-                  return (
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      selected={curRoute === route}
-                      onClick={() => linkTo(`/docs/${route}`, true)}
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary={route} />
-                    </ListItemButton>
-                  );
-                })}
+                {Object.entries(docsMap.PromiseHooks).map(
+                  ([, { route, status }]) => {
+                    return (
+                      <ListItemButton
+                        sx={{ pl: 4 }}
+                        selected={curRoute === route}
+                        onClick={() => linkTo(`/docs/${route}`, true)}
+                      >
+                        <ListItemIcon>
+                          <Status type={status} />
+                        </ListItemIcon>
+                        <ListItemText primary={route} />
+                      </ListItemButton>
+                    );
+                  }
+                )}
               </List>
             </Collapse>
 
@@ -212,18 +246,22 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[4]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.UtilsHooks).map(([, { route }]) => {
-                  return (
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      selected={curRoute === route}
-                      onClick={() => linkTo(`/docs/${route}`, true)}
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary={route} />
-                    </ListItemButton>
-                  );
-                })}
+                {Object.entries(docsMap.UtilsHooks).map(
+                  ([, { route, status }]) => {
+                    return (
+                      <ListItemButton
+                        sx={{ pl: 4 }}
+                        selected={curRoute === route}
+                        onClick={() => linkTo(`/docs/${route}`, true)}
+                      >
+                        <ListItemIcon>
+                          <Status type={status} />
+                        </ListItemIcon>
+                        <ListItemText primary={route} />
+                      </ListItemButton>
+                    );
+                  }
+                )}
               </List>
             </Collapse>
 
@@ -238,18 +276,22 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[5]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.LifetimeHooks).map(([, { route }]) => {
-                  return (
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      selected={curRoute === route}
-                      onClick={() => linkTo(`/docs/${route}`, true)}
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary={route} />
-                    </ListItemButton>
-                  );
-                })}
+                {Object.entries(docsMap.LifetimeHooks).map(
+                  ([, { route, status }]) => {
+                    return (
+                      <ListItemButton
+                        sx={{ pl: 4 }}
+                        selected={curRoute === route}
+                        onClick={() => linkTo(`/docs/${route}`, true)}
+                      >
+                        <ListItemIcon>
+                          <Status type={status} />
+                        </ListItemIcon>
+                        <ListItemText primary={route} />
+                      </ListItemButton>
+                    );
+                  }
+                )}
               </List>
             </Collapse>
 
@@ -264,18 +306,22 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[6]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.UiUxHooks).map(([, { route }]) => {
-                  return (
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      selected={curRoute === route}
-                      onClick={() => linkTo(`/docs/${route}`, true)}
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary={route} />
-                    </ListItemButton>
-                  );
-                })}
+                {Object.entries(docsMap.UiUxHooks).map(
+                  ([, { route, status }]) => {
+                    return (
+                      <ListItemButton
+                        sx={{ pl: 4 }}
+                        selected={curRoute === route}
+                        onClick={() => linkTo(`/docs/${route}`, true)}
+                      >
+                        <ListItemIcon>
+                          <Status type={status} />
+                        </ListItemIcon>
+                        <ListItemText primary={route} />
+                      </ListItemButton>
+                    );
+                  }
+                )}
               </List>
             </Collapse>
 
@@ -290,18 +336,22 @@ export default function Docs() {
             </ListItemButton>
             <Collapse in={open[7]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.OtherHooks).map(([, { route }]) => {
-                  return (
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      selected={curRoute === route}
-                      onClick={() => linkTo(`/docs/${route}`, true)}
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <ListItemText primary={route} />
-                    </ListItemButton>
-                  );
-                })}
+                {Object.entries(docsMap.OtherHooks).map(
+                  ([, { route, status }]) => {
+                    return (
+                      <ListItemButton
+                        sx={{ pl: 4 }}
+                        selected={curRoute === route}
+                        onClick={() => linkTo(`/docs/${route}`, true)}
+                      >
+                        <ListItemIcon>
+                          <Status type={status} />
+                        </ListItemIcon>
+                        <ListItemText primary={route} />
+                      </ListItemButton>
+                    );
+                  }
+                )}
               </List>
             </Collapse>
           </List>
@@ -316,60 +366,63 @@ export default function Docs() {
                 <Route path="" element={<DocsIndex />} />
                 {Object.entries(docsMap).map(([_module, views]) => {
                   const module: keyof typeof docsMap = _module as any;
-                  return Object.entries(views as { [x: string]: { route: string; title: string } }).map(
-                    ([ViewElem, meta]) => {
-                      // console.log(
-                      //   `${module} ${ViewElem} ${JSON.stringify(meta)}`
-                      // );
-                      let ElemRender: Option<React.FC> = void 0;
-                      switch (module) {
-                        case "GettingStarted":
-                          if (ViewElem in GettingStarted) {
-                            ElemRender = GettingStarted[ViewElem as keyof typeof GettingStarted];
-                          }
-                          break;
-                        // case "SentMail":
-                        //   break;
-                        // case "Draft":
-                        //   break;
-                        // case "StatefulHooks":
-                        //   break;
-                        // case "CallbackHooks":
-                        //   break;
-                        // case "LifetimeHooks":
-                        //   break;
-                        // case "PromiseHooks":
-                        //   break;
-                        // case "UtilsHooks":
-                        //   break;
-                        // case "UiUxHooks":
-                        //   break;
-                        // case "OtherHooks":
-                        //   break;
-                        default:
-                          if (ViewElem in View) {
-                            ElemRender = View[ViewElem as keyof typeof View];
-                          }
-                          // console.log(`${ViewElem}`, View[ViewElem as keyof typeof View] ? true : false);
-                          break;
-                      }
-                      // console.log(`${ViewElem} route: ${meta.route}`);
-                      return ElemRender ? (
-                        <Route path={meta.route} element={<ElemRender />} />
-                      ) : (
-                        <Route
-                          path={meta.route}
-                          element={
-                            <>
-                              <Title>{meta.title}</Title>
-                              <Deving />
-                            </>
-                          }
-                        />
-                      );
-                      // return <Route path="/overview" element={<GettingStarted.Overview />} />;
+                  return Object.entries(
+                    views as { [x: string]: { route: string; title: string } }
+                  ).map(([ViewElem, meta]) => {
+                    // console.log(
+                    //   `${module} ${ViewElem} ${JSON.stringify(meta)}`
+                    // );
+                    let ElemRender: Option<React.FC> = void 0;
+                    switch (module) {
+                      case "GettingStarted":
+                        if (ViewElem in GettingStarted) {
+                          ElemRender =
+                            GettingStarted[
+                              ViewElem as keyof typeof GettingStarted
+                            ];
+                        }
+                        break;
+                      // case "SentMail":
+                      //   break;
+                      // case "Draft":
+                      //   break;
+                      // case "StatefulHooks":
+                      //   break;
+                      // case "CallbackHooks":
+                      //   break;
+                      // case "LifetimeHooks":
+                      //   break;
+                      // case "PromiseHooks":
+                      //   break;
+                      // case "UtilsHooks":
+                      //   break;
+                      // case "UiUxHooks":
+                      //   break;
+                      // case "OtherHooks":
+                      //   break;
+                      default:
+                        if (ViewElem in View) {
+                          ElemRender = View[ViewElem as keyof typeof View];
+                        }
+                        // console.log(`${ViewElem}`, View[ViewElem as keyof typeof View] ? true : false);
+                        break;
                     }
-                  );
+                    // console.log(`${ViewElem} route: ${meta.route}`);
+                    return ElemRender ? (
+                      <Route path={meta.route} element={<ElemRender />} />
+                    ) : (
+                      <Route
+                        path={meta.route}
+                        element={
+                          <>
+                            <Title>{meta.title}</Title>
+                            <Deving />
+                          </>
+                        }
+                      />
+                    );
+                    // return <Route path="/overview" element={<GettingStarted.Overview />} />;
+                  });
                 })}
               </>
             }

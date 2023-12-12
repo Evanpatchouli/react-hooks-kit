@@ -1,6 +1,9 @@
 export { default as Overview } from "./getting-started/Overview";
 export { default as SentMail } from "./SentMail";
 // export { default as Draft } from "./Draft";
+
+// Stateful hooks
+export { default as UsePrevious } from "./stateful-hooks/UsePrevious";
 export { default as UseToggle } from "./stateful-hooks/UseToggle";
 export { default as UseLoading } from "./stateful-hooks/UseLoading";
 export { default as UseMeta } from "./stateful-hooks/UseMeta";

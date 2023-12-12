@@ -1,5 +1,6 @@
 import logo from "@/logo.filled.svg";
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
+import { NotificationsNone, GitHub, Settings } from "@mui/icons-material";
 import pkg from "@/../package.json";
 import "./index.css";
 
@@ -30,6 +31,25 @@ export default function Header() {
         </a>
         <span>v{pkg.version}</span>
       </Box>
+      <Box display="flex" gap={0.5}>
+        <IconButton>
+          <GitHub style={style.IconBtn} />
+        </IconButton>
+        <IconButton>
+          <NotificationsNone style={style.IconBtn} />
+        </IconButton>
+        <IconButton>
+          <Settings style={style.IconBtn} />
+        </IconButton>
+      </Box>
     </div>
   );
 }
+
+const style = {
+  IconBtn: {
+    border: "1px solid #66a8ff80",
+    borderRadius: "12px",
+    padding: "8px",
+  },
+};

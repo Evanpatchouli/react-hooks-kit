@@ -1,6 +1,9 @@
-import { useEffect, useRef, DependencyList } from "react";
+import { useRef, useEffect, DependencyList } from "react";
 
-const useUpdate = (callback: () => void, dependencies: DependencyList) => {
+const useUpdateEffect = (
+  callback: () => void,
+  dependencies: DependencyList
+) => {
   const firstRenderRef = useRef(true);
 
   useEffect(() => {
@@ -13,4 +16,4 @@ const useUpdate = (callback: () => void, dependencies: DependencyList) => {
   }, dependencies);
 };
 
-export default useUpdate;
+export default useUpdateEffect;
