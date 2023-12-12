@@ -172,7 +172,7 @@ export default function ${capitalizeComponentName}() {
       "views",
       "docs",
       "views",
-      "hook-apis",
+      "hooks-apis",
       `${componentName}.api.tsx`
     ),
     apiTemplate,

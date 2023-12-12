@@ -8,6 +8,7 @@ export { default as UseList } from "./stateful-hooks/UseList";
 export { default as UseTree } from "./stateful-hooks/UseTree";
 export { default as UseReactive } from "./stateful-hooks/UseReactive";
 export { default as UseReactor } from "./stateful-hooks/UseReactor";
+export { default as UseMemento } from "./stateful-hooks/UseMemento";
 
 export { default as UseRipple } from "./ui-ux-hooks/UseRipple";
 export { default as UseParticle } from "./ui-ux-hooks/UseParticle";

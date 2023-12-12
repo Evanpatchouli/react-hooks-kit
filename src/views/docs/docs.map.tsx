@@ -78,6 +78,10 @@ export default {
       route: "useTickState",
       title: "UseTickState",
     },
+    UseMemento: {
+      route: "useMemento",
+      title: "UseMemento",
+    },
   },
   CallbackHooks: {
     UseTicker: {
