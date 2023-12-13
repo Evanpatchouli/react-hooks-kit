@@ -179,3 +179,5 @@ export const useLoading = <
   returned.minusLoading = minusLoading;
   return returned;
 };
+
+export default useLoading;

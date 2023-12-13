@@ -12,7 +12,7 @@ interface Callbacks<T> {
   onFinally?: () => void;
 }
 
-export function useFetch<T>(
+export default function useFetch<T>(
   url: string,
   options?: RequestInit,
   callbacks?: Callbacks<T>,

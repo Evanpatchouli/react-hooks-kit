@@ -23,7 +23,7 @@ export function usePromise<T>(
   promiseFn: () => Promise<T>,
   deps?: any[]
 ): [PromiseState<T>, () => void];
-export function usePromise<T>(
+export default function usePromise<T>(
   promiseFn: () => Promise<T>,
   callbacksOrDeps?: Callbacks<T> | any[],
   deps?: any[]

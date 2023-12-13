@@ -44,7 +44,7 @@ type GeneratorState<T> = {
  * export default MyComponent;
  * ```
  */
-export function useGenerator<T>(
+export default function useGenerator<T>(
   generatorFn: () => Generator<Promise<T>, void, unknown>
 ): GeneratorState<T> {
   const [state, setState] = useState<GeneratorState<T>>({

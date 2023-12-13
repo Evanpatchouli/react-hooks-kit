@@ -8,7 +8,7 @@ type Condition<T> =
   | undefined
   | null;
 
-export function useProtect<T>(
+export default function useProtect<T>(
   initialData: T,
   ...conditions: Condition<T>[]
 ): [T, (newData: T | ((oldData: T) => T)) => void] {

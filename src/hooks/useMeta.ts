@@ -131,3 +131,5 @@ export const useMeta = <T extends Object = {}>(
 
   return [meta, setMeta] as const;
 };
+
+export default useMeta;

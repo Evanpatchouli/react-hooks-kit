@@ -20,7 +20,7 @@ interface SafeArea {
  * }
  * ```
  */
-export function useSafeArea(): SafeArea {
+export default function useSafeArea(): SafeArea {
   const [safeArea, setSafeArea] = useState<SafeArea>({
     top: 0,
     right: 0,

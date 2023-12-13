@@ -5,7 +5,7 @@ type DBState = {
   error: any;
 };
 
-function useIndexedDB(
+export default function useIndexedDB(
   dbName: string,
   version: number,
   upgradeCallback: (db: IDBDatabase) => void

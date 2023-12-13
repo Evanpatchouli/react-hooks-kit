@@ -1,4 +1,4 @@
-import { useProtect } from "@/hooks/useProtect";
+import useProtect from "@/hooks/useProtect";
 import { Close } from "@mui/icons-material";
 import { Button, IconButton, Snackbar } from "@mui/material";
 import { Fragment, useState } from "react";
@@ -59,7 +59,7 @@ const View = () => {
 };
 
 const code = `
-import { useProtect } from "@/hooks/useProtect";
+import useProtect from "@/hooks/useProtect";
 import { Close } from "@mui/icons-material";
 import { Button, IconButton, Snackbar } from "@mui/material";
 import { Fragment, useState } from "react";

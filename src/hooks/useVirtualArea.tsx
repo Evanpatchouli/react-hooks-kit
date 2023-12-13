@@ -31,7 +31,7 @@ export interface VirtualAreaOptions<
   observerOptions?: IntersectionObserverInit;
 }
 
-export function useVirtualArea(
+export default function useVirtualArea(
   {
     loadMoreItems,
     items,

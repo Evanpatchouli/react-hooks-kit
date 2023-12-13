@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useVirtualArea } from "@hooks/useVirtualArea";
+import useVirtualArea from "@hooks/useVirtualArea";
 import Loading from "@/components/Loading";
 
 const Empty = () => (
@@ -113,7 +113,7 @@ function View() {
 }
 
 const code = `import React, { useState, useEffect } from "react";
-import { useVirtualArea } from "@hooks/useVirtualArea";
+import useVirtualArea from "@hooks/useVirtualArea";
 import Loading from "@/components/Loading";
 
 const Empty = () => (
