@@ -10,10 +10,7 @@ export default function Header() {
       <Box alignItems="center" display="flex" gap={2}>
         <div
           onClick={() => {
-            window.open(
-              "https://github.com/evanpatchouli/react-hook-kit",
-              "_blank"
-            );
+            window.open("https://github.com/evanpatchouli/react-hook-kit", "_blank");
           }}
           style={{ cursor: "pointer", height: "30px" }}
         >
@@ -31,15 +28,15 @@ export default function Header() {
         </a>
         <span>v{pkg.version}</span>
       </Box>
-      <Box display="flex" gap={0.5}>
-        <IconButton>
-          <GitHub style={style.IconBtn} />
+      <Box display="flex" gap={2}>
+        <IconButton style={style.IconBtn}>
+          <GitHub style={style.IconBtnIcon} />
         </IconButton>
-        <IconButton>
-          <NotificationsNone style={style.IconBtn} />
+        <IconButton style={style.IconBtn}>
+          <NotificationsNone style={style.IconBtnIcon} />
         </IconButton>
-        <IconButton>
-          <Settings style={style.IconBtn} />
+        <IconButton style={style.IconBtn}>
+          <Settings style={style.IconBtnIcon} />
         </IconButton>
       </Box>
     </div>
@@ -48,8 +45,14 @@ export default function Header() {
 
 const style = {
   IconBtn: {
+    borderRadius: "12px",
+    padding: "0px",
+    height: "fit-content",
+  },
+  IconBtnIcon: {
     border: "1px solid #66a8ff80",
     borderRadius: "12px",
     padding: "8px",
+    margin: "0px",
   },
 };
