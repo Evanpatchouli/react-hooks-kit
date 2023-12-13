@@ -2,6 +2,7 @@ import { useEffect, useContext, createContext } from "react";
 import Ukey from "./utils/Ukey";
 
 interface EventListener {
+  namespace?: string;
   eventName: string;
   listenerName: string;
   listener: (...args: any[]) => void;
@@ -17,6 +18,7 @@ interface EventEmitterConfig {
   name?: string;
   initialEventName?: string;
   initialListener?: (...args: any[]) => void;
+  namespace?: string;
 }
 
 interface EventEmitter {
@@ -73,20 +75,23 @@ function useEventEmitter<M = {}>(
   if (!configActual.name) {
     configActual.name = `_emitter_${Ukey()}`;
   }
+  if (!configActual.namespace) {
+    configActual.namespace = "default";
+  }
 
   // 如果没有传入 name，使用 Ukey 方法生成一个唯一的名称
   const listenerName = configActual.name;
 
   const emit = (eventName: string, ...args: any[]) => {
     globalListeners.forEach((value, key) => {
-      if (key.startsWith(eventName)) {
+      if (key.startsWith(`${configActual.namespace}_${eventName}_`)) {
         value.listener(...args);
       }
     });
   };
 
   const subscribe = (eventName: string, listener: (...args: any[]) => void) => {
-    const key = `${eventName}_${listenerName}`;
+    const key = `${configActual.namespace}_${eventName}_${listenerName}`;
     if (globalListeners.has(key)) {
       throw new Error(
         `Listener ${listenerName} has already registered for event ${eventName}`
@@ -103,7 +108,7 @@ function useEventEmitter<M = {}>(
   };
 
   const unsubscribe = (eventName: string) => {
-    const key = `${eventName}_${listenerName}`;
+    const key = `${configActual.namespace}_${eventName}_${listenerName}`;
     globalListeners.delete(key);
   };
 
