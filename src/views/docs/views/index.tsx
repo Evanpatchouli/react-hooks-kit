@@ -19,6 +19,9 @@ export { default as UseWatch } from "./callback-hooks/UseWatch";
 export { default as UseUrl } from "./callback-hooks/UseUrl";
 export { default as UseVirtualArea } from "./ui-ux-hooks/UseVirtualArea";
 
+// Event hooks
+export { default as UseEventEmitter } from "./event-hooks/UseEventEmitter";
+
 // Other hooks
 export { default as UseProtect } from "./other/UseProtect";
 export { default as UseBatchHooks } from "./other/UseBatchHooks";
