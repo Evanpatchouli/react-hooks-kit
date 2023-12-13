@@ -10,13 +10,13 @@ export default function useToggle<T = true, F = false>(
   valueMap?: Partial<ToggleState<T, F>>
 ): [
   NonNullable<F> | true | false | NonNullable<T>,
-  (bool?: boolean) => void,
+  (bool?: any) => void,
   React.Dispatch<React.SetStateAction<boolean>>
 ] {
   const [toogle, setToogle] = useState(initial || false);
-  const switchToogle = (bool?: boolean) => {
-    if (bool !== undefined) {
-      setToogle(bool ? true : false);
+  const switchToogle = (bool?: any) => {
+    if (typeof bool === "boolean") {
+      setToogle(bool);
       return;
     }
     setToogle((pre) => !pre);
