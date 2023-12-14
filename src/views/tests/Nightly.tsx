@@ -3,6 +3,7 @@ import useBatchHooks from "@/hooks/useBatchHooks";
 import useMemento from "@/hooks/useMemento";
 import useNetworkStatus from "@/hooks/useNetWork";
 import { Button } from "@mui/material";
+import Await from "./Await";
 
 export function useRipples<T extends HTMLElement = HTMLButtonElement>(
   count: number = 1,
@@ -38,6 +39,7 @@ export default function Nightly() {
           history: <span>{JSON.stringify(memento.history, null, 2)}</span>
         </label>
       </div>
+      <Await />
     </div>
   );
 }

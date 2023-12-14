@@ -19,8 +19,8 @@ export interface UseLoading<T extends Record<string, boolean | number> = Record<
         minusLoading: (key: keyof T) => void;
     };
 }
-export declare function formatLoadingValue(value: number | boolean, zeroFalse?: boolean): number | boolean;
-export declare function formatLoadingState(values?: any, zeroFalse?: boolean): any;
+export declare function formatLoadingValue(value: number | boolean, boolify?: boolean): number | boolean;
+export declare function formatLoadingState(values?: any, boolify?: boolean): any;
 /** Default `setType` will be `override` */
 export interface SetLoading<T = Record<string, boolean | number>, K extends keyof T = keyof T> {
     (key: K, value?: boolean | number): void;
@@ -42,7 +42,7 @@ export declare const useLoading: <T extends Record<string, number | boolean> = R
     /** Default `setType` will be `override` */
     setType?: "spread" | "override";
     /** When value is 0 will be converted to false */
-    zeroFalse?: boolean;
+    boolify?: boolean;
 }) => readonly [T, SetLoading<T, keyof T>, (key: keyof T) => void, (key: keyof T) => void, (key: keyof T) => void, (key: keyof T) => void] & {
     loading: T;
     setLoading: SetLoading<T, keyof T>;
