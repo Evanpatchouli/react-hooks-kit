@@ -26,24 +26,40 @@ export interface UseLoading<
 
 export function formatLoadingValue(
   value: number | boolean,
-  zeroFalse: boolean = false
+  boolify: boolean = false
 ) {
-  if (value !== 0 || !zeroFalse) {
-    return value;
+  if (!boolify) {
+    if (["number", "boolean"].includes(typeof value)) {
+      if (typeof value === "number") {
+        return value;
+      }
+      return value === true ? 1 : 0;
+    } else {
+      throw new Error(
+        `value must be number or boolean, but got ${typeof value}`
+      );
+    }
   }
-  return value === 0 ? false : value;
+  if (["number", "boolean"].includes(typeof value)) {
+    if (typeof value === "number") {
+      if (value === 0) {
+        return false;
+      } else if (value == 1) {
+        return true;
+      } else {
+        return value;
+      }
+    }
+    return value === true ? true : false;
+  } else {
+    throw new Error(`value must be number or boolean, but got ${typeof value}`);
+  }
 }
 
-export function formatLoadingState(
-  values: any = {},
-  zeroFalse: boolean = false
-) {
-  if (!zeroFalse) {
-    return values;
-  }
+export function formatLoadingState(values: any = {}, boolify: boolean = false) {
   const newValues = { ...values };
   Object.keys(newValues).forEach((key) => {
-    newValues[key] = formatLoadingValue(newValues[key], zeroFalse);
+    newValues[key] = formatLoadingValue(newValues[key], boolify);
   });
   return newValues;
 }
@@ -87,38 +103,40 @@ export const useLoading = <
     /** Default `setType` will be `override` */
     setType?: "spread" | "override";
     /** When value is 0 will be converted to false */
-    zeroFalse?: boolean;
+    boolify?: boolean;
   } = {
     setType: "override",
-    zeroFalse: true,
+    boolify: true,
   }
 ) => {
-  const [loading, _setLoading] = useState(loadingMap);
+  const [loading, _setLoading] = useState(
+    formatLoadingState(loadingMap, options.boolify) as T
+  );
   const setLoading: SetLoading<T, keyof T> = (args1, value = true) => {
     if (typeof args1 === "object") {
       if (setTypeOptions.includes(value as any)) {
         if (value === "spread") {
           _setLoading((pre) =>
-            formatLoadingState({ ...pre, ...args1 }, options.zeroFalse)
+            formatLoadingState({ ...pre, ...args1 }, options.boolify)
           );
         } else {
-          _setLoading(formatLoadingState(args1, options.zeroFalse) as any);
+          _setLoading(formatLoadingState(args1, options.boolify) as any);
         }
       } else {
-        _setLoading(formatLoadingState(args1, options.zeroFalse) as any);
+        _setLoading(formatLoadingState(args1, options.boolify) as any);
       }
       return;
     } else if (typeof args1 === "function") {
       if (setTypeOptions.includes(value as any)) {
         if (value === "spread") {
           _setLoading((pre) =>
-            formatLoadingState({ ...pre, ...args1(pre) }, options.zeroFalse)
+            formatLoadingState({ ...pre, ...args1(pre) }, options.boolify)
           );
         } else {
-          _setLoading(formatLoadingState(args1, options.zeroFalse) as any);
+          _setLoading(formatLoadingState(args1, options.boolify) as any);
         }
       } else {
-        _setLoading(formatLoadingState(args1, options.zeroFalse) as any);
+        _setLoading(formatLoadingState(args1, options.boolify) as any);
       }
       return;
     } else {
@@ -127,31 +145,31 @@ export const useLoading = <
         _setLoading((pre) =>
           formatLoadingState(
             { ...pre, [key]: value(pre[key]) },
-            options.zeroFalse
+            options.boolify
           )
         );
       } else {
         _setLoading((pre) =>
-          formatLoadingState({ ...pre, [key]: value }, options.zeroFalse)
+          formatLoadingState({ ...pre, [key]: value }, options.boolify)
         );
       }
     }
   };
   const onLoading = (key: keyof typeof loading) => {
     _setLoading((pre) =>
-      formatLoadingState({ ...pre, [key]: 1 }, options.zeroFalse)
+      formatLoadingState({ ...pre, [key]: 1 }, options.boolify)
     );
   };
   const unLoading = (key: keyof typeof loading) => {
     _setLoading((pre) =>
-      formatLoadingState({ ...pre, [key]: 0 }, options.zeroFalse)
+      formatLoadingState({ ...pre, [key]: 0 }, options.boolify)
     );
   };
   const plusLoading = (key: keyof typeof loading) => {
     _setLoading((pre) =>
       formatLoadingState(
         { ...pre, [key]: (pre[key] as number) + 1 },
-        options.zeroFalse
+        options.boolify
       )
     );
   };
@@ -159,7 +177,7 @@ export const useLoading = <
     _setLoading((pre) =>
       formatLoadingState(
         { ...pre, [key]: (pre[key] as number) - 1 },
-        options.zeroFalse
+        options.boolify
       )
     );
   };

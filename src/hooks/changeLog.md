@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.4 2012/12/15
+
+- Passed tests for useLoading
+
 ## v0.1.3 2023/12/13
 
 - Passed tests for usePrevious

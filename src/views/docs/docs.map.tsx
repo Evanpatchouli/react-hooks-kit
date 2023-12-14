@@ -47,7 +47,7 @@ export default {
     UseLoading: {
       route: "useLoading",
       title: "UseLoading",
-      status: "experimental",
+      status: "new",
     },
     UseMeta: {
       route: "useMeta",

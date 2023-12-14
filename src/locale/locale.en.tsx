@@ -246,7 +246,7 @@ const locale_en = {
           </li>
           <ul>
             <li>
-              <strong>zeroFalse</strong> (?) : the value when state is true,
+              <strong>boolify</strong> (?) : the value when state is true,
               default is true
             </li>
             <li>
@@ -284,7 +284,7 @@ const locale_en = {
         </Li>
         <Li>
           By default, the loading value will be false when the loading value is
-          0, you can disable it by setting zeroFalse to false
+          0, you can disable it by setting boolify to false
         </Li>
         <Li>
           By default, the set actions will <strong>override</strong> the old

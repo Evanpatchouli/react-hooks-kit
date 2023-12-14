@@ -6,7 +6,7 @@ import { useState } from "react";
 const View = () => {
   const [options, setOptions] = useState({
     setType: "override" as "override" | "spread", // default
-    zeroFalse: true, // default
+    boolify: true, // default
   });
 
   const toggleSetType = () => {
@@ -16,10 +16,10 @@ const View = () => {
     }));
   };
 
-  const toggleZeroFalse = () => {
+  const toggleboolify = () => {
     setOptions((prev) => ({
       ...prev,
-      zeroFalse: !prev.zeroFalse,
+      boolify: !prev.boolify,
     }));
   };
 
@@ -40,8 +40,8 @@ const View = () => {
         <Button css={$css`display: block; text-transform: none;`} onClick={toggleSetType}>
           setType : {options?.setType}
         </Button>
-        <Button css={$css`display: block; text-transform: none;`} onClick={toggleZeroFalse}>
-          zeroFalse : {`${options?.zeroFalse}`}
+        <Button css={$css`display: block; text-transform: none;`} onClick={toggleboolify}>
+          boolify : {`${options?.boolify}`}
         </Button>
       </div>
       <Button
@@ -92,7 +92,7 @@ import { useState } from "react";
 const View = () => {
   const [options, setOptions] = useState({
     setType: "override" as "override" | "spread", // default
-    zeroFalse: true, // default
+    boolify: true, // default
   });
 
   const toggleSetType = () => {
@@ -102,10 +102,10 @@ const View = () => {
     }));
   };
 
-  const toggleZeroFalse = () => {
+  const toggleboolify = () => {
     setOptions((prev) => ({
       ...prev,
-      zeroFalse: !prev.zeroFalse,
+      boolify: !prev.boolify,
     }));
   };
 
@@ -126,8 +126,8 @@ const View = () => {
         <Button css={$css\`display: block; text-transform: none;\`} onClick={toggleSetType}>
           setType : {options?.setType}
         </Button>
-        <Button css={$css\`display: block; text-transform: none;\`} onClick={toggleZeroFalse}>
-          zeroFalse : {\`\${options?.zeroFalse}\`}
+        <Button css={$css\`display: block; text-transform: none;\`} onClick={toggleboolify}>
+          boolify : {\`\${options?.boolify}\`}
         </Button>
       </div>
       <Button

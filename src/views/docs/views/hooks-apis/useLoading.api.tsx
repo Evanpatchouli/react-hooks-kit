@@ -15,7 +15,7 @@ export default function UseLoadingApi() {
     {
       name: "options",
       type: "object",
-      defaultValue: { setType: "override", zeroFalse: true },
+      defaultValue: { setType: "override", boolify: true },
       desc: "options of useLoadingApi",
       properties: [
         {
@@ -25,10 +25,10 @@ export default function UseLoadingApi() {
           desc: "set action mode of setter",
         },
         {
-          name: "zeroFalse",
+          name: "boolify",
           type: "boolean",
           defaultValue: true,
-          desc: "whether the value is false when state is 0",
+          desc: "whether the value is false when state is 0, and is true when state is 1; or the value is 0 when state is false, and is 1 when state is true",
         },
       ],
     },
@@ -46,15 +46,17 @@ export default function UseLoadingApi() {
       desc: "set the state of certain loading value",
       details: (
         <p>
-          <strong>overload 1</strong> : {"(k, v) => void"} <Blank /> set the state of loading[k] to v
+          <strong>overload 1</strong> : {"(k, v) => void"} <Blank /> set the
+          state of loading[k] to v
           <br />
-          <strong>overload 2</strong> : {"( k, (v) => T[k] ) => void"} <Blank /> set the state of loading[k] to
-          v(loading[k])
+          <strong>overload 2</strong> : {"( k, (v) => T[k] ) => void"} <Blank />{" "}
+          set the state of loading[k] to v(loading[k])
           <br />
-          <strong>overload 3</strong> : {"(obj: Partial<T>) => void"} <Blank /> set the state of loading by obj
+          <strong>overload 3</strong> : {"(obj: Partial<T>) => void"} <Blank />{" "}
+          set the state of loading by obj
           <br />
-          <strong>overload 4</strong> : {"( (obj) => Partial<T> ) => void"} <Blank /> set the state of loading by
-          obj(loading)
+          <strong>overload 4</strong> : {"( (obj) => Partial<T> ) => void"}{" "}
+          <Blank /> set the state of loading by obj(loading)
         </p>
       ),
     },

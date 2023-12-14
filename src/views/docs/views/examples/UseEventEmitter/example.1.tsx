@@ -1,20 +1,24 @@
-import useEventEmitter from "@/hooks/useEventEmitter";
+import { useToast, useToggle } from "@/hooks";
+import useEventEmitter, {
+  GlobalListenersContext,
+} from "@/hooks/useEventEmitter";
 import { Button, TextareaAutosize } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const Kid1 = () => {
   const [kid2Val, setKid2Val] = useState("");
+  const toast = useToast();
 
   const emitter = useEventEmitter("kid1", "kid2", (v) => {
-    console.log("kid2", v);
     setKid2Val(v as string);
+    toast(`${v}`);
   });
 
   return (
     <>
       <Button
         onClick={() => {
-          emitter.emit("kid1", "kid1");
+          emitter.emit("kid1", "kid1 said Hello!");
         }}
       >
         Kid1 Send
@@ -26,12 +30,13 @@ const Kid1 = () => {
 
 const Kid2 = () => {
   const emitter = useEventEmitter("kid2");
+  const toast = useToast();
 
   const [kid1Val, setKid1Val] = useState("");
 
   useEffect(() => {
     emitter.subscribe("kid1", (v) => {
-      console.log("kid1", v);
+      toast(`${v}`);
       setKid1Val(v);
     });
   }, []);
@@ -40,7 +45,7 @@ const Kid2 = () => {
     <>
       <Button
         onClick={() => {
-          emitter.emit("kid2", "kid2");
+          emitter.emit("kid2", "kid2 said Hello!");
         }}
       >
         Kid2 Send
@@ -51,10 +56,25 @@ const Kid2 = () => {
 };
 
 const View = () => {
+  const ctx = useContext(GlobalListenersContext);
+  const handlePrintAll = () => {
+    const map: any = {};
+    ctx.forEach((v, k) => {
+      map[k] = v;
+    });
+    console.log(map);
+  };
+  const [kid2, showKid2] = useToggle();
   return (
     <>
+      <Button onClick={handlePrintAll}>Print All listners</Button>
+      <br />
       <Kid1 />
-      <Kid2 />
+      <br />
+      <Button onClick={showKid2}>
+        Show/Hide Kid2
+      </Button>
+      {kid2 && <Kid2 />}
     </>
   );
 };
