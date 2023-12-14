@@ -29,10 +29,7 @@ interface EventEmitter {
   unsubscribeAll: () => void;
 }
 
-function useEventEmitter(
-  name: string,
-  config?: Partial<EventEmitterConfig>
-): EventEmitter;
+function useEventEmitter(name: string, config?: Partial<EventEmitterConfig>): EventEmitter;
 function useEventEmitter(config: Partial<EventEmitterConfig>): EventEmitter;
 function useEventEmitter<M = {}>(
   name?: string,
@@ -93,16 +90,7 @@ function useEventEmitter<M = {}>(
   const subscribe = (eventName: string, listener: (...args: any[]) => void) => {
     const key = `${configActual.namespace}_${eventName}_${listenerName}`;
     if (globalListeners.has(key)) {
-      throw new Error(
-        `Listener ${listenerName} has already registered for event ${eventName}`
-      );
-    }
-    if (
-      Array.from(globalListeners.values()).some(
-        (value) => value.listenerName === listenerName
-      )
-    ) {
-      throw new Error(`Listener name ${listenerName} is already in use`);
+      throw new Error(`Listener ${listenerName} has already registered for event ${eventName}`);
     }
     globalListeners.set(key, { eventName, listenerName, listener });
   };
@@ -113,10 +101,14 @@ function useEventEmitter<M = {}>(
   };
 
   const unsubscribeAll = () => {
+    const keysToDelete: string[] = [];
     globalListeners.forEach((value, key) => {
       if (key.endsWith(`_${listenerName}`)) {
-        globalListeners.delete(key);
+        keysToDelete.push(key);
       }
+    });
+    keysToDelete.forEach((key) => {
+      globalListeners.delete(key);
     });
   };
 

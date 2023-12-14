@@ -23,10 +23,7 @@ export default function DocNavigator() {
         },
       }}
     >
-      <TimelineItem
-        css={$css`&:hover { color: dodgerblue; }`}
-        onClick={clickItem("hook-desc")}
-      >
+      <TimelineItem css={$css`&:hover { color: dodgerblue; }`} onClick={clickItem("hook-desc")}>
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
@@ -35,10 +32,7 @@ export default function DocNavigator() {
           <div style={{ cursor: "pointer" }}>Description</div>
         </TimelineContent>
       </TimelineItem>
-      <TimelineItem
-        css={$css`&:hover { color: dodgerblue; }`}
-        onClick={clickItem("hook-usage")}
-      >
+      <TimelineItem css={$css`&:hover { color: dodgerblue; }`} onClick={clickItem("hook-usage")}>
         <TimelineSeparator>
           <TimelineDot />
           <TimelineConnector />
@@ -47,10 +41,7 @@ export default function DocNavigator() {
           <div style={{ cursor: "pointer" }}>Usage</div>
         </TimelineContent>
       </TimelineItem>
-      <TimelineItem
-        css={$css`&:hover { color: dodgerblue; }`}
-        onClick={clickItem("hook-consider")}
-      >
+      <TimelineItem css={$css`&:hover { color: dodgerblue; }`} onClick={clickItem("hook-consider")}>
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
@@ -58,10 +49,7 @@ export default function DocNavigator() {
           <div style={{ cursor: "pointer" }}>Considerations</div>
         </TimelineContent>
       </TimelineItem>
-      <TimelineItem
-        css={$css`&:hover { color: dodgerblue; }`}
-        onClick={clickItem("hook-best")}
-      >
+      <TimelineItem css={$css`&:hover { color: dodgerblue; }`} onClick={clickItem("hook-best")}>
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
@@ -69,10 +57,7 @@ export default function DocNavigator() {
           <div style={{ cursor: "pointer" }}>Best practice</div>
         </TimelineContent>
       </TimelineItem>
-      <TimelineItem
-        css={$css`&:hover { color: dodgerblue; }`}
-        onClick={clickItem("hook-faqs")}
-      >
+      <TimelineItem css={$css`&:hover { color: dodgerblue; }`} onClick={clickItem("hook-faqs")}>
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
@@ -84,11 +69,16 @@ export default function DocNavigator() {
         <TimelineSeparator>
           <TimelineDot />
         </TimelineSeparator>
-        <TimelineContent
-          css={$css`&:hover { color: dodgerblue; }`}
-          onClick={clickItem("hook-api")}
-        >
+        <TimelineContent css={$css`&:hover { color: dodgerblue; }`} onClick={clickItem("hook-api")}>
           <div style={{ cursor: "pointer" }}>Hook's Apis</div>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineDot />
+        </TimelineSeparator>
+        <TimelineContent css={$css`&:hover { color: dodgerblue; }`} onClick={clickItem("hook-ref")}>
+          <div style={{ cursor: "pointer" }}>Reference</div>
         </TimelineContent>
       </TimelineItem>
     </Timeline>
