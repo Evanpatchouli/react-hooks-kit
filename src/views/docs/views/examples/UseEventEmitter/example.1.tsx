@@ -1,4 +1,4 @@
-import { useToast, useToggle } from "@/hooks";
+import { useToast, useToggle } from "@/hooks/index";
 import useEventEmitter, {
   GlobalListenersContext,
 } from "@/hooks/useEventEmitter";

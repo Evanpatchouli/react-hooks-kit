@@ -1,15 +1,12 @@
-import { useToast } from "@/hooks";
-import { useEventEmitter } from "@/hooks";
-import { GlobalListenersContext } from "@/hooks/useEventEmitter";
-import useEventListener from "@/hooks/useEventListener";
+import { useToast } from "@hooks/index";
+import { useEventEmitter } from "@hooks/index";
+import { GlobalListenersContext } from "@hooks/useEventEmitter";
+import useEventListener from "@hooks/useEventListener";
 import { Button } from "@mui/material";
 import { useContext } from "react";
 
 const View = () => {
-  const emitter = useEventEmitter();
-  const send = () => {
-    emitter.emit("test", "hello");
-  };
+  const emitter = useEventEmitter("tester");
 
   const toast = useToast();
 
@@ -28,7 +25,13 @@ const View = () => {
 
   return (
     <>
-      <Button onClick={send}>Send</Button>
+      <Button
+        onClick={() => {
+          emitter.emit("test", "hello");
+        }}
+      >
+        Send
+      </Button>
       <div>{JSON.stringify(data)}</div>
       <Button onClick={handlePrintAll}>Print All</Button>
     </>
