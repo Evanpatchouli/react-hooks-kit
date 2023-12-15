@@ -285,6 +285,23 @@ export default {
       status: "preview",
     },
   },
+  EventHooks: {
+    UseEventEmitter: {
+      route: "useEventEmitter",
+      title: "UseEventEmitter",
+      status: "experimental",
+    },
+    UseEventListener: {
+      route: "useEventListener",
+      title: "UseEventListener",
+      status: "experimental",
+    },
+    UseBroadCastChannel: {
+      route: "useBroadCastChannel",
+      title: "UseBroadCastChannel",
+      status: "experimental",
+    },
+  },
   OtherHooks: {
     UseProtect: {
       route: "useProtect",
@@ -309,16 +326,6 @@ export default {
     UseMediaQuery: {
       route: "useMediaQuery",
       title: "UseMediaQuery",
-      status: "experimental",
-    },
-    UseEventEmitter: {
-      route: "useEventEmitter",
-      title: "UseEventEmitter",
-      status: "experimental",
-    },
-    UseBroadCastChannel: {
-      route: "useBroadCastChannel",
-      title: "UseBroadCastChannel",
       status: "experimental",
     },
     UseNetwork: {

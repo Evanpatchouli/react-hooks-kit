@@ -12,92 +12,92 @@ rl.question("Please input the hook name: ", (componentName) => {
     componentName.charAt(0).toUpperCase() + componentName.slice(1);
 
   const apiTemplate = `import ApiTable from "@/components/api-table";
-  import { SubTitle } from "@/components/layout/Article";
+import { SubTitle } from "@/components/layout/Article";
   
-  export default function ${capitalizeComponentName}() {
-    const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-      {
-        name: "initial",
-        type: "boolean",
-        defaultValue: false,
-        desc: "initial state of toggle",
-      },
-      {
-        name: "valueMap",
-        type: "object",
-        defaultValue: { true: true, false: false },
-        desc: "mapping of returned values",
-        properties: [
-          {
-            name: "true",
-            type: "boolean | T",
-            defaultValue: true,
-            desc: "value returned when toggle is on",
-          },
-          {
-            name: "false",
-            type: "boolean | F",
-            defaultValue: false,
-            desc: "value returned when toggle is off",
-          },
-        ],
-      },
-    ];
+export default function ${capitalizeComponentName}() {
+  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "initial",
+      type: "boolean",
+      defaultValue: false,
+      desc: "initial state of toggle",
+    },
+    {
+      name: "valueMap",
+      type: "object",
+      defaultValue: { true: true, false: false },
+      desc: "mapping of returned values",
+      properties: [
+        {
+          name: "true",
+          type: "boolean | T",
+          defaultValue: true,
+           desc: "value returned when toggle is on",
+        },
+        {
+          name: "false",
+          type: "boolean | F",
+          defaultValue: false,
+          desc: "value returned when toggle is off",
+        },
+      ],
+    },
+  ];
   
-    const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-      {
-        name: "[0] isOn",
-        type: "boolean | T | F",
-        defaultValue: null,
-        desc: "state of toggle",
+  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "[0] isOn",
+      type: "boolean | T | F",
+      defaultValue: null,
+      desc: "state of toggle",
+    },
+    {
+      name: "[1] toggle",
+      type: "() => void",
+      desc: "toggle function",
       },
-      {
-        name: "[1] toggle",
-        type: "() => void",
-        desc: "toggle function",
-      },
-      {
-        name: "[2] setToggle",
-        type: "(value: boolean|(value => boolean)) => void",
-        desc: "set toggle function",
-      },
-    ];
+    {
+      name: "[2] setToggle",
+      type: "(value: boolean|(value => boolean)) => void",
+      desc: "set toggle function",
+    },
+  ];
   
-    return (
-      <>
-        <SubTitle id="hook-api">Api of ${componentName}</SubTitle>
-        <SubTitle low top="20px">
-          Parameters
-        </SubTitle>
-        <ApiTable param rows={paramData} />
-        <SubTitle low top="20px">
-          ReturnValue (Array)
-        </SubTitle>
-        <ApiTable return rows={returnData} />
-      </>
-    );
-  }
-  `;
+  return (
+    <>
+      <SubTitle id="hook-api">Api of ${componentName}</SubTitle>
+      <SubTitle low top="20px">
+        Parameters
+      </SubTitle>
+      <ApiTable param rows={paramData} />
+      <SubTitle low top="20px">
+        ReturnValue (Array)
+      </SubTitle>
+      <ApiTable return rows={returnData} />
+    </>
+  );
+}
+`;
 
-  const exampleTemplate = `import ${componentName} from "@/hooks/${componentName}";
+const exampleTemplate = `import ${componentName} from "@/hooks/${componentName}";
   
-  const View = () => {
-    return (
-      <>
-        <h3>${componentName}</h3>
-      </>
-    );
-  };
+const View = () => {
+  return (
+    <>
+      <h3>${componentName}</h3>
+    </>
+  );
+};
   
-  const code = \`
+const code = \`
 
-  \`;
+\`;
   
-  export default {
-    code,
-    View,
-  };
-  `;
+export default {
+  code,
+  View,
+};
+`;
 
   const componentTemplate = `import useLocaleSelector from "@/locale/locale.selector";
 import Article, {
