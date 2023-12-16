@@ -1,7 +1,7 @@
 import ApiTable from "@/components/api-table";
   import { SubTitle } from "@/components/layout/Article";
   
-  export default function UseEventListener() {
+  export default function UseEventEmitter() {
     const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
       {
         name: "initial",
@@ -52,7 +52,7 @@ import ApiTable from "@/components/api-table";
   
     return (
       <>
-        <SubTitle id="hook-api">Api of useEventListener</SubTitle>
+        <SubTitle id="hook-api">Api of useEmitter</SubTitle>
         <SubTitle low top="20px">
           Parameters
         </SubTitle>

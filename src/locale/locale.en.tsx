@@ -699,7 +699,7 @@ const locale_en = {
     },
   },
   
-  useEventEmitter: {
+  useEmitter: {
     desc: "",
     detail: (
       <>
@@ -719,7 +719,7 @@ const locale_en = {
     },
   },
   
-  useEventListener: {
+  useReceiver: {
     desc: "",
     detail: (
       <>

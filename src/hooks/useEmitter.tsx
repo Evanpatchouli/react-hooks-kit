@@ -29,9 +29,9 @@ interface EventEmitter {
   unsubscribeAll: () => void;
 }
 
-function useEventEmitter(name: string, config?: Partial<EventEmitterConfig>): EventEmitter;
-function useEventEmitter(config: Partial<EventEmitterConfig>): EventEmitter;
-function useEventEmitter<M = {}>(
+function useEmitter(name: string, config?: Partial<EventEmitterConfig>): EventEmitter;
+function useEmitter(config: Partial<EventEmitterConfig>): EventEmitter;
+function useEmitter<M = {}>(
   name?: string,
   initialEventName?: string,
   // @ts-ignore
@@ -40,7 +40,7 @@ function useEventEmitter<M = {}>(
 ): EventEmitter;
 
 // @ts-ignore
-function useEventEmitter<M = {}>(
+function useEmitter<M = {}>(
   nameOrConfig?: string | Partial<EventEmitterConfig>,
   initialEventNameOrConfig?: string | Partial<EventEmitterConfig>,
   // @ts-ignore
@@ -128,5 +128,5 @@ function useEventEmitter<M = {}>(
   return { name: listenerName, emit, subscribe, unsubscribe, unsubscribeAll };
 }
 
-export default useEventEmitter;
+export default useEmitter;
 export { GlobalListenersContext };

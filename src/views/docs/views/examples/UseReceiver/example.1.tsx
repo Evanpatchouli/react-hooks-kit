@@ -1,7 +1,7 @@
 import { useToast } from "@hooks/index";
 import { useEventEmitter } from "@hooks/index";
-import { GlobalListenersContext } from "@hooks/useEventEmitter";
-import useEventListener from "@hooks/useEventListener";
+import { GlobalListenersContext } from "@/hooks/useEmitter";
+import useReceiver from "@/hooks/useReceiver";
 import { Button } from "@mui/material";
 import { useContext } from "react";
 
@@ -10,7 +10,7 @@ const View = () => {
 
   const toast = useToast();
 
-  const [data, listener] = useEventListener("test", (...data) => {
+  const [data, receiver] = useReceiver("test", (...data) => {
     toast(JSON.stringify(data));
   });
 

@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import useEventEmitter from "./useEventEmitter";
+import useEventEmitter from "./useEmitter";
 import Ukey from "./utils/Ukey";
 import { Prettify } from "./typings";
 
-type EventListener = {
+type EventReceiver = {
   stop: () => void;
   start: () => void;
   reset: (args: any[]) => void;
 };
 
-type EventListenerOptions = {
+type EventReceiverOptions = {
   name?: string;
   namespace?: "default" | (string & {});
   eventName: string;
@@ -18,13 +18,13 @@ type EventListenerOptions = {
 
 type EventCallback = (...args: any[]) => void;
 
-function useEventListener(eventName: string, callback?: EventCallback): [any[] | null, EventListener];
-function useEventListener(options: Prettify<EventListenerOptions>): [any[] | null, EventListener];
+function useReceiver(eventName: string, callback?: EventCallback): [any[] | null, EventReceiver];
+function useReceiver(options: Prettify<EventReceiverOptions>): [any[] | null, EventReceiver];
 
-function useEventListener(
-  eventNameOrOptions: string | Prettify<EventListenerOptions>,
+function useReceiver(
+  eventNameOrOptions: string | Prettify<EventReceiverOptions>,
   callback?: EventCallback
-): [any[] | null, EventListener] {
+): [any[] | null, EventReceiver] {
   let eventName: string;
   let name: string;
   let namespace: string;
@@ -32,17 +32,17 @@ function useEventListener(
 
   if (typeof eventNameOrOptions === "string") {
     eventName = eventNameOrOptions;
-    name = `_listener_${Ukey()}`;
+    name = `_receiver_${Ukey()}`;
     namespace = "default";
     cb = callback;
   } else {
     eventName = eventNameOrOptions.eventName;
-    name = eventNameOrOptions.name || `_listener_${Ukey()}`;
+    name = eventNameOrOptions.name || `_receiver_${Ukey()}`;
     namespace = eventNameOrOptions.namespace || "default";
     cb = eventNameOrOptions.callback;
     if (cb) {
       if (callback) {
-        console.warn("useEventListener: callback is ignored when options.callback is set");
+        console.warn("useReceiver: callback is ignored when options.callback is set");
       } else {
         cb = callback;
       }
@@ -85,4 +85,4 @@ function useEventListener(
   ];
 }
 
-export default useEventListener;
+export default useReceiver;

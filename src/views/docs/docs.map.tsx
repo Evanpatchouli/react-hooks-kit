@@ -286,14 +286,14 @@ export default {
     },
   },
   EventHooks: {
-    UseEventEmitter: {
-      route: "useEventEmitter",
-      title: "UseEventEmitter",
+    UseEmitter: {
+      route: "useEmitter",
+      title: "UseEmitter",
       status: "experimental",
     },
-    UseEventListener: {
-      route: "useEventListener",
-      title: "UseEventListener",
+    UseReceiver: {
+      route: "useReceiver",
+      title: "UseReceiver",
       status: "experimental",
     },
     UseBroadCastChannel: {

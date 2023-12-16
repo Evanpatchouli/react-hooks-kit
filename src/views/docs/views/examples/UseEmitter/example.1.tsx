@@ -1,7 +1,7 @@
 import { useToast, useToggle } from "@/hooks/index";
-import useEventEmitter, {
+import useEmitter, {
   GlobalListenersContext,
-} from "@/hooks/useEventEmitter";
+} from "@/hooks/useEmitter";
 import { Button, TextareaAutosize } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 
@@ -9,7 +9,7 @@ const Kid1 = () => {
   const [kid2Val, setKid2Val] = useState("");
   const toast = useToast();
 
-  const emitter = useEventEmitter("kid1", "kid2", (v) => {
+  const emitter = useEmitter("kid1", "kid2", (v) => {
     setKid2Val(v as string);
     toast(`${v}`);
   });
@@ -29,7 +29,7 @@ const Kid1 = () => {
 };
 
 const Kid2 = () => {
-  const emitter = useEventEmitter("kid2");
+  const emitter = useEmitter("kid2");
   const toast = useToast();
 
   const [kid1Val, setKid1Val] = useState("");

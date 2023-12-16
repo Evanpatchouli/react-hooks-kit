@@ -9,12 +9,12 @@ import Article, {
   Best
 } from "@components/layout/Article";
 import { useEffect } from "react";
-import example1 from "@/views/docs/views/examples/UseEventEmitter/example.1";
+import example1 from "@/views/docs/views/examples/UseReceiver/example.1";
 import pkg from "@/../package.json";
-import UseEventEmitterApi from "@/views/docs/views/hooks-apis/useEventEmitter.api";
+import UseReceiverApi from "@/views/docs/views/hooks-apis/useReceiver.api";
 
-export default function UseEventEmitter() {
-  const hooksName = "useEventEmitter";
+export default function UseReceiver() {
+  const hooksName = "useReceiver";
   const $desc = useLocaleSelector(`${hooksName}.desc`);
   const $detail = useLocaleSelector(`${hooksName}.detail`);
   const $best = useLocaleSelector(`${hooksName}.$best`);
@@ -38,7 +38,7 @@ export default function UseEventEmitter() {
       <Consideration>{$consider}</Consideration>
       <Best>{$best}</Best>
       <FAQs>{$faqs}</FAQs>
-      <UseEventEmitterApi />
+      <UseReceiverApi />
     </Article>
   );
 }

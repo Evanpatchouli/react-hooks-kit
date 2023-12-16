@@ -20,8 +20,8 @@ export { default as UseUrl } from "./callback-hooks/UseUrl";
 export { default as UseVirtualArea } from "./ui-ux-hooks/UseVirtualArea";
 
 // Event hooks
-export { default as UseEventEmitter } from "./event-hooks/UseEventEmitter";
-export { default as UseEventListener } from "./event-hooks/UseEventListener";
+export { default as UseEmitter } from "./event-hooks/UseEmitter";
+export { default as UseReceiver } from "./event-hooks/UseReceiver";
 
 // Other hooks
 export { default as UseProtect } from "./other/UseProtect";

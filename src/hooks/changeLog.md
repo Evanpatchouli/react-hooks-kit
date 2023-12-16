@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.5 2012/12/17
+
+- Change `useEventEmitter` to `useEmitter`
+- Change `useEventListener` to `useReceiver`
+
 ## v0.1.4 2012/12/15
 
 - Passed tests for useLoading
