@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.6 2012/12/17
+
+- Refactor `useWatchGetter` to replace Interval with requestAnimation
+- `Receiver` expands a property named `isListening`
+
 ## v0.1.5 2012/12/17
 
 - Change `useEventEmitter` to `useEmitter`

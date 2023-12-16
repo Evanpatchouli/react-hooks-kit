@@ -1,31 +1,31 @@
 import { useState, useEffect } from "react";
 
-function WatchGetterInterval<T>(
-  getter: () => T,
-  interval: number = 1000 / 60,
-  ...setters: ((value: any) => void)[]
-): T {
+function WatchGetterAnimation<T>(getter: () => T): T {
   const [value, setValue] = useState(getter());
 
   useEffect(() => {
-    const id = setInterval(() => {
+    let animationFrameId: number;
+
+    const loop = () => {
       const newValue = getter();
       if (newValue !== value) {
         setValue(newValue);
       }
-    }, interval);
+      animationFrameId = requestAnimationFrame(loop);
+    };
+
+    loop();
 
     return () => {
-      clearInterval(id);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, [getter, interval, value]);
+  }, [getter, value]);
 
   return value;
 }
 
 function WatchGetterSetter<T>(
   getter: () => T,
-  interval: number = 1000,
   ...setters: ((value: any) => void)[]
 ): T {
   const [value, setValue] = useState(getter());
@@ -60,18 +60,12 @@ function WatchGetterSetter<T>(
 
 function useWatchGetter<T>(
   getter: () => T,
-  interval: number | ((value: any) => void) = 1000,
   ...setters: ((value: any) => void)[]
 ): T {
-  if (typeof interval === "function") {
-    setters.unshift(interval);
-    interval = 1000;
-  }
   if (setters.length === 0) {
-    // @ts-ignore
-    return WatchGetterInterval(getter, interval);
+    return WatchGetterAnimation(getter);
   } else {
-    return WatchGetterSetter(getter, interval, ...setters);
+    return WatchGetterSetter(getter, ...setters);
   }
 }
 

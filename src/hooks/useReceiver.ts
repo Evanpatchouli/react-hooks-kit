@@ -7,6 +7,7 @@ type EventReceiver = {
   stop: () => void;
   start: () => void;
   reset: (args: any[]) => void;
+  isListening: boolean;
 };
 
 type EventReceiverOptions = {
@@ -53,6 +54,7 @@ function useReceiver(
     name: name,
     namespace: namespace,
   });
+  const [isListening, setIsListening] = useState(true);
   const [eventResult, setEventResult] = useState<any[] | null>(null);
 
   const eventListener = useCallback((...args: any[]) => {
@@ -69,10 +71,12 @@ function useReceiver(
 
   const stopListening = useCallback(() => {
     unsubscribe(eventName);
+    setIsListening(false);
   }, [eventName]);
 
   const startListening = useCallback(() => {
     subscribe(eventName, eventListener);
+    setIsListening(true);
   }, [eventName, eventListener]);
 
   return [
@@ -81,6 +85,7 @@ function useReceiver(
       stop: stopListening,
       start: startListening,
       reset: setEventResult,
+      isListening,
     },
   ];
 }
