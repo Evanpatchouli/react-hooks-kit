@@ -20,7 +20,7 @@ const A = () => {
 };
 
 const B = () => {
-  const x = useInject<{
+  const [x] = useInject<{
     x: number;
   }>("x");
   return (

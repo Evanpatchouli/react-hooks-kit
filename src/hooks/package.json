@@ -32,6 +32,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "ignorePatterns": [
+      "dist",
+      "node_modules"
     ]
   },
   "peerDependencies": {

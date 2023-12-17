@@ -62,13 +62,13 @@ export default function useDebounce<R = void>(
   if (typeof delay !== "number") {
     throw new Error("delay must be a number");
   }
-  if (delay < 0) {
-    return emptyFn as ReturnType<typeof debounce<R>>;
-  }
-  if (delay === 0) {
-    return fn as any as ReturnType<typeof debounce<R>>;
-  }
   const debounceFn = useMemo(() => {
+    if (delay < 0) {
+      return emptyFn as ReturnType<typeof debounce<R>>;
+    }
+    if (delay === 0) {
+      return fn as any as ReturnType<typeof debounce<R>>;
+    }
     return debounce(fn, delay, immediate, callback);
   }, [fn, delay, immediate, callback]);
 

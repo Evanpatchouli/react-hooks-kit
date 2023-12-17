@@ -28,6 +28,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "ignorePatterns": [
+      "src/hooks/dist",
+      "node_modules"
     ]
   },
   "dependencies": {
