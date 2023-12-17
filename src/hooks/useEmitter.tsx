@@ -96,7 +96,7 @@ function useEmitter<M = {}>(
     const key = `${configActual.namespace}_${eventName}_${listenerName}`;
     if (globalListeners.has(key)) {
       throw new Error(
-        `Listener ${listenerName} has already registered for event ${eventName}`
+        `[react-hooks-kit][useEmitter] Listener ${listenerName} has already registered for event ${eventName}`
       );
     }
     globalListeners.set(key, { eventName, listenerName, listener });

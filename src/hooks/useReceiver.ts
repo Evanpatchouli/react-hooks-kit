@@ -50,7 +50,7 @@ function useReceiver(
     if (cb) {
       if (callback) {
         console.warn(
-          "useReceiver: callback is ignored when options.callback is set"
+          "[react-hooks-kit][useReceiver] callback is ignored when options.callback is set"
         );
       } else {
         cb = callback;

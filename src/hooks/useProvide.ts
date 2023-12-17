@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import useEmitter from "./useEmitter";
 
-// 创建一个 Provider Hook
-export function useProvide(
+export function useProvide<T = any>(
   name: string,
-  state: any,
-  setState?: Dispatch<SetStateAction<any>>
+  state: T,
+  setState?: Dispatch<SetStateAction<T>>
 ) {
   const emitter = useEmitter(`__Provider::${name}`, {
     namespace: "__provide_inject__",
