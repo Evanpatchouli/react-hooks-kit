@@ -22,6 +22,8 @@ export { default as UseVirtualArea } from "./ui-ux-hooks/UseVirtualArea";
 // Event hooks
 export { default as UseEmitter } from "./event-hooks/UseEmitter";
 export { default as UseReceiver } from "./event-hooks/UseReceiver";
+export { default as UseProvide } from "./event-hooks/UseProvide";
+export { default as UseInject } from "./event-hooks/UseInject";
 
 // Other hooks
 export { default as UseProtect } from "./other/UseProtect";

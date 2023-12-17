@@ -14,6 +14,8 @@ const globalListeners = new Map<string, EventListener>();
 // 创建一个 Context 来共享 globalListeners
 const GlobalListenersContext = createContext(globalListeners);
 
+export const useGlobalListeners = () => useContext(GlobalListenersContext);
+
 interface EventEmitterConfig {
   name?: string;
   initialEventName?: string;
@@ -29,7 +31,10 @@ interface EventEmitter {
   unsubscribeAll: () => void;
 }
 
-function useEmitter(name: string, config?: Partial<EventEmitterConfig>): EventEmitter;
+function useEmitter(
+  name: string,
+  config?: Partial<EventEmitterConfig>
+): EventEmitter;
 function useEmitter(config: Partial<EventEmitterConfig>): EventEmitter;
 function useEmitter<M = {}>(
   name?: string,
@@ -90,7 +95,9 @@ function useEmitter<M = {}>(
   const subscribe = (eventName: string, listener: (...args: any[]) => void) => {
     const key = `${configActual.namespace}_${eventName}_${listenerName}`;
     if (globalListeners.has(key)) {
-      throw new Error(`Listener ${listenerName} has already registered for event ${eventName}`);
+      throw new Error(
+        `Listener ${listenerName} has already registered for event ${eventName}`
+      );
     }
     globalListeners.set(key, { eventName, listenerName, listener });
   };
@@ -113,8 +120,8 @@ function useEmitter<M = {}>(
   };
 
   useEffect(() => {
-    if (configActual.initialEventName && initialListener) {
-      subscribe(configActual.initialEventName, initialListener);
+    if (configActual.initialEventName && configActual.initialListener) {
+      subscribe(configActual.initialEventName, configActual.initialListener);
     }
     return () => {
       globalListeners.forEach((value, key) => {
@@ -123,7 +130,7 @@ function useEmitter<M = {}>(
         }
       });
     };
-  }, [configActual.initialEventName, initialListener]);
+  }, [configActual.initialEventName, configActual.initialListener]);
 
   return { name: listenerName, emit, subscribe, unsubscribe, unsubscribeAll };
 }

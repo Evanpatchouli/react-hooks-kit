@@ -301,6 +301,16 @@ export default {
       title: "UseBroadCastChannel",
       status: "experimental",
     },
+    UseProvide: {
+      route: "useProvide",
+      title: "UseProvide",
+      status: "experimental",
+    },
+    UseInject: {
+      route: "useInject",
+      title: "UseInject",
+      status: "experimental",
+    },
   },
   OtherHooks: {
     UseProtect: {

@@ -698,62 +698,99 @@ const locale_en = {
       },
     },
   },
-  
+
   useEmitter: {
     desc: "",
-    detail: (
-      <>
-      </>
-    ),
+    detail: <></>,
     $p1: "",
-    consideration: (
-      <ol>
-      </ol>
-    ),
+    consideration: <ol></ol>,
     $best: <ul></ul>,
     $faqs: <ul></ul>,
     $apis: {
-      generics: (<></>),
+      generics: <></>,
       params: {},
       return: {},
     },
   },
-  
+
   useReceiver: {
     desc: "",
-    detail: (
-      <>
-      </>
-    ),
+    detail: <></>,
     $p1: "",
-    consideration: (
-      <ol>
-      </ol>
-    ),
+    consideration: <ol></ol>,
     $best: <ul></ul>,
     $faqs: <ul></ul>,
     $apis: {
-      generics: (<></>),
+      generics: <></>,
       params: {},
       return: {},
     },
   },
-  
+
   useReflect: {
     desc: "",
-    detail: (
-      <>
-      </>
-    ),
+    detail: <></>,
     $p1: "",
-    consideration: (
-      <ol>
-      </ol>
-    ),
+    consideration: <ol></ol>,
     $best: <ul></ul>,
     $faqs: <ul></ul>,
     $apis: {
-      generics: (<></>),
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useProvide: {
+    desc: "A hook to share a state with other components.",
+    detail: (
+      <>
+        useProvide is a hook that is used to share a state with other
+        components, and it is based on <a href="#/docs/useEmitter">useEmitter</a>:
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>name</strong> : the name of the state, should be unique
+          </li>
+          <li>
+            <strong>state</strong> : any state from useState
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useInject: {
+    desc: "A hook to inject a state from other components.",
+    detail: (
+      <>
+        useInject is a hook that is used to inject a state from other
+        components, and it is based on <a href="#/docs/useReceiver">useReceiver</a>:
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>name</strong> : the name of the state, should be unique
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
       params: {},
       return: {},
     },

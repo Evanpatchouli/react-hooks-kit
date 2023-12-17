@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import useEventEmitter from "./useEmitter";
+import useEmitter from "./useEmitter";
 import Ukey from "./utils/Ukey";
 import { Prettify } from "./typings";
 
@@ -8,6 +8,7 @@ type EventReceiver = {
   start: () => void;
   reset: (args: any[]) => void;
   isListening: boolean;
+  // emit: (event: string, ...args: any[]) => void;
 };
 
 type EventReceiverOptions = {
@@ -19,8 +20,13 @@ type EventReceiverOptions = {
 
 type EventCallback = (...args: any[]) => void;
 
-function useReceiver(eventName: string, callback?: EventCallback): [any[] | null, EventReceiver];
-function useReceiver(options: Prettify<EventReceiverOptions>): [any[] | null, EventReceiver];
+function useReceiver(
+  eventName: string,
+  callback?: EventCallback
+): [any[] | null, EventReceiver];
+function useReceiver(
+  options: Prettify<EventReceiverOptions>
+): [any[] | null, EventReceiver];
 
 function useReceiver(
   eventNameOrOptions: string | Prettify<EventReceiverOptions>,
@@ -43,14 +49,16 @@ function useReceiver(
     cb = eventNameOrOptions.callback;
     if (cb) {
       if (callback) {
-        console.warn("useReceiver: callback is ignored when options.callback is set");
+        console.warn(
+          "useReceiver: callback is ignored when options.callback is set"
+        );
       } else {
         cb = callback;
       }
     }
   }
 
-  const { subscribe, unsubscribe } = useEventEmitter({
+  const { subscribe, unsubscribe, emit } = useEmitter({
     name: name,
     namespace: namespace,
   });
@@ -79,15 +87,17 @@ function useReceiver(
     setIsListening(true);
   }, [eventName, eventListener]);
 
-  return [
-    eventResult,
-    {
-      stop: stopListening,
-      start: startListening,
-      reset: setEventResult,
-      isListening,
+  const reveiver = {
+    stop: stopListening,
+    start: startListening,
+    reset: setEventResult,
+    isListening,
+    get emit() {
+      return emit;
     },
-  ];
+  } as EventReceiver;
+
+  return [eventResult, reveiver];
 }
 
 export default useReceiver;

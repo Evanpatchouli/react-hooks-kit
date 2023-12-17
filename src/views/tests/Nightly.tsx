@@ -4,6 +4,7 @@ import useMemento from "@/hooks/useMemento";
 import useNetworkStatus from "@/hooks/useNetWork";
 import { Button } from "@mui/material";
 import Await from "./Await";
+import ProvJectView from "./prov-ject";
 
 export function useRipples<T extends HTMLElement = HTMLButtonElement>(
   count: number = 1,
@@ -40,6 +41,7 @@ export default function Nightly() {
         </label>
       </div>
       <Await />
+      <ProvJectView />
     </div>
   );
 }
