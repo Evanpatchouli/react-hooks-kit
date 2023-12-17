@@ -591,10 +591,31 @@ const locale_en = {
   },
 
   useTree: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
-    consideration: <ol></ol>,
+    desc: "A hook to manage tree state.",
+    detail: (
+      <>
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>initialValue</strong> : array
+          </li>
+          <li>
+            <strong>options</strong> : object
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "Here is a simple example to show how to use useTree hook.",
+    consideration: (
+      <ol>
+        <Li>
+          initialValue is type of{" "}
+          <span className="txt-primary">TreeNode</span>
+        </Li>
+        <Li>options is type of object</Li>
+      </ol>
+    ),
     $best: <ul></ul>,
     $faqs: <ul></ul>,
     $apis: {
@@ -746,8 +767,8 @@ const locale_en = {
     detail: (
       <>
         useProvide is a hook that is used to share a state with other
-        components, and it is based on <a href="#/docs/useEmitter">useEmitter</a>:
-        <h4>Parameters : </h4>
+        components, and it is based on{" "}
+        <a href="#/docs/useEmitter">useEmitter</a>:<h4>Parameters : </h4>
         <ol>
           <li>
             <strong>name</strong> : the name of the state, should be unique
@@ -775,8 +796,8 @@ const locale_en = {
     detail: (
       <>
         useInject is a hook that is used to inject a state from other
-        components, and it is based on <a href="#/docs/useReceiver">useReceiver</a>:
-        <h4>Parameters : </h4>
+        components, and it is based on{" "}
+        <a href="#/docs/useReceiver">useReceiver</a>:<h4>Parameters : </h4>
         <ol>
           <li>
             <strong>name</strong> : the name of the state, should be unique
