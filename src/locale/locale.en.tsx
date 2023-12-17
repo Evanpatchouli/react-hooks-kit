@@ -611,7 +611,7 @@ const locale_en = {
       <ol>
         <Li>
           initialValue is type of{" "}
-          <span className="txt-primary">TreeNode</span>
+          <span className="txt-secondary">TreeNode</span>
         </Li>
         <Li>options is type of object</Li>
       </ol>
