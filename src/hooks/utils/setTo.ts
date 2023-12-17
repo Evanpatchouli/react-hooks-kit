@@ -4,7 +4,8 @@ export default function setTo(
   obj: any,
   path: string | number | symbol | (string | number | symbol)[],
   val: any,
-  deepClone: boolean = false
+  deepClone: boolean = false,
+  createIfNotExist: boolean = false
 ): any {
   let keys: (string | number | symbol)[] = [];
   if (!Array.isArray(path)) {
@@ -16,7 +17,7 @@ export default function setTo(
         keys = [path];
         break;
       case "symbol":
-        keys = [path.toString()];
+        keys = [path];
         break;
       default:
         throw new Error("Invalid path");
@@ -40,7 +41,13 @@ export default function setTo(
   let temp = obj;
 
   keys.forEach((key) => {
-    if (!temp[key]) temp[key] = {};
+    if (!temp[key]) {
+      if (createIfNotExist) {
+        temp[key] = isNaN(Number(key)) ? {} : [];
+      } else {
+        return obj;
+      }
+    }
     temp = temp[key];
   });
 
@@ -50,6 +57,8 @@ export default function setTo(
     temp2 = temp2[key];
   });
 
-  if (lastKey || lastKey === 0) temp2[lastKey] = val;
+  if ((lastKey || lastKey === 0) && temp2 && (createIfNotExist || lastKey in temp2)) {
+    temp2[lastKey] = val;
+  }
   return newObj;
 }

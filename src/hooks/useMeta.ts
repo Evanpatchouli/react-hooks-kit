@@ -1,25 +1,37 @@
 import { useState } from "react";
 import { Path, PathValue } from "./utils/types";
 import setTo from "./utils/setTo";
+import getFrom from "./utils/getFrom";
 
 export interface SetMeta<
   T extends Object = {},
   K extends Path<T> | keyof T = Path<T> | keyof T
 > {
-  (key: K, value?: PathValue<T, K>): void;
   (
     key: K,
-    setAction: (pre: PathValue<T, K>, preObj: T) => PathValue<T, K>
+    value?: PathValue<T, K>,
+    // @TODO allow options to be passed in.
+    // options?: { deepSet?: boolean; createNonExist?: boolean }
   ): void;
-  (state: T): void;
-  (setAction: (pre: T) => T): void;
+  (
+    key: K,
+    setAction: (pre: PathValue<T, K>, preObj: T) => PathValue<T, K>,
+    // options?: { deepSet?: boolean; createNonExist?: boolean }
+  ): void;
+  (state: T, options?: { deepSet?: boolean; createNonExist?: boolean }): void;
+  (
+    setAction: (pre: T) => T,
+    // options?: { deepSet?: boolean; createNonExist?: boolean }
+  ): void;
 }
 
 /**
  * **useMeta** is a React Hook that returns a meta state and a function to set the meta state.
  * ### Parameters
  * - initialState: `T extends object` - The initial state object of the meta state.
- * - deepSet : `boolean?` - Whether to use deep clone when setting the meta state. Defaults to `false`.
+ * - options?: `{ deepSet?: boolean; createNonExist?: boolean }` - The options of the meta state.
+ *   - deepSet : `boolean?` - Whether to use deep clone when setting the meta state. Defaults to `false`.
+ *   - createNonExist : `boolean?` - Whether to create non-existent nodes when setting the meta state. Defaults to `false`.
  * ---
  * ### Return (Array)
  * - [0] state
@@ -107,7 +119,7 @@ export interface SetMeta<
  */
 export const useMeta = <T extends Object = {}>(
   initialState: T,
-  deepSet?: boolean
+  options?: { deepSet?: boolean; createNonExist?: boolean }
 ) => {
   const [meta, setState] = useState<T>(initialState);
   const setMeta: SetMeta<T, Path<T>> = (args1, value = undefined) => {
@@ -121,10 +133,18 @@ export const useMeta = <T extends Object = {}>(
       const key = args1;
       if (typeof value === "function") {
         setState((pre) =>
-          setTo(pre, key, value(pre[key as keyof T], pre), deepSet)
+          setTo(
+            pre,
+            key,
+            value(getFrom(pre, key), pre),
+            options?.deepSet,
+            options?.createNonExist
+          )
         );
       } else {
-        setState((pre) => setTo(pre, key, value, deepSet));
+        setState((pre) =>
+          setTo(pre, key, value, options?.deepSet, options?.createNonExist)
+        );
       }
     }
   };

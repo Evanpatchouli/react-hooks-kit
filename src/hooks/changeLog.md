@@ -1,5 +1,17 @@
 # ChangeLog
 
+## v0.1.7 2012/12/18
+
+- Passed tests for useMeta
+  - change 2rd param to options
+- Passed tests for utils.setTo
+  - Fix array-like node
+  - Fix symbol key
+  - Provide option for non-exists
+- Passed tests for utils.getFrom
+  - Fix none target
+  - Fix symbol key
+
 ## v0.1.6 2012/12/17
 
 - Refactor `useWatchGetter` to replace Interval with requestAnimation

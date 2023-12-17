@@ -52,7 +52,7 @@ export default {
     UseMeta: {
       route: "useMeta",
       title: "UseMeta",
-      status: "experimental",
+      status: "new",
     },
     UseList: {
       route: "useList",

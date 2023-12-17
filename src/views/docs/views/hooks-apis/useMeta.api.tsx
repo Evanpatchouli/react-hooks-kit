@@ -11,16 +11,30 @@ export default function UseMetaApi() {
       desc: "initial state of object",
     },
     {
-      name: "deepSet",
-      type: "boolean",
-      defaultValue: false,
-      desc: "Whether to deep clone object when setting property",
-      details: (
-        <>
-          <strong>DeepClone</strong> will make it slower especially{" "}
-          <strong>a huge object</strong>
-        </>
-      ),
+      name: "options",
+      type: "{ deepSet?: boolean; createNonExists?: boolean }",
+      defaultValue: "{ deepSet: false, createNonExist: false }",
+      desc: "options of useMeta",
+      properties: [
+        {
+          name: "deepSet",
+          type: "boolean",
+          defaultValue: false,
+          desc: "Whether to deep clone object when setting property",
+          details: (
+            <>
+              <strong>DeepClone</strong> will make it slower especially{" "}
+              <strong>a huge object</strong>
+            </>
+          ),
+        },
+        {
+          name: "createNonExist",
+          type: "boolean",
+          defaultValue: false,
+          desc: "Whether to create non-exists property when setting property",
+        },
+      ]
     },
   ];
 

@@ -1,8 +1,9 @@
 export default function get(
-  object: object,
+  object: object | null | undefined,
   path?: (string | number | symbol)[] | string | number | symbol,
   strict: boolean = false
 ) {
+  if (object === null || object === undefined) return undefined;
   if (!path) return undefined;
   if (!Array.isArray(path)) {
     switch (typeof path) {
@@ -13,7 +14,7 @@ export default function get(
         path = [path];
         break;
       case "symbol":
-        path = [path.toString()];
+        path = [path];
         break;
       default:
         throw new Error("Invalid path");
