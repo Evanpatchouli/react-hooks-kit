@@ -447,7 +447,13 @@ const locale_en = {
       </>
     ),
     $apis: {
-      generics: <ul></ul>,
+      generics: (
+        <>
+          <li>
+            <strong>T</strong>: typeof list elements
+          </li>
+        </>
+      ),
       params: {},
       return: {},
     },

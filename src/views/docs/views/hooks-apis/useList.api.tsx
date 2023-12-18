@@ -1,8 +1,10 @@
 import Required from "@/components/Required";
 import ApiTable from "@/components/api-table";
-import { SubTitle } from "@/components/layout/Article";
+import { Body, SubTitle } from "@/components/layout/Article";
+import useLocaleSelector from "@/locale/locale.selector";
 
 export default function UseList() {
+  const $generics = useLocaleSelector("useList.$apis.generics");
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "initialItems",
@@ -11,15 +13,9 @@ export default function UseList() {
       desc: "initial list items",
     },
     {
-      name: "dependencies",
-      type: "Array<any>",
-      defaultValue: <Required children="Required" />,
-      desc: "dependencies for items",
-    },
-    {
       name: "options",
       type: "UseListOptions",
-      defaultValue: <Required children="Required" />,
+      defaultValue: { idKey: "_id" },
       desc: "options for useList",
       properties: [
         {
@@ -59,6 +55,12 @@ export default function UseList() {
           desc: "pageSize of pagination",
         },
       ],
+    },
+    {
+      name: "dependencies",
+      type: "Array<any>",
+      defaultValue: "[]",
+      desc: "dependencies for items to auto save",
     },
   ];
 
@@ -156,6 +158,10 @@ export default function UseList() {
   return (
     <>
       <SubTitle id="hook-api">Api of useList</SubTitle>
+      <SubTitle low top="20px">
+        Generics{'<T extends object = { [key: string]: any }, K extends string | number = "_id">'}
+      </SubTitle>
+      <Body>{$generics}</Body>
       <SubTitle low top="20px">
         Parameters
       </SubTitle>

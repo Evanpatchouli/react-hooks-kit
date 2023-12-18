@@ -14,7 +14,6 @@ const View = () => {
       { name: "Kevin De Bruyne" },
       { name: "Ronaldinho" },
     ],
-    [],
     {
       renderFn(item) {
         return (
@@ -24,7 +23,8 @@ const View = () => {
           </div>
         );
       },
-    }
+    },
+    []
   );
 
   const handleAdd = () => {
@@ -83,7 +83,6 @@ const View = () => {
       { name: "Kevin De Bruyne" },
       { name: "Ronaldinho" },
     ],
-    [],
     {
       renderFn(item) {
         return (
@@ -93,7 +92,8 @@ const View = () => {
           </div>
         );
       },
-    }
+    },
+    []
   );
 
   const handleAdd = () => {
@@ -118,6 +118,8 @@ const View = () => {
     <>
       {listView}
       <div css={$css\`text-align: right;\`}>
+        <span>The temp list length: </span>
+        <Chip label={\`\${list.length}\`} />
         <span>The original list length: </span>
         <Chip label={\`\${lister.originalItems.length}\`} />
         <Button color="error" onClick={handlePop}>
@@ -132,8 +134,7 @@ const View = () => {
       </div>
     </>
   );
-};
-`;
+};`;
 
 export default {
   code,

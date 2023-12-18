@@ -13,7 +13,6 @@ const View = () => {
       { name: "Kevin De Bruyne" },
       { name: "Ronaldinho" },
     ],
-    [],
     {
       renderFn(item) {
         return (
@@ -23,7 +22,8 @@ const View = () => {
           </div>
         );
       },
-    }
+    },
+    []
   );
 
   const listView = useMemo(() => lister.render(), [list]);
@@ -45,7 +45,6 @@ const View = () => {
       { name: "Kevin De Bruyne" },
       { name: "Ronaldinho" },
     ],
-    [],
     {
       renderFn(item) {
         return (
@@ -55,13 +54,13 @@ const View = () => {
           </div>
         );
       },
-    }
+    },
+    []
   );
 
   const listView = useMemo(() => lister.render(), [list]);
   return <>{listView}</>;
-};
-`;
+};`;
 
 export default {
   code,

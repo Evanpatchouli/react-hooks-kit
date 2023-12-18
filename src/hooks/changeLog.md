@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.10 2012/12/18
+
+- Passed tests for useList
+
 ## v0.1.9 2012/12/18
 
 - rename `renderNoData` to `renderEmpty` globally
