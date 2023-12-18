@@ -1,51 +1,47 @@
 import React, { useCallback, useEffect, useState } from "react";
 import UKey from "./utils/Ukey";
 
-type TreeNode<K extends string | number = "_id"> = {
+type TreeNode<T extends object = { [key: string]: any }, K extends string | number | undefined = "_id"> = {
   // @ts-ignore
-  [idKey: K]: any;
-  children: TreeNode[];
-  [key: string]: any;
-};
+  [idKey: K extends string | number ? K : "_id"]: any;
+  children: TreeNode<T, K>[];
+} & T;
 
-interface UseTreeOptions {
-  idKey?: string | number;
+interface UseTreeOptions<T extends object = { [key: string]: any }, K extends string | number = "_id"> {
+  idKey?: K;
   renderNode?: (
-    node: TreeNode,
+    node: TreeNode<T, K>,
     idKey: any,
     level: number,
-    parentNode: TreeNode | null,
-    tree: TreeNode
+    parentNode: TreeNode<T, K> | null,
+    tree: TreeNode<T, K>
   ) => React.JSX.Element | React.ReactNode;
-  filterFn?: (node: TreeNode) => boolean;
+  renderEmpty?: React.ReactNode | (() => React.ReactNode);
+  filterFn?: (node: TreeNode<T, K>) => boolean;
   strict?: boolean;
 }
 
-const useTree = (
-  initialTree: TreeNode,
-  options: UseTreeOptions = { idKey: "_id" }
+const useTree = <T extends object = { [key: string]: any }, K extends string | number = "_id">(
+  initialTree: TreeNode<T, K>,
+  options: UseTreeOptions<T, K> = { idKey: "_id" as K }
 ): [
-  TreeNode<typeof options.idKey extends string ? typeof options.idKey : "_id">,
+  TreeNode<T, K>,
   {
-    addNode: (node: TreeNode, parentId: string) => void;
-    removeNode: (nodeId: string) => void;
-    updateNode: (nodeId: string, newNodeData: any) => void;
-    findNode: (nodeId: string) => TreeNode | null;
-    moveNode: (sourceNodeId: string, targetNodeId: string) => void;
-    searchTree: (filter: string | ((node: TreeNode) => boolean)) => TreeNode[];
+    addNode: (node: TreeNode<T, K>, parentId: string) => void | string;
+    removeNode: (nodeId: string) => void | string;
+    updateNode: (nodeId: string, newNodeData: any) => void | string;
+    findNode: (nodeId: string) => TreeNode<T, K> | null;
+    moveNode: (sourceNodeId: string, targetNodeId: string) => void | string;
+    searchTree: (filter: string | ((node: TreeNode<T, K>) => boolean)) => TreeNode<T, K>[];
     traverse: (
-      node: TreeNode,
-      callback: (
-        node: TreeNode,
-        level: number,
-        parentNode: TreeNode | null
-      ) => any
+      node: TreeNode<T, K>,
+      callback: (node: TreeNode<T, K>, level: number, parentNode: TreeNode<T, K> | null) => any
     ) => any[];
-    render: () => React.ReactNode[];
+    render: () => React.ReactNode[] | React.ReactNode | null;
   }
 ] => {
-  const [tree, setTree] = useState<TreeNode>(initialTree);
-  const [filteredTree, setFilteredTree] = useState<TreeNode | null>(null);
+  const [tree, setTree] = useState<TreeNode<T, K>>(initialTree as any);
+  const [filteredTree, setFilteredTree] = useState<TreeNode<T, K> | null>(null);
   const idKey = options.idKey;
   const renderNode = options.renderNode || (() => null);
   const filterFn = options.filterFn;
@@ -55,24 +51,19 @@ const useTree = (
   }
 
   const traverse = (
-    node: TreeNode,
-    callback: (
-      node: TreeNode,
-      level: number,
-      parentNode: TreeNode | null
-    ) => any,
+    node: TreeNode<T, K>,
+    callback: (node: TreeNode, level: number, parentNode: TreeNode<T, K> | null) => any,
     level: number = 0,
-    parentNode: TreeNode | null = null
+    parentNode: TreeNode<T, K> | null = null
   ) => {
     const result = callback(node, level, parentNode);
-    const childrenResults: any = node.children.map((child) =>
-      traverse(child, callback, level + 1, node)
-    );
+    const childrenResults: any = node.children.map((child) => traverse(child, callback, level + 1, node));
     const final = [result, ...childrenResults];
 
     return final as any[];
   };
 
+  let errMsg = "[react-hooks-kit][useTree] Node cannot be its own parent";
   const addNode = (node: TreeNode, parentId: string) => {
     if (!node[idKey] && node[idKey] !== 0) {
       node[idKey] = `${UKey()}`;
@@ -80,34 +71,27 @@ const useTree = (
     // check node[idKey] not equal to parentId
     if (node[idKey] === parentId) {
       if (options.strict) {
-        throw new Error(
-          "[react-hooks-kit][useTree] Node cannot be its own parent"
-        );
+        throw new Error(errMsg);
       } else {
-        console.error(
-          "[react-hooks-kit][useTree] Node cannot be its own parent"
-        );
-        return;
+        console.error(errMsg);
+        return errMsg;
       }
     }
 
     let parentExists = false;
     let nodeExists = false;
+    errMsg = `[react-hooks-kit][useTree] Node with id ${node[idKey]} already exists`;
     traverse(tree, (currentNode) => {
       if (currentNode[idKey] === node[idKey]) {
         nodeExists = true;
         if (options.strict) {
-          throw new Error(
-            `[react-hooks-kit][useTree] Node with id ${node[idKey]} already exists`
-          );
+          throw new Error(errMsg);
         }
       }
     });
     if (nodeExists) {
-      console.error(
-        `[react-hooks-kit][useTree] Node with id ${node[idKey]} already exists`
-      );
-      return;
+      console.error(errMsg);
+      return errMsg;
     }
 
     traverse(tree, (currentNode) => {
@@ -116,24 +100,25 @@ const useTree = (
         currentNode.children.push(node);
       }
     });
+    errMsg = `[react-hooks-kit][useTree] Parent with id ${parentId} does not exist`;
     if (!parentExists && options.strict) {
-      throw new Error(
-        `[react-hooks-kit][useTree] Parent with id ${parentId} does not exist`
-      );
+      throw new Error(errMsg);
     } else if (!parentExists) {
-      console.error(
-        `[react-hooks-kit][useTree] Parent with id ${parentId} does not exist`
-      );
-      return;
+      console.error(errMsg);
+      return errMsg;
     }
     setTree({ ...tree });
   };
 
   const removeNode = (nodeId: string | number) => {
+    let errMsg = `[react-hooks-kit][removeNode] You must provide a nodeId to removeNode`;
     if (!nodeId && nodeId !== 0) {
-      throw new Error(
-        "[react-hooks-kit][useTree] You must provide a nodeId to removeNode"
-      );
+      if (options.strict) {
+        throw new Error(errMsg);
+      } else {
+        console.error(errMsg);
+        return errMsg;
+      }
     }
     let nodeExists = false;
     traverse(tree, (currentNode) => {
@@ -143,36 +128,28 @@ const useTree = (
       if (currentNode.children?.some((child) => child[idKey] === nodeId)) {
         nodeExists = true;
       }
-      currentNode.children = currentNode.children.filter(
-        (child) => child[idKey] !== nodeId
-      );
+      currentNode.children = currentNode.children.filter((child) => child[idKey] !== nodeId);
     });
     if (!nodeExists) {
+      errMsg = `[react-hooks-kit][useTree] Node to remove with id ${nodeId} does not exist`;
       if (options.strict) {
-        throw new Error(
-          `[react-hooks-kit][useTree] Node to remove with id ${nodeId} does not exist`
-        );
+        throw new Error(errMsg);
       } else {
-        console.error(
-          `[react-hooks-kit][useTree] Node to remove with id ${nodeId} does not exist`
-        );
-        // return;
+        console.error(errMsg);
+        return errMsg;
       }
     }
     setTree({ ...tree });
   };
 
   const updateNode = (nodeId: string | number, newNodeData: any) => {
+    let errMsg = "[react-hooks-kit][useTree] You must provide a nodeId to updateNode";
     if (!nodeId && nodeId !== 0) {
       if (options.strict) {
-        throw new Error(
-          "[react-hooks-kit][useTree] You must provide a nodeId to updateNode"
-        );
+        throw new Error(errMsg);
       } else {
-        console.error(
-          "[react-hooks-kit][useTree] You must provide a nodeId to updateNode"
-        );
-        return;
+        console.error(errMsg);
+        return errMsg;
       }
     }
     let nodeExists = false;
@@ -183,15 +160,12 @@ const useTree = (
       }
     });
     if (!nodeExists) {
+      errMsg = `[react-hooks-kit][useTree] Node to update with id ${nodeId} does not exist`;
       if (options.strict) {
-        throw new Error(
-          `[react-hooks-kit][useTree] Node to update with id ${nodeId} does not exist`
-        );
+        throw new Error(errMsg);
       }
-      console.error(
-        `[react-hooks-kit][useTree] Node to update with id ${nodeId} does not exist`
-      );
-      return;
+      console.error(errMsg);
+      return errMsg;
     }
     setTree({ ...tree });
   };
@@ -201,7 +175,7 @@ const useTree = (
    * @param nodeId
    * @returns
    */
-  const findNode = (nodeId: string | number): TreeNode | null => {
+  const findNode = (nodeId: string | number): TreeNode<T, K> | null => {
     let foundNode = null;
     traverse(tree, (currentNode) => {
       if (currentNode[idKey] === nodeId) {
@@ -216,7 +190,7 @@ const useTree = (
    * @param filter
    * @returns
    */
-  const searchTree = (filter: string | ((node: TreeNode) => boolean)) => {
+  const searchTree = (filter: string | ((node: TreeNode<T, K>) => boolean)) => {
     let filterFn: any;
 
     if (typeof filter === "string") {
@@ -225,7 +199,7 @@ const useTree = (
       filterFn = filter;
     }
 
-    const result = traverse(tree, (node: TreeNode) => {
+    const result = traverse(tree, (node) => {
       if (filterFn(node)) {
         return node;
       } else {
@@ -233,7 +207,7 @@ const useTree = (
       }
     });
 
-    return result.filter((node: TreeNode) => node !== null);
+    return result.filter((node) => node !== null);
   };
 
   /**
@@ -250,15 +224,12 @@ const useTree = (
     });
 
     if (sourceNode === null) {
+      let errMsg = `[react-hooks-kit][useTree] Node to move with id ${sourceNodeId} does not exist`;
       if (options.strict) {
-        throw new Error(
-          `[react-hooks-kit][useTree] Node to move with id ${sourceNodeId} does not exist`
-        );
+        throw new Error(errMsg);
       } else {
-        console.error(
-          `[react-hooks-kit][useTree] Node to move with id ${sourceNodeId} does not exist`
-        );
-        return;
+        console.error(errMsg);
+        return errMsg;
       }
     }
 
@@ -272,18 +243,25 @@ const useTree = (
    */
   const render = useCallback(() => {
     if (!renderNode) {
-      throw new Error(
-        "[react-hooks-kit][useTree] You must provide a renderNode function to useTree"
-      );
+      throw new Error("[react-hooks-kit][useTree] You must provide a renderNode function to useTree");
+    }
+    if (!tree || `{}` === JSON.stringify(tree)) {
+      return options.renderEmpty
+        ? typeof options.renderEmpty === "function"
+          ? options.renderEmpty()
+          : options.renderEmpty
+        : null;
     }
     return traverse(tree, (node, level, parentNode) => {
+      // @ts-ignore @TODO
       return renderNode(node, idKey, level, parentNode, tree);
     });
   }, [tree, renderNode]);
 
   useEffect(() => {
     if (filterFn) {
-      const result = traverse(tree, (node: TreeNode) => {
+      const result = traverse(tree, (node) => {
+        // @ts-ignore @TODO
         if (filterFn(node)) {
           return node;
         } else {
@@ -291,7 +269,7 @@ const useTree = (
         }
       });
       // @ts-ignore
-      setFilteredTree(result.filter((node: TreeNode) => node !== null));
+      setFilteredTree(result.filter((node) => node !== null));
     }
   }, [tree, filterFn]);
 
@@ -304,6 +282,7 @@ const useTree = (
       findNode,
       moveNode,
       searchTree,
+      // @ts-ignore @TODO
       traverse,
       render,
     },

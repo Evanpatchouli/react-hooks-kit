@@ -1,6 +1,6 @@
 {
   "name": "@evanpatchouli/react-hooks-kit",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": true,
   "homepage": "react-hooks-kit",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "react-app-rewired start",
     "test": "react-app-rewired test",
     "locale:add": "node scripts/locale.add.mod.js",
-    "locale:add:mod": "node scripts/locale.add.mod.js",
+    "locale:add:hook": "node scripts/locale.add.hook.js",
     "view:add:hook": "node scripts/view.add.hook.js"
   },
   "browserslist": {

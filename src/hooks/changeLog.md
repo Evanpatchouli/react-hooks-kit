@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.8 2012/12/18
+
+- Upgrade type infer of useTree
+- Fill docs of useTree
+
 ## v0.1.7 2012/12/18
 
 - Passed tests for useMeta

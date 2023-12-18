@@ -1,8 +1,16 @@
 import { useToggle } from "@/hooks";
-import useTree from "@/hooks/useTree";
 import { Button } from "@mui/material";
+import { useState } from "react";
+import useTree from "@/hooks/useTree";
+import Alert from "@/components/Alert";
 
-const initialTree = {
+type TreeNode = {
+  _id: string;
+  name: string;
+  children: TreeNode[];
+};
+
+const initialTree: TreeNode = {
   _id: "1",
   name: "Root",
   children: [
@@ -36,17 +44,16 @@ const initialTree = {
 };
 
 const View = () => {
-  const [tree, { addNode, removeNode, moveNode, searchTree, render }] = useTree(
-    initialTree,
-    {
-      idKey: "_id",
-      renderNode: (node, idKey, level) => (
-        <div key={node._id} css={$css`margin-left: ${level * 20}px;`}>
-          {node.name}
-        </div>
-      ),
-    }
-  );
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertContent, setAlertContent] = useState("");
+  const [tree, { addNode, removeNode, moveNode, searchTree, render }] = useTree<TreeNode, "_id">(initialTree, {
+    idKey: "_id",
+    renderNode: (node, idKey, level, parent, tree) => (
+      <div key={idKey} css={$css`margin-left: ${level * 20}px;`}>
+        {node.name}
+      </div>
+    ),
+  });
 
   const handleAddNode = () => {
     const newNode = {
@@ -54,22 +61,35 @@ const View = () => {
       name: "New Node",
       children: [],
     };
-    addNode(newNode, "1");
+    let err = addNode(newNode, "1");
+    if (err) {
+      setAlertContent(err);
+      setAlertOpen(true);
+    }
   };
 
   const handleRemoveNode = () => {
-    removeNode("7");
+    let err = removeNode("7");
+    if (err) {
+      setAlertContent(err);
+      setAlertOpen(true);
+    }
   };
 
   const [move, toggleMove] = useToggle();
 
   const handleMoveNode = () => {
-    if (!move) {
-      moveNode("7", "4");
-    } else {
-      moveNode("7", "1");
+    let moveFn = () => moveNode("7", "4");
+    if (move) {
+      moveFn = () => moveNode("7", "1");
     }
-    toggleMove();
+    let err = moveFn();
+    if (err) {
+      setAlertContent(err);
+      setAlertOpen(true);
+    } else {
+      toggleMove();
+    }
   };
 
   const handleSearchTree = () => {
@@ -84,15 +104,37 @@ const View = () => {
       <Button onClick={handleMoveNode}>Move Node</Button>
       <Button onClick={handleSearchTree}>Search Node</Button>
       <div>{render()}</div>
+      <Alert
+        severity="error"
+        open={alertOpen}
+        setOpen={setAlertOpen}
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          zIndex: 9999,
+          width: "fit-content",
+        }}
+      >
+        {alertContent}
+      </Alert>
     </div>
   );
 };
 
 const code = `import { useToggle } from "@/hooks";
-import useTree from "@/hooks/useTree";
 import { Button } from "@mui/material";
+import { useState } from "react";
+import useTree from "@/hooks/useTree";
+import Alert from "@/components/Alert";
 
-const initialTree = {
+type TreeNode = {
+  _id: string;
+  name: string;
+  children: TreeNode[];
+};
+
+const initialTree: TreeNode = {
   _id: "1",
   name: "Root",
   children: [
@@ -126,17 +168,16 @@ const initialTree = {
 };
 
 const View = () => {
-  const [tree, { addNode, removeNode, moveNode, searchTree, render }] = useTree(
-    initialTree,
-    {
-      idKey: "_id",
-      renderNode: (node, idKey, level) => (
-        <div key={node._id} css={$css\`margin-left: \${level * 20}px;\`}>
-          {node.name}
-        </div>
-      ),
-    }
-  );
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertContent, setAlertContent] = useState("");
+  const [tree, { addNode, removeNode, moveNode, searchTree, render }] = useTree<TreeNode, "_id">(initialTree, {
+    idKey: "_id",
+    renderNode: (node, idKey, level, parent, tree) => (
+      <div key={idKey} css={$css\`margin-left: \${level * 20}px;\`}>
+        {node.name}
+      </div>
+    ),
+  });
 
   const handleAddNode = () => {
     const newNode = {
@@ -144,22 +185,35 @@ const View = () => {
       name: "New Node",
       children: [],
     };
-    addNode(newNode, "1");
+    let err = addNode(newNode, "1");
+    if (err) {
+      setAlertContent(err);
+      setAlertOpen(true);
+    }
   };
 
   const handleRemoveNode = () => {
-    removeNode("7");
+    let err = removeNode("7");
+    if (err) {
+      setAlertContent(err);
+      setAlertOpen(true);
+    }
   };
 
   const [move, toggleMove] = useToggle();
 
   const handleMoveNode = () => {
-    if (!move) {
-      moveNode("7", "4");
-    } else {
-      moveNode("7", "1");
+    let moveFn = () => moveNode("7", "4");
+    if (move) {
+      moveFn = () => moveNode("7", "1");
     }
-    toggleMove();
+    let err = moveFn();
+    if (err) {
+      setAlertContent(err);
+      setAlertOpen(true);
+    } else {
+      toggleMove();
+    }
   };
 
   const handleSearchTree = () => {
@@ -174,6 +228,20 @@ const View = () => {
       <Button onClick={handleMoveNode}>Move Node</Button>
       <Button onClick={handleSearchTree}>Search Node</Button>
       <div>{render()}</div>
+      <Alert
+        severity="error"
+        open={alertOpen}
+        setOpen={setAlertOpen}
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          zIndex: 9999,
+          width: "fit-content",
+        }}
+      >
+        {alertContent}
+      </Alert>
     </div>
   );
 };`;
