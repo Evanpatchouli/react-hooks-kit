@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/react-hooks-kit/static/css/main.c27804bd.css",
-    "main.js": "/react-hooks-kit/static/js/main.390498c7.js",
+    "main.js": "/react-hooks-kit/static/js/main.bc9e2ebd.js",
     "static/js/457.cf5c809f.chunk.js": "/react-hooks-kit/static/js/457.cf5c809f.chunk.js",
     "static/css/303.76d8c4df.chunk.css": "/react-hooks-kit/static/css/303.76d8c4df.chunk.css",
-    "static/js/303.f5c26e86.chunk.js": "/react-hooks-kit/static/js/303.f5c26e86.chunk.js",
+    "static/js/303.5c7ec27e.chunk.js": "/react-hooks-kit/static/js/303.5c7ec27e.chunk.js",
     "static/js/787.a5b1f0aa.chunk.js": "/react-hooks-kit/static/js/787.a5b1f0aa.chunk.js",
     "static/js/14.513cdc1a.chunk.js": "/react-hooks-kit/static/js/14.513cdc1a.chunk.js",
     "static/media/logo.svg": "/react-hooks-kit/static/media/logo.e3be05329bd1e4952bd0d6482f3e06f1.svg",
     "static/media/logo.filled.svg": "/react-hooks-kit/static/media/logo.filled.16bf1e4e7c8b0a539d2d7c242f486712.svg",
     "index.html": "/react-hooks-kit/index.html",
     "main.c27804bd.css.map": "/react-hooks-kit/static/css/main.c27804bd.css.map",
-    "main.390498c7.js.map": "/react-hooks-kit/static/js/main.390498c7.js.map",
+    "main.bc9e2ebd.js.map": "/react-hooks-kit/static/js/main.bc9e2ebd.js.map",
     "457.cf5c809f.chunk.js.map": "/react-hooks-kit/static/js/457.cf5c809f.chunk.js.map",
     "303.76d8c4df.chunk.css.map": "/react-hooks-kit/static/css/303.76d8c4df.chunk.css.map",
-    "303.f5c26e86.chunk.js.map": "/react-hooks-kit/static/js/303.f5c26e86.chunk.js.map",
+    "303.5c7ec27e.chunk.js.map": "/react-hooks-kit/static/js/303.5c7ec27e.chunk.js.map",
     "787.a5b1f0aa.chunk.js.map": "/react-hooks-kit/static/js/787.a5b1f0aa.chunk.js.map",
     "14.513cdc1a.chunk.js.map": "/react-hooks-kit/static/js/14.513cdc1a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c27804bd.css",
-    "static/js/main.390498c7.js"
+    "static/js/main.bc9e2ebd.js"
   ]
 }

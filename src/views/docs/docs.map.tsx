@@ -57,12 +57,12 @@ export default {
     UseList: {
       route: "useList",
       title: "UseList",
-      status: "experimental",
+      status: "new",
     },
     UseTree: {
       route: "useTree",
       title: "UseTree",
-      status: "experimental",
+      status: "new",
     },
     UseReactive: {
       route: "useReactive",

@@ -1,13 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import UKey from "./utils/Ukey";
+import cloneDeep from "./utils/cloneDeep";
 
-type TreeNode<T extends object = { [key: string]: any }, K extends string | number | undefined = "_id"> = {
+type TreeNode<
+  T extends object = { [key: string]: any },
+  K extends string | number | undefined = "_id"
+> = {
   // @ts-ignore
   [idKey: K extends string | number ? K : "_id"]: any;
-  children: TreeNode<T, K>[];
+  children?: TreeNode<T, K>[];
 } & T;
 
-interface UseTreeOptions<T extends object = { [key: string]: any }, K extends string | number = "_id"> {
+interface UseTreeOptions<
+  T extends object = { [key: string]: any },
+  K extends string | number = "_id"
+> {
   idKey?: K;
   renderNode?: (
     node: TreeNode<T, K>,
@@ -21,7 +28,15 @@ interface UseTreeOptions<T extends object = { [key: string]: any }, K extends st
   strict?: boolean;
 }
 
-const useTree = <T extends object = { [key: string]: any }, K extends string | number = "_id">(
+interface Traverse<Callback> {
+  (callback: Callback): any[];
+  (nodeId: string, callback?: Callback | undefined): any[];
+}
+
+const useTree = <
+  T extends object = { [key: string]: any },
+  K extends string | number = "_id"
+>(
   initialTree: TreeNode<T, K>,
   options: UseTreeOptions<T, K> = { idKey: "_id" as K }
 ): [
@@ -32,15 +47,22 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
     updateNode: (nodeId: string, newNodeData: any) => void | string;
     findNode: (nodeId: string) => TreeNode<T, K> | null;
     moveNode: (sourceNodeId: string, targetNodeId: string) => void | string;
-    searchTree: (filter: string | ((node: TreeNode<T, K>) => boolean)) => TreeNode<T, K>[];
-    traverse: (
-      node: TreeNode<T, K>,
-      callback: (node: TreeNode<T, K>, level: number, parentNode: TreeNode<T, K> | null) => any
-    ) => any[];
+    searchTree: (
+      filter: string | ((node: TreeNode<T, K>) => boolean)
+    ) => TreeNode<T, K>[];
+    traverse: Traverse<
+      (
+        node: TreeNode<T, K>,
+        level: number,
+        parentNode: TreeNode<T, K> | null
+      ) => any
+    >;
     render: () => React.ReactNode[] | React.ReactNode | null;
   }
 ] => {
-  const [tree, setTree] = useState<TreeNode<T, K>>(initialTree as any);
+  const [tree, setTree] = useState<TreeNode<T, K>>(
+    cloneDeep(initialTree) as any
+  );
   const [filteredTree, setFilteredTree] = useState<TreeNode<T, K> | null>(null);
   const idKey = options.idKey;
   const renderNode = options.renderNode || (() => null);
@@ -52,12 +74,19 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
 
   const traverse = (
     node: TreeNode<T, K>,
-    callback: (node: TreeNode, level: number, parentNode: TreeNode<T, K> | null) => any,
+    callback: (
+      node: TreeNode,
+      level: number,
+      parentNode: TreeNode<T, K> | null
+    ) => any,
     level: number = 0,
     parentNode: TreeNode<T, K> | null = null
   ) => {
     const result = callback(node, level, parentNode);
-    const childrenResults: any = node.children.map((child) => traverse(child, callback, level + 1, node));
+    const childrenResults: any =
+      node.children?.map((child) =>
+        traverse(child, callback, level + 1, node)
+      ) || [];
     const final = [result, ...childrenResults];
 
     return final as any[];
@@ -97,7 +126,10 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
     traverse(tree, (currentNode) => {
       if (currentNode[idKey] === parentId) {
         parentExists = true;
-        currentNode.children.push(node);
+        if (!Array.isArray(currentNode.children)) {
+          currentNode.children = [];
+        }
+        currentNode.children?.push(node);
       }
     });
     errMsg = `[react-hooks-kit][useTree] Parent with id ${parentId} does not exist`;
@@ -128,7 +160,8 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
       if (currentNode.children?.some((child) => child[idKey] === nodeId)) {
         nodeExists = true;
       }
-      currentNode.children = currentNode.children.filter((child) => child[idKey] !== nodeId);
+      currentNode.children =
+        currentNode.children?.filter((child) => child[idKey] !== nodeId) || [];
     });
     if (!nodeExists) {
       errMsg = `[react-hooks-kit][useTree] Node to remove with id ${nodeId} does not exist`;
@@ -143,7 +176,8 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
   };
 
   const updateNode = (nodeId: string | number, newNodeData: any) => {
-    let errMsg = "[react-hooks-kit][useTree] You must provide a nodeId to updateNode";
+    let errMsg =
+      "[react-hooks-kit][useTree] You must provide a nodeId to updateNode";
     if (!nodeId && nodeId !== 0) {
       if (options.strict) {
         throw new Error(errMsg);
@@ -199,15 +233,16 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
       filterFn = filter;
     }
 
-    const result = traverse(tree, (node) => {
+    const results: TreeNode<T, K>[] = [];
+
+    traverse(tree, (node) => {
       if (filterFn(node)) {
-        return node;
-      } else {
-        return null;
+        //@ts-ignore
+        results.push(node);
       }
     });
 
-    return result.filter((node) => node !== null);
+    return results;
   };
 
   /**
@@ -243,7 +278,9 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
    */
   const render = useCallback(() => {
     if (!renderNode) {
-      throw new Error("[react-hooks-kit][useTree] You must provide a renderNode function to useTree");
+      throw new Error(
+        "[react-hooks-kit][useTree] You must provide a renderNode function to useTree"
+      );
     }
     if (!tree || `{}` === JSON.stringify(tree)) {
       return options.renderEmpty
@@ -257,6 +294,32 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
       return renderNode(node, idKey, level, parentNode, tree);
     });
   }, [tree, renderNode]);
+
+  // $traverse should like (args1: callback|string, args2?: callback)
+  type Callback = (
+    node: TreeNode<T, K>,
+    level: number,
+    parentNode: TreeNode<T, K> | null
+  ) => any;
+
+  const $traverse = (callbackOrId: Callback | string, cb?: Callback) => {
+    if (typeof callbackOrId === "string") {
+      const nodeId = callbackOrId;
+      // Find the node and traverse it
+      let foundNode = findNode(nodeId);
+      if (!foundNode) {
+        return [];
+      } else {
+        const callback = cb;
+        // @ts-ignore
+        return traverse(foundNode, callback);
+      }
+    } else {
+      const callback = callbackOrId;
+      // @ts-ignore
+      return traverse(tree, callback);
+    }
+  };
 
   useEffect(() => {
     if (filterFn) {
@@ -282,8 +345,7 @@ const useTree = <T extends object = { [key: string]: any }, K extends string | n
       findNode,
       moveNode,
       searchTree,
-      // @ts-ignore @TODO
-      traverse,
+      traverse: $traverse,
       render,
     },
   ];

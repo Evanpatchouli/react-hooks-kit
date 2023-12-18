@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.11 2012/12/19
+
+- Passed tests for useTree
+
 ## v0.1.10 2012/12/18
 
 - Passed tests for useList

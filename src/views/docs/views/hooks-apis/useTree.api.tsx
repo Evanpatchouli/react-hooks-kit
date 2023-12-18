@@ -1,6 +1,8 @@
 import ApiTable from "@/components/api-table";
+import Code from "@/components/code";
 import { Body, SubTitle } from "@/components/layout/Article";
 import useLocaleSelector from "@/locale/locale.selector";
+import { Chip } from "@mui/material";
 
 export default function UseTreeApi() {
   const $generics = useLocaleSelector("useTree.$apis.generics");
@@ -91,8 +93,17 @@ export default function UseTreeApi() {
         },
         {
           name: "traverse",
-          type: "(node: TreeNode<T>, callback: (node: TreeNode<T>) => void) => void",
-          desc: "traverse tree",
+          type: (
+            <Code theme='oneLight' style={{
+              background: "#ebebeb"
+            }} lang="ts">{
+`Traverse<Callback> {
+  (callback: Callback): any[];
+  (nodeId: string, callback?: 
+    Callback | undefined): any[];
+}`}</Code>
+          ),
+          desc: "traverse tree or certain node",
         },
         {
           name: "render",
@@ -107,7 +118,10 @@ export default function UseTreeApi() {
     <>
       <SubTitle id="hook-api">Api of useTree</SubTitle>
       <SubTitle low top="20px">
-        Generics{'<T extends object = { [key: string]: any }, K extends string | number = "_id">'}
+        Generics
+        {
+          '<T extends object = { [key: string]: any }, K extends string | number = "_id">'
+        }
       </SubTitle>
       <Body>{$generics}</Body>
       <SubTitle low top="20px">
