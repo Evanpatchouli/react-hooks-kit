@@ -3,12 +3,7 @@ import useVirtualArea from "@hooks/useVirtualArea";
 import Loading from "@/components/Loading";
 
 const Empty = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 50 50"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 50 50">
     <circle cx="25" cy="25" r="20" stroke="#aaa" stroke-width="2" fill="none" />
     <line x1="15" y1="15" x2="35" y2="35" stroke="#aaa" stroke-width="2" />
   </svg>
@@ -20,15 +15,10 @@ function View() {
 
   const loadMoreItems = async () => {
     // Mock network request
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1000 + Math.random() * 1000)
-    );
+    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000));
 
     // push new items
-    setItems((prevItems) => [
-      ...prevItems,
-      ...Array.from({ length: 10 }, (_, i) => i + prevItems.length),
-    ]);
+    setItems((prevItems) => [...prevItems, ...Array.from({ length: 10 }, (_, i) => i + prevItems.length)]);
 
     // do not load more if there has been 50 items at least
     if (items.length + 10 >= 50) {
@@ -36,22 +26,17 @@ function View() {
     }
   };
 
-  const renderItem = (item: any) => (
-    <div css={$css`margin-left: 20px`}>{item}</div>
-  );
+  const renderItem = (item: any) => <div css={$css`margin-left: 20px`}>{item}</div>;
 
   const [loaderRef, loading, _items, render] = useVirtualArea({
     loadMoreItems,
     items,
     hasMore,
     renderItem,
-    renderNoData: (
+    renderEmpty: (
       <div css={$css`display: flex; align-items: center; padding-block: 20px;`}>
         <span>No Data</span>
-        <div
-          css={$css`margin-left: 12px; width: 20px; height: 20px;`}
-          children={<Empty />}
-        />
+        <div css={$css`margin-left: 12px; width: 20px; height: 20px;`} children={<Empty />} />
       </div>
     ),
     height: "300px",
@@ -81,9 +66,7 @@ function View() {
       return (
         <div css={$css`display: flex; align-items: center; margin-left: 12px;`}>
           <Loading on />
-          <span css={$css`margin-left: 20px; color: #44A2FC;`}>
-            Loading Items...
-          </span>
+          <span css={$css`margin-left: 20px; color: #44A2FC;`}>Loading Items...</span>
         </div>
       );
     },
@@ -160,7 +143,7 @@ function View() {
     items,
     hasMore,
     renderItem,
-    renderNoData: (
+    renderEmpty: (
       <div css={$css\`display: flex; align-items: center; padding-block: 20px;\`}>
         <span>No Data</span>
         <div

@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 
 export interface VirtualAreaOptions<
   C extends keyof React.JSX.IntrinsicElements = "div",
@@ -22,7 +16,7 @@ export interface VirtualAreaOptions<
   renderItem: React.ReactNode | ((item: any) => React.ReactNode);
   itemComponent?: I;
   itemComponentProps?: React.JSX.IntrinsicElements[I];
-  renderNoData?: React.ReactNode | (() => React.ReactNode);
+  renderEmpty?: React.ReactNode | (() => React.ReactNode);
   renderLoader?: React.ReactNode | (() => React.ReactNode);
   renderUnLoaded?: React.ReactNode | (() => React.ReactNode);
   loaderComponent?: L;
@@ -42,7 +36,7 @@ export default function useVirtualArea(
     renderItem,
     itemComponent,
     itemComponentProps,
-    renderNoData,
+    renderEmpty,
     renderLoader,
     renderUnLoaded,
     loaderComponent,
@@ -90,10 +84,7 @@ export default function useVirtualArea(
     return () => observer.disconnect();
   }, [observerOptions, loadMore]);
 
-  const Container = useMemo(
-    () => containerComponent || "div",
-    [containerComponent]
-  );
+  const Container = useMemo(() => containerComponent || "div", [containerComponent]);
 
   const Item = useMemo(() => itemComponent || "div", [itemComponent]);
 
@@ -119,11 +110,7 @@ export default function useVirtualArea(
         {
           /** @ts-ignore */
           (items || []).length === 0 &&
-            (typeof renderNoData === "function"
-              ? renderNoData()
-              : renderNoData === void 0
-              ? "No data"
-              : renderNoData)
+            (typeof renderEmpty === "function" ? renderEmpty() : renderEmpty === void 0 ? "No data" : renderEmpty)
         }
         {items.map((item, index) => (
           <Item key={index} {...itemComponentProps}>

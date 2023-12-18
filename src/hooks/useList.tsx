@@ -12,14 +12,14 @@ type RenderFunction<T extends object = {}> = (
   index: number,
   array: ItemExtended<T>[]
 ) => JSX.Element;
-type RenderNoData = (() => JSX.Element | React.ReactNode) | JSX.Element | React.ReactNode;
+type RenderEmpty = (() => JSX.Element | React.ReactNode) | JSX.Element | React.ReactNode;
 
 interface UseListOptions<T extends object = {}> {
   idKey?: string;
   sortFn?: SortFunction<T>;
   filterFn?: FilterFunction<T>;
   renderFn?: RenderFunction<T>;
-  renderNoData?: RenderNoData;
+  renderEmpty?: RenderEmpty;
   itemsPerPage?: number;
 }
 
@@ -192,10 +192,10 @@ function useList<T extends object = {}>(
                 <Fragment key={item[options.idKey || "_id"]}>{options.renderFn(item, idx, array)}</Fragment>
               ) : null;
             })
-          : options.renderNoData
-          ? typeof options.renderNoData === "function"
-            ? options.renderNoData()
-            : options.renderNoData
+          : options.renderEmpty
+          ? typeof options.renderEmpty === "function"
+            ? options.renderEmpty()
+            : options.renderEmpty
           : null;
       },
       pagedItems,

@@ -1087,10 +1087,10 @@ function useList(initialItems, dependencies, options) {
                     ? filteredItems.map(function (item, idx, array) {
                         return options.renderFn ? (jsx(Fragment, { children: options.renderFn(item, idx, array) }, item[options.idKey || "_id"])) : null;
                     })
-                    : options.renderNoData
-                        ? typeof options.renderNoData === "function"
-                            ? options.renderNoData()
-                            : options.renderNoData
+                    : options.renderEmpty
+                        ? typeof options.renderEmpty === "function"
+                            ? options.renderEmpty()
+                            : options.renderEmpty
                         : null;
             },
             pagedItems: pagedItems,
@@ -3058,7 +3058,7 @@ function useUrl(callback, name, immediate, config) {
 
 function useVirtualArea(_a, depths) {
     var _this = this;
-    var loadMoreItems = _a.loadMoreItems, items = _a.items, hasMore = _a.hasMore, height = _a.height, containerStyle = _a.style, renderTop = _a.renderTop, renderItem = _a.renderItem, itemComponent = _a.itemComponent, itemComponentProps = _a.itemComponentProps, renderNoData = _a.renderNoData, renderLoader = _a.renderLoader, renderUnLoaded = _a.renderUnLoaded, loaderComponent = _a.loaderComponent, loaderComponentProps = _a.loaderComponentProps, containerComponent = _a.containerComponent, containerComponentProps = _a.containerComponentProps, renderBottom = _a.renderBottom, observerOptions = _a.observerOptions;
+    var loadMoreItems = _a.loadMoreItems, items = _a.items, hasMore = _a.hasMore, height = _a.height, containerStyle = _a.style, renderTop = _a.renderTop, renderItem = _a.renderItem, itemComponent = _a.itemComponent, itemComponentProps = _a.itemComponentProps, renderEmpty = _a.renderEmpty, renderLoader = _a.renderLoader, renderUnLoaded = _a.renderUnLoaded, loaderComponent = _a.loaderComponent, loaderComponentProps = _a.loaderComponentProps, containerComponent = _a.containerComponent, containerComponentProps = _a.containerComponentProps, renderBottom = _a.renderBottom, observerOptions = _a.observerOptions;
     var _b = useState(false), loading = _b[0], setLoading = _b[1];
     var loaderRef = useRef(null);
     var loadMore = useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
@@ -3103,11 +3103,11 @@ function useVirtualArea(_a, depths) {
         return (jsxs(Container, __assign({}, _containerComponentProps, { children: [typeof renderTop === "function" ? renderTop() : renderTop, 
                 /** @ts-ignore */
                 (items || []).length === 0 &&
-                    (typeof renderNoData === "function"
-                        ? renderNoData()
-                        : renderNoData === void 0
+                    (typeof renderEmpty === "function"
+                        ? renderEmpty()
+                        : renderEmpty === void 0
                             ? "No data"
-                            : renderNoData), items.map(function (item, index) { return (jsx(Item, __assign({}, itemComponentProps, { children: typeof renderItem === "function" ? renderItem(item) : renderItem }), index)); }), jsxs(Loader, __assign({ ref: loaderRef }, loaderComponentProps, { children: [loading &&
+                            : renderEmpty), items.map(function (item, index) { return (jsx(Item, __assign({}, itemComponentProps, { children: typeof renderItem === "function" ? renderItem(item) : renderItem }), index)); }), jsxs(Loader, __assign({ ref: loaderRef }, loaderComponentProps, { children: [loading &&
                             (typeof renderLoader === "function"
                                 ? renderLoader()
                                 : renderLoader === void 0

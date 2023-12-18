@@ -69,7 +69,7 @@ export default function UseVirtualAreaApi() {
           desc: "props of item component",
         },
         {
-          name: "renderNoData",
+          name: "renderEmpty",
           type: "React.ReactNode | (() => React.ReactNode)",
           defaultValue: "No data",
           desc: "render function of no data",

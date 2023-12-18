@@ -49,6 +49,8 @@ const View = () => {
     <>
       {listView}
       <div css={$css`text-align: right;`}>
+        <span>The temp list length: </span>
+        <Chip label={`${list.length}`} />
         <span>The original list length: </span>
         <Chip label={`${lister.originalItems.length}`} />
         <Button color="error" onClick={handlePop}>

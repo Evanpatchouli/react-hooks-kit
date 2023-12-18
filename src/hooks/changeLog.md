@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.9 2012/12/18
+
+- rename `renderNoData` to `renderEmpty` globally
+
 ## v0.1.8 2012/12/18
 
 - Upgrade type infer of useTree

@@ -47,7 +47,7 @@ export default function UseList() {
           desc: "render of item",
         },
         {
-          name: "renderNoData",
+          name: "renderEmpty",
           type: "Function | JSX.Element | React.ReactNode",
           defaultValue: null,
           desc: "render of no data",
