@@ -355,7 +355,8 @@ const locale_en = {
         <Li>deep is type of boolean</Li>
       </ol>
     ),
-    $p1: "",
+    $p1: "Create a reactive proxy for an object",
+    $p2: "Create a reactive proxy for an array",
     $faqs: (
       <ul>
         <Li>

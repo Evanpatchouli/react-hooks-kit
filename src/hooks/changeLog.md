@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.13 2012/12/20
+
+- useReactive support array
+
 ## v0.1.12 2012/12/19
 
 - Passed tests for useTickState

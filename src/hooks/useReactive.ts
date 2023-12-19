@@ -10,15 +10,27 @@ type ProxyObj<T> = {
   };
 };
 
-// @ts-ignore
 export class Reactive<T extends object> {
   constructor(obj: T, fsr?: Function) {
     const instance = new Proxy(obj, {
       // @ts-ignore
       get(target: ProxyObj<T>, prop: keyof T, receiver) {
-        // if (prop === "toJSON") {
-        //   return () => deProxy(target);
-        // }
+        if (prop === "toJSON") { // || prop === "valueOf" || prop === "toString"
+          return () => unwrap(target);
+        }
+        if (Array.isArray(target) && prop in Array.prototype) {
+          // @ts-ignore
+          return function (...args) {
+            if (["push", "unshift"].includes(prop as string)) {
+              // @ts-ignore
+              args = args.map((arg) => deepProxy(arg, fsr));
+            }
+            // @ts-ignore
+            const result = Array.prototype[prop].apply(target, args);
+            fsr?.();
+            return result;
+          };
+        }
         return target[prop]?.value;
       },
       // @ts-ignore
@@ -45,20 +57,14 @@ export function deepProxy<T extends object>(obj: T, fsr: Function) {
   const proxyObj = Array.isArray(obj) ? [] : ({} as any);
 
   if (Array.isArray(obj)) {
-    obj.forEach((item, index) => {
-      if (typeof item === "object" && item !== null) {
-        proxyObj[index] = { value: deepProxy(item as any, fsr) };
-      } else {
-        proxyObj[index] = { value: item };
-      }
-    });
-  } else {
-    for (let key in obj) {
-      if (typeof obj[key] === "object" && obj[key] !== null) {
-        proxyObj[key] = { value: deepProxy(obj[key] as any, fsr) };
-      } else {
-        proxyObj[key] = { value: obj[key] };
-      }
+    Object.setPrototypeOf(proxyObj, Array.prototype);
+  }
+
+  for (let key in obj) {
+    if (typeof obj[key] === "object" && obj[key] !== null) {
+      proxyObj[key] = { value: deepProxy(obj[key] as any, fsr) };
+    } else {
+      proxyObj[key] = { value: obj[key] };
     }
   }
 
@@ -71,7 +77,9 @@ function deProxy(proxyObj: any) {
   const obj = Array.isArray(proxyObj) ? [] : ({} as any);
 
   for (let key in proxyObj) {
-    if (typeof proxyObj[key] === "object" && proxyObj[key] !== null) {
+    if (proxyObj[key] instanceof Reactive) {
+      obj[key] = unwrap(proxyObj[key]);
+    } else if (typeof proxyObj[key] === "object" && proxyObj[key] !== null) {
       obj[key] = deProxy(proxyObj[key]);
     } else {
       obj[key] = proxyObj[key];
@@ -86,7 +94,7 @@ function unwrap(obj: any) {
     return obj;
   }
 
-  const unwrappedObj = {} as any;
+  const unwrappedObj = Array.isArray(obj) ? [] : ({} as any);
 
   for (let key in obj) {
     unwrappedObj[key] = obj[key].value;
