@@ -1,6 +1,7 @@
 import Code from "@/components/code";
 import useReactive from "@/hooks/useReactive";
 import { Button } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const View = () => {
   const obj = useReactive(
@@ -21,6 +22,13 @@ const View = () => {
     },
     true
   );
+  const arr = useReactive([1, 2, 3]);
+  const [arrayStr, setArrayStr] = useState("");
+  useEffect(() => {
+    let str = JSON.stringify(arr);
+    setArrayStr(str);
+  }, []);
+
   return (
     <>
       <Button
@@ -34,6 +42,7 @@ const View = () => {
       <Button
         onClick={() => {
           obj.more.score++;
+          arr[0] = 100;
         }}
       >
         obj.more.score++
@@ -47,6 +56,9 @@ const View = () => {
       </Button>
       <Code theme="oneLight" lang="json">
         {JSON.stringify(obj, null, 2)}
+      </Code>
+      <Code theme="oneLight" lang="json">
+        {JSON.stringify(arr)}
       </Code>
     </>
   );

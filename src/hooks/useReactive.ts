@@ -15,12 +15,15 @@ export class Reactive<T extends object> {
   constructor(obj: T, fsr?: Function) {
     const instance = new Proxy(obj, {
       // @ts-ignore
-      get(target: ProxyObj<T>, prop: keyof T) {
+      get(target: ProxyObj<T>, prop: keyof T, receiver) {
+        // if (prop === "toJSON") {
+        //   return () => deProxy(target);
+        // }
         return target[prop]?.value;
       },
       // @ts-ignore
       set(target: ProxyObj<T>, prop: keyof T, value: T[keyof T]) {
-        if (!isEqual(target[prop]["value"], value)) {
+        if (target[prop] && !isEqual(target[prop]["value"], value)) {
           const update = () => {
             target[prop]["value"] = value; // unwrap(deProxy(target))
             fsr?.();
@@ -38,22 +41,34 @@ export class Reactive<T extends object> {
   }
 }
 
-function deepProxy<T extends object>(obj: T, fsr: Function) {
-  const proxyObj = {} as any;
+export function deepProxy<T extends object>(obj: T, fsr: Function) {
+  const proxyObj = Array.isArray(obj) ? [] : ({} as any);
 
-  for (let key in obj) {
-    if (typeof obj[key] === "object" && obj[key] !== null) {
-      proxyObj[key] = { value: deepProxy(obj[key] as any, fsr) };
-    } else {
-      proxyObj[key] = { value: obj[key] };
+  if (Array.isArray(obj)) {
+    obj.forEach((item, index) => {
+      if (typeof item === "object" && item !== null) {
+        proxyObj[index] = { value: deepProxy(item as any, fsr) };
+      } else {
+        proxyObj[index] = { value: item };
+      }
+    });
+  } else {
+    for (let key in obj) {
+      if (typeof obj[key] === "object" && obj[key] !== null) {
+        proxyObj[key] = { value: deepProxy(obj[key] as any, fsr) };
+      } else {
+        proxyObj[key] = { value: obj[key] };
+      }
     }
   }
 
   return new Reactive(proxyObj, fsr);
 }
 
+// const arr = useReactive([1, 2, 3]);
+
 function deProxy(proxyObj: any) {
-  const obj = {} as any;
+  const obj = Array.isArray(proxyObj) ? [] : ({} as any);
 
   for (let key in proxyObj) {
     if (typeof proxyObj[key] === "object" && proxyObj[key] !== null) {
