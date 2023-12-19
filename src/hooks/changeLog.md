@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.12 2012/12/19
+
+- Passed tests for useTickState
+
 ## v0.1.11 2012/12/19
 
 - Passed tests for useTree
