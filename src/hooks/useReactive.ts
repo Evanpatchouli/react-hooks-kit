@@ -15,7 +15,8 @@ export class Reactive<T extends object> {
     const instance = new Proxy(obj, {
       // @ts-ignore
       get(target: ProxyObj<T>, prop: keyof T, receiver) {
-        if (prop === "toJSON") { // || prop === "valueOf" || prop === "toString"
+        if (prop === "toJSON") {
+          // || prop === "valueOf" || prop === "toString"
           return () => unwrap(target);
         }
         if (Array.isArray(target) && prop in Array.prototype) {
@@ -53,7 +54,21 @@ export class Reactive<T extends object> {
   }
 }
 
-export function deepProxy<T extends object>(obj: T, fsr: Function) {
+export function deepProxy<T extends object>(obj: T, fsr?: Function) {
+  if (typeof obj !== "object" || obj === null) {
+    // @ts-ignore
+    let wrapObj = {
+      value: obj,
+    };
+    // @ts-ignore
+    return reactive(wrapObj, fsr);
+  } else {
+    // @ts-ignore
+    return reactive(obj, fsr);
+  }
+}
+
+export function reactive<T extends object>(obj: T, fsr: Function) {
   const proxyObj = Array.isArray(obj) ? [] : ({} as any);
 
   if (Array.isArray(obj)) {
@@ -62,7 +77,7 @@ export function deepProxy<T extends object>(obj: T, fsr: Function) {
 
   for (let key in obj) {
     if (typeof obj[key] === "object" && obj[key] !== null) {
-      proxyObj[key] = { value: deepProxy(obj[key] as any, fsr) };
+      proxyObj[key] = { value: reactive(obj[key] as any, fsr) };
     } else {
       proxyObj[key] = { value: obj[key] };
     }
@@ -121,7 +136,7 @@ function shallowProxy<T extends object>(obj: T, fsr?: Function) {
 /**
  * #### params
  * - **initialState** - Only supports object type as reactive data source.
- * If given a non-object type, it will return the original value
+ * If given a non-object type, it will return the proxy wrapped with struct `{value: T}`.
  * - **deep** - If the second parameter is typeof `boolean`, it means whether the object is deeply reactive.
  * If the second parameter is typeof `function`, it means that the callback function will be triggered when the state changes.
  * - **callback** - Watcher callback function, which will be triggered when the state changes
@@ -135,7 +150,7 @@ function useReactive<T, D extends boolean = true>(
   initialState: T,
   deep?: D | Watcher<T>,
   ...callbacks: Array<Watcher<T>>
-): T {
+): T extends object ? T : { value: T } {
   const fsr = useForceUpdate();
   const stateRef = useRef(initialState);
 
@@ -157,6 +172,7 @@ function useReactive<T, D extends boolean = true>(
     fsr();
   }, []);
 
+  //@ts-ignore
   return stateRef.current;
 }
 

@@ -37,7 +37,7 @@ export default function UseReactive() {
         variant="outlined"
         color="primary"
         onClick={() => {
-          num++;
+          num.value++;
         }}
       >
         {JSON.stringify(num)}

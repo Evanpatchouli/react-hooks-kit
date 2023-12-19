@@ -4,30 +4,23 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const View = () => {
-  const arr = useReactive([1, 2, 3]);
+  let c = useReactive(0);
 
   useEffect(() => {
-    console.log(arr);
+    console.log(c);
   }, []);
 
   return (
     <>
       <Button
         onClick={() => {
-          arr[0]++;
+          c.value++;
         }}
       >
-        arr[0]++
-      </Button>
-      <Button
-        onClick={() => {
-          arr.push(1);
-        }}
-      >
-        push
+        c++
       </Button>
       <Code theme="oneLight" lang="json">
-        {JSON.stringify(arr, null, 2)}
+        {`${c.value}`}
       </Code>
     </>
   );
@@ -39,30 +32,23 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const View = () => {
-  const arr = useReactive([1, 2, 3]);
+  let c = useReactive(0);
 
   useEffect(() => {
-    console.log(arr);
+    console.log(c);
   }, []);
 
   return (
     <>
       <Button
         onClick={() => {
-          arr[0]++;
+          c.value++;
         }}
       >
-        arr[0]++
-      </Button>
-      <Button
-        onClick={() => {
-          arr.push(1);
-        }}
-      >
-        push
+        c++
       </Button>
       <Code theme="oneLight" lang="json">
-        {JSON.stringify(arr, null, 2)}
+        {\`\${c.value}\`}
       </Code>
     </>
   );

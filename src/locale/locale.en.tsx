@@ -351,12 +351,13 @@ const locale_en = {
     ),
     consideration: (
       <ol>
-        <Li>initialValue is type of object</Li>
+        <Li>initialValue could be of any type</Li>
         <Li>deep is type of boolean</Li>
       </ol>
     ),
     $p1: "Create a reactive proxy for an object",
     $p2: "Create a reactive proxy for an array",
+    $p3: "Create a reactive proxy for a primitive value. In this case, the returned struct will be like this: { value: 1 }, and you can get the value by using value property.",
     $faqs: (
       <ul>
         <Li>

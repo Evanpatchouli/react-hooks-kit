@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.14 2012/12/20
+
+- useReactive support primitive
+
 ## v0.1.13 2012/12/20
 
 - useReactive support array

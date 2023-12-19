@@ -53,10 +53,10 @@ const View = () => {
   );
 };
 
-const code = `
-import Code from "@/components/code";
+const code = `import Code from "@/components/code";
 import useReactive from "@/hooks/useReactive";
 import { Button } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const View = () => {
   const obj = useReactive(
@@ -77,12 +77,12 @@ const View = () => {
     },
     true
   );
+
   return (
     <>
       <Button
         onClick={() => {
           obj.age = Math.random() * 100;
-          // console.log(obj);
         }}
       >
         obj.age++
@@ -106,8 +106,7 @@ const View = () => {
       </Code>
     </>
   );
-};
-`;
+};`;
 
 export default {
   code,
