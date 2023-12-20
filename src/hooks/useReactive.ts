@@ -1,7 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import useForceUpdate from "./useForceUpdate";
 import isEqual from "./utils/isEqual";
 
+/**
+ * @param {*} state The new state value
+ */
 type Watcher<T> = (state: T) => void;
 
 type ProxyObj<T> = {
@@ -38,7 +41,9 @@ export class Reactive<T extends object> {
       set(target: ProxyObj<T>, prop: keyof T, value: T[keyof T]) {
         if (target[prop] && !isEqual(target[prop]["value"], value)) {
           const update = () => {
-            target[prop]["value"] = value; // unwrap(deProxy(target))
+            // target[prop]["value"] = value;
+            // @ts-ignore
+            target[prop]["value"] = typeof value === "object" ? reactive(value, fsr) : value; // unwrap(deProxy(target))
             fsr?.();
           };
           update();
@@ -56,23 +61,25 @@ export class Reactive<T extends object> {
 
 export function deepProxy<T extends object>(obj: T, fsr?: Function) {
   if (typeof obj !== "object" || obj === null) {
-    // @ts-ignore
-    let wrapObj = {
-      value: obj,
-    };
-    // @ts-ignore
+    let wrapObj = { value: obj };
     return reactive(wrapObj, fsr);
   } else {
-    // @ts-ignore
     return reactive(obj, fsr);
   }
 }
 
-export function reactive<T extends object>(obj: T, fsr: Function) {
-  const proxyObj = Array.isArray(obj) ? [] : ({} as any);
+export function reactive<T extends object>(obj: T, fsr?: Function) {
+  let proxyObj: any;
 
-  if (Array.isArray(obj)) {
+  if (obj instanceof Date) {
+    proxyObj = new Date(obj.getTime());
+  } else if (obj instanceof Set) {
+    proxyObj = new Set(obj);
+  } else if (Array.isArray(obj)) {
+    proxyObj = [];
     Object.setPrototypeOf(proxyObj, Array.prototype);
+  } else {
+    proxyObj = {};
   }
 
   for (let key in obj) {
@@ -85,8 +92,6 @@ export function reactive<T extends object>(obj: T, fsr: Function) {
 
   return new Reactive(proxyObj, fsr);
 }
-
-// const arr = useReactive([1, 2, 3]);
 
 function deProxy(proxyObj: any) {
   const obj = Array.isArray(proxyObj) ? [] : ({} as any);
@@ -135,7 +140,7 @@ function shallowProxy<T extends object>(obj: T, fsr?: Function) {
 
 /**
  * #### params
- * - **initialState** - Only supports object type as reactive data source.
+ * - **initialState** - support **primitives**, **object**, **array**, **Date**, **Map** and **Set** types.
  * If given a non-object type, it will return the proxy wrapped with struct `{value: T}`.
  * - **deep** - If the second parameter is typeof `boolean`, it means whether the object is deeply reactive.
  * If the second parameter is typeof `function`, it means that the callback function will be triggered when the state changes.
@@ -161,13 +166,9 @@ function useReactive<T, D extends boolean = true>(
     callbacks.forEach((callback) => callback(stateRef.current));
   }, [stateRef.current, callbacks]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     let reactiveState: any = null;
-    if (deep === false) {
-      reactiveState = shallowProxy(initialState as any, fsr);
-    } else {
-      reactiveState = deepProxy(initialState as any, fsr);
-    }
+    reactiveState = deep !== false ? deepProxy(initialState as any, fsr) : shallowProxy(initialState as any, fsr);
     stateRef.current = reactiveState;
     fsr();
   }, []);

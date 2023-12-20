@@ -17,7 +17,7 @@ const View = () => {
           c.value++;
         }}
       >
-        c++
+        c.value++
       </Button>
       <Code theme="oneLight" lang="json">
         {`${c.value}`}
@@ -45,7 +45,7 @@ const View = () => {
           c.value++;
         }}
       >
-        c++
+        c.value++
       </Button>
       <Code theme="oneLight" lang="json">
         {\`\${c.value}\`}

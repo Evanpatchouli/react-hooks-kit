@@ -351,7 +351,7 @@ const locale_en = {
     ),
     consideration: (
       <ol>
-        <Li>initialValue could be of any type</Li>
+        <Li>initialValue could be of primitives, array, object, Date, Map and Set.</Li>
         <Li>deep is type of boolean</Li>
       </ol>
     ),

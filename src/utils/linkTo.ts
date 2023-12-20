@@ -1,7 +1,4 @@
-const linkTo = (
-  path?: string | { path?: string; hash?: boolean },
-  hash?: boolean
-) => {
+const linkTo = (path?: string | { path?: string; hash?: boolean }, hash?: boolean) => {
   if (path) {
     if (typeof path === "string" && path) {
       if (window.location.hash || hash) {
@@ -11,10 +8,7 @@ const linkTo = (
       }
     } else if (typeof path === "object" && path.path) {
       if (window.location.hash || (path.hash ?? hash)) {
-        console.log(path)
-        window.location.hash = path.path.startsWith("/")
-          ? path.path
-          : "#/" + path.path;
+        window.location.hash = path.path.startsWith("/") ? path.path : "#/" + path.path;
       } else {
         window.location.assign(path.path);
       }
