@@ -2,106 +2,140 @@ import { renderHook, act } from "@testing-library/react";
 import useReactive from "../../hooks/useReactive";
 
 describe("useReactive", () => {
-  it("should initialize with the correct state", () => {
-    const { result } = renderHook(() => useReactive({ test: "test" }));
-    expect(result.current.test).toEqual("test");
-  });
-
-  it("should react to state changes", () => {
-    const { result } = renderHook(() => useReactive({ test: "test" }));
-
-    act(() => {
-      result.current.test = "new state";
+  describe("useReactive for number", () => {
+    // return struct of .value
+    it("return struct of .value", () => {
+      const { result } = renderHook(() => useReactive(1));
+      expect(result.current.value).toBe(1);
     });
 
-    expect(result.current.test).toEqual("new state");
-  });
-
-  it("should react to state changes when deep is false", () => {
-    const { result } = renderHook(() =>
-      useReactive({ test: { inner: "test" } }, false)
-    );
-
-    act(() => {
-      result.current.test.inner = "new state";
+    // should plus 1
+    it("should plus 1", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        result.current.value++;
+      });
+      expect(result.current.value).toBe(2);
     });
 
-    expect(result.current.test.inner).toEqual("new state");
-  });
-
-  it("should react to state changes when deep is true", () => {
-    const { result } = renderHook(() =>
-      useReactive({ test: { inner: "test" } }, true)
-    );
-
-    act(() => {
-      result.current.test.inner = "new state";
+    // should plus twice
+    it("should plus twice", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        result.current.value++;
+        result.current.value++;
+      });
+      expect(result.current.value).toBe(3);
     });
 
-    expect(result.current.test.inner).toEqual("new state");
-  });
-
-  it("should trigger callback on state change", () => {
-    const callback = jest.fn();
-    const { result } = renderHook(() =>
-      useReactive({ test: "test" }, callback)
-    );
-
-    act(() => {
-      result.current.test = "new state";
+    // should minus 1
+    it("should minus 1", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        result.current.value--;
+      });
+      expect(result.current.value).toBe(0);
     });
 
-    expect(callback).toHaveBeenCalledWith({ test: "new state" });
-  });
-
-  it("should trigger multiple callbacks on state change", () => {
-    const callback1 = jest.fn();
-    const callback2 = jest.fn();
-    const { result } = renderHook(() =>
-      useReactive({ test: "test" }, callback1, callback2)
-    );
-
-    act(() => {
-      result.current.test = "new state";
+    // should minus twice
+    it("should minus twice", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        result.current.value--;
+        result.current.value--;
+      });
+      expect(result.current.value).toBe(-1);
     });
 
-    expect(callback1).toHaveBeenCalledWith({ test: "new state" });
-    expect(callback2).toHaveBeenCalledWith({ test: "new state" });
-  });
-
-  it("should handle array state", () => {
-    const { result } = renderHook(() => useReactive([1, 2, 3]));
-    // @ts-ignore
-    expect(result.current.toJSON()).toEqual([1, 2, 3]);
-  });
-
-  it("should handle nested array state", () => {
-    const { result } = renderHook(() => useReactive({ test: [1, 2, 3] }));
-    // @ts-ignore
-    expect(result.current.test.toJSON()).toEqual([1, 2, 3]);
-  });
-
-  it("should handle function state", () => {
-    const { result } = renderHook(() =>
-      useReactive({ test: () => "test" as string })
-    );
-
-    act(() => {
-      result.current.test = () => "new state";
+    // should plus and minus
+    it("should plus and minus", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        result.current.value++;
+        result.current.value--;
+      });
+      expect(result.current.value).toBe(1);
     });
 
-    expect(result.current.test()).toEqual("new state");
-  });
-
-  it("should handle nested function state", () => {
-    const { result } = renderHook(() =>
-      useReactive({ test: { inner: () => "test" as string } })
-    );
-
-    act(() => {
-      result.current.test.inner = () => "new state";
+    // should be updated to 2
+    it("should be updated to 2", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        result.current.value = 2;
+      });
+      expect(result.current.value).toBe(2);
     });
 
-    expect(result.current.test.inner()).toEqual("new state");
+    // should be updated to undefined
+    it("should be updated to undefined", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        // @ts-ignore
+        result.current.value = undefined;
+      });
+      expect(result.current.value).toBe(undefined);
+    });
+
+    // should be 2 after be undefined and be 2
+    it("should be 2 after be undefined and be 2", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        // @ts-ignore
+        result.current.value = undefined;
+        result.current.value = 2;
+      });
+      expect(result.current.value).toBe(2);
+    });
+
+    // should be added to 4
+    it("should be added to 4", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        // @ts-ignore
+        result.current.value = result.current.value + 3;
+      });
+      expect(result.current.value).toBe(4);
+    });
+
+    // should be added to -2
+    it("should be added to 4", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        // @ts-ignore
+        result.current.value = result.current.value - 3;
+      });
+      expect(result.current.value).toBe(-2);
+    });
+
+    // should be multipled to 4
+    it("should be added to 4", () => {
+      const { result } = renderHook(() => useReactive(2));
+      act(() => {
+        // @ts-ignore
+        result.current.value = result.current.value * 2;
+      });
+      expect(result.current.value).toBe(4);
+    });
+
+    // should be 1
+    it("should be 1", () => {
+      const { result } = renderHook(() => useReactive(2));
+      act(() => {
+        // @ts-ignore
+        result.current.value = result.current.value / 2;
+      });
+      expect(result.current.value).toBe(1);
+    });
+
+    // should be 100 after circle invoked
+    it("should be 100 after circle invoked", () => {
+      const { result } = renderHook(() => useReactive(1));
+      act(() => {
+        while (result.current.value < 100) {
+          result.current.value++;
+        }
+      });
+      expect(result.current.value).toBe(100);
+    });
   });
 });

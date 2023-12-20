@@ -8,7 +8,8 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import pkg from "@/../package.json";
 
-const desc = "@evanpatchouli/react-hooks-kit is library for making it easy to use react hooks.";
+const desc =
+  "@evanpatchouli/react-hooks-kit is library for making it easy to use react hooks.";
 
 export default function Overview() {
   useEffect(() => {
@@ -27,39 +28,57 @@ export default function Overview() {
     <Article title="Overview" desc={desc}>
       <SubTitle>Introduction</SubTitle>
       <Body>
-        react-hooks-kit is an open source library focused on making it easy to use react hooks.
+        react-hooks-kit is an open source library focused on making it easy to
+        use react hooks.
         <br />
         <br />
-        It includes a comprehensive collection of hooks that empower you to accomplish any task in your application
-        without being forced into a specific way of doing things.
+        It includes a comprehensive collection of hooks that empower you to
+        accomplish any task in your application without being forced into a
+        specific way of doing things.
         <br />
         <br />
-        react-hooks-kit is a lightweight library that doesn't require any dependencies. It's easy to use, and it's easy
-        to learn.
+        react-hooks-kit is a lightweight library that doesn't require any
+        dependencies. It's easy to use, and it's easy to learn.
         <br />
       </Body>
-      <SubTitle>Advantages of react-hooks-kit</SubTitle>
+      <SubTitle>Advantages</SubTitle>
       <Body>
         <ul>
           <Li>
-            <strong>Cosying</strong>: react-hooks-kit provides a simple API that makes it easy to use react hooks.
+            <strong>Cosying</strong>: react-hooks-kit provides a simple API that
+            makes it easy to use react hooks.
           </Li>
           <Li>
-            <strong>Lightweight</strong>: It is a lightweight library without any dependencies.
+            <strong>Lightweight</strong>: It is a lightweight library without
+            any dependencies.
           </Li>
           <Li>
-            <strong>Overall</strong>: It includes a comprehensive collection of hooks that empower you to accomplish
-            different tasks in your application like store, parser, listeners, effects, etc.
+            <strong>Overall</strong>: It includes a comprehensive collection of
+            hooks that empower you to accomplish different tasks in your
+            application like store, parser, listeners, effects, etc.
           </Li>
           <Li>
-            <strong>Typescript support</strong>: It is developed with typescript and provides excellent typescript
-            support and type inference support.
+            <strong>Typescript support</strong>: It is developed with typescript
+            and provides excellent typescript support and type inference
+            support.
           </Li>
           <li>
-            <strong>innovation</strong>: It provides some innovative hooks like useWatch (partial listener), useRipple
-            (css houdini effect), etc.
+            <strong>innovation</strong>: It provides some innovative hooks like
+            useWatch (partial listener), useRipple (css houdini effect), etc.
           </li>
         </ul>
+      </Body>
+
+      <SubTitle>Information</SubTitle>
+      <Body>
+        <p>
+          There are about 60 hooks in library, most of them are still
+          experimental and not stable yet. In menu, only the hooks without
+          prefix tag is entirely stable. If a hook with prefix tag of{" "}
+          <strong>new</strong>, it means it has passed tests; with a prefix tag
+          of <strong>cup</strong> means experimental; a prefix tag of{" "}
+          <strong>clock</strong> means in plan.
+        </p>
       </Body>
       <div
         css={$css`

@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.15 2012/12/20
+
+- Passed tests for useReactive for number
+
 ## v0.1.14 2012/12/20
 
 - useReactive support primitive
