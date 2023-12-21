@@ -419,4 +419,147 @@ describe("useReactive", () => {
       expect(result.current.value).toBe(false);
     });
   });
+
+  describe("useReactive for bigint", () => {
+    // @1 should be 100n after setting to 100n
+    it("should be 100n after setting to 100n", () => {
+      const { result } = renderHook(() => useReactive(BigInt(0)));
+      act(() => {
+        result.current.value = BigInt(100);
+      });
+      expect(result.current.value).toBe(BigInt(100));
+    });
+
+    // @2 should be 0n after subtracting 100n from 100n
+    it("should be 0n after subtracting 100n from 100n", () => {
+      const { result } = renderHook(() => useReactive(BigInt(100)));
+      act(() => {
+        result.current.value -= BigInt(100);
+      });
+      expect(result.current.value).toBe(BigInt(0));
+    });
+
+    // @3 should be 10000n after multiplying 100n by 100n
+    it("should be 10000n after multiplying 100n by 100n", () => {
+      const { result } = renderHook(() => useReactive(BigInt(100)));
+      act(() => {
+        result.current.value *= BigInt(100);
+      });
+      expect(result.current.value).toBe(BigInt(10000));
+    });
+
+    // @4 should be 1n after dividing 100n by 100n
+    it("should be 1n after dividing 100n by 100n", () => {
+      const { result } = renderHook(() => useReactive(BigInt(100)));
+      act(() => {
+        result.current.value /= BigInt(100);
+      });
+      expect(result.current.value).toBe(BigInt(1));
+    });
+  });
+
+  describe("useReactive for symbol", () => {
+    // @1 should be Symbol('foo') after setting to Symbol('foo')
+    it("should be Symbol('foo') after setting to Symbol('foo')", () => {
+      const { result } = renderHook(() => useReactive(Symbol()));
+      const symbolFoo = Symbol("foo");
+      act(() => {
+        result.current.value = symbolFoo;
+      });
+      expect(result.current.value).toBe(symbolFoo);
+    });
+
+    // @2 should be Symbol('bar') after setting to Symbol('bar')
+    it("should be Symbol('bar') after setting to Symbol('bar')", () => {
+      const { result } = renderHook(() => useReactive(Symbol()));
+      const symbolBar = Symbol("bar");
+      act(() => {
+        result.current.value = symbolBar;
+      });
+      expect(result.current.value).toBe(symbolBar);
+    });
+  });
+
+  describe("useReactive for type changing in primitives", () => {
+    // @1 should be 'foo' after setting number to string
+    it("should be 'foo' after setting number to string", () => {
+      const { result } = renderHook(() => useReactive(0));
+      act(() => {
+        // @ts-ignore
+        result.current.value = "foo";
+      });
+      expect(result.current.value).toBe("foo");
+    });
+
+    // @2 should be 100 after setting string to number
+    it("should be 100 after setting string to number", () => {
+      const { result } = renderHook(() => useReactive(""));
+      act(() => {
+        // @ts-ignore
+        result.current.value = 100;
+      });
+      expect(result.current.value).toBe(100);
+    });
+
+    // @3 should be true after setting number to boolean
+    it("should be true after setting number to boolean", () => {
+      const { result } = renderHook(() => useReactive(0));
+      act(() => {
+        // @ts-ignore
+        result.current.value = true;
+      });
+      expect(result.current.value).toBe(true);
+    });
+
+    // @4 should be Symbol('foo') after setting boolean to symbol
+    it("should be Symbol('foo') after setting boolean to symbol", () => {
+      const { result } = renderHook(() => useReactive(false));
+      const symbolFoo = Symbol("foo");
+      act(() => {
+        // @ts-ignore
+        result.current.value = symbolFoo;
+      });
+      expect(result.current.value).toBe(symbolFoo);
+    });
+
+    // @5 should be 'foo' after setting symbol to string
+    it("should be 'foo' after setting symbol to string", () => {
+      const { result } = renderHook(() => useReactive(Symbol()));
+      act(() => {
+        // @ts-ignore
+        result.current.value = "foo";
+      });
+      expect(result.current.value).toBe("foo");
+    });
+
+    // @6 should be false after setting string to boolean
+    it("should be false after setting string to boolean", () => {
+      const { result } = renderHook(() => useReactive(""));
+      act(() => {
+        // @ts-ignore
+        result.current.value = false;
+      });
+      expect(result.current.value).toBe(false);
+    });
+
+    // @7 should be 100n after setting boolean to bigint
+    it("should be 100n after setting boolean to bigint", () => {
+      const { result } = renderHook(() => useReactive(true));
+      act(() => {
+        // @ts-ignore
+        result.current.value = BigInt(100);
+      });
+      expect(result.current.value).toBe(BigInt(100));
+    });
+
+    // @8 should be 'foo' after setting bigint to string
+    it("should be 'foo' after setting bigint to string", () => {
+      const { result } = renderHook(() => useReactive(BigInt(0)));
+      act(() => {
+        // @ts-ignore
+        result.current.value = "foo";
+      });
+      expect(result.current.value).toBe("foo");
+    });
+  });
 });

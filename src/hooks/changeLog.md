@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.18 2012/12/21
+
+- Passed tests for useReactive for rest primitives
+- Passed tests for type changing in primitives
+
 ## v0.1.17 2012/12/21
 
 - Passed tests for useReactive for boolean
