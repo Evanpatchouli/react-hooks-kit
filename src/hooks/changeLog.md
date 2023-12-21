@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.17 2012/12/21
+
+- Passed tests for useReactive for boolean
+
 ## v0.1.16 2012/12/21
 
 - Passed tests for useReactive for string

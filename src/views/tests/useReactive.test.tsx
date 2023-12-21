@@ -345,4 +345,78 @@ describe("useReactive", () => {
       expect(result.current.value).toBe("heo");
     });
   });
+
+  describe("useReactive for boolean", () => {
+    // @1 should be true after setting to true
+    it("should be true after setting to true", () => {
+      const { result } = renderHook(() => useReactive(false));
+      act(() => {
+        result.current.value = true;
+      });
+      expect(result.current.value).toBe(true);
+    });
+
+    // @2 should be false after setting to false
+    it("should be false after setting to false", () => {
+      const { result } = renderHook(() => useReactive(true));
+      act(() => {
+        result.current.value = false;
+      });
+      expect(result.current.value).toBe(false);
+    });
+
+    // @3 should be false after negating true
+    it("should be false after negating true", () => {
+      const { result } = renderHook(() => useReactive(true));
+      act(() => {
+        result.current.value = !result.current.value;
+      });
+      expect(result.current.value).toBe(false);
+    });
+
+    // @4 should be true after negating false
+    it("should be true after negating false", () => {
+      const { result } = renderHook(() => useReactive(false));
+      act(() => {
+        result.current.value = !result.current.value;
+      });
+      expect(result.current.value).toBe(true);
+    });
+
+    // @5 should be true after double negating true
+    it("should be true after double negating true", () => {
+      const { result } = renderHook(() => useReactive(true));
+      act(() => {
+        result.current.value = !!result.current.value;
+      });
+      expect(result.current.value).toBe(true);
+    });
+
+    // @6 should be false after double negating false
+    it("should be false after double negating false", () => {
+      const { result } = renderHook(() => useReactive(false));
+      act(() => {
+        result.current.value = !!result.current.value;
+      });
+      expect(result.current.value).toBe(false);
+    });
+
+    // @7 should be true after OR operation with true
+    it("should be true after OR operation with true", () => {
+      const { result } = renderHook(() => useReactive(false));
+      act(() => {
+        result.current.value = result.current.value || true;
+      });
+      expect(result.current.value).toBe(true);
+    });
+
+    // @8 should be false after AND operation with false
+    it("should be false after AND operation with false", () => {
+      const { result } = renderHook(() => useReactive(true));
+      act(() => {
+        result.current.value = result.current.value && false;
+      });
+      expect(result.current.value).toBe(false);
+    });
+  });
 });

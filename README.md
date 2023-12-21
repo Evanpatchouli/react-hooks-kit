@@ -32,3 +32,5 @@ entirely stable. If a hook with prefix tag of **new**, it means it has passed te
 - After a module of hooks all pass tests for 3 decades, it should get retests, the hooks pass retests should be switched to **stable**.
 - After a module of hooks all pass retests, and the x in version x.y.z should be increased by 1.
 - Commonly, when a hook passes the first tests, the z should be increased by 1. If a hook is complex, it could increase with a feature passing tests.
+- If a clock hook switch into **cup**, the y in version x.y.z should be increased by 1.
+- If a new hook is created, the y in version x.y.z should be increased by 1.
