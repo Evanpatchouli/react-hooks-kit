@@ -22,18 +22,10 @@ export class Reactive<T extends object> {
           // || prop === "valueOf" || prop === "toString"
           return () => unwrap(target);
         }
-        if (Array.isArray(target) && prop in Array.prototype) {
-          // @ts-ignore
-          return function (...args) {
-            if (["push", "unshift"].includes(prop as string)) {
-              // @ts-ignore
-              args = args.map((arg) => deepProxy(arg, fsr));
-            }
-            // @ts-ignore
-            const result = Array.prototype[prop].apply(target, args);
-            fsr?.();
-            return result;
-          };
+        // Handle special Types
+        const specialMethodHandler = handleSpecialMethods(target, prop, fsr);
+        if (specialMethodHandler) {
+          return specialMethodHandler;
         }
         return target[prop]?.value;
       },
@@ -57,6 +49,22 @@ export class Reactive<T extends object> {
     };
     return instance;
   }
+}
+
+function handleSpecialMethods(target: any, prop: any, fsr?: Function) {
+  const types = [Array, Date, Map, Set];
+  for (const Type of types) {
+    if (target instanceof Type && prop in Type.prototype) {
+      // @ts-ignore
+      return function (...args) {
+        // @ts-ignore
+        const result = Type.prototype[prop].apply(target, args);
+        fsr?.();
+        return result;
+      };
+    }
+  }
+  return null;
 }
 
 export function deepProxy<T extends object>(obj: T, fsr?: Function) {

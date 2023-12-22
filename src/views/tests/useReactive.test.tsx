@@ -562,4 +562,241 @@ describe("useReactive", () => {
       expect(result.current.value).toBe("foo");
     });
   });
+
+  describe("useReactive for Date", () => {
+    // @1 should be a specific date after setting to that date
+    it("should be a specific date after setting to that date", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const specificDate = new Date(2022, 1, 1);
+      act(() => {
+        result.current = specificDate;
+      });
+      expect(result.current).toEqual(specificDate);
+    });
+
+    // @2 should be now after setting to now
+    it("should be now after setting to now", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const now = new Date();
+      act(() => {
+        result.current = now;
+      });
+      expect(result.current).toEqual(now);
+    });
+
+    // @3 should be tomorrow after setting to tomorrow
+    it("should be tomorrow after setting to tomorrow", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      act(() => {
+        result.current = tomorrow;
+      });
+      expect(result.current).toEqual(tomorrow);
+    });
+
+    // @4 should be yesterday after setting to yesterday
+    it("should be yesterday after setting to yesterday", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      act(() => {
+        result.current = yesterday;
+      });
+      expect(result.current).toEqual(yesterday);
+    });
+
+    // @5 should be the start of the year after setting to the start of the year
+    it("should be the start of the year after setting to the start of the year", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const startOfYear = new Date();
+      startOfYear.setMonth(0, 1);
+      startOfYear.setHours(0, 0, 0, 0);
+      act(() => {
+        result.current = startOfYear;
+      });
+      expect(result.current).toEqual(startOfYear);
+    });
+
+    // @6 should be the end of the year after setting to the end of the year
+    it("should be the end of the year after setting to the end of the year", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const endOfYear = new Date();
+      endOfYear.setMonth(11, 31);
+      endOfYear.setHours(23, 59, 59, 999);
+      act(() => {
+        result.current = endOfYear;
+      });
+      expect(result.current).toEqual(endOfYear);
+    });
+
+    // @7 should be the start of the month after setting to the start of the month
+    it("should be the start of the month after setting to the start of the month", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+      act(() => {
+        result.current = startOfMonth;
+      });
+      expect(result.current).toEqual(startOfMonth);
+    });
+
+    // @8 should be the end of the month after setting to the end of the month
+    it("should be the end of the month after setting to the end of the month", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const endOfMonth = new Date();
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1, 0);
+      endOfMonth.setHours(23, 59, 59, 999);
+      act(() => {
+        result.current = endOfMonth;
+      });
+      expect(result.current).toEqual(endOfMonth);
+    });
+
+    // @9 should be the same date after copying the date
+    it("should be the same date after copying the date", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const copiedDate = new Date(result.current.getTime());
+      expect(copiedDate.getTime()).toEqual(result.current.getTime());
+    });
+
+    // @10 should be the same date after setting the date to itself
+    it("should be the same date after setting the date to itself", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      act(() => {
+        result.current = new Date(result.current.getTime());
+      });
+      expect(result.current.getTime()).toEqual(result.current.getTime());
+    });
+
+    // @11 should be the next day after adding one day
+    it("should be the next day after adding one day", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const nextDay = new Date(result.current.getTime());
+      nextDay.setDate(nextDay.getDate() + 1);
+      act(() => {
+        result.current.setDate(result.current.getDate() + 1);
+      });
+      expect(result.current.getTime()).toEqual(nextDay.getTime());
+    });
+
+    // @12 should be the previous day after subtracting one day
+    it("should be the previous day after subtracting one day", () => {
+      const { result } = renderHook(() => useReactive(new Date()));
+      const previousDay = new Date(result.current.getTime());
+      previousDay.setDate(previousDay.getDate() - 1);
+      act(() => {
+        result.current.setDate(result.current.getDate() - 1);
+      });
+      expect(result.current.getTime()).toEqual(previousDay.getTime());
+    });
+  });
+
+  describe("useReactive for Map", () => {
+    // @1 should be the same map after copying the map
+    it("should be the same map after copying the map", () => {
+      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+      const copiedMap = new Map(result.current);
+      expect(Array.from(copiedMap.entries())).toEqual(Array.from(result.current.entries()));
+    });
+
+    // @2 should be the same map after setting the map to itself
+    it("should be the same map after setting the map to itself", () => {
+      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+      act(() => {
+        result.current = new Map(result.current.entries());
+      });
+      expect(Array.from(result.current.entries())).toEqual(Array.from(result.current.entries()));
+    });
+
+    // @3 should have the new key-value pair after setting a new key-value pair
+    it("should have the new key-value pair after setting a new key-value pair", () => {
+      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+      act(() => {
+        result.current.set("newKey", "newValue");
+      });
+      expect(result.current.get("newKey")).toEqual("newValue");
+    });
+
+    // @4 should not have the key-value pair after deleting the key-value pair
+    it("should not have the key-value pair after deleting the key-value pair", () => {
+      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+      act(() => {
+        result.current.delete("key");
+      });
+      expect(result.current.has("key")).toEqual(false);
+    });
+
+    // @5 should clear the map after calling clear method
+    it("should clear the map after calling clear method", () => {
+      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+      act(() => {
+        result.current.clear();
+      });
+      expect(result.current.size).toEqual(0);
+    });
+
+    // @6 should return the correct size of the map
+    it("should return the correct size of the map", () => {
+      const { result } = renderHook(() =>
+        useReactive(
+          new Map([
+            ["key", "value"],
+            ["anotherKey", "anotherValue"],
+          ])
+        )
+      );
+      expect(result.current.size).toEqual(2);
+    });
+
+    // @7 should return true when calling has method with an existing key
+    it("should return true when calling has method with an existing key", () => {
+      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+      expect(result.current.has("key")).toEqual(true);
+    });
+
+    // @8 should return false when calling has method with a non-existing key
+    it("should return false when calling has method with a non-existing key", () => {
+      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+      expect(result.current.has("nonExistingKey")).toEqual(false);
+    });
+
+    // @9 should iterate over the map correctly with forEach method
+    it("should iterate over the map correctly with forEach method", () => {
+      const { result } = renderHook(() =>
+        useReactive(
+          new Map([
+            ["key", "value"],
+            ["anotherKey", "anotherValue"],
+          ])
+        )
+      );
+      const entries: [string, string][] = [];
+      result.current.forEach((value, key) => {
+        entries.push([key, value]);
+      });
+      expect(entries).toEqual([
+        ["key", "value"],
+        ["anotherKey", "anotherValue"],
+      ]);
+    });
+
+    // @10 should return the correct entries with entries method
+    it("should return the correct entries with entries method", () => {
+      const { result } = renderHook(() =>
+        useReactive(
+          new Map([
+            ["key", "value"],
+            ["anotherKey", "anotherValue"],
+          ])
+        )
+      );
+      const entries = Array.from(result.current.entries());
+      expect(entries).toEqual([
+        ["key", "value"],
+        ["anotherKey", "anotherValue"],
+      ]);
+    });
+  });
 });
