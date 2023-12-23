@@ -1,21 +1,29 @@
 # ChangeLog
 
+## v0.1.19 2012/12/23
+
+- <font color="#c09000">Pass tests</font> for useReactive for Date
+- <font color="#c09000">Pass tests</font> for useReactive for Map
+- <font color="#c09000">Pass tests</font> for useReactive for Set
+- Fix some special key accessing Map and Set
+- <font color="red">Test fails</font> at useReactive for Array
+
 ## v0.1.18 2012/12/21
 
-- Passed tests for useReactive for rest primitives
-- Passed tests for type changing in primitives
+- <font color="#c09000">Pass tests</font> for useReactive for rest primitives
+- <font color="#c09000">Pass tests</font> for type changing in primitives
 
 ## v0.1.17 2012/12/21
 
-- Passed tests for useReactive for boolean
+- <font color="#c09000">Pass tests</font> for useReactive for boolean
 
 ## v0.1.16 2012/12/21
 
-- Passed tests for useReactive for string
+- <font color="#c09000">Pass tests</font> for useReactive for string
 
 ## v0.1.15 2012/12/20
 
-- Passed tests for useReactive for number
+- <font color="#c09000">Pass tests</font> for useReactive for number
 
 ## v0.1.14 2012/12/20
 
@@ -27,15 +35,15 @@
 
 ## v0.1.12 2012/12/19
 
-- Passed tests for useTickState
+- Pass tests for useTickState
 
 ## v0.1.11 2012/12/19
 
-- Passed tests for useTree
+- Pass tests for useTree
 
 ## v0.1.10 2012/12/18
 
-- Passed tests for useList
+- Pass tests for useList
 
 ## v0.1.9 2012/12/18
 
@@ -48,13 +56,13 @@
 
 ## v0.1.7 2012/12/18
 
-- Passed tests for useMeta
+- Pass tests for useMeta
   - change 2rd param to options
-- Passed tests for utils.setTo
+- Pass tests for utils.setTo
   - Fix array-like node
   - Fix symbol key
   - Provide option for non-exists
-- Passed tests for utils.getFrom
+- Pass tests for utils.getFrom
   - Fix none target
   - Fix symbol key
 
@@ -70,12 +78,12 @@
 
 ## v0.1.4 2012/12/15
 
-- Passed tests for useLoading
+- Pass tests for useLoading
 
 ## v0.1.3 2023/12/13
 
-- Passed tests for usePrevious
-- Passed tests for useToggle
+- Pass tests for usePrevious
+- Pass tests for useToggle
 
 ## v0.1.2 2023/12/13
 

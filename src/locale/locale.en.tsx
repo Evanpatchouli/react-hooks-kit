@@ -405,6 +405,15 @@ const locale_en = {
         <p
           style={{
             padding: "20px",
+            background: "#cff",
+            borderRadius: "4px",
+          }}
+        >
+          <strong>ℹ️Notice</strong> : Every time you call a method on the reactive object will cause rerender.
+        </p>
+        <p
+          style={{
+            padding: "20px",
             background: "#ffd",
             borderRadius: "4px",
           }}

@@ -27,6 +27,13 @@ export class Reactive<T extends object> {
         if (specialMethodHandler) {
           return specialMethodHandler;
         }
+        // Special handling for the size property of Map objects
+        if (
+          (target instanceof Map || target instanceof Set) &&
+          prop === "size"
+        ) {
+          return target.size;
+        }
         return target[prop]?.value;
       },
       // @ts-ignore
@@ -35,7 +42,9 @@ export class Reactive<T extends object> {
           const update = () => {
             // target[prop]["value"] = value;
             // @ts-ignore
-            target[prop]["value"] = typeof value === "object" ? reactive(value, fsr) : value; // unwrap(deProxy(target))
+            target[prop]["value"] =
+              // @ts-ignore
+              typeof value === "object" ? reactive(value, fsr) : value; // unwrap(deProxy(target))
             fsr?.();
           };
           update();
@@ -56,12 +65,22 @@ function handleSpecialMethods(target: any, prop: any, fsr?: Function) {
   for (const Type of types) {
     if (target instanceof Type && prop in Type.prototype) {
       // @ts-ignore
-      return function (...args) {
+      if (typeof target[prop] === "function") {
         // @ts-ignore
-        const result = Type.prototype[prop].apply(target, args);
-        fsr?.();
-        return result;
-      };
+        return function (...args) {
+          if (["push", "unshift"].includes(prop as string)) {
+            // @ts-ignore
+            args = args.map((arg) => deepProxy(arg, fsr));
+          }
+          // @ts-ignore
+          const result = Type.prototype[prop].apply(target, args);
+          fsr?.();
+          return result;
+        };
+      } else {
+        // @ts-ignore
+        return target[prop];
+      }
     }
   }
   return null;
@@ -81,6 +100,8 @@ export function reactive<T extends object>(obj: T, fsr?: Function) {
 
   if (obj instanceof Date) {
     proxyObj = new Date(obj.getTime());
+  } else if (obj instanceof Map) {
+    proxyObj = new Map(obj);
   } else if (obj instanceof Set) {
     proxyObj = new Set(obj);
   } else if (Array.isArray(obj)) {
@@ -176,7 +197,10 @@ function useReactive<T, D extends boolean = true>(
 
   useLayoutEffect(() => {
     let reactiveState: any = null;
-    reactiveState = deep !== false ? deepProxy(initialState as any, fsr) : shallowProxy(initialState as any, fsr);
+    reactiveState =
+      deep !== false
+        ? deepProxy(initialState as any, fsr)
+        : shallowProxy(initialState as any, fsr);
     stateRef.current = reactiveState;
     fsr();
   }, []);

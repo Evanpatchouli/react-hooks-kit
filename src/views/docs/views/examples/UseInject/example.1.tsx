@@ -8,6 +8,12 @@ type Person = {
   age: number;
 };
 
+type InjectMap = {
+  "": {
+    someone: Person;
+  };
+};
+
 const UseProvideExample = () => {
   const [state, setState] = useState<Person>({
     name: "Evan",
@@ -31,8 +37,8 @@ const UseProvideExample = () => {
 };
 
 const UseInjectExample = () => {
-  const [state] = useInject<{ someone: Person }>("someone");
-  const [state2] = useInject<{ someone: Person }>("someone");
+  const [state] = useInject<InjectMap>("someone");
+  const [state2] = useInject<InjectMap>("someone");
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -70,6 +76,12 @@ type Person = {
   age: number;
 };
 
+type InjectMap = {
+  "": {
+    someone: Person;
+  };
+};
+
 const UseProvideExample = () => {
   const [state, setState] = useState<Person>({
     name: "Evan",
@@ -93,8 +105,8 @@ const UseProvideExample = () => {
 };
 
 const UseInjectExample = () => {
-  const [state] = useInject<{ someone: Person }>("someone");
-  const [state2] = useInject<{ someone: Person }>("someone");
+  const [state] = useInject<InjectMap>("someone");
+  const [state2] = useInject<InjectMap>("someone");
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -120,8 +132,7 @@ const View = () => {
       <UseInjectExample />
     </>
   );
-};
-`;
+};`;
 
 export default {
   code,

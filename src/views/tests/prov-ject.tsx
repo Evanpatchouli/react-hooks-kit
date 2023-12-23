@@ -21,7 +21,9 @@ const A = () => {
 
 const B = () => {
   const [x] = useInject<{
-    x: number;
+    "": {
+      x: number;
+    };
   }>("x");
   return (
     <Button color="primary" variant="contained">

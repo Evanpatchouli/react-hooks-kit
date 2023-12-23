@@ -268,7 +268,10 @@ describe("useReactive", () => {
     it("should be 'olleh' after reverse", () => {
       const { result } = renderHook(() => useReactive("hello"));
       act(() => {
-        result.current.value = result.current.value.split("").reverse().join("");
+        result.current.value = result.current.value
+          .split("")
+          .reverse()
+          .join("");
       });
       expect(result.current.value).toBe("olleh");
     });
@@ -304,7 +307,9 @@ describe("useReactive", () => {
     it("should be 'o' after getting last character", () => {
       const { result } = renderHook(() => useReactive("hello"));
       act(() => {
-        result.current.value = result.current.value.charAt(result.current.value.length - 1);
+        result.current.value = result.current.value.charAt(
+          result.current.value.length - 1
+        );
       });
       expect(result.current.value).toBe("o");
     });
@@ -331,7 +336,8 @@ describe("useReactive", () => {
     it("should be 'o' after getting last character with array index", () => {
       const { result } = renderHook(() => useReactive("hello"));
       act(() => {
-        result.current.value = result.current.value[result.current.value.length - 1];
+        result.current.value =
+          result.current.value[result.current.value.length - 1];
       });
       expect(result.current.value).toBe("o");
     });
@@ -595,7 +601,7 @@ describe("useReactive", () => {
       expect(result.current).toEqual(tomorrow);
     });
 
-    // @4 should be yesterday after setting to yesterday
+    // // @4 should be yesterday after setting to yesterday
     it("should be yesterday after setting to yesterday", () => {
       const { result } = renderHook(() => useReactive(new Date()));
       const yesterday = new Date();
@@ -606,7 +612,7 @@ describe("useReactive", () => {
       expect(result.current).toEqual(yesterday);
     });
 
-    // @5 should be the start of the year after setting to the start of the year
+    // // @5 should be the start of the year after setting to the start of the year
     it("should be the start of the year after setting to the start of the year", () => {
       const { result } = renderHook(() => useReactive(new Date()));
       const startOfYear = new Date();
@@ -618,7 +624,7 @@ describe("useReactive", () => {
       expect(result.current).toEqual(startOfYear);
     });
 
-    // @6 should be the end of the year after setting to the end of the year
+    // // @6 should be the end of the year after setting to the end of the year
     it("should be the end of the year after setting to the end of the year", () => {
       const { result } = renderHook(() => useReactive(new Date()));
       const endOfYear = new Date();
@@ -654,149 +660,632 @@ describe("useReactive", () => {
       expect(result.current).toEqual(endOfMonth);
     });
 
-    // @9 should be the same date after copying the date
+    // // @9 should be the same date after copying the date
     it("should be the same date after copying the date", () => {
       const { result } = renderHook(() => useReactive(new Date()));
-      const copiedDate = new Date(result.current.getTime());
-      expect(copiedDate.getTime()).toEqual(result.current.getTime());
-    });
-
-    // @10 should be the same date after setting the date to itself
-    it("should be the same date after setting the date to itself", () => {
-      const { result } = renderHook(() => useReactive(new Date()));
       act(() => {
-        result.current = new Date(result.current.getTime());
+        const copiedDate = new Date(result.current.getTime());
+        expect(copiedDate.getTime()).toEqual(result.current.getTime());
       });
-      expect(result.current.getTime()).toEqual(result.current.getTime());
     });
 
-    // @11 should be the next day after adding one day
+    // @10 should be the next day after adding one day
     it("should be the next day after adding one day", () => {
       const { result } = renderHook(() => useReactive(new Date()));
-      const nextDay = new Date(result.current.getTime());
-      nextDay.setDate(nextDay.getDate() + 1);
+      let nextDay: Date;
       act(() => {
+        nextDay = new Date(result.current.getTime());
+        nextDay.setDate(nextDay.getDate() + 1);
         result.current.setDate(result.current.getDate() + 1);
+        expect(result.current.getTime()).toEqual(nextDay.getTime());
       });
-      expect(result.current.getTime()).toEqual(nextDay.getTime());
     });
 
-    // @12 should be the previous day after subtracting one day
+    // @11 should be the previous day after subtracting one day
     it("should be the previous day after subtracting one day", () => {
       const { result } = renderHook(() => useReactive(new Date()));
-      const previousDay = new Date(result.current.getTime());
-      previousDay.setDate(previousDay.getDate() - 1);
       act(() => {
+        const previousDay = new Date(result.current.getTime());
+        previousDay.setDate(previousDay.getDate() - 1);
         result.current.setDate(result.current.getDate() - 1);
+        expect(result.current.getTime()).toEqual(previousDay.getTime());
       });
-      expect(result.current.getTime()).toEqual(previousDay.getTime());
     });
   });
 
   describe("useReactive for Map", () => {
     // @1 should be the same map after copying the map
     it("should be the same map after copying the map", () => {
-      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
-      const copiedMap = new Map(result.current);
-      expect(Array.from(copiedMap.entries())).toEqual(Array.from(result.current.entries()));
-    });
+      const { result } = renderHook(() =>
+        useReactive(new Map<string, any>([["key", "value"]]))
+      );
 
-    // @2 should be the same map after setting the map to itself
-    it("should be the same map after setting the map to itself", () => {
-      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
       act(() => {
-        result.current = new Map(result.current.entries());
+        expect(result.current.get("key")).toEqual("value");
       });
-      expect(Array.from(result.current.entries())).toEqual(Array.from(result.current.entries()));
     });
 
-    // @3 should have the new key-value pair after setting a new key-value pair
-    it("should have the new key-value pair after setting a new key-value pair", () => {
-      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+    // @2 should set value correctly
+    it("should set value correctly", () => {
+      const { result } = renderHook(() =>
+        useReactive(new Map<string, any>([["key", "value"]]))
+      );
       act(() => {
-        result.current.set("newKey", "newValue");
+        result.current.set("key", "newValue");
+        expect(result.current.get("key")).toEqual("newValue");
       });
-      expect(result.current.get("newKey")).toEqual("newValue");
     });
 
-    // @4 should not have the key-value pair after deleting the key-value pair
-    it("should not have the key-value pair after deleting the key-value pair", () => {
-      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+    // @3 should delete value correctly
+    it("should delete value correctly", () => {
+      const { result } = renderHook(() =>
+        useReactive(new Map<string, any>([["key", "value"]]))
+      );
       act(() => {
         result.current.delete("key");
+        expect(result.current.has("key")).toEqual(false);
       });
-      expect(result.current.has("key")).toEqual(false);
     });
 
-    // @5 should clear the map after calling clear method
-    it("should clear the map after calling clear method", () => {
-      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
+    // @4 should clear the map correctly
+    it("should get size of the map correctly", () => {
+      const { result } = renderHook(() =>
+        useReactive(new Map<string, any>([["key", "value"]]))
+      );
+      act(() => {
+        expect(result.current.size).toEqual(1);
+      });
+    });
+
+    // @5 should check if key exists correctly
+    it("should check if key exists correctly", () => {
+      const { result } = renderHook(() =>
+        useReactive(new Map<string, any>([["key", "value"]]))
+      );
+      act(() => {
+        expect(result.current.has("key")).toEqual(true);
+      });
+    });
+
+    // @6 should get size of the the map correctly
+    it("should clear the map correctly", () => {
+      const { result } = renderHook(() => useReactive(new Map<string, any>()));
+      act(() => {
+        result.current.set("key", "value");
+      });
+      act(() => {
+        expect(result.current.size).toEqual(1);
+      });
+    });
+
+    // @7 should clear the the map correctly
+    it("should clear the map correctly", () => {
+      const { result } = renderHook(() => useReactive(new Map<string, any>()));
+      act(() => {
+        result.current.set("key", "value");
+        expect(result.current.size).toEqual(1);
+      });
       act(() => {
         result.current.clear();
+        expect(result.current.size).toEqual(0);
       });
-      expect(result.current.size).toEqual(0);
     });
 
-    // @6 should return the correct size of the map
-    it("should return the correct size of the map", () => {
+    // @8 should get entries of the map correctly
+    it("should get entries of the map correctly", () => {
       const { result } = renderHook(() =>
-        useReactive(
-          new Map([
-            ["key", "value"],
-            ["anotherKey", "anotherValue"],
-          ])
-        )
+        useReactive(new Map<string, any>([["key", "value"]]))
       );
-      expect(result.current.size).toEqual(2);
-    });
-
-    // @7 should return true when calling has method with an existing key
-    it("should return true when calling has method with an existing key", () => {
-      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
-      expect(result.current.has("key")).toEqual(true);
-    });
-
-    // @8 should return false when calling has method with a non-existing key
-    it("should return false when calling has method with a non-existing key", () => {
-      const { result } = renderHook(() => useReactive(new Map([["key", "value"]])));
-      expect(result.current.has("nonExistingKey")).toEqual(false);
-    });
-
-    // @9 should iterate over the map correctly with forEach method
-    it("should iterate over the map correctly with forEach method", () => {
-      const { result } = renderHook(() =>
-        useReactive(
-          new Map([
-            ["key", "value"],
-            ["anotherKey", "anotherValue"],
-          ])
-        )
-      );
-      const entries: [string, string][] = [];
-      result.current.forEach((value, key) => {
-        entries.push([key, value]);
+      act(() => {
+        // {["key", "value"]}
+        expect(result.current.entries()).toEqual(
+          new Map<string, any>([["key", "value"]]).entries()
+        );
       });
-      expect(entries).toEqual([
-        ["key", "value"],
-        ["anotherKey", "anotherValue"],
-      ]);
     });
 
-    // @10 should return the correct entries with entries method
-    it("should return the correct entries with entries method", () => {
+    // @9 should get keys of the map correctly
+    it("should get keys of the map correctly", () => {
       const { result } = renderHook(() =>
-        useReactive(
-          new Map([
-            ["key", "value"],
-            ["anotherKey", "anotherValue"],
-          ])
-        )
+        useReactive(new Map<string, any>([["key", "value"]]))
       );
-      const entries = Array.from(result.current.entries());
-      expect(entries).toEqual([
-        ["key", "value"],
-        ["anotherKey", "anotherValue"],
-      ]);
+      act(() => {
+        expect(result.current.keys()).toEqual(
+          new Map<string, any>([["key", "value"]]).keys()
+        );
+      });
+    });
+
+    // @10 should get values of the map correctly
+    it("should get values of the map correctly", () => {
+      const { result } = renderHook(() =>
+        useReactive(new Map<string, any>([["key", "value"]]))
+      );
+      act(() => {
+        expect(result.current.values()).toEqual(
+          new Map<string, any>([["key", "value"]]).values()
+        );
+      });
+    });
+
+    // @11 should invoke forEach correctly
+    it("should invoke forEach correctly", () => {
+      const { result } = renderHook(() =>
+        useReactive(new Map<string, any>([["key", "value"]]))
+      );
+      let resultValue = "";
+      act(() => {
+        result.current.forEach((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+  });
+
+  describe("useReactive for Set", () => {
+    // @1 should be the same set after copying the set
+    it("should be the same set after copying the set", () => {
+      const { result } = renderHook(() =>
+        useReactive(new Set<string>(["value"]))
+      );
+
+      act(() => {
+        expect(result.current.has("value")).toEqual(true);
+      });
+    });
+
+    // @2 should add value correctly
+    it("should add value correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.has("value")).toEqual(true);
+      });
+    });
+
+    // @3 should delete value correctly
+    it("should delete value correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        result.current.delete("value");
+        expect(result.current.has("value")).toEqual(false);
+      });
+    });
+
+    // @4 should clear the set correctly
+    it("should clear the set correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.size).toEqual(1);
+      });
+      act(() => {
+        result.current.clear();
+        expect(result.current.size).toEqual(0);
+      });
+    });
+
+    // @5 should check if value exists correctly
+    it("should check if value exists correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.has("value")).toEqual(true);
+      });
+    });
+
+    // @6 should get size of the set correctly
+    it("should get size of the set correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.size).toEqual(1);
+      });
+    });
+
+    // @7 should clear the set correctly
+    it("should clear the set correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.size).toEqual(1);
+      });
+      act(() => {
+        result.current.clear();
+        expect(result.current.size).toEqual(0);
+      });
+    });
+
+    // @8 should get entries of the set correctly
+    it("should get entries of the set correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.entries()).toEqual(
+          new Set<string>(["value"]).entries()
+        );
+      });
+    });
+
+    // @9 should get keys of the set correctly
+    it("should get keys of the set correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.keys()).toEqual(
+          new Set<string>(["value"]).keys()
+        );
+      });
+    });
+
+    // @10 should get values of the set correctly
+    it("should get values of the set correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      act(() => {
+        result.current.add("value");
+        expect(result.current.values()).toEqual(
+          new Set<string>(["value"]).values()
+        );
+      });
+    });
+
+    // @11 should invoke forEach correctly
+    it("should invoke forEach correctly", () => {
+      const { result } = renderHook(() => useReactive(new Set<string>()));
+      let resultValue = "";
+      act(() => {
+        result.current.add("value");
+        result.current.forEach((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+  });
+
+  describe("useReactive for Array", () => {
+    // @1 should be the same array after copying the array
+    it("should be the same array after copying the array", () => {
+      const { result } = renderHook(() => useReactive(["value"]));
+      act(() => {
+        expect(result.current).toEqual(["value"]);
+      });
+    });
+
+    // @2 should add value correctly
+    it("should add value correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current).toEqual(["value"]);
+      });
+    });
+
+    // @3 should delete value correctly
+    it("should delete value correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        result.current.pop();
+        expect(result.current).toEqual([]);
+      });
+    });
+
+    // @4 should clear the array correctly
+    it("should clear the array correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current).toEqual(["value"]);
+      });
+      act(() => {
+        result.current.length = 0;
+        expect(result.current).toEqual([]);
+      });
+    });
+
+    // @5 should check if value exists correctly
+    it("should check if value exists correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current.includes("value")).toEqual(true);
+      });
+    });
+
+    // @6 should get length of the array correctly
+    it("should get length of the array correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current.length).toEqual(1);
+      });
+    });
+
+    // @7 should clear the array correctly
+    it("should clear the array correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current.length).toEqual(1);
+      });
+      act(() => {
+        result.current.length = 0;
+        expect(result.current.length).toEqual(0);
+      });
+    });
+
+    // @8 should get entries of the array correctly
+    it("should get entries of the array correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current.entries()).toEqual(
+          new Array<string>("value").entries()
+        );
+      });
+    });
+
+    // @9 should get keys of the array correctly
+    it("should get keys of the array correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current.keys()).toEqual(
+          new Array<string>("value").keys()
+        );
+      });
+    });
+
+    // @10 should get values of the array correctly
+    it("should get values of the array correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        expect(result.current.values()).toEqual(
+          new Array<string>("value").values()
+        );
+      });
+    });
+
+    // @11 should invoke forEach correctly
+    it("should invoke forEach correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.forEach((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @12 should invoke map correctly
+    it("should invoke map correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.map((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @13 should invoke filter correctly
+    it("should invoke filter correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.filter((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @14 should invoke reduce correctly
+    it("should invoke reduce correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.reduce((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @15 should invoke some correctly
+    it("should invoke some correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.some((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @16 should invoke every correctly
+    it("should invoke every correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.every((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @17 should invoke find correctly
+    it("should invoke find correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.find((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @18 should invoke findIndex correctly
+    it("should invoke findIndex correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        result.current.findIndex((value) => {
+          resultValue = value;
+        });
+      });
+      expect(resultValue).toEqual("value");
+    });
+
+    // @19 should invoke fill correctly
+    it("should invoke fill correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        result.current.fill("newValue");
+        expect(result.current).toEqual(["newValue"]);
+      });
+    });
+
+    // @20 should invoke copyWithin correctly
+    it("should invoke copyWithin correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        result.current.copyWithin(0, 1);
+        expect(result.current).toEqual(["value"]);
+      });
+    });
+
+    // @21 should invoke reverse correctly
+    it("should invoke reverse correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        result.current.reverse();
+        expect(result.current).toEqual(["value"]);
+      });
+    });
+
+    // @22 should invoke sort correctly
+    it("should invoke sort correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        result.current.push("value");
+        result.current.sort();
+        expect(result.current).toEqual(["value"]);
+      });
+    });
+
+    // @23 should invoke slice correctly
+    it("should invoke slice correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value");
+        expect(result.current.slice(0, 1)).toEqual(["value"]);
+      });
+    });
+
+    // @24 should invoke splice correctly
+    it("should invoke splice correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        result.current.push("value1");
+        result.current.push("value2");
+        expect(result.current.splice(0, 1)).toEqual(["value1"]);
+      });
+    });
+
+    // @25 should invoke concat correctly
+    it("should invoke concat correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      let resultValue = "";
+      act(() => {
+        expect(result.current.concat(["value"])).toEqual(["value"]);
+      });
+    });
+
+    // @26 should invoke join correctly
+    it("should invoke join correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.join("")).toEqual("");
+      });
+    });
+
+    // @27 should invoke indexOf correctly
+    it("should invoke indexOf correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.indexOf("value")).toEqual(-1);
+      });
+    });
+
+    // @28 should invoke lastIndexOf correctly
+    it("should invoke lastIndexOf correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.lastIndexOf("value")).toEqual(-1);
+      });
+    });
+
+    // @29 should invoke includes correctly
+    it("should invoke includes correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.includes("value")).toEqual(false);
+      });
+    });
+
+    // @30 should invoke toString correctly
+    it("should invoke toString correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.toString()).toEqual("");
+      });
+    });
+
+    // @31 should invoke toLocaleString correctly
+    it("should invoke toLocaleString correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.toLocaleString()).toEqual("");
+      });
+    });
+
+    // @32 should invoke flat correctly
+    it("should invoke flat correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.flat()).toEqual([]);
+      });
+    });
+
+    // @33 should invoke flatMap correctly
+    it("should invoke flatMap correctly", () => {
+      const { result } = renderHook(() => useReactive<Array<any>>([]));
+      act(() => {
+        expect(result.current.flatMap((value) => value)).toEqual([]);
+      });
     });
   });
 });
