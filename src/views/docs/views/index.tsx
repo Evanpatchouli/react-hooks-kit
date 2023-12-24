@@ -13,17 +13,20 @@ export { default as UseReactive } from "./stateful-hooks/UseReactive";
 export { default as UseReactor } from "./stateful-hooks/UseReactor";
 export { default as UseMemento } from "./stateful-hooks/UseMemento";
 
-export { default as UseRipple } from "./ui-ux-hooks/UseRipple";
-export { default as UseParticle } from "./ui-ux-hooks/UseParticle";
 export { default as UseWatch } from "./callback-hooks/UseWatch";
 export { default as UseUrl } from "./callback-hooks/UseUrl";
-export { default as UseVirtualArea } from "./ui-ux-hooks/UseVirtualArea";
 
 // Event hooks
 export { default as UseEmitter } from "./event-hooks/UseEmitter";
 export { default as UseReceiver } from "./event-hooks/UseReceiver";
 export { default as UseProvide } from "./event-hooks/UseProvide";
 export { default as UseInject } from "./event-hooks/UseInject";
+
+// UI & UX hooks
+export { default as UseRipple } from "./ui-ux-hooks/UseRipple";
+export { default as UseParticle } from "./ui-ux-hooks/UseParticle";
+export { default as UseVirtualArea } from "./ui-ux-hooks/UseVirtualArea";
+export { default as UseGuide } from "./ui-ux-hooks/UseGuide";
 
 // Other hooks
 export { default as UseProtect } from "./other/UseProtect";

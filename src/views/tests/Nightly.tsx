@@ -5,6 +5,7 @@ import useNetworkStatus from "@/hooks/useNetWork";
 import { Button } from "@mui/material";
 import Await from "./Await";
 import ProvJectView from "./prov-ject";
+import ReactiveArray from "./ReactiveArray";
 
 export function useRipples<T extends HTMLElement = HTMLButtonElement>(
   count: number = 1,
@@ -42,6 +43,7 @@ export default function Nightly() {
       </div>
       <Await />
       <ProvJectView />
+      <ReactiveArray />
     </div>
   );
 }

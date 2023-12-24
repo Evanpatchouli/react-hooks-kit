@@ -295,13 +295,6 @@ const locale_en = {
     $p1: "You can use loading in count way, that means you can plus or minus loading value, and the loading state will be true when the value is greater than 0, otherwise false.",
   },
 
-  useGuide: {
-    desc: "",
-    detail: <></>,
-    consideration: <ol></ol>,
-    $p1: "",
-  },
-
   useMeta: {
     desc: "A React Hook that returns a meta state and a function to set the meta state",
     detail: (
@@ -409,7 +402,8 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>ℹ️Notice</strong> : Every time you call a method on the reactive object will cause rerender.
+          <strong>ℹ️Notice</strong> : Every time you call a method on the
+          reactive object will cause rerender.
         </p>
         <p
           style={{
@@ -851,6 +845,78 @@ const locale_en = {
     $p1: "",
     consideration: <ol></ol>,
     $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useGuide: {
+    desc: "",
+    detail: <></>,
+    $p1: "Make guidence for elements with certain ids.",
+    $p2: (
+      <>
+        <p>
+          <strong>
+            Try to wrapp the target element with Target component.
+          </strong>{" "}
+          The wrapped is different from the raw, they have different method to
+          render and insert the guide element into DOM tree.
+        </p>
+        <p>
+          By raw way, useGuide will create a div wrapper on every guidence
+          element, and append it to the target element.
+        </p>
+        <p>
+          By Target wrapped way, useGuide will wrap the target element with pure
+          fregment, and render the guidence element into the fregment with
+          <code> React.createPortal </code>.
+        </p>
+        <p>
+          The expressional difference in visiable is that the wrapped way will
+          higher the zIndex of target element than mask, and the raw way will
+          not. (Actually, the raw way will higher target too, but for some
+          reason, it may not work.)
+        </p>
+      </>
+    ),
+    consideration: (
+      <ol>
+        <Li>target element should have id</Li>
+        <Li>the id should be unique</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>
+          Ensure the parent element of the target element has a position of
+          either 'relative' or 'absolute'. This allows the guide element (with
+          'absolute' positioning) to be positioned relative to the parent
+          element.
+        </Li>
+        <Li>
+          If the parent element is a scroll container, ensure it has sufficient
+          height and width to contain all its content. This allows the guide
+          element to correctly follow its target element when the user scrolls.
+        </Li>
+        <Li>
+          Avoid using 'overflow: hidden' on the parent element if possible. This
+          could cause the guide element to be clipped or hidden.
+        </Li>
+        <Li>
+          If the parent element has a high 'z-index' value, you may need to
+          adjust the 'z-index' of the guide element to ensure it appears above
+          the parent element.
+        </Li>
+        <Li>
+          If the parent element has padding or borders, these values may need to
+          be considered in the positioning calculations for the guide element.
+        </Li>
+      </ul>
+    ),
     $faqs: <ul></ul>,
     $apis: {
       generics: <></>,
