@@ -7,7 +7,7 @@
     "email": "3125019716@qq.com"
   },
   "type": "module",
-  "private": true,
+  "private": false,
   "homepage": "react-hooks-kit",
   "scripts": {
     "build": "npx rollup -c"
