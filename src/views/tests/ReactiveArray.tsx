@@ -102,17 +102,118 @@ export default function ReactiveArray() {
     const result = arr.find((elem) => elem.value > 0.5); //✅
     toast(`${result.value}`);
     console.log(`elem: `, result); //✅ returns reactive elem
-  }
+  };
 
   const handleFindIndex = () => {
     const result = arr.findIndex((elem) => elem.value > 0.5); //✅
     toast(`${result}`);
-  }
+  };
 
   const handleFlat = () => {
     const result = arr.flat(); //✅
     console.log(`result: `, result);
-  }
+  };
+
+  // @toTest
+  const handleFlatMap = () => {
+    const result = arr.flatMap((elem) => elem.value); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleForEach = () => {
+    arr.forEach((elem) => console.log(`elem: `, elem)); //✅
+  };
+
+  // @toTest
+  const handleIncludes = () => {
+    const result = arr.includes(0.5); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleIndexOf = () => {
+    const result = arr.indexOf(0.5); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleKeys = () => {
+    const result = arr.keys(); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleLastIndexOf = () => {
+    const result = arr.lastIndexOf(0.5); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleMap = () => {
+    const result = arr.map((elem) => elem.value); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleReduce = () => {
+    const result = arr.reduce((prev, curr) => prev + curr.value, 0); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleReduceRight = () => {
+    const result = arr.reduceRight((prev, curr) => prev + curr.value, 0); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleSlice = () => {
+    const result = arr.slice(0, 1); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleSome = () => {
+    const result = arr.some((elem) => elem.value > 0.5); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleSort = () => {
+    const result = arr.sort((a, b) => a.value - b.value); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleSplice = () => {
+    const result = arr.splice(0, 1); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleToLocaleString = () => {
+    const result = arr.toLocaleString(); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleToString = () => {
+    const result = arr.toString(); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleUnshift = () => {
+    const result = arr.unshift(0.5); //✅
+    console.log(`result: `, result);
+  };
+
+  // @toTest
+  const handleValues = () => {
+    const result = arr.values(); //✅
+    console.log(`result: `, result);
+  };
 
   return (
     <div css={$css`width: 600px;`}>
@@ -134,6 +235,23 @@ export default function ReactiveArray() {
       <Button onClick={handleFind}>Find</Button>
       <Button onClick={handleFindIndex}>FindIndex</Button>
       <Button onClick={handleFlat}>Flat</Button>
+      <Button onClick={handleFlatMap}>FlatMap</Button>
+      <Button onClick={handleForEach}>ForEach</Button>
+      <Button onClick={handleIncludes}>Includes</Button>
+      <Button onClick={handleIndexOf}>IndexOf</Button>
+      <Button onClick={handleKeys}>Keys</Button>
+      <Button onClick={handleLastIndexOf}>LastIndexOf</Button>
+      <Button onClick={handleMap}>Map</Button>
+      <Button onClick={handleReduce}>Reduce</Button>
+      <Button onClick={handleReduceRight}>ReduceRight</Button>
+      <Button onClick={handleSlice}>Slice</Button>
+      <Button onClick={handleSome}>Some</Button>
+      <Button onClick={handleSort}>Sort</Button>
+      <Button onClick={handleSplice}>Splice</Button>
+      <Button onClick={handleToLocaleString}>ToLocaleString</Button>
+      <Button onClick={handleToString}>ToString</Button>
+      <Button onClick={handleUnshift}>Unshift</Button>
+      <Button onClick={handleValues}>Values</Button>
     </div>
   );
 }
