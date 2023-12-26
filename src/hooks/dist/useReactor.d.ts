@@ -12,19 +12,11 @@ export type ReactorPlugin<T = any> = {
 };
 type PluginNames<T extends ReactorPlugin[]> = T[number]["name"];
 /**
- * Reactor is a state management tool based on React Hooks.
- * - Only invoke set or reassign value will cause the view to update.
- * - Directly change deep properties of the state will not cause the view to update, but it has been stored in memory, then last time the view is updated, the view will be updated.
- * - Reactor is a reactive object, which means that you can get the value of the state through the get method, and the value will be updated when the state changes.
- * - Reactor is a proxy object, which means that you can directly get the value of the state through the dot syntax, and the value will be updated when the state changes.
- * - Reactor is a cloneable object, which means that you can clone a Reactor object through the clone method, and the cloned object will have the same state as the original object.
- * - Reactor is a resettable object, which means that you can reset the state of the Reactor object to the default value through the reset method.
- * - Reactor is a dispatchable object, which means that you can dispatch an action through the dispatch method, and the action will be executed by the corresponding plugin.
- * - Reactor is a serializable object, which means that you can serialize the Reactor object through the toJSON method.
- * - Reactor is a subscribable object, which means that you can subscribe to the Reactor object through the subscribe method, and the listener will be called when the state changes.
- * - Reactor is a listenable object, which means that you can listen to the Reactor object through the listen method, and the listener will be called when the state changes.
- * - Reactor is a pluginable object, which means that you can add a plugin to the Reactor object through the use method, and the plugin will be executed when the state changes.
- *
+ * Reactor is a state management tool based on React Hooks with the following features:
+ * - View updates are only triggered by set invocation or value reassignment.
+ * - Direct changes to deep state properties won't trigger view updates but are stored in memory and applied on the next view update.
+ * - Reactor is a reactive, proxy, cloneable, resettable, dispatchable, serializable, subscribable, listenable, and pluginable object.
+ * ---
  */
 export declare class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> implements ReactorModel {
     private _state;
@@ -39,6 +31,14 @@ export declare class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin
     setValue: (newState: T) => void;
     subscribe(listener: Listener<T>): () => void;
     dispatch<Actions = PluginNames<P[]>>(action: Actions, payload?: any): void;
+    /**
+     * Emit a custom event on the event bus (Only Reactor instance, not shared with other hooks like useEmitter, useReceiver.etc)
+     */
+    emit(eventName: string, payload?: any): void;
+    /**
+     * Listen a custom event on the event bus (Only Reactor instance, not shared with other hooks like useEmitter, useReceiver.etc)
+     */
+    on(eventName: string, listener: Listener<any>): () => void;
     toJSON(): T;
     clone(): Reactor<T, P>;
     get<P extends Path<T> = Path<T>>(path?: P, strict?: boolean): object | T | undefined;

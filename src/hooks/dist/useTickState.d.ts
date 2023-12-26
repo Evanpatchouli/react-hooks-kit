@@ -1,3 +1,3 @@
-/// <reference types="react" />
-declare const useTickState: <T extends unknown = any>(initialState?: T | undefined) => (number | T | import("react").Dispatch<import("react").SetStateAction<T | undefined>> | undefined)[];
+import { Dispatch, SetStateAction } from "react";
+declare const useTickState: <T extends unknown = any>(initialState: T) => [T, Dispatch<SetStateAction<T>>, number];
 export default useTickState;

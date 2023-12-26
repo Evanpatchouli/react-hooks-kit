@@ -13,9 +13,15 @@ type ProxyObj<T> = {
   };
 };
 
+export type ReactiveInstance<T> = T extends object
+  ? T & {
+      __isReactive?: true;
+    }
+  : { value: T; __isReactive?: true };
+
 export class Reactive<T extends object> {
   constructor(obj: T, fsr?: Function) {
-    const instance = new Proxy(obj, {
+    const instance = new Proxy<ReactiveInstance<T>>(obj as ReactiveInstance<T>, {
       // @ts-ignore
       get(target: ProxyObj<T>, prop: keyof T, receiver) {
         if (prop === "toJSON") {
@@ -28,10 +34,7 @@ export class Reactive<T extends object> {
           return specialMethodHandler;
         }
         // Special handling for the size property of Map objects
-        if (
-          (target instanceof Map || target instanceof Set) &&
-          prop === "size"
-        ) {
+        if ((target instanceof Map || target instanceof Set) && prop === "size") {
           return target.size;
         }
         if (target instanceof Array && prop === "length") {
@@ -59,7 +62,17 @@ export class Reactive<T extends object> {
     instance.toString = () => {
       return "[object Object]";
     };
+    // @ts-ignore
+    instance.__isReactive = true;
+    // @ts-ignore
     return instance;
+  }
+
+  private __isReactive = true;
+
+  static isReactive(target: any) {
+    // @ts-ignore
+    return target?.__isReactive;
   }
 }
 
@@ -68,14 +81,17 @@ function handleSpecialMethods(target: any, prop: any, fsr?: Function) {
   const nonMutatingArrayMethods = [
     "concat",
     "join",
+    "indexOf",
+    "lastIndexOf",
+    "includes",
+    "with",
     // "slice",
-    // "indexOf",
     // "find",
     // "filter",
     // "reduce",
     // "some",
     // "every",
-    // "includes",
+    // "reverse",
   ];
   for (const Type of types) {
     if (target instanceof Type && prop in Type.prototype) {
@@ -157,9 +173,16 @@ function deProxy(proxyObj: any) {
   return obj;
 }
 
-function unwrap(obj: any) {
-  if (typeof obj !== "object" || obj === null) {
+export function unwrap(obj: any) {
+  if (typeof obj !== "object" || obj === null || Reactive.isReactive(obj)) {
     return obj;
+  }
+
+  if ("value" in obj) {
+    const value = obj.value;
+    if (typeof value !== "object" || value === null || Reactive.isReactive(obj)) {
+      return value;
+    }
   }
 
   const unwrappedObj = Array.isArray(obj) ? [] : ({} as any);
@@ -203,7 +226,7 @@ function useReactive<T, D extends boolean = true>(
   initialState: T,
   deep?: D | Watcher<T>,
   ...callbacks: Array<Watcher<T>>
-): T extends object ? T : { value: T } {
+): ReactiveInstance<T> {
   const fsr = useForceUpdate();
   const stateRef = useRef(initialState);
 
@@ -216,10 +239,7 @@ function useReactive<T, D extends boolean = true>(
 
   useLayoutEffect(() => {
     let reactiveState: any = null;
-    reactiveState =
-      deep !== false
-        ? deepProxy(initialState as any, fsr)
-        : shallowProxy(initialState as any, fsr);
+    reactiveState = deep !== false ? deepProxy(initialState as any, fsr) : shallowProxy(initialState as any, fsr);
     stateRef.current = reactiveState;
     fsr();
   }, []);

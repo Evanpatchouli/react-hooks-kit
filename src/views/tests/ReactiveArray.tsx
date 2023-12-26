@@ -2,6 +2,7 @@ import Code from "@/components/code";
 import useToast from "@hooks/useToast";
 import useReactive from "@hooks/useReactive";
 import { Button } from "@mui/material";
+import { useEffect } from "react";
 
 // 数组实例的所有属性和方法如下：
 
@@ -41,10 +42,11 @@ import { Button } from "@mui/material";
 // toString()
 // unshift()
 // values()
+// with()
 
 export default function ReactiveArray() {
   const toast = useToast();
-  const arr = useReactive<any[]>([]);
+  const arr = useReactive<any[]>([1, 1]);
   const handlePush = () => {
     arr.push(Math.random().toFixed(2)); //✅
   };
@@ -114,104 +116,98 @@ export default function ReactiveArray() {
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleFlatMap = () => {
     const result = arr.flatMap((elem) => elem.value); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleForEach = () => {
     arr.forEach((elem) => console.log(`elem: `, elem)); //✅
   };
 
-  // @toTest
   const handleIncludes = () => {
-    const result = arr.includes(0.5); //✅
+    const result = arr.includes(1); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleIndexOf = () => {
-    const result = arr.indexOf(0.5); //✅
+    const result = arr.indexOf(1); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
+  // @NotSure
   const handleKeys = () => {
     const result = arr.keys(); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleLastIndexOf = () => {
-    const result = arr.lastIndexOf(0.5); //✅
+    const result = arr.lastIndexOf(1); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleMap = () => {
     const result = arr.map((elem) => elem.value); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleReduce = () => {
     const result = arr.reduce((prev, curr) => prev + curr.value, 0); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleReduceRight = () => {
     const result = arr.reduceRight((prev, curr) => prev + curr.value, 0); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleSlice = () => {
     const result = arr.slice(0, 1); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleSome = () => {
     const result = arr.some((elem) => elem.value > 0.5); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleSort = () => {
     const result = arr.sort((a, b) => a.value - b.value); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleSplice = () => {
     const result = arr.splice(0, 1); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleToLocaleString = () => {
     const result = arr.toLocaleString(); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleToString = () => {
     const result = arr.toString(); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleUnshift = () => {
     const result = arr.unshift(0.5); //✅
     console.log(`result: `, result);
   };
 
-  // @toTest
   const handleValues = () => {
     const result = arr.values(); //✅
+    const iterator = result;
+    // @ts-ignore
+    for (const value of iterator) {
+      console.log(value);
+    }
+  };
+
+  const handleWith = () => {
+    // @ts-ignore
+    const result = arr.with?.(0, 9); //✅
     console.log(`result: `, result);
   };
 
@@ -252,6 +248,7 @@ export default function ReactiveArray() {
       <Button onClick={handleToString}>ToString</Button>
       <Button onClick={handleUnshift}>Unshift</Button>
       <Button onClick={handleValues}>Values</Button>
+      <Button onClick={handleWith}>With</Button>
     </div>
   );
 }

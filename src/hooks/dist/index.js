@@ -1,8 +1,8 @@
 'use strict';
 
 var React = require('react');
-var ReactDOM = require('react-dom');
 var jsxRuntime = require('react/jsx-runtime');
+var ReactDOM = require('react-dom');
 
 function useAsyncEffect(callback, dependencies) {
     if (dependencies === void 0) { dependencies = []; }
@@ -376,13 +376,13 @@ function useDebounce(fn, delay, immediate, callback) {
     if (typeof delay !== "number") {
         throw new Error("delay must be a number");
     }
-    if (delay < 0) {
-        return emptyFn$1;
-    }
-    if (delay === 0) {
-        return fn;
-    }
     var debounceFn = React.useMemo(function () {
+        if (delay < 0) {
+            return emptyFn$1;
+        }
+        if (delay === 0) {
+            return fn;
+        }
         return debounce(fn, delay, immediate, callback);
     }, [fn, delay, immediate, callback]);
     return debounceFn;
@@ -397,47 +397,75 @@ var globalListeners = new Map();
 // 创建一个 Context 来共享 globalListeners
 var GlobalListenersContext = React.createContext(globalListeners);
 // @ts-ignore
-function useEventEmitter(name, initialEventName, 
+function useEmitter(nameOrConfig, initialEventNameOrConfig, 
 // @ts-ignore
-initialListener) {
+initialListener, config) {
     var globalListeners = React.useContext(GlobalListenersContext);
+    // 根据参数类型确定实际的参数值
+    var configActual = {};
+    if (typeof nameOrConfig === "string") {
+        configActual.name = nameOrConfig;
+        if (typeof initialEventNameOrConfig === "string") {
+            configActual.initialEventName = initialEventNameOrConfig;
+            configActual.initialListener = initialListener;
+        }
+        else if (typeof initialEventNameOrConfig === "object") {
+            Object.entries(initialEventNameOrConfig).map(function (_a) {
+                var key = _a[0], value = _a[1];
+                if (value !== void 0) {
+                    // @ts-ignore
+                    configActual[key] = value;
+                }
+            });
+        }
+    }
+    else {
+        configActual = nameOrConfig || {};
+    }
+    if (!configActual.name) {
+        configActual.name = "_emitter_".concat(UKey());
+    }
+    if (!configActual.namespace) {
+        configActual.namespace = "default";
+    }
     // 如果没有传入 name，使用 Ukey 方法生成一个唯一的名称
-    var listenerName = name || "_emitter_".concat(UKey());
+    var listenerName = configActual.name;
     var emit = function (eventName) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
         }
         globalListeners.forEach(function (value, key) {
-            if (key.startsWith(eventName)) {
+            if (key.startsWith("".concat(configActual.namespace, "_").concat(eventName, "_"))) {
                 value.listener.apply(value, args);
             }
         });
     };
     var subscribe = function (eventName, listener) {
-        var key = "".concat(eventName, "_").concat(listenerName);
+        var key = "".concat(configActual.namespace, "_").concat(eventName, "_").concat(listenerName);
         if (globalListeners.has(key)) {
-            throw new Error("Listener ".concat(listenerName, " has already registered for event ").concat(eventName));
-        }
-        if (Array.from(globalListeners.values()).some(function (value) { return value.listenerName === listenerName; })) {
-            throw new Error("Listener name ".concat(listenerName, " is already in use"));
+            throw new Error("[react-hooks-kit][useEmitter] Listener ".concat(listenerName, " has already registered for event ").concat(eventName));
         }
         globalListeners.set(key, { eventName: eventName, listenerName: listenerName, listener: listener });
     };
     var unsubscribe = function (eventName) {
-        var key = "".concat(eventName, "_").concat(listenerName);
+        var key = "".concat(configActual.namespace, "_").concat(eventName, "_").concat(listenerName);
         globalListeners.delete(key);
     };
     var unsubscribeAll = function () {
+        var keysToDelete = [];
         globalListeners.forEach(function (value, key) {
             if (key.endsWith("_".concat(listenerName))) {
-                globalListeners.delete(key);
+                keysToDelete.push(key);
             }
+        });
+        keysToDelete.forEach(function (key) {
+            globalListeners.delete(key);
         });
     };
     React.useEffect(function () {
-        if (initialEventName && initialListener) {
-            subscribe(initialEventName, initialListener);
+        if (configActual.initialEventName && configActual.initialListener) {
+            subscribe(configActual.initialEventName, configActual.initialListener);
         }
         return function () {
             globalListeners.forEach(function (value, key) {
@@ -446,19 +474,48 @@ initialListener) {
                 }
             });
         };
-    }, [initialEventName, initialListener]);
+    }, [configActual.initialEventName, configActual.initialListener]);
     return { name: listenerName, emit: emit, subscribe: subscribe, unsubscribe: unsubscribe, unsubscribeAll: unsubscribeAll };
 }
 
-function useEventListener(eventName) {
-    var _a = useEventEmitter("_emitter_".concat(UKey())), subscribe = _a.subscribe, unsubscribe = _a.unsubscribe;
-    var _b = React.useState(null), eventResult = _b[0], setEventResult = _b[1];
+function useReceiver(eventNameOrOptions, callback) {
+    var eventName;
+    var name;
+    var namespace;
+    var cb;
+    if (typeof eventNameOrOptions === "string") {
+        eventName = eventNameOrOptions;
+        name = "_receiver_".concat(UKey());
+        namespace = "default";
+        cb = callback;
+    }
+    else {
+        eventName = eventNameOrOptions.eventName;
+        name = eventNameOrOptions.name || "_receiver_".concat(UKey());
+        namespace = eventNameOrOptions.namespace || "default";
+        cb = eventNameOrOptions.callback;
+        if (cb) {
+            if (callback) {
+                console.warn("[react-hooks-kit][useReceiver] callback is ignored when options.callback is set");
+            }
+            else {
+                cb = callback;
+            }
+        }
+    }
+    var _a = useEmitter({
+        name: name,
+        namespace: namespace,
+    }), subscribe = _a.subscribe, unsubscribe = _a.unsubscribe, emit = _a.emit;
+    var _b = React.useState(true), isListening = _b[0], setIsListening = _b[1];
+    var _c = React.useState(null), eventResult = _c[0], setEventResult = _c[1];
     var eventListener = React.useCallback(function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
         setEventResult(args);
+        cb === null || cb === void 0 ? void 0 : cb.apply(void 0, args);
     }, []);
     React.useEffect(function () {
         subscribe(eventName, eventListener);
@@ -468,11 +525,22 @@ function useEventListener(eventName) {
     }, [eventName, eventListener]);
     var stopListening = React.useCallback(function () {
         unsubscribe(eventName);
+        setIsListening(false);
     }, [eventName]);
     var startListening = React.useCallback(function () {
         subscribe(eventName, eventListener);
+        setIsListening(true);
     }, [eventName, eventListener]);
-    return [eventResult, stopListening, startListening];
+    var reveiver = {
+        stop: stopListening,
+        start: startListening,
+        reset: setEventResult,
+        isListening: isListening,
+        get emit() {
+            return emit;
+        },
+    };
+    return [eventResult, reveiver];
 }
 
 function useEyeDropper () {
@@ -751,10 +819,10 @@ function useGenerator(generatorFn) {
     return state;
 }
 
-var createRoot$1 = function (parentDocument) {
+var createRoot$1 = function (targetDocument) {
     return {
         render: function (element) {
-            ReactDOM.render(element, parentDocument);
+            ReactDOM.render(element, targetDocument);
         },
     };
 };
@@ -762,46 +830,67 @@ if ("createRoot" in ReactDOM) {
     // Adapt to React 18
     createRoot$1 = ReactDOM.createRoot;
 }
+var createMask = function (config) {
+    var mask = document.createElement("div");
+    mask.style.position = "fixed";
+    mask.style.top = "0";
+    mask.style.right = "0";
+    mask.style.bottom = "0";
+    mask.style.left = "0";
+    mask.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    mask.style.zIndex = "999";
+    mask.style.cursor = "default";
+    mask.style.userSelect = "none";
+    mask.style.webkitUserSelect = "none";
+    mask.style.pointerEvents = "none !important";
+    var maskConfig = config;
+    if (maskConfig) {
+        if (maskConfig.backgroundColor) {
+            mask.style.backgroundColor = maskConfig.backgroundColor;
+        }
+        if (maskConfig.opacity) {
+            mask.style.opacity = maskConfig.opacity.toString();
+        }
+        if (maskConfig.zIndex) {
+            mask.style.zIndex = maskConfig.zIndex.toString();
+        }
+    }
+    return mask;
+};
 function useGuide(steps, callback, config) {
     var _a = React.useState(-1), step = _a[0], setStep = _a[1];
+    var maskRef = React.useRef(null);
+    var zIndexes = React.useRef(new Map());
+    var registered = React.useRef(new Set());
+    var register = React.useCallback(function (id) {
+        registered.current.add(id);
+    }, []);
+    var unregister = React.useCallback(function (id) {
+        registered.current.delete(id);
+    }, []);
     React.useEffect(function () {
         var _a, _b;
         var currentStep = steps[step];
-        // const rootDom = document.getElementById("root");
         var rootDom = document.body;
-        var mask = document.createElement("div");
-        mask.style.position = "fixed";
-        mask.style.top = "0";
-        mask.style.right = "0";
-        mask.style.bottom = "0";
-        mask.style.left = "0";
-        mask.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-        mask.style.zIndex = "999";
-        mask.style.pointerEvents = "auto";
-        var maskConfig = config === null || config === void 0 ? void 0 : config.maskConfig;
-        if (maskConfig) {
-            if (maskConfig.backgroundColor) {
-                mask.style.backgroundColor = maskConfig.backgroundColor;
-            }
-            if (maskConfig.opacity) {
-                mask.style.opacity = maskConfig.opacity.toString();
-            }
-            if (maskConfig.zIndex) {
-                mask.style.zIndex = maskConfig.zIndex.toString();
-            }
-        }
+        var mask = createMask(config === null || config === void 0 ? void 0 : config.maskConfig);
         if (currentStep && rootDom) {
             rootDom.appendChild(mask);
+            maskRef.current = mask;
         }
         (_a = currentStep === null || currentStep === void 0 ? void 0 : currentStep.ids) === null || _a === void 0 ? void 0 : _a.forEach(function (id) {
             var element = document.getElementById(id);
             if (element) {
+                zIndexes.current.set(id, element.style.zIndex);
                 element.style.zIndex = "1000";
             }
         });
         var renders = (_b = currentStep === null || currentStep === void 0 ? void 0 : currentStep.renders) === null || _b === void 0 ? void 0 : _b.map(function (_a) {
             var id = _a.id, render = _a.render, containerStyle = _a.containerStyle, containerClassName = _a.containerClassName;
-            var parent = document.getElementById(id);
+            if (registered.current.has(id)) {
+                // 如果已经注册，跳过渲染步骤
+                return;
+            }
+            var target = document.getElementById(id);
             var container = document.createElement("div");
             container.style.zIndex = "1001";
             container.style.position = "relative";
@@ -824,19 +913,30 @@ function useGuide(steps, callback, config) {
                 container.className = containerClassName;
             }
             // 默认位于父元素的最后
-            parent === null || parent === void 0 ? void 0 : parent.appendChild(container);
-            if (container && parent) {
+            target === null || target === void 0 ? void 0 : target.appendChild(container);
+            if (container && target) {
                 // @ts-ignore
-                createRoot$1(container).render(render(id, currentStep.name, currentStep.data, currentStep.ids), container);
+                createRoot$1(container).render(
+                // @ts-ignore
+                render(id, currentStep.name, currentStep.data, currentStep.ids));
                 return container;
             }
         });
         callback === null || callback === void 0 ? void 0 : callback(step, currentStep);
         return function () {
-            if (currentStep && rootDom) {
+            if (currentStep && rootDom && maskRef.current) {
                 rootDom.removeChild(mask);
+                maskRef.current = null;
             }
             renders === null || renders === void 0 ? void 0 : renders.forEach(function (elem) { return elem === null || elem === void 0 ? void 0 : elem.remove(); });
+            // 当不再需要引导元素时，恢复原始的 zIndex
+            zIndexes.current.forEach(function (zIndex, id) {
+                var element = document.getElementById(id);
+                if (element) {
+                    element.style.zIndex = zIndex;
+                }
+            });
+            zIndexes.current.clear();
         };
     }, [step, steps]);
     var start = React.useCallback(function () { return setStep(0); }, []);
@@ -844,7 +944,20 @@ function useGuide(steps, callback, config) {
     var next = React.useCallback(function () { return setStep(function (prev) { return Math.min(prev + 1, steps.length - 1); }); }, [steps]);
     var last = React.useCallback(function () { return setStep(function (prev) { return Math.max(prev - 1, 0); }); }, []);
     var go = React.useCallback(function (step) { return setStep(Math.max(0, Math.min(step, steps.length - 1))); }, [steps]);
-    return [step, { start: start, stop: stop, next: next, last: last, go: go }];
+    return [
+        step,
+        {
+            start: start,
+            stop: stop,
+            next: next,
+            last: last,
+            go: go,
+            step: step,
+            options: { steps: steps, callback: callback, config: config },
+            register: register,
+            unregister: unregister,
+        },
+    ];
 }
 
 function useHover(onHover) {
@@ -978,31 +1091,31 @@ var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
     return source;
 };
 
-function useList(initialItems, dependencies, options) {
+function useList(initialItems, options, dependencies) {
     var _a, _b;
     var _c = React.useState(
     // @ts-ignore
     __spreadArray([], initialItems, true).map(function (item) {
         var _a;
-        return (__assign(__assign({}, item), (_a = {}, _a[options.idKey || "_id"] = UKey(), _a)));
+        return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
     })), items = _c[0], setItems = _c[1];
     var _d = React.useState(__spreadArray([], initialItems, true)), originalItems = _d[0], setOriginalItems = _d[1];
     React.useEffect(function () {
         // 去除 唯一id 再设置
         var newItems = items.map(function (item) {
             var _item = __assign({}, item);
-            if (_item[options.idKey || "_id"]) {
-                delete _item[options.idKey || "_id"];
+            if (_item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"]) {
+                delete _item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"];
             }
             return _item;
         });
         setOriginalItems(__spreadArray([], newItems, true));
-    }, dependencies);
+    }, dependencies || []);
     var save = React.useCallback(function () {
         var newItems = items.map(function (item) {
             var _item = __assign({}, item);
-            if (_item[options.idKey || "_id"]) {
-                delete _item[options.idKey || "_id"];
+            if (_item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"]) {
+                delete _item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"];
             }
             return _item;
         });
@@ -1012,27 +1125,27 @@ function useList(initialItems, dependencies, options) {
         // @ts-ignore
         setItems(function (prevItems) {
             var _a;
-            return __spreadArray(__spreadArray([], prevItems, true), [__assign(__assign({}, item), (_a = {}, _a[options.idKey || "_id"] = UKey(), _a))], false);
+            return __spreadArray(__spreadArray([], prevItems, true), [__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a))], false);
         });
-    }, [options.idKey]);
+    }, [options === null || options === void 0 ? void 0 : options.idKey]);
     var removeItem = React.useCallback(function (id) {
         if (id === void 0 || id === null) {
             throw new Error("idKey is required to removeItem in list");
         }
-        setItems(function (prevItems) { return prevItems.filter(function (item) { return item[options.idKey || "_id"] !== id; }); });
-    }, [options.idKey]);
+        setItems(function (prevItems) { return prevItems.filter(function (item) { return item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] !== id; }); });
+    }, [options === null || options === void 0 ? void 0 : options.idKey]);
     var removeItems = React.useCallback(function (ids) {
         ids.forEach(function (id) {
             removeItem(id);
         });
-    }, [options.idKey]);
+    }, [options === null || options === void 0 ? void 0 : options.idKey]);
     var reset = React.useCallback(function (items) {
         if (items !== void 0) {
             setItems(
             // @ts-ignore
             __spreadArray([], items, true).map(function (item) {
                 var _a;
-                return (__assign(__assign({}, item), (_a = {}, _a[options.idKey || "_id"] = UKey(), _a)));
+                return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
             }));
             return;
         }
@@ -1040,23 +1153,23 @@ function useList(initialItems, dependencies, options) {
         // @ts-ignore
         __spreadArray([], originalItems, true).map(function (item) {
             var _a;
-            return (__assign(__assign({}, item), (_a = {}, _a[options.idKey || "_id"] = UKey(), _a)));
+            return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
         }));
     }, [originalItems]);
     var updateItems = React.useCallback(function (newItems) {
-        if (newItems.some(function (item) { return [void 0, null].includes(item[options.idKey || "_id"]); })) {
+        if (newItems.some(function (item) { return [void 0, null].includes(item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"]); })) {
             throw new Error("idKey is required to updateItem in list");
         }
         // @ts-ignore
         setItems(newItems);
     }, []);
-    var sortedItems = __spreadArray([], items, true).sort(options.sortFn || (function () { return 0; }));
-    var filteredItems = sortedItems.filter(options.filterFn || (function () { return true; }));
+    var sortedItems = __spreadArray([], items, true).sort((options === null || options === void 0 ? void 0 : options.sortFn) || (function () { return 0; }));
+    var filteredItems = sortedItems.filter((options === null || options === void 0 ? void 0 : options.filterFn) || (function () { return true; }));
     var _e = React.useState(1), currentPage = _e[0], setCurrentPage = _e[1];
     var totalPage = React.useMemo(function () {
         var _a;
         return Math.max(1, Math.ceil(filteredItems.length / ((_a = options === null || options === void 0 ? void 0 : options.itemsPerPage) !== null && _a !== void 0 ? _a : 10)));
-    }, [filteredItems.length, options.itemsPerPage]);
+    }, [filteredItems.length, options === null || options === void 0 ? void 0 : options.itemsPerPage]);
     var goToPage = React.useCallback(function (page) {
         if (page >= 1 && page <= totalPage) {
             setCurrentPage(page);
@@ -1072,7 +1185,7 @@ function useList(initialItems, dependencies, options) {
             setCurrentPage(function (page) { return page + 1; });
         }
     }, [currentPage, totalPage]);
-    var pagedItems = filteredItems.slice((currentPage - 1) * ((_a = options.itemsPerPage) !== null && _a !== void 0 ? _a : 10), currentPage * ((_b = options.itemsPerPage) !== null && _b !== void 0 ? _b : 10));
+    var pagedItems = filteredItems.slice((currentPage - 1) * ((_a = options === null || options === void 0 ? void 0 : options.itemsPerPage) !== null && _a !== void 0 ? _a : 10), currentPage * ((_b = options === null || options === void 0 ? void 0 : options.itemsPerPage) !== null && _b !== void 0 ? _b : 10));
     return [
         items,
         {
@@ -1087,12 +1200,12 @@ function useList(initialItems, dependencies, options) {
             render: function () {
                 return (filteredItems === null || filteredItems === void 0 ? void 0 : filteredItems.length)
                     ? filteredItems.map(function (item, idx, array) {
-                        return options.renderFn ? (jsxRuntime.jsx(React.Fragment, { children: options.renderFn(item, idx, array) }, item[options.idKey || "_id"])) : null;
+                        return (options === null || options === void 0 ? void 0 : options.renderFn) ? (jsxRuntime.jsx(React.Fragment, { children: options === null || options === void 0 ? void 0 : options.renderFn(item, idx, array) }, item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"])) : null;
                     })
-                    : options.renderEmpty
-                        ? typeof options.renderEmpty === "function"
-                            ? options.renderEmpty()
-                            : options.renderEmpty
+                    : (options === null || options === void 0 ? void 0 : options.renderEmpty)
+                        ? typeof (options === null || options === void 0 ? void 0 : options.renderEmpty) === "function"
+                            ? options === null || options === void 0 ? void 0 : options.renderEmpty()
+                            : options === null || options === void 0 ? void 0 : options.renderEmpty
                         : null;
             },
             pagedItems: pagedItems,
@@ -1105,22 +1218,43 @@ function useList(initialItems, dependencies, options) {
     ];
 }
 
-function formatLoadingValue(value, zeroFalse) {
-    if (zeroFalse === void 0) { zeroFalse = false; }
-    if (value !== 0 || !zeroFalse) {
-        return value;
+function formatLoadingValue(value, boolify) {
+    if (boolify === void 0) { boolify = false; }
+    if (!boolify) {
+        if (["number", "boolean"].includes(typeof value)) {
+            if (typeof value === "number") {
+                return value;
+            }
+            return value === true ? 1 : 0;
+        }
+        else {
+            throw new Error("value must be number or boolean, but got ".concat(typeof value));
+        }
     }
-    return value === 0 ? false : value;
+    if (["number", "boolean"].includes(typeof value)) {
+        if (typeof value === "number") {
+            if (value === 0) {
+                return false;
+            }
+            else if (value == 1) {
+                return true;
+            }
+            else {
+                return value;
+            }
+        }
+        return value === true ? true : false;
+    }
+    else {
+        throw new Error("value must be number or boolean, but got ".concat(typeof value));
+    }
 }
-function formatLoadingState(values, zeroFalse) {
+function formatLoadingState(values, boolify) {
     if (values === void 0) { values = {}; }
-    if (zeroFalse === void 0) { zeroFalse = false; }
-    if (!zeroFalse) {
-        return values;
-    }
+    if (boolify === void 0) { boolify = false; }
     var newValues = __assign({}, values);
     Object.keys(newValues).forEach(function (key) {
-        newValues[key] = formatLoadingValue(newValues[key], zeroFalse);
+        newValues[key] = formatLoadingValue(newValues[key], boolify);
     });
     return newValues;
 }
@@ -1138,24 +1272,24 @@ var setTypeOptions = ["spread", "override"];
 var useLoading = function (loadingMap, options) {
     if (options === void 0) { options = {
         setType: "override",
-        zeroFalse: true,
+        boolify: true,
     }; }
-    var _a = React.useState(loadingMap), loading = _a[0], _setLoading = _a[1];
+    var _a = React.useState(formatLoadingState(loadingMap, options.boolify)), loading = _a[0], _setLoading = _a[1];
     var setLoading = function (args1, value) {
         if (value === void 0) { value = true; }
         if (typeof args1 === "object") {
             if (setTypeOptions.includes(value)) {
                 if (value === "spread") {
                     _setLoading(function (pre) {
-                        return formatLoadingState(__assign(__assign({}, pre), args1), options.zeroFalse);
+                        return formatLoadingState(__assign(__assign({}, pre), args1), options.boolify);
                     });
                 }
                 else {
-                    _setLoading(formatLoadingState(args1, options.zeroFalse));
+                    _setLoading(formatLoadingState(args1, options.boolify));
                 }
             }
             else {
-                _setLoading(formatLoadingState(args1, options.zeroFalse));
+                _setLoading(formatLoadingState(args1, options.boolify));
             }
             return;
         }
@@ -1163,15 +1297,15 @@ var useLoading = function (loadingMap, options) {
             if (setTypeOptions.includes(value)) {
                 if (value === "spread") {
                     _setLoading(function (pre) {
-                        return formatLoadingState(__assign(__assign({}, pre), args1(pre)), options.zeroFalse);
+                        return formatLoadingState(__assign(__assign({}, pre), args1(pre)), options.boolify);
                     });
                 }
                 else {
-                    _setLoading(formatLoadingState(args1, options.zeroFalse));
+                    _setLoading(formatLoadingState(args1, options.boolify));
                 }
             }
             else {
-                _setLoading(formatLoadingState(args1, options.zeroFalse));
+                _setLoading(formatLoadingState(args1, options.boolify));
             }
             return;
         }
@@ -1180,13 +1314,13 @@ var useLoading = function (loadingMap, options) {
             if (typeof value === "function") {
                 _setLoading(function (pre) {
                     var _a;
-                    return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key_1] = value(pre[key_1]), _a)), options.zeroFalse);
+                    return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key_1] = value(pre[key_1]), _a)), options.boolify);
                 });
             }
             else {
                 _setLoading(function (pre) {
                     var _a;
-                    return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key_1] = value, _a)), options.zeroFalse);
+                    return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key_1] = value, _a)), options.boolify);
                 });
             }
         }
@@ -1194,25 +1328,25 @@ var useLoading = function (loadingMap, options) {
     var onLoading = function (key) {
         _setLoading(function (pre) {
             var _a;
-            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = 1, _a)), options.zeroFalse);
+            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = 1, _a)), options.boolify);
         });
     };
     var unLoading = function (key) {
         _setLoading(function (pre) {
             var _a;
-            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = 0, _a)), options.zeroFalse);
+            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = 0, _a)), options.boolify);
         });
     };
     var plusLoading = function (key) {
         _setLoading(function (pre) {
             var _a;
-            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = pre[key] + 1, _a)), options.zeroFalse);
+            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = pre[key] + 1, _a)), options.boolify);
         });
     };
     var minusLoading = function (key) {
         _setLoading(function (pre) {
             var _a;
-            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = pre[key] - 1, _a)), options.zeroFalse);
+            return formatLoadingState(__assign(__assign({}, pre), (_a = {}, _a[key] = pre[key] - 1, _a)), options.boolify);
         });
     };
     var returned = [
@@ -1594,8 +1728,9 @@ function forEach(array, iteratee) {
     return array;
 }
 
-function setTo(obj, path, val, deepClone) {
+function setTo(obj, path, val, deepClone, createIfNotExist) {
     if (deepClone === void 0) { deepClone = false; }
+    if (createIfNotExist === void 0) { createIfNotExist = false; }
     var keys = [];
     if (!Array.isArray(path)) {
         switch (typeof path) {
@@ -1606,7 +1741,7 @@ function setTo(obj, path, val, deepClone) {
                 keys = [path];
                 break;
             case "symbol":
-                keys = [path.toString()];
+                keys = [path];
                 break;
             default:
                 throw new Error("Invalid path");
@@ -1629,8 +1764,14 @@ function setTo(obj, path, val, deepClone) {
     var lastKey = keys.pop();
     var temp = obj;
     keys.forEach(function (key) {
-        if (!temp[key])
-            temp[key] = {};
+        if (!temp[key]) {
+            if (createIfNotExist) {
+                temp[key] = isNaN(Number(key)) ? {} : [];
+            }
+            else {
+                return obj;
+            }
+        }
         temp = temp[key];
     });
     var newObj = __assign({}, obj);
@@ -1638,16 +1779,59 @@ function setTo(obj, path, val, deepClone) {
     keys.forEach(function (key) {
         temp2 = temp2[key];
     });
-    if (lastKey || lastKey === 0)
+    if ((lastKey || lastKey === 0) && temp2 && (createIfNotExist || lastKey in temp2)) {
         temp2[lastKey] = val;
+    }
     return newObj;
+}
+
+function get(object, path, strict) {
+    if (strict === void 0) { strict = false; }
+    if (object === null || object === undefined)
+        return undefined;
+    if (!path)
+        return undefined;
+    if (!Array.isArray(path)) {
+        switch (typeof path) {
+            case "string":
+                path = path.split(".");
+                break;
+            case "number":
+                path = [path];
+                break;
+            case "symbol":
+                path = [path];
+                break;
+            default:
+                throw new Error("Invalid path");
+        }
+    }
+    if (!strict) {
+        return path.reduce(
+        //@ts-ignore
+        function (obj, key) { return (obj && obj[key] !== "undefined" ? obj[key] : undefined); }, object);
+    }
+    var obj = object;
+    for (var i = 0; i < path.length; i++) {
+        var key = path[i];
+        // @ts-ignore
+        while (obj[key] === undefined && i + 1 < path.length) {
+            // @ts-ignore
+            key += "." + path[++i];
+        }
+        // @ts-ignore
+        obj = obj[key];
+    }
+    return obj;
 }
 
 /**
  * **useMeta** is a React Hook that returns a meta state and a function to set the meta state.
  * ### Parameters
  * - initialState: `T extends object` - The initial state object of the meta state.
- * - deepSet : `boolean?` - Whether to use deep clone when setting the meta state. Defaults to `false`.
+ * - options?: `{ deepSet?: boolean; createNonExist?: boolean }` - The options of the meta state.
+ *   - deepSet : `boolean?` - Whether to use deep clone when setting the meta state. Defaults to `false`.
+ *   - createNonExist : `boolean?` - Whether to create non-existent nodes when setting the meta state. Defaults to `false`.
  * ---
  * ### Return (Array)
  * - [0] state
@@ -1733,7 +1917,7 @@ function setTo(obj, path, val, deepClone) {
  * - Q: What's the difference of deepSet or not?
  * - A: When deepSet is true, the state will be deep cloned when setting the state, otherwise it will be shallow cloned. Deepclone is slower than shallowclone, but it is safer.
  */
-var useMeta = function (initialState, deepSet) {
+var useMeta = function (initialState, options) {
     var _a = React.useState(initialState), meta = _a[0], setState = _a[1];
     var setMeta = function (args1, value) {
         if (value === void 0) { value = undefined; }
@@ -1749,11 +1933,13 @@ var useMeta = function (initialState, deepSet) {
             var key_1 = args1;
             if (typeof value === "function") {
                 setState(function (pre) {
-                    return setTo(pre, key_1, value(pre[key_1], pre), deepSet);
+                    return setTo(pre, key_1, value(get(pre, key_1), pre), options === null || options === void 0 ? void 0 : options.deepSet, options === null || options === void 0 ? void 0 : options.createNonExist);
                 });
             }
             else {
-                setState(function (pre) { return setTo(pre, key_1, value, deepSet); });
+                setState(function (pre) {
+                    return setTo(pre, key_1, value, options === null || options === void 0 ? void 0 : options.deepSet, options === null || options === void 0 ? void 0 : options.createNonExist);
+                });
             }
         }
     };
@@ -2202,20 +2388,40 @@ var useScroll = function (callback) {
     return position;
 };
 
-// @ts-ignore
 var Reactive = /** @class */ (function () {
     function Reactive(obj, fsr) {
+        this.__isReactive = true;
         var instance = new Proxy(obj, {
             // @ts-ignore
-            get: function (target, prop) {
+            get: function (target, prop, receiver) {
                 var _a;
+                if (prop === "toJSON") {
+                    // || prop === "valueOf" || prop === "toString"
+                    return function () { return unwrap(target); };
+                }
+                // Handle special Types
+                var specialMethodHandler = handleSpecialMethods(target, prop, fsr);
+                if (specialMethodHandler) {
+                    return specialMethodHandler;
+                }
+                // Special handling for the size property of Map objects
+                if ((target instanceof Map || target instanceof Set) && prop === "size") {
+                    return target.size;
+                }
+                if (target instanceof Array && prop === "length") {
+                    return target.length;
+                }
                 return (_a = target[prop]) === null || _a === void 0 ? void 0 : _a.value;
             },
             // @ts-ignore
             set: function (target, prop, value) {
-                if (!isEqual(target[prop]["value"], value)) {
+                if (target[prop] && !isEqual(target[prop]["value"], value)) {
                     var update = function () {
-                        target[prop]["value"] = value; // unwrap(deProxy(target))
+                        // target[prop]["value"] = value;
+                        // @ts-ignore
+                        target[prop]["value"] =
+                            // @ts-ignore
+                            typeof value === "object" ? reactive(value, fsr) : value; // unwrap(deProxy(target))
                         fsr === null || fsr === void 0 ? void 0 : fsr();
                     };
                     update();
@@ -2227,21 +2433,122 @@ var Reactive = /** @class */ (function () {
         instance.toString = function () {
             return "[object Object]";
         };
+        // @ts-ignore
+        instance.__isReactive = true;
+        // @ts-ignore
         return instance;
     }
+    Reactive.isReactive = function (target) {
+        // @ts-ignore
+        return target === null || target === void 0 ? void 0 : target.__isReactive;
+    };
     return Reactive;
 }());
+function handleSpecialMethods(target, prop, fsr) {
+    var types = [Array, Date, Map, Set];
+    var nonMutatingArrayMethods = [
+        "concat",
+        "join",
+        "indexOf",
+        "lastIndexOf",
+        "includes",
+        "with",
+        // "slice",
+        // "find",
+        // "filter",
+        // "reduce",
+        // "some",
+        // "every",
+        // "reverse",
+    ];
+    var _loop_1 = function (Type) {
+        if (target instanceof Type && prop in Type.prototype) {
+            // @ts-ignore
+            if (typeof target[prop] === "function") {
+                return { value: function () {
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i] = arguments[_i];
+                        }
+                        if (target instanceof Array && nonMutatingArrayMethods.includes(prop)) {
+                            // @ts-ignore
+                            return Array.prototype[prop].apply(unwrap(target), args);
+                        }
+                        if (["push", "unshift", "fill"].includes(prop)) {
+                            // @ts-ignore
+                            args = args.map(function (arg) { return deepProxy(arg, fsr); });
+                        }
+                        // @ts-ignore
+                        var result = Type.prototype[prop].apply(target, args);
+                        fsr === null || fsr === void 0 ? void 0 : fsr();
+                        return result;
+                    } };
+            }
+            else {
+                return { value: target[prop] };
+            }
+        }
+    };
+    for (var _i = 0, types_1 = types; _i < types_1.length; _i++) {
+        var Type = types_1[_i];
+        var state_1 = _loop_1(Type);
+        if (typeof state_1 === "object")
+            return state_1.value;
+    }
+    return null;
+}
 function deepProxy(obj, fsr) {
-    var proxyObj = {};
+    if (typeof obj !== "object" || obj === null) {
+        var wrapObj = { value: obj };
+        return reactive(wrapObj, fsr);
+    }
+    else {
+        return reactive(obj, fsr);
+    }
+}
+function reactive(obj, fsr) {
+    var proxyObj;
+    if (obj instanceof Date) {
+        proxyObj = new Date(obj.getTime());
+    }
+    else if (obj instanceof Map) {
+        proxyObj = new Map(obj);
+    }
+    else if (obj instanceof Set) {
+        proxyObj = new Set(obj);
+    }
+    else if (Array.isArray(obj)) {
+        proxyObj = [];
+        Object.setPrototypeOf(proxyObj, Array.prototype);
+    }
+    else {
+        proxyObj = {};
+    }
     for (var key in obj) {
         if (typeof obj[key] === "object" && obj[key] !== null) {
-            proxyObj[key] = { value: deepProxy(obj[key], fsr) };
+            proxyObj[key] = { value: reactive(obj[key], fsr) };
         }
         else {
             proxyObj[key] = { value: obj[key] };
         }
     }
     return new Reactive(proxyObj, fsr);
+}
+function unwrap(obj) {
+    if (typeof obj !== "object" || obj === null || Reactive.isReactive(obj)) {
+        return obj;
+    }
+    if ("value" in obj) {
+        var value = obj.value;
+        if (typeof value !== "object" || value === null || Reactive.isReactive(obj)) {
+            return value;
+        }
+    }
+    var unwrappedObj = Array.isArray(obj) ? [] : {};
+    for (var key in obj) {
+        unwrappedObj[key] = obj[key].value;
+    }
+    return unwrappedObj;
 }
 function shallowProxy(obj, fsr) {
     return new Proxy(obj, {
@@ -2259,8 +2566,8 @@ function shallowProxy(obj, fsr) {
 }
 /**
  * #### params
- * - **initialState** - Only supports object type as reactive data source.
- * If given a non-object type, it will return the original value
+ * - **initialState** - support **primitives**, **object**, **array**, **Date**, **Map** and **Set** types.
+ * If given a non-object type, it will return the proxy wrapped with struct `{value: T}`.
  * - **deep** - If the second parameter is typeof `boolean`, it means whether the object is deeply reactive.
  * If the second parameter is typeof `function`, it means that the callback function will be triggered when the state changes.
  * - **callback** - Watcher callback function, which will be triggered when the state changes
@@ -2283,72 +2590,23 @@ function useReactive(initialState, deep) {
         }
         callbacks.forEach(function (callback) { return callback(stateRef.current); });
     }, [stateRef.current, callbacks]);
-    React.useEffect(function () {
+    React.useLayoutEffect(function () {
         var reactiveState = null;
-        if (deep === false) {
-            reactiveState = shallowProxy(initialState, fsr);
-        }
-        else {
-            reactiveState = deepProxy(initialState, fsr);
-        }
+        reactiveState = deep !== false ? deepProxy(initialState, fsr) : shallowProxy(initialState, fsr);
         stateRef.current = reactiveState;
         fsr();
     }, []);
+    //@ts-ignore
     return stateRef.current;
 }
 
-function get(object, path, strict) {
-    if (strict === void 0) { strict = false; }
-    if (!path)
-        return undefined;
-    if (!Array.isArray(path)) {
-        switch (typeof path) {
-            case "string":
-                path = path.split(".");
-                break;
-            case "number":
-                path = [path];
-                break;
-            case "symbol":
-                path = [path.toString()];
-                break;
-            default:
-                throw new Error("Invalid path");
-        }
-    }
-    if (!strict) {
-        return path.reduce(
-        //@ts-ignore
-        function (obj, key) { return (obj && obj[key] !== "undefined" ? obj[key] : undefined); }, object);
-    }
-    var obj = object;
-    for (var i = 0; i < path.length; i++) {
-        var key = path[i];
-        // @ts-ignore
-        while (obj[key] === undefined && i + 1 < path.length) {
-            // @ts-ignore
-            key += "." + path[++i];
-        }
-        // @ts-ignore
-        obj = obj[key];
-    }
-    return obj;
-}
-
+var eventBus = { events: {} };
 /**
- * Reactor is a state management tool based on React Hooks.
- * - Only invoke set or reassign value will cause the view to update.
- * - Directly change deep properties of the state will not cause the view to update, but it has been stored in memory, then last time the view is updated, the view will be updated.
- * - Reactor is a reactive object, which means that you can get the value of the state through the get method, and the value will be updated when the state changes.
- * - Reactor is a proxy object, which means that you can directly get the value of the state through the dot syntax, and the value will be updated when the state changes.
- * - Reactor is a cloneable object, which means that you can clone a Reactor object through the clone method, and the cloned object will have the same state as the original object.
- * - Reactor is a resettable object, which means that you can reset the state of the Reactor object to the default value through the reset method.
- * - Reactor is a dispatchable object, which means that you can dispatch an action through the dispatch method, and the action will be executed by the corresponding plugin.
- * - Reactor is a serializable object, which means that you can serialize the Reactor object through the toJSON method.
- * - Reactor is a subscribable object, which means that you can subscribe to the Reactor object through the subscribe method, and the listener will be called when the state changes.
- * - Reactor is a listenable object, which means that you can listen to the Reactor object through the listen method, and the listener will be called when the state changes.
- * - Reactor is a pluginable object, which means that you can add a plugin to the Reactor object through the use method, and the plugin will be executed when the state changes.
- *
+ * Reactor is a state management tool based on React Hooks with the following features:
+ * - View updates are only triggered by set invocation or value reassignment.
+ * - Direct changes to deep state properties won't trigger view updates but are stored in memory and applied on the next view update.
+ * - Reactor is a reactive, proxy, cloneable, resettable, dispatchable, serializable, subscribable, listenable, and pluginable object.
+ * ---
  */
 var Reactor = /** @class */ (function () {
     function Reactor(state, setState, plugins, deepSet) {
@@ -2414,6 +2672,24 @@ var Reactor = /** @class */ (function () {
                 (_a = plugin.action) === null || _a === void 0 ? void 0 : _a.call(plugin, _this._state, payload, _this);
             }
         });
+    };
+    /**
+     * Emit a custom event on the event bus (Only Reactor instance, not shared with other hooks like useEmitter, useReceiver.etc)
+     */
+    Reactor.prototype.emit = function (eventName, payload) {
+        (eventBus.events[eventName] || []).forEach(function (listener) { return listener(payload); });
+    };
+    /**
+     * Listen a custom event on the event bus (Only Reactor instance, not shared with other hooks like useEmitter, useReceiver.etc)
+     */
+    Reactor.prototype.on = function (eventName, listener) {
+        if (!eventBus.events[eventName]) {
+            eventBus.events[eventName] = [];
+        }
+        eventBus.events[eventName].push(listener);
+        return function () {
+            eventBus.events[eventName] = eventBus.events[eventName].filter(function (l) { return l !== listener; });
+        };
     };
     Reactor.prototype.toJSON = function () {
         return this._state;
@@ -2770,7 +3046,7 @@ function useToggle(initial, valueMap) {
 
 var useTree = function (initialTree, options) {
     if (options === void 0) { options = { idKey: "_id" }; }
-    var _a = React.useState(initialTree), tree = _a[0], setTree = _a[1];
+    var _a = React.useState(cloneDeep(initialTree)), tree = _a[0], setTree = _a[1];
     var _b = React.useState(null); _b[0]; var setFilteredTree = _b[1];
     var idKey = options.idKey;
     var renderNode = options.renderNode || (function () { return null; });
@@ -2779,35 +3055,127 @@ var useTree = function (initialTree, options) {
         throw new Error("You must provide an idKey to useTree");
     }
     var traverse = function (node, callback, level, parentNode) {
+        var _a;
         if (level === void 0) { level = 0; }
         if (parentNode === void 0) { parentNode = null; }
         var result = callback(node, level, parentNode);
-        var childrenResults = node.children.map(function (child) {
+        var childrenResults = ((_a = node.children) === null || _a === void 0 ? void 0 : _a.map(function (child) {
             return traverse(child, callback, level + 1, node);
-        });
+        })) || [];
         var final = __spreadArray([result], childrenResults, true);
         return final;
     };
+    var errMsg = "[react-hooks-kit][useTree] Node cannot be its own parent";
     var addNode = function (node, parentId) {
+        if (!node[idKey] && node[idKey] !== 0) {
+            node[idKey] = "".concat(UKey());
+        }
+        // check node[idKey] not equal to parentId
+        if (node[idKey] === parentId) {
+            if (options.strict) {
+                throw new Error(errMsg);
+            }
+            else {
+                console.error(errMsg);
+                return errMsg;
+            }
+        }
+        var parentExists = false;
+        var nodeExists = false;
+        errMsg = "[react-hooks-kit][useTree] Node with id ".concat(node[idKey], " already exists");
         traverse(tree, function (currentNode) {
-            if (currentNode[idKey] === parentId) {
-                currentNode.children.push(node);
+            if (currentNode[idKey] === node[idKey]) {
+                nodeExists = true;
+                if (options.strict) {
+                    throw new Error(errMsg);
+                }
             }
         });
+        if (nodeExists) {
+            console.error(errMsg);
+            return errMsg;
+        }
+        traverse(tree, function (currentNode) {
+            var _a;
+            if (currentNode[idKey] === parentId) {
+                parentExists = true;
+                if (!Array.isArray(currentNode.children)) {
+                    currentNode.children = [];
+                }
+                (_a = currentNode.children) === null || _a === void 0 ? void 0 : _a.push(node);
+            }
+        });
+        errMsg = "[react-hooks-kit][useTree] Parent with id ".concat(parentId, " does not exist");
+        if (!parentExists && options.strict) {
+            throw new Error(errMsg);
+        }
+        else if (!parentExists) {
+            console.error(errMsg);
+            return errMsg;
+        }
         setTree(__assign({}, tree));
     };
     var removeNode = function (nodeId) {
+        var errMsg = "[react-hooks-kit][removeNode] You must provide a nodeId to removeNode";
+        if (!nodeId && nodeId !== 0) {
+            if (options.strict) {
+                throw new Error(errMsg);
+            }
+            else {
+                console.error(errMsg);
+                return errMsg;
+            }
+        }
+        var nodeExists = false;
         traverse(tree, function (currentNode) {
-            currentNode.children = currentNode.children.filter(function (child) { return child[idKey] !== nodeId; });
+            var _a, _b;
+            if (currentNode[idKey] === nodeId) {
+                nodeExists = true;
+            }
+            if ((_a = currentNode.children) === null || _a === void 0 ? void 0 : _a.some(function (child) { return child[idKey] === nodeId; })) {
+                nodeExists = true;
+            }
+            currentNode.children =
+                ((_b = currentNode.children) === null || _b === void 0 ? void 0 : _b.filter(function (child) { return child[idKey] !== nodeId; })) || [];
         });
+        if (!nodeExists) {
+            errMsg = "[react-hooks-kit][useTree] Node to remove with id ".concat(nodeId, " does not exist");
+            if (options.strict) {
+                throw new Error(errMsg);
+            }
+            else {
+                console.error(errMsg);
+                return errMsg;
+            }
+        }
         setTree(__assign({}, tree));
     };
     var updateNode = function (nodeId, newNodeData) {
+        var errMsg = "[react-hooks-kit][useTree] You must provide a nodeId to updateNode";
+        if (!nodeId && nodeId !== 0) {
+            if (options.strict) {
+                throw new Error(errMsg);
+            }
+            else {
+                console.error(errMsg);
+                return errMsg;
+            }
+        }
+        var nodeExists = false;
         traverse(tree, function (currentNode) {
             if (currentNode[idKey] === nodeId) {
+                nodeExists = true;
                 Object.assign(currentNode, newNodeData);
             }
         });
+        if (!nodeExists) {
+            errMsg = "[react-hooks-kit][useTree] Node to update with id ".concat(nodeId, " does not exist");
+            if (options.strict) {
+                throw new Error(errMsg);
+            }
+            console.error(errMsg);
+            return errMsg;
+        }
         setTree(__assign({}, tree));
     };
     /**
@@ -2837,15 +3205,14 @@ var useTree = function (initialTree, options) {
         else {
             filterFn = filter;
         }
-        var result = traverse(tree, function (node) {
+        var results = [];
+        traverse(tree, function (node) {
             if (filterFn(node)) {
-                return node;
-            }
-            else {
-                return null;
+                //@ts-ignore
+                results.push(node);
             }
         });
-        return result.filter(function (node) { return node !== null; });
+        return results;
     };
     /**
      * Move a node from one parent to another
@@ -2860,7 +3227,14 @@ var useTree = function (initialTree, options) {
             }
         });
         if (sourceNode === null) {
-            throw new Error("Node with id ".concat(sourceNodeId, " does not exist"));
+            var errMsg_1 = "[react-hooks-kit][useTree] Node to move with id ".concat(sourceNodeId, " does not exist");
+            if (options.strict) {
+                throw new Error(errMsg_1);
+            }
+            else {
+                console.error(errMsg_1);
+                return errMsg_1;
+            }
         }
         removeNode(sourceNodeId);
         addNode(sourceNode, targetNodeId);
@@ -2870,15 +3244,44 @@ var useTree = function (initialTree, options) {
      */
     var render = React.useCallback(function () {
         if (!renderNode) {
-            throw new Error("You must provide a renderNode function to useTree");
+            throw new Error("[react-hooks-kit][useTree] You must provide a renderNode function to useTree");
+        }
+        if (!tree || "{}" === JSON.stringify(tree)) {
+            return options.renderEmpty
+                ? typeof options.renderEmpty === "function"
+                    ? options.renderEmpty()
+                    : options.renderEmpty
+                : null;
         }
         return traverse(tree, function (node, level, parentNode) {
+            // @ts-ignore @TODO
             return renderNode(node, idKey, level, parentNode, tree);
         });
     }, [tree, renderNode]);
+    var $traverse = function (callbackOrId, cb) {
+        if (typeof callbackOrId === "string") {
+            var nodeId = callbackOrId;
+            // Find the node and traverse it
+            var foundNode = findNode(nodeId);
+            if (!foundNode) {
+                return [];
+            }
+            else {
+                var callback = cb;
+                // @ts-ignore
+                return traverse(foundNode, callback);
+            }
+        }
+        else {
+            var callback = callbackOrId;
+            // @ts-ignore
+            return traverse(tree, callback);
+        }
+    };
     React.useEffect(function () {
         if (filterFn) {
             var result = traverse(tree, function (node) {
+                // @ts-ignore @TODO
                 if (filterFn(node)) {
                     return node;
                 }
@@ -2892,7 +3295,16 @@ var useTree = function (initialTree, options) {
     }, [tree, filterFn]);
     return [
         tree,
-        { addNode: addNode, removeNode: removeNode, updateNode: updateNode, findNode: findNode, moveNode: moveNode, searchTree: searchTree, render: render },
+        {
+            addNode: addNode,
+            removeNode: removeNode,
+            updateNode: updateNode,
+            findNode: findNode,
+            moveNode: moveNode,
+            searchTree: searchTree,
+            traverse: $traverse,
+            render: render,
+        },
     ];
 };
 
@@ -3105,11 +3517,7 @@ function useVirtualArea(_a, depths) {
         return (jsxRuntime.jsxs(Container, __assign({}, _containerComponentProps, { children: [typeof renderTop === "function" ? renderTop() : renderTop, 
                 /** @ts-ignore */
                 (items || []).length === 0 &&
-                    (typeof renderEmpty === "function"
-                        ? renderEmpty()
-                        : renderEmpty === void 0
-                            ? "No data"
-                            : renderEmpty), items.map(function (item, index) { return (jsxRuntime.jsx(Item, __assign({}, itemComponentProps, { children: typeof renderItem === "function" ? renderItem(item) : renderItem }), index)); }), jsxRuntime.jsxs(Loader, __assign({ ref: loaderRef }, loaderComponentProps, { children: [loading &&
+                    (typeof renderEmpty === "function" ? renderEmpty() : renderEmpty === void 0 ? "No data" : renderEmpty), items.map(function (item, index) { return (jsxRuntime.jsx(Item, __assign({}, itemComponentProps, { children: typeof renderItem === "function" ? renderItem(item) : renderItem }), index)); }), jsxRuntime.jsxs(Loader, __assign({ ref: loaderRef }, loaderComponentProps, { children: [loading &&
                             (typeof renderLoader === "function"
                                 ? renderLoader()
                                 : renderLoader === void 0
@@ -3185,27 +3593,28 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
     return value; // PathValue<T, P> | undefined;
 };
 
-function WatchGetterInterval(getter, interval) {
-    if (interval === void 0) { interval = 1000 / 60; }
+function WatchGetterAnimation(getter) {
     var _a = React.useState(getter()), value = _a[0], setValue = _a[1];
     React.useEffect(function () {
-        var id = setInterval(function () {
+        var animationFrameId;
+        var loop = function () {
             var newValue = getter();
             if (newValue !== value) {
                 setValue(newValue);
             }
-        }, interval);
-        return function () {
-            clearInterval(id);
+            animationFrameId = requestAnimationFrame(loop);
         };
-    }, [getter, interval, value]);
+        loop();
+        return function () {
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, [getter, value]);
     return value;
 }
-function WatchGetterSetter(getter, interval) {
-    if (interval === void 0) { interval = 1000; }
+function WatchGetterSetter(getter) {
     var setters = [];
-    for (var _i = 2; _i < arguments.length; _i++) {
-        setters[_i - 2] = arguments[_i];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        setters[_i - 1] = arguments[_i];
     }
     var _a = React.useState(getter()), value = _a[0]; _a[1];
     React.useEffect(function () {
@@ -3219,22 +3628,16 @@ function WatchGetterSetter(getter, interval) {
     }, [getter, setters]);
     return value;
 }
-function useWatchGetter(getter, interval) {
-    if (interval === void 0) { interval = 1000; }
+function useWatchGetter(getter) {
     var setters = [];
-    for (var _i = 2; _i < arguments.length; _i++) {
-        setters[_i - 2] = arguments[_i];
-    }
-    if (typeof interval === "function") {
-        setters.unshift(interval);
-        interval = 1000;
+    for (var _i = 1; _i < arguments.length; _i++) {
+        setters[_i - 1] = arguments[_i];
     }
     if (setters.length === 0) {
-        // @ts-ignore
-        return WatchGetterInterval(getter, interval);
+        return WatchGetterAnimation(getter);
     }
     else {
-        return WatchGetterSetter.apply(void 0, __spreadArray([getter, interval], setters, false));
+        return WatchGetterSetter.apply(void 0, __spreadArray([getter], setters, false));
     }
 }
 
@@ -3270,8 +3673,8 @@ exports.useClickAway = useClickAway;
 exports.useConsoleLog = useConsoleLog;
 exports.useCookie = useCookie;
 exports.useDebounce = useDebounce;
-exports.useEventEmitter = useEventEmitter;
-exports.useEventListener = useEventListener;
+exports.useEventEmitter = useEmitter;
+exports.useEventListener = useReceiver;
 exports.useEyeDropper = useEyeDropper;
 exports.useFetch = useFetch;
 exports.useForceUpdate = useForceUpdate;

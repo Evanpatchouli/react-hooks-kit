@@ -1,33 +1,51 @@
-/// <reference types="react" />
-type Render = {
+import React from "react";
+export type Render = {
     id: string;
     render: (id: string, name: string, data: any, ids: string[]) => React.ReactNode;
     containerStyle?: Partial<CSSStyleDeclaration>;
     containerClassName?: string;
 };
-type Step = {
+export type Step = {
     ids?: string[];
     name?: string;
     data?: any;
     renders?: Render[];
 };
-interface Guider {
+export interface Guider {
     start: () => void;
     stop: () => void;
     next: () => void;
     last: () => void;
     go: (step: number) => void;
+    step: number;
+    options?: {
+        steps?: Step[];
+        callback?: StepCallback;
+        config?: {
+            containerStyle?: Partial<CSSStyleDeclaration>;
+            containerClassName?: string;
+            maskConfig?: MaskConfig;
+        };
+    };
+    register: (id: string) => void;
+    unregister: (id: string) => void;
 }
-type MaskConfig = {
+export type MaskConfig = {
     backgroundColor?: string;
     opacity?: number;
     zIndex?: number;
-    pointerEvents?: "none" | "auto";
+    pointerEvents?: "none !important" | "auto" | React.CSSProperties["pointerEvents"];
 };
-type StepCallback = (step: number, stepConfig: Step) => void;
+export type StepCallback = (step: number, stepConfig: Step) => void;
 declare function useGuide(steps: Step[], callback?: StepCallback, config?: {
     containerStyle?: Partial<CSSStyleDeclaration>;
     containerClassName?: string;
     maskConfig?: MaskConfig;
 }): [number, Guider];
 export default useGuide;
+interface TargetProps {
+    id: string;
+    guider: Guider;
+    children: React.ReactNode;
+}
+export declare const Target: React.FC<TargetProps>;

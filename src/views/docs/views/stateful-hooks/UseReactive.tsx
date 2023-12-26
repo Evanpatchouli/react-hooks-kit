@@ -1,19 +1,12 @@
 import useLocaleSelector from "@/locale/locale.selector";
-import Article, {
-  Best,
-  Body,
-  Consideration,
-  Demo,
-  FAQs,
-  SubTitle,
-  Usage,
-} from "@components/layout/Article";
+import Article, { Best, Body, Consideration, Demo, FAQs, SubTitle, Usage } from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "../examples/UseReactive/example.1";
 import UseReactiveApi from "../hooks-apis/useReactive.api";
 import pkg from "@/../package.json";
 import example2 from "../examples/UseReactive/example.2";
 import example3 from "../examples/UseReactive/example.3";
+import example4 from "../examples/UseReactive/example.4";
 
 export default function UseToggle() {
   const hooksName = "useReactive";
@@ -40,6 +33,7 @@ export default function UseToggle() {
         <Demo code={example2.code}>{<example2.View />}</Demo>
         <p>{$p3}</p>
         <Demo code={example3.code}>{<example3.View />}</Demo>
+        <Demo code={example4.code}>{<example4.View />}</Demo>
       </Usage>
       <Consideration>{$consider}</Consideration>
       <Best children={$best} />

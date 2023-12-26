@@ -56,7 +56,7 @@ type ReactiveNumber =
     <>
       <SubTitle id="hook-api">Api of useReactive</SubTitle>
       <SubTitle low top="20px">
-        Generics{"<T extends object = {}>"}
+        Generics{"<T = any>"}
       </SubTitle>
       <Body>{$generics}</Body>
       <SubTitle low top="20px">

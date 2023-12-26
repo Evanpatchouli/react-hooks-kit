@@ -2,14 +2,19 @@ import { Path, PathValue } from "./utils/types";
 export interface SetMeta<T extends Object = {}, K extends Path<T> | keyof T = Path<T> | keyof T> {
     (key: K, value?: PathValue<T, K>): void;
     (key: K, setAction: (pre: PathValue<T, K>, preObj: T) => PathValue<T, K>): void;
-    (state: T): void;
+    (state: T, options?: {
+        deepSet?: boolean;
+        createNonExist?: boolean;
+    }): void;
     (setAction: (pre: T) => T): void;
 }
 /**
  * **useMeta** is a React Hook that returns a meta state and a function to set the meta state.
  * ### Parameters
  * - initialState: `T extends object` - The initial state object of the meta state.
- * - deepSet : `boolean?` - Whether to use deep clone when setting the meta state. Defaults to `false`.
+ * - options?: `{ deepSet?: boolean; createNonExist?: boolean }` - The options of the meta state.
+ *   - deepSet : `boolean?` - Whether to use deep clone when setting the meta state. Defaults to `false`.
+ *   - createNonExist : `boolean?` - Whether to create non-existent nodes when setting the meta state. Defaults to `false`.
  * ---
  * ### Return (Array)
  * - [0] state
@@ -95,5 +100,8 @@ export interface SetMeta<T extends Object = {}, K extends Path<T> | keyof T = Pa
  * - Q: What's the difference of deepSet or not?
  * - A: When deepSet is true, the state will be deep cloned when setting the state, otherwise it will be shallow cloned. Deepclone is slower than shallowclone, but it is safer.
  */
-export declare const useMeta: <T extends Object = {}>(initialState: T, deepSet?: boolean) => readonly [T, SetMeta<T, Path<T, keyof T, 20>>];
+export declare const useMeta: <T extends Object = {}>(initialState: T, options?: {
+    deepSet?: boolean;
+    createNonExist?: boolean;
+}) => readonly [T, SetMeta<T, Path<T, keyof T, 20>>];
 export default useMeta;

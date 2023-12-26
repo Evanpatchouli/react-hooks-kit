@@ -67,7 +67,7 @@ export default {
     UseReactive: {
       route: "useReactive",
       title: "UseReactive",
-      status: "experimental",
+      status: "new",
     },
     UseReactor: {
       route: "useReactor",

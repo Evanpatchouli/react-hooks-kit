@@ -1,3 +1,3 @@
-const arr = [1, 2, 3];
-let arr2 = [];
-console.log(typeof arr2);
+const arr = [1, { v: 2 }, 3];
+console.log(arr.toLocaleString());
+console.log(new Array("value").entries().next().value);

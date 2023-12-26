@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.20 2012/12/26
+
+- <font color="#c09000">Pass tests</font> for useReactive for Array
+
 ## v0.1.19 2012/12/23
 
 - <font color="#c09000">Pass tests</font> for useReactive for Date
