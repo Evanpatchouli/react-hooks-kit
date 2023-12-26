@@ -1,7 +1,7 @@
 import React from "react";
 import isEqual from "./utils/isEqual";
 import cloneDeep from "./utils/cloneDeep";
-import { Path } from "./utils/types";
+import { Path, PathValue } from "./utils/types";
 import getter from "./utils/getFrom";
 import setTo from "./utils/setTo";
 
@@ -30,9 +30,7 @@ const eventBus: { events: { [key: string]: Listener<any>[] } } = { events: {} };
  * - Reactor is a reactive, proxy, cloneable, resettable, dispatchable, serializable, subscribable, listenable, and pluginable object.
  * ---
  */
-export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
-  implements ReactorModel
-{
+export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> implements ReactorModel {
   private _state: T;
   private _setState: any = (newState: T) => {
     this._state = newState;
@@ -42,12 +40,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
   private _listeners: Listener<Readonly<T>>[] = [];
   private _deepCloneWhenSet: boolean = false;
 
-  constructor(
-    state: T,
-    setState?: any,
-    plugins?: P[],
-    deepSet: boolean = false
-  ) {
+  constructor(state: T, setState?: any, plugins?: P[], deepSet: boolean = false) {
     this._state = state;
     setState ? (this._setState = setState) : void 0;
     this._deepCloneWhenSet = deepSet;
@@ -112,9 +105,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
     }
     eventBus.events[eventName].push(listener);
     return () => {
-      eventBus.events[eventName] = eventBus.events[eventName].filter(
-        (l) => l !== listener
-      );
+      eventBus.events[eventName] = eventBus.events[eventName].filter((l) => l !== listener);
     };
   }
 
@@ -126,24 +117,22 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
     return new Reactor(this._state, this._setState, this._plugins);
   }
 
-  get<P extends Path<T> = Path<T>>(path?: P, strict: boolean = true) {
-    if (!path) return this._state;
+  get<P extends Path<T> = Path<T>>(
+    path?: P,
+    strict: boolean = true
+  ): P extends undefined ? T | undefined : PathValue<T, P> | undefined {
+    if (!path) return this._state as any;
     try {
       // @ts-ignore
       return getter(this._state, path, strict ?? true);
     } catch (e) {
       console.warn(e);
-      return undefined;
+      return undefined as any;
     }
   }
 
   set<P extends Path<T> = Path<T>>(path: P, value: any, deepSet?: boolean) {
-    const newState = setTo(
-      this._state,
-      path as any,
-      value,
-      deepSet ?? this._deepCloneWhenSet
-    );
+    const newState = setTo(this._state, path as any, value, deepSet ?? this._deepCloneWhenSet);
     this.setValue(newState);
   }
 
@@ -171,9 +160,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>>
  * @param target listened Reactive store
  * @returns unlistener
  */
-export function listen<T = any>(
-  target: Omit<Reactor<T>, "_state" | "_setState">
-) {
+export function listen<T = any>(target: Omit<Reactor<T>, "_state" | "_setState">) {
   return {
     then: (...fns: ((value: T) => any)[]) => {
       const fn = (value: T) => fns.forEach((f) => f(value));
@@ -189,10 +176,7 @@ export function listen<T = any>(
  * @param plugins
  * @returns Reactor instance
  */
-export const useReactor = <T = any>(
-  initialValue: T,
-  plugins?: ReactorPlugin<T>[]
-): Reactor<T> => {
+export const useReactor = <T = any>(initialValue: T, plugins?: ReactorPlugin<T>[]): Reactor<T> => {
   const [state, setState] = React.useState<T>(initialValue);
   const observer = new Reactor(state, setState, plugins);
   return observer;

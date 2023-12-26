@@ -346,7 +346,7 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>ℹ️Notice</strong> : Every time you call a method on the reactive object will cause rerender.
+          <strong>ℹ️ Notice</strong> : Every time you call a method on the reactive object will cause rerender.
         </p>
         <p
           style={{
@@ -355,7 +355,7 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>⚠️Warning</strong> : useReactive makes proxies for all properties on the target as many as possible,
+          <strong>⚠️ Warning</strong> : useReactive makes proxies for all properties on the target as many as possible,
           some apis will behave differently from the original.
         </p>
       </>
@@ -554,10 +554,53 @@ const locale_en = {
   },
 
   useReactor: {
-    desc: "",
-    detail: <></>,
+    desc: "A state hook based on Reactor Model.",
+    detail: (
+      <>
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>initialValue</strong> : object
+          </li>
+          <li>
+            <strong>plugins</strong> : {"ReactorPlugin<T>[]"}
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
     consideration: <ol></ol>,
-    $p1: "",
+    $p1: "Basic usage, manage a state. You can use get() to get certain property by path or directly access that by keys chain. You can use set() to update certain property value by path.",
+    $p1_1:
+      "Because this state is typeof object, therefore, the third button can directly change the stored value, but will not trigger the rerender.",
+    $p2: "Register a plugin to the Reactor Instance, and dipatch its name to invoke the plugin",
+    $p3: "Import listen from useReactor, listen the state changing, and do something in then code block.",
+    $p4: "Ressign the value of Reactor instance can override the state. You can also use setValue to do that.",
+    $p5: "You can clone a new Reactor from an existing Reactor instance, but they will point to the same state. CloneValue will just clone value of state.",
+    $p6: "You can assign a default value to Reactor, and when you invoke reset, the value will be reset to default value.",
+    $p7: "Different Reactor instances can communicate with each other by a global event bus, you can emit a event and use on to receive a event payload.",
+    $p7_notice: (
+      <p
+        style={{
+          padding: "20px",
+          background: "#cff",
+          borderRadius: "4px",
+        }}
+      >
+        <strong>ℹ️ Notice</strong> : Reactor Event Bus is dependent from the Emitter's.
+      </p>
+    ),
+    $apis: {
+      generics: (
+        <ul>
+          <li>
+            <strong>T</strong>: typeof state value.
+          </li>
+        </ul>
+      ),
+      params: {},
+      return: {},
+    },
   },
 
   useTree: {

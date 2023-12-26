@@ -1,48 +1,34 @@
 import Code from "@/components/code";
-import useReactor, { listen } from "@/hooks/useReactor";
+import useReactor from "@/hooks/useReactor";
 import useToast from "@/hooks/useToast";
 import { Button } from "@mui/material";
 
 const View = () => {
   const toast = useToast();
-  const obj = useReactor(
-    {
-      name: "John",
-      age: 20,
-      more: {
-        address: "Taipei",
-        score: 100,
-      },
-      messi: {
-        game: {
-          wordCup: {
-            win: true,
-          },
+  const obj = useReactor({
+    name: "John",
+    age: 20,
+    more: {
+      address: "Taipei",
+      score: 100,
+    },
+    messi: {
+      game: {
+        wordCup: {
+          win: true,
         },
       },
     },
-    [
-      {
-        name: "toastWordCupWin",
-        action: (state) => {
-          toast(obj.get("messi.game.wordCup.win")?.toString());
-          console.log(obj);
-        },
-      },
-    ]
-  );
-  listen(obj).then((v) => {
-    console.log("listen", v);
-  })
+  });
+
+  const toastWordCupWin = () => {
+    toast(obj.value.messi.game.wordCup.win.toString());
+    console.log(obj);
+  };
+
   return (
     <>
-      <Button
-        onClick={() => {
-          obj.dispatch<"toastWordCupWin">("toastWordCupWin");
-        }}
-      >
-        toast
-      </Button>
+      <Button onClick={toastWordCupWin}>toastWordCupWin</Button>
       <Button
         onClick={() => {
           obj.set("messi.game.wordCup.win", !obj.get("messi.game.wordCup.win"));
@@ -105,7 +91,7 @@ const View = () => {
           obj.dispatch<"toastWordCupWin">("toastWordCupWin");
         }}
       >
-        toast
+        toastWordCupWin
       </Button>
       <Button
         onClick={() => {
