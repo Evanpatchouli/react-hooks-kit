@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import isEqual from "./utils/isEqual";
 import cloneDeep from "./utils/cloneDeep";
 import { Path, PathValue } from "./utils/types";
@@ -32,7 +32,8 @@ const eventBus: { events: { [key: string]: Listener<any>[] } } = { events: {} };
  */
 export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> implements ReactorModel {
   private _state: T;
-  private _setState: any = (newState: T) => {
+  private _setState: Dispatch<SetStateAction<T>> = (newState: T | ((prevState: T) => T)) => {
+    // @ts-ignore
     this._state = newState;
   };
   private _defaultValue: T | undefined = undefined;
@@ -42,6 +43,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
 
   constructor(state: T, setState?: any, plugins?: P[], deepSet: boolean = false) {
     this._state = state;
+    this._defaultValue = cloneDeep(state);
     setState ? (this._setState = setState) : void 0;
     this._deepCloneWhenSet = deepSet;
     plugins ? (this._plugins = plugins) : void 0;
@@ -65,12 +67,16 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
     this.setValue(newState);
   }
 
-  setValue = (newState: T) => {
+  setValue = (newState: T | ((prevState: T) => T)) => {
+    let state = this._state;
     if (isEqual(this._state, newState)) return;
-    this._setState?.(newState);
-    this._listeners.forEach((listener) => listener(newState));
+    this._setState?.((prevState: T) => {
+      state = newState instanceof Function ? newState(prevState) : newState;
+      return state;
+    });
+    this._listeners.forEach((listener) => listener(state));
     this._plugins.forEach((plugin) => {
-      plugin.onStateChange?.(newState, this);
+      plugin.onStateChange?.(state, this);
     });
   };
 
@@ -131,9 +137,22 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
     }
   }
 
-  set<P extends Path<T> = Path<T>>(path: P, value: any, deepSet?: boolean) {
-    const newState = setTo(this._state, path as any, value, deepSet ?? this._deepCloneWhenSet);
-    this.setValue(newState);
+  set<P extends Path<T> = Path<T>>(
+    path: P,
+    value: PathValue<T, P> | ((preValue: PathValue<T, P>) => PathValue<T, P>),
+    deepSet?: boolean
+  ) {
+    this.setValue((prev) => {
+      // @ts-ignore
+      let newValue = getter(prev, path, true) as PathValue<T, P>;
+      if (value instanceof Function) {
+        newValue = value(newValue);
+      } else {
+        newValue = value;
+      }
+      const newState = setTo(prev, path as any, newValue, deepSet ?? this._deepCloneWhenSet);
+      return newState;
+    });
   }
 
   cloneValue() {
@@ -144,10 +163,12 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
     this._defaultValue = defaultValue;
   }
 
+  getDefaultValue() {
+    return this._defaultValue;
+  }
+
   reset() {
-    if (this._defaultValue) {
-      this.setValue(this._defaultValue);
-    }
+    this.setValue(this._defaultValue!);
   }
 
   static isReactor(obj: any) {
@@ -178,8 +199,14 @@ export function listen<T = any>(target: Omit<Reactor<T>, "_state" | "_setState">
  */
 export const useReactor = <T = any>(initialValue: T, plugins?: ReactorPlugin<T>[]): Reactor<T> => {
   const [state, setState] = React.useState<T>(initialValue);
-  const observer = new Reactor(state, setState, plugins);
-  return observer;
+  // const reactorRef = React.useRef<Reactor<T, ReactorPlugin<T>>>(new Reactor(initialValue, void 0, plugins));
+  // React.useLayoutEffect(() => {
+  //   const reactor = new Reactor(state, setState, plugins);
+  //   reactorRef.current = reactor;
+  // }, [state]);
+  // return reactorRef.current;
+
+  return new Reactor(state, setState, plugins);
 };
 
 /**
