@@ -569,7 +569,21 @@ const locale_en = {
         For example:
       </>
     ),
-    consideration: <ol></ol>,
+    consideration: (
+      <>
+        <ol></ol>
+        <p
+          style={{
+            padding: "20px",
+            background: "#ffd",
+            borderRadius: "4px",
+          }}
+        >
+          <strong>⚠️ Warning</strong> : useReactive exists some bugs in case of concurrency and asynchronous actions. We
+          are doing our best to fix them.
+        </p>
+      </>
+    ),
     $p1: "Basic usage, manage a state. You can use get() to get certain property by path or directly access that by keys chain. You can use set() to update certain property value by path.",
     $p1_1:
       "Because this state is typeof object, therefore, the third button can directly change the stored value, but will not trigger the rerender.",
@@ -580,15 +594,17 @@ const locale_en = {
     $p6: "You can assign a default value to Reactor, and when you invoke reset, the value will be reset to default value.",
     $p7: "Different Reactor instances can communicate with each other by a global event bus, you can emit a event and use on to receive a event payload.",
     $p7_notice: (
-      <p
-        style={{
-          padding: "20px",
-          background: "#cff",
-          borderRadius: "4px",
-        }}
-      >
-        <strong>ℹ️ Notice</strong> : Reactor Event Bus is dependent from the Emitter's.
-      </p>
+      <>
+        <p
+          style={{
+            padding: "20px",
+            background: "#cff",
+            borderRadius: "4px",
+          }}
+        >
+          <strong>ℹ️ Notice</strong> : Reactor Event Bus is dependent from the Emitter's.
+        </p>
+      </>
     ),
     $apis: {
       generics: (

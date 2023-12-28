@@ -1,9 +1,10 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import isEqual from "./utils/isEqual";
 import cloneDeep from "./utils/cloneDeep";
 import { Path, PathValue } from "./utils/types";
 import getter from "./utils/getFrom";
 import setTo from "./utils/setTo";
+import UKey from "./utils/Ukey";
 
 export interface ReactorModel<T = any> {
   value: T;
@@ -19,6 +20,14 @@ export type ReactorPlugin<T = any> = {
   onAction?: (action: T, that: Reactor<T>) => any;
 };
 
+export interface SetValueAction<T> {
+  (prevState: T): T;
+}
+
+export interface SetPropertyAction<T, P extends Path<T> = Path<T>> {
+  (preValue: PathValue<T, P>): PathValue<T, P>;
+}
+
 type PluginNames<T extends ReactorPlugin[]> = T[number]["name"];
 
 const eventBus: { events: { [key: string]: Listener<any>[] } } = { events: {} };
@@ -32,9 +41,8 @@ const eventBus: { events: { [key: string]: Listener<any>[] } } = { events: {} };
  */
 export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> implements ReactorModel {
   private _state: T;
-  private _setState: Dispatch<SetStateAction<T>> = (newState: T | ((prevState: T) => T)) => {
-    // @ts-ignore
-    this._state = newState;
+  private _setState: Dispatch<SetStateAction<T>> = (newState) => {
+    this._state = newState instanceof Function ? newState(this._state) : newState;
   };
   private _defaultValue: T | undefined = undefined;
   private _plugins: P[] = [];
@@ -67,18 +75,22 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
     this.setValue(newState);
   }
 
-  setValue = (newState: T | ((prevState: T) => T)) => {
+  // @toFix concurrency and asynchronous issues
+  setValue(newState: T | SetValueAction<T>) {
     let state = this._state;
     if (isEqual(this._state, newState)) return;
     this._setState?.((prevState: T) => {
       state = newState instanceof Function ? newState(prevState) : newState;
+      // state has already been overwritten by newState, so it doesn't point to this._state refernce again.
+      // we need to update this._state by ourselves.
+      this._state = state;
       return state;
     });
     this._listeners.forEach((listener) => listener(state));
     this._plugins.forEach((plugin) => {
       plugin.onStateChange?.(state, this);
     });
-  };
+  }
 
   subscribe(listener: Listener<T>) {
     this._listeners.push(listener);
@@ -137,11 +149,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
     }
   }
 
-  set<P extends Path<T> = Path<T>>(
-    path: P,
-    value: PathValue<T, P> | ((preValue: PathValue<T, P>) => PathValue<T, P>),
-    deepSet?: boolean
-  ) {
+  set<P extends Path<T> = Path<T>>(path: P, value: PathValue<T, P> | SetPropertyAction<T, P>, deepSet?: boolean) {
     this.setValue((prev) => {
       // @ts-ignore
       let newValue = getter(prev, path, true) as PathValue<T, P>;
@@ -198,15 +206,26 @@ export function listen<T = any>(target: Omit<Reactor<T>, "_state" | "_setState">
  * @returns Reactor instance
  */
 export const useReactor = <T = any>(initialValue: T, plugins?: ReactorPlugin<T>[]): Reactor<T> => {
-  const [state, setState] = React.useState<T>(initialValue);
-  // const reactorRef = React.useRef<Reactor<T, ReactorPlugin<T>>>(new Reactor(initialValue, void 0, plugins));
-  // React.useLayoutEffect(() => {
-  //   const reactor = new Reactor(state, setState, plugins);
-  //   reactorRef.current = reactor;
-  // }, [state]);
-  // return reactorRef.current;
+  const [state, setState] = useState<T>(initialValue);
+  const reactorRef = useRef<Reactor<T> | null>(null);
 
-  return new Reactor(state, setState, plugins);
+  // Reassign if initial value changes.
+  // useEffect(() => {
+  //   if (reactorRef.current) {
+  //     reactorRef.current.setValue(initialValue);
+  //     reactorRef.current.setDefaultValue(initialValue);
+  //   }
+  // }, [initialValue]);
+
+  let reactor: Reactor<T>;
+  if (reactorRef.current) {
+    reactor = reactorRef.current;
+    return reactor;
+  }
+  reactor = new Reactor(state, setState, plugins);
+  reactorRef.current = reactor;
+
+  return reactor;
 };
 
 /**

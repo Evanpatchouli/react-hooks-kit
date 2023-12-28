@@ -1,4 +1,4 @@
-import { Path } from "./utils/types";
+import { Path, PathValue } from "./utils/types";
 export interface ReactorModel<T = any> {
     value: T;
     subscribe(listener: Listener<T>): () => void;
@@ -10,6 +10,12 @@ export type ReactorPlugin<T = any> = {
     onStateChange?: (state: T, that: Reactor<T>) => any;
     onAction?: (action: T, that: Reactor<T>) => any;
 };
+export interface SetValueAction<T> {
+    (prevState: T): T;
+}
+export interface SetPropertyAction<T, P extends Path<T> = Path<T>> {
+    (preValue: PathValue<T, P>): PathValue<T, P>;
+}
 type PluginNames<T extends ReactorPlugin[]> = T[number]["name"];
 /**
  * Reactor is a state management tool based on React Hooks with the following features:
@@ -28,7 +34,7 @@ export declare class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin
     constructor(state: T, setState?: any, plugins?: P[], deepSet?: boolean);
     get value(): T;
     set value(newState: T);
-    setValue: (newState: T) => void;
+    setValue(newState: T | SetValueAction<T>): void;
     subscribe(listener: Listener<T>): () => void;
     dispatch<Actions = PluginNames<P[]>>(action: Actions, payload?: any): void;
     /**
@@ -41,10 +47,11 @@ export declare class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin
     on(eventName: string, listener: Listener<any>): () => void;
     toJSON(): T;
     clone(): Reactor<T, P>;
-    get<P extends Path<T> = Path<T>>(path?: P, strict?: boolean): object | T | undefined;
-    set<P extends Path<T> = Path<T>>(path: P, value: any, deepSet?: boolean): void;
+    get<P extends Path<T> = Path<T>>(path?: P, strict?: boolean): P extends undefined ? T | undefined : PathValue<T, P> | undefined;
+    set<P extends Path<T> = Path<T>>(path: P, value: PathValue<T, P> | SetPropertyAction<T, P>, deepSet?: boolean): void;
     cloneValue(): T;
     setDefaultValue(defaultValue: T): void;
+    getDefaultValue(): T | undefined;
     reset(): void;
     static isReactor(obj: any): boolean;
 }

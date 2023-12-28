@@ -1,10 +1,18 @@
+import Div from "@/components/Loading/div";
 import Code from "@/components/code";
+import useForceUpdate from "@/hooks/useForceUpdate";
 import useReactor from "@/hooks/useReactor";
 import { Button } from "@mui/material";
 
 type PluginNames = "greet_to_cr7" | "receive_greet_to_messi";
 
+const DivStyle = {
+  background: "#fafafa",
+  height: "60px",
+};
+
 const View = () => {
+  const $ = useForceUpdate();
   const messi = useReactor(
     {
       name: "Leo Messi",
@@ -33,7 +41,9 @@ const View = () => {
     ]
   );
 
-  messi.on("greet_to_messi", (v) => messi.dispatch("receive_greet_to_messi", v));
+  messi.on("greet_to_messi", (v) => {
+    messi.dispatch("receive_greet_to_messi", v);
+  });
 
   const cr7 = useReactor(
     {
@@ -91,13 +101,17 @@ const View = () => {
         Reset All
       </Button>
       <div style={{ marginLeft: "0.5em" }}>Messi got: </div>
-      <Code theme="oneLight" lang="text">
-        {messi.get("loading") ? "Loading..." : messi.get("received")}
-      </Code>
+      <Div loading={messi.get("loading")} style={DivStyle}>
+        <Code theme="oneLight" lang="text">
+          {messi.get("received")}
+        </Code>
+      </Div>
       <div style={{ marginLeft: "0.5em" }}>CR7 got: </div>
-      <Code theme="oneLight" lang="text">
-        {cr7.get("loading") ? "Loading..." : cr7.get("received")}
-      </Code>
+      <Div loading={cr7.get("loading")} style={DivStyle}>
+        <Code theme="oneLight" lang="text">
+          {cr7.get("received")}
+        </Code>
+      </Div>
     </>
   );
 };
@@ -195,13 +209,17 @@ const View = () => {
         Reset All
       </Button>
       <div style={{ marginLeft: "0.5em" }}>Messi got: </div>
-      <Code theme="oneLight" lang="text">
-        {messi.value.loading ? "Loading..." : messi.get("received")}
-      </Code>
+      <Div loading={messi.get("loading")} style={DivStyle}>
+        <Code theme="oneLight" lang="text">
+          {messi.get("received")}
+        </Code>
+      </Div>
       <div style={{ marginLeft: "0.5em" }}>CR7 got: </div>
-      <Code theme="oneLight" lang="text">
-        {cr7.value.loading ? "Loading..." : cr7.get("received")}
-      </Code>
+      <Div loading={cr7.get("loading")} style={DivStyle}>
+        <Code theme="oneLight" lang="text">
+          {cr7.get("received")}
+        </Code>
+      </Div>
     </>
   );
 };

@@ -1,12 +1,12 @@
 'use strict';
 
-var React = require('react');
+var react = require('react');
 var jsxRuntime = require('react/jsx-runtime');
 var ReactDOM = require('react-dom');
 
 function useAsyncEffect(callback, dependencies) {
     if (dependencies === void 0) { dependencies = []; }
-    React.useEffect(function () {
+    react.useEffect(function () {
         var promise = callback();
         var cleanup;
         promise.then(function (cleanupFn) {
@@ -126,11 +126,11 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
 };
 
 function useBattery(onChargingChange, callbacks) {
-    var _a = React.useState(null), batteryStatus = _a[0], setBatteryStatus = _a[1];
-    var _callbacks = React.useMemo(function () {
+    var _a = react.useState(null), batteryStatus = _a[0], setBatteryStatus = _a[1];
+    var _callbacks = react.useMemo(function () {
         return __assign(__assign({}, callbacks), { onChargingChange: (callbacks === null || callbacks === void 0 ? void 0 : callbacks.onChargingChange) || onChargingChange });
     }, [callbacks, onChargingChange]);
-    React.useEffect(function () {
+    react.useEffect(function () {
         var battery = null;
         navigator.getBattery().then(function (bat) {
             battery = bat;
@@ -210,17 +210,17 @@ function useBattery(onChargingChange, callbacks) {
 }
 
 function useBeforeMount(callback) {
-    var callbackRef = React.useRef(callback);
+    var callbackRef = react.useRef(callback);
     // 在组件挂载前执行回调
     callbackRef.current();
     // 确保回调在组件卸载时不会再次执行
-    React.useEffect(function () { }, []);
+    react.useEffect(function () { }, []);
 }
 
 function useBroadcastChannel(channelName, messageHandler, parser) {
     if (parser === void 0) { parser = true; }
-    var channelRef = React.useRef(null);
-    React.useEffect(function () {
+    var channelRef = react.useRef(null);
+    react.useEffect(function () {
         channelRef.current = new BroadcastChannel(channelName);
         channelRef.current.onmessage = function (event) {
             var _data = event.data;
@@ -254,8 +254,8 @@ function useBroadcastChannel(channelName, messageHandler, parser) {
 }
 
 function useClickAway(onClickAway) {
-    var ref = React.useRef(null);
-    React.useEffect(function () {
+    var ref = react.useRef(null);
+    react.useEffect(function () {
         var handleClickOutside = function (event) {
             if (ref.current && !ref.current.contains(event.target)) {
                 onClickAway();
@@ -289,16 +289,16 @@ function setCookie(name, value, days) {
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 function useCookie(name, initialValue, days) {
-    var _a = React.useState(function () { return getCookie(name) || initialValue; }), value = _a[0], setValue = _a[1];
-    React.useEffect(function () {
+    var _a = react.useState(function () { return getCookie(name) || initialValue; }), value = _a[0], setValue = _a[1];
+    react.useEffect(function () {
         setCookie(name, value, days);
     }, [name, value, days]);
     return [value, setValue];
 }
 
 function useConsoleLog() {
-    var _a = React.useState([]), logs = _a[0], setLogs = _a[1];
-    React.useEffect(function () {
+    var _a = react.useState([]), logs = _a[0], setLogs = _a[1];
+    react.useEffect(function () {
         var originalLog = console.log;
         console.log = function () {
             var args = [];
@@ -376,7 +376,7 @@ function useDebounce(fn, delay, immediate, callback) {
     if (typeof delay !== "number") {
         throw new Error("delay must be a number");
     }
-    var debounceFn = React.useMemo(function () {
+    var debounceFn = react.useMemo(function () {
         if (delay < 0) {
             return emptyFn$1;
         }
@@ -395,12 +395,12 @@ var UKey = function () {
 // 创建一个全局的事件监听器列表
 var globalListeners = new Map();
 // 创建一个 Context 来共享 globalListeners
-var GlobalListenersContext = React.createContext(globalListeners);
+var GlobalListenersContext = react.createContext(globalListeners);
 // @ts-ignore
 function useEmitter(nameOrConfig, initialEventNameOrConfig, 
 // @ts-ignore
 initialListener, config) {
-    var globalListeners = React.useContext(GlobalListenersContext);
+    var globalListeners = react.useContext(GlobalListenersContext);
     // 根据参数类型确定实际的参数值
     var configActual = {};
     if (typeof nameOrConfig === "string") {
@@ -463,7 +463,7 @@ initialListener, config) {
             globalListeners.delete(key);
         });
     };
-    React.useEffect(function () {
+    react.useEffect(function () {
         if (configActual.initialEventName && configActual.initialListener) {
             subscribe(configActual.initialEventName, configActual.initialListener);
         }
@@ -507,9 +507,9 @@ function useReceiver(eventNameOrOptions, callback) {
         name: name,
         namespace: namespace,
     }), subscribe = _a.subscribe, unsubscribe = _a.unsubscribe, emit = _a.emit;
-    var _b = React.useState(true), isListening = _b[0], setIsListening = _b[1];
-    var _c = React.useState(null), eventResult = _c[0], setEventResult = _c[1];
-    var eventListener = React.useCallback(function () {
+    var _b = react.useState(true), isListening = _b[0], setIsListening = _b[1];
+    var _c = react.useState(null), eventResult = _c[0], setEventResult = _c[1];
+    var eventListener = react.useCallback(function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
@@ -517,17 +517,17 @@ function useReceiver(eventNameOrOptions, callback) {
         setEventResult(args);
         cb === null || cb === void 0 ? void 0 : cb.apply(void 0, args);
     }, []);
-    React.useEffect(function () {
+    react.useEffect(function () {
         subscribe(eventName, eventListener);
         return function () {
             unsubscribe(eventName);
         };
     }, [eventName, eventListener]);
-    var stopListening = React.useCallback(function () {
+    var stopListening = react.useCallback(function () {
         unsubscribe(eventName);
         setIsListening(false);
     }, [eventName]);
-    var startListening = React.useCallback(function () {
+    var startListening = react.useCallback(function () {
         subscribe(eventName, eventListener);
         setIsListening(true);
     }, [eventName, eventListener]);
@@ -549,14 +549,14 @@ function useEyeDropper () {
 function useFetch(url, options, callbacks, deps) {
     var _this = this;
     if (deps === void 0) { deps = []; }
-    var _a = React.useState({
+    var _a = react.useState({
         data: null,
         loading: true,
         error: null,
     }), state = _a[0], setState = _a[1];
     var abortController = new AbortController();
     var opts = __assign(__assign({}, options), { signal: abortController.signal });
-    var fetchData = React.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
+    var fetchData = react.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
         var res, data, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -593,7 +593,7 @@ function useFetch(url, options, callbacks, deps) {
             }
         });
     }); }, [url, opts, callbacks]);
-    React.useEffect(function () {
+    react.useEffect(function () {
         fetchData();
         return function () {
             abortController.abort();
@@ -744,7 +744,7 @@ var useForm = function (schema, formRef) {
 };
 
 function useForceUpdate() {
-    var _a = React.useState(0), set = _a[1];
+    var _a = react.useState(0), set = _a[1];
     return function (callback) {
         set(function (pre) {
             callback === null || callback === void 0 ? void 0 : callback(pre);
@@ -792,12 +792,12 @@ function useForceUpdate() {
  * ```
  */
 function useGenerator(generatorFn) {
-    var _a = React.useState({
+    var _a = react.useState({
         value: undefined,
         done: false,
         error: null,
     }), state = _a[0], setState = _a[1];
-    var execute = React.useCallback(function () {
+    var execute = react.useCallback(function () {
         var generator = generatorFn();
         var handleResult = function (result) {
             if (result.done) {
@@ -858,17 +858,17 @@ var createMask = function (config) {
     return mask;
 };
 function useGuide(steps, callback, config) {
-    var _a = React.useState(-1), step = _a[0], setStep = _a[1];
-    var maskRef = React.useRef(null);
-    var zIndexes = React.useRef(new Map());
-    var registered = React.useRef(new Set());
-    var register = React.useCallback(function (id) {
+    var _a = react.useState(-1), step = _a[0], setStep = _a[1];
+    var maskRef = react.useRef(null);
+    var zIndexes = react.useRef(new Map());
+    var registered = react.useRef(new Set());
+    var register = react.useCallback(function (id) {
         registered.current.add(id);
     }, []);
-    var unregister = React.useCallback(function (id) {
+    var unregister = react.useCallback(function (id) {
         registered.current.delete(id);
     }, []);
-    React.useEffect(function () {
+    react.useEffect(function () {
         var _a, _b;
         var currentStep = steps[step];
         var rootDom = document.body;
@@ -939,11 +939,11 @@ function useGuide(steps, callback, config) {
             zIndexes.current.clear();
         };
     }, [step, steps]);
-    var start = React.useCallback(function () { return setStep(0); }, []);
-    var stop = React.useCallback(function () { return setStep(-1); }, []);
-    var next = React.useCallback(function () { return setStep(function (prev) { return Math.min(prev + 1, steps.length - 1); }); }, [steps]);
-    var last = React.useCallback(function () { return setStep(function (prev) { return Math.max(prev - 1, 0); }); }, []);
-    var go = React.useCallback(function (step) { return setStep(Math.max(0, Math.min(step, steps.length - 1))); }, [steps]);
+    var start = react.useCallback(function () { return setStep(0); }, []);
+    var stop = react.useCallback(function () { return setStep(-1); }, []);
+    var next = react.useCallback(function () { return setStep(function (prev) { return Math.min(prev + 1, steps.length - 1); }); }, [steps]);
+    var last = react.useCallback(function () { return setStep(function (prev) { return Math.max(prev - 1, 0); }); }, []);
+    var go = react.useCallback(function (step) { return setStep(Math.max(0, Math.min(step, steps.length - 1))); }, [steps]);
     return [
         step,
         {
@@ -961,8 +961,8 @@ function useGuide(steps, callback, config) {
 }
 
 function useHover(onHover) {
-    var ref = React.useRef(null);
-    React.useEffect(function () {
+    var ref = react.useRef(null);
+    react.useEffect(function () {
         var handleHover = function (event) {
             if (ref.current && !ref.current.contains(event.target)) {
                 onHover();
@@ -977,8 +977,8 @@ function useHover(onHover) {
 }
 
 function useIndexedDB(dbName, version, upgradeCallback) {
-    var _a = React.useState({ db: null, error: null }), state = _a[0], setState = _a[1];
-    React.useEffect(function () {
+    var _a = react.useState({ db: null, error: null }), state = _a[0], setState = _a[1];
+    react.useEffect(function () {
         var request = indexedDB.open(dbName, version);
         request.onupgradeneeded = function (event) {
             upgradeCallback(request.result);
@@ -994,7 +994,7 @@ function useIndexedDB(dbName, version, upgradeCallback) {
 }
 
 function useKeyPress(targetKey) {
-    var _a = React.useState(false), keyPressed = _a[0], setKeyPressed = _a[1];
+    var _a = react.useState(false), keyPressed = _a[0], setKeyPressed = _a[1];
     function downHandler(_a) {
         var key = _a.key;
         if (key === targetKey) {
@@ -1007,7 +1007,7 @@ function useKeyPress(targetKey) {
             setKeyPressed(false);
         }
     };
-    React.useEffect(function () {
+    react.useEffect(function () {
         window.addEventListener("keydown", downHandler);
         window.addEventListener("keyup", upHandler);
         return function () {
@@ -1026,10 +1026,10 @@ function useKeyPress(targetKey) {
  * ```
  */
 function useLazy(importFunction) {
-    var _a = React.useState(null), module = _a[0], setModule = _a[1];
-    var _b = React.useState(true), loading = _b[0], setLoading = _b[1];
-    var _c = React.useState(null), error = _c[0], setError = _c[1];
-    React.useEffect(function () {
+    var _a = react.useState(null), module = _a[0], setModule = _a[1];
+    var _b = react.useState(true), loading = _b[0], setLoading = _b[1];
+    var _c = react.useState(null), error = _c[0], setError = _c[1];
+    react.useEffect(function () {
         importFunction()
             .then(function (mod) {
             setModule(mod);
@@ -1073,8 +1073,8 @@ var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
         $errorSrc = (_f = defaultSrc.errorSrc) !== null && _f !== void 0 ? _f : "";
         $actions = (_g = defaultSrc.actions) !== null && _g !== void 0 ? _g : {};
     }
-    var _h = React.useState(LazySourceBuilder($defaultSrc)), source = _h[0], setSource = _h[1];
-    React.useEffect(function () {
+    var _h = react.useState(LazySourceBuilder($defaultSrc)), source = _h[0], setSource = _h[1];
+    react.useEffect(function () {
         var img = new Image();
         img.src = $src;
         img.onload = function () {
@@ -1093,14 +1093,14 @@ var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
 
 function useList(initialItems, options, dependencies) {
     var _a, _b;
-    var _c = React.useState(
+    var _c = react.useState(
     // @ts-ignore
     __spreadArray([], initialItems, true).map(function (item) {
         var _a;
         return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
     })), items = _c[0], setItems = _c[1];
-    var _d = React.useState(__spreadArray([], initialItems, true)), originalItems = _d[0], setOriginalItems = _d[1];
-    React.useEffect(function () {
+    var _d = react.useState(__spreadArray([], initialItems, true)), originalItems = _d[0], setOriginalItems = _d[1];
+    react.useEffect(function () {
         // 去除 唯一id 再设置
         var newItems = items.map(function (item) {
             var _item = __assign({}, item);
@@ -1111,7 +1111,7 @@ function useList(initialItems, options, dependencies) {
         });
         setOriginalItems(__spreadArray([], newItems, true));
     }, dependencies || []);
-    var save = React.useCallback(function () {
+    var save = react.useCallback(function () {
         var newItems = items.map(function (item) {
             var _item = __assign({}, item);
             if (_item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"]) {
@@ -1121,25 +1121,25 @@ function useList(initialItems, options, dependencies) {
         });
         setOriginalItems(__spreadArray([], newItems, true));
     }, [items]);
-    var addItem = React.useCallback(function (item) {
+    var addItem = react.useCallback(function (item) {
         // @ts-ignore
         setItems(function (prevItems) {
             var _a;
             return __spreadArray(__spreadArray([], prevItems, true), [__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a))], false);
         });
     }, [options === null || options === void 0 ? void 0 : options.idKey]);
-    var removeItem = React.useCallback(function (id) {
+    var removeItem = react.useCallback(function (id) {
         if (id === void 0 || id === null) {
             throw new Error("idKey is required to removeItem in list");
         }
         setItems(function (prevItems) { return prevItems.filter(function (item) { return item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] !== id; }); });
     }, [options === null || options === void 0 ? void 0 : options.idKey]);
-    var removeItems = React.useCallback(function (ids) {
+    var removeItems = react.useCallback(function (ids) {
         ids.forEach(function (id) {
             removeItem(id);
         });
     }, [options === null || options === void 0 ? void 0 : options.idKey]);
-    var reset = React.useCallback(function (items) {
+    var reset = react.useCallback(function (items) {
         if (items !== void 0) {
             setItems(
             // @ts-ignore
@@ -1156,7 +1156,7 @@ function useList(initialItems, options, dependencies) {
             return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
         }));
     }, [originalItems]);
-    var updateItems = React.useCallback(function (newItems) {
+    var updateItems = react.useCallback(function (newItems) {
         if (newItems.some(function (item) { return [void 0, null].includes(item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"]); })) {
             throw new Error("idKey is required to updateItem in list");
         }
@@ -1165,22 +1165,22 @@ function useList(initialItems, options, dependencies) {
     }, []);
     var sortedItems = __spreadArray([], items, true).sort((options === null || options === void 0 ? void 0 : options.sortFn) || (function () { return 0; }));
     var filteredItems = sortedItems.filter((options === null || options === void 0 ? void 0 : options.filterFn) || (function () { return true; }));
-    var _e = React.useState(1), currentPage = _e[0], setCurrentPage = _e[1];
-    var totalPage = React.useMemo(function () {
+    var _e = react.useState(1), currentPage = _e[0], setCurrentPage = _e[1];
+    var totalPage = react.useMemo(function () {
         var _a;
         return Math.max(1, Math.ceil(filteredItems.length / ((_a = options === null || options === void 0 ? void 0 : options.itemsPerPage) !== null && _a !== void 0 ? _a : 10)));
     }, [filteredItems.length, options === null || options === void 0 ? void 0 : options.itemsPerPage]);
-    var goToPage = React.useCallback(function (page) {
+    var goToPage = react.useCallback(function (page) {
         if (page >= 1 && page <= totalPage) {
             setCurrentPage(page);
         }
     }, [totalPage]);
-    var goLastPage = React.useCallback(function () {
+    var goLastPage = react.useCallback(function () {
         if (currentPage > 1) {
             setCurrentPage(function (page) { return page - 1; });
         }
     }, [currentPage]);
-    var goNextPage = React.useCallback(function () {
+    var goNextPage = react.useCallback(function () {
         if (currentPage < totalPage) {
             setCurrentPage(function (page) { return page + 1; });
         }
@@ -1200,7 +1200,7 @@ function useList(initialItems, options, dependencies) {
             render: function () {
                 return (filteredItems === null || filteredItems === void 0 ? void 0 : filteredItems.length)
                     ? filteredItems.map(function (item, idx, array) {
-                        return (options === null || options === void 0 ? void 0 : options.renderFn) ? (jsxRuntime.jsx(React.Fragment, { children: options === null || options === void 0 ? void 0 : options.renderFn(item, idx, array) }, item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"])) : null;
+                        return (options === null || options === void 0 ? void 0 : options.renderFn) ? (jsxRuntime.jsx(react.Fragment, { children: options === null || options === void 0 ? void 0 : options.renderFn(item, idx, array) }, item[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"])) : null;
                     })
                     : (options === null || options === void 0 ? void 0 : options.renderEmpty)
                         ? typeof (options === null || options === void 0 ? void 0 : options.renderEmpty) === "function"
@@ -1274,7 +1274,7 @@ var useLoading = function (loadingMap, options) {
         setType: "override",
         boolify: true,
     }; }
-    var _a = React.useState(formatLoadingState(loadingMap, options.boolify)), loading = _a[0], _setLoading = _a[1];
+    var _a = react.useState(formatLoadingState(loadingMap, options.boolify)), loading = _a[0], _setLoading = _a[1];
     var setLoading = function (args1, value) {
         if (value === void 0) { value = true; }
         if (typeof args1 === "object") {
@@ -1372,7 +1372,7 @@ window.addEventListener("storage", function () {
     listeners$1.forEach(function (listener) { return listener(); });
 });
 function useLocalStorage(key, initialValue) {
-    var _a = React.useState(function () {
+    var _a = react.useState(function () {
         try {
             if (!key)
                 return initialValue;
@@ -1401,7 +1401,7 @@ function useLocalStorage(key, initialValue) {
             console.log(error);
         }
     };
-    React.useEffect(function () {
+    react.useEffect(function () {
         var handleStorageChange = function (e) {
             if (key && (Array.isArray(key) ? key : [key]).includes(e.key || "")) {
                 setStoredValue(e.newValue ? JSON.parse(e.newValue) : initialValue);
@@ -1418,8 +1418,8 @@ function useLocalStorage(key, initialValue) {
 }
 
 function useMediaQuery(query) {
-    var _a = React.useState(window.matchMedia(query).matches), matches = _a[0], setMatches = _a[1];
-    React.useEffect(function () {
+    var _a = react.useState(window.matchMedia(query).matches), matches = _a[0], setMatches = _a[1];
+    react.useEffect(function () {
         var mediaQueryList = window.matchMedia(query);
         var documentChangeHandler = function () { return setMatches(mediaQueryList.matches); };
         mediaQueryList.addListener(documentChangeHandler);
@@ -1461,13 +1461,13 @@ function isEqual(a, b) {
  * @returns [state, setState, mementoManager]
  */
 var useMemento = function (initialState, config) {
-    var _a = React.useState({
+    var _a = react.useState({
         idKey: UKey(),
         data: initialState,
     }), state = _a[0], setState = _a[1];
-    var _b = React.useState([]), history = _b[0], setHistory = _b[1];
-    var _c = React.useState([]), mementos = _c[0], setMementos = _c[1];
-    var historySize = React.useMemo(function () {
+    var _b = react.useState([]), history = _b[0], setHistory = _b[1];
+    var _c = react.useState([]), mementos = _c[0], setMementos = _c[1];
+    var historySize = react.useMemo(function () {
         return typeof (config === null || config === void 0 ? void 0 : config.historySize) === "number"
             ? config.historySize
             : (config === null || config === void 0 ? void 0 : config.historySize) === void 0
@@ -1477,7 +1477,7 @@ var useMemento = function (initialState, config) {
                     : 0;
     }, [config === null || config === void 0 ? void 0 : config.historySize]);
     // When history size changed, slice the history to latest historySize.
-    React.useEffect(function () {
+    react.useEffect(function () {
         // 如果 historySize is not a integer, return error.
         if (historySize % 1 !== 0) {
             throw new Error("[react-hooks-kit][useMemento] historySize must be an integer");
@@ -1695,9 +1695,10 @@ var useMemento = function (initialState, config) {
     ];
 };
 
+// import _cloneDeep from 'lodash.clonedeep';
 function cloneDeep(target, map) {
     if (map === void 0) { map = new Map(); }
-    if (typeof target === 'object' && target !== null) {
+    if (typeof target === "object" && target !== null) {
         var cloneTarget_1 = Array.isArray(target) ? [] : {};
         if (map.get(target)) {
             return map.get(target);
@@ -1918,7 +1919,7 @@ function get(object, path, strict) {
  * - A: When deepSet is true, the state will be deep cloned when setting the state, otherwise it will be shallow cloned. Deepclone is slower than shallowclone, but it is safer.
  */
 var useMeta = function (initialState, options) {
-    var _a = React.useState(initialState), meta = _a[0], setState = _a[1];
+    var _a = react.useState(initialState), meta = _a[0], setState = _a[1];
     var setMeta = function (args1, value) {
         if (value === void 0) { value = undefined; }
         if (typeof args1 === "object") {
@@ -1947,7 +1948,7 @@ var useMeta = function (initialState, options) {
 };
 
 var useMixRef = function (refs) {
-    var setRefs = React.useCallback(function (node) {
+    var setRefs = react.useCallback(function (node) {
         // Refs expect a DOM node. Pass it if it exists.
         if (node) {
             refs.forEach(function (ref) {
@@ -1975,7 +1976,7 @@ var useMount = function (callback, arg2, arg3) {
         onError = arg2;
         deps = arg3;
     }
-    React.useEffect(function () {
+    react.useEffect(function () {
         try {
             var cleanup = callback();
             return cleanup instanceof Function ? cleanup : undefined;
@@ -1993,8 +1994,8 @@ var useMount = function (callback, arg2, arg3) {
 
 function useMousePosition(trigger) {
     if (trigger === void 0) { trigger = "mousemove"; }
-    var _a = React.useState({ x: null, y: null }), mousePosition = _a[0], setMousePosition = _a[1];
-    React.useEffect(function () {
+    var _a = react.useState({ x: null, y: null }), mousePosition = _a[0], setMousePosition = _a[1];
+    react.useEffect(function () {
         var updateMousePosition = function (ev) {
             setMousePosition({ x: ev.clientX, y: ev.clientY });
         };
@@ -2084,7 +2085,7 @@ function useThrottle(fn, interval, options) {
     if (options.callback && typeof options.callback !== "function") {
         throw new Error("options.callback must be a function");
     }
-    var throttleFn = React.useMemo(function () {
+    var throttleFn = react.useMemo(function () {
         if (interval < 0) {
             return emptyFn;
         }
@@ -2103,7 +2104,7 @@ function useThrottle(fn, interval, options) {
  * @returns {NetworkStatus}
  */
 function useNetworkStatus(throttleInterval) {
-    var _a = React.useState({
+    var _a = react.useState({
         online: navigator.onLine,
         // @ts-ignore
         downlink: navigator.connection ? navigator.connection.downlink : 0,
@@ -2141,7 +2142,7 @@ function useNetworkStatus(throttleInterval) {
             rtt: navigator.connection ? navigator.connection.rtt : void 0,
         });
     }, throttleInterval !== null && throttleInterval !== void 0 ? throttleInterval : 0);
-    React.useEffect(function () {
+    react.useEffect(function () {
         window.addEventListener("online", throttledUpdateStatus);
         window.addEventListener("offline", throttledUpdateStatus);
         // @ts-ignore
@@ -2163,9 +2164,9 @@ function useNetworkStatus(throttleInterval) {
 }
 
 function useOverflow() {
-    var ref = React.useRef(null);
-    var _a = React.useState(false), isOverflowing = _a[0], setIsOverflowing = _a[1];
-    React.useEffect(function () {
+    var ref = react.useRef(null);
+    var _a = react.useState(false), isOverflowing = _a[0], setIsOverflowing = _a[1];
+    react.useEffect(function () {
         var checkOverflow = function () {
             if (ref.current) {
                 var isOverflow = ref.current.offsetWidth < ref.current.scrollWidth || ref.current.offsetHeight < ref.current.scrollHeight;
@@ -2182,8 +2183,8 @@ function useOverflow() {
 }
 
 function usePrevious(value) {
-    var ref = React.useRef();
-    React.useEffect(function () {
+    var ref = react.useRef();
+    react.useEffect(function () {
         ref.current = value;
     }, [value]);
     return ref.current;
@@ -2197,13 +2198,13 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
     else if (callbacksOrDeps) {
         callbacks = callbacksOrDeps;
     }
-    var _a = React.useState({
+    var _a = react.useState({
         status: "idle",
         data: null,
         error: null,
     }), state = _a[0], setState = _a[1];
     var abortController = new AbortController();
-    var execute = React.useCallback(function () {
+    var execute = react.useCallback(function () {
         setState({ status: "pending", data: null, error: null });
         promiseFn()
             .then(function (data) {
@@ -2228,7 +2229,7 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
             }
         });
     }, [promiseFn, callbacks]);
-    React.useEffect(function () {
+    react.useEffect(function () {
         execute();
         return function () {
             abortController.abort();
@@ -2273,12 +2274,12 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
  * + `requestAnimationFrame` is a function provided by the browser that is used to call a specific function before the next redraw — this is the best time to perform animations.
  */
 var useRaf = function (callback) {
-    var callbackRef = React.useRef(callback);
-    var frameRef = React.useRef();
-    React.useEffect(function () {
+    var callbackRef = react.useRef(callback);
+    var frameRef = react.useRef();
+    react.useEffect(function () {
         callbackRef.current = callback;
     }, [callback]);
-    React.useEffect(function () {
+    react.useEffect(function () {
         var loop = function (time) {
             frameRef.current = requestAnimationFrame(loop);
             callbackRef.current(time);
@@ -2294,9 +2295,9 @@ var useRaf = function (callback) {
 };
 
 var useRafState = function (initialState) {
-    var frame = React.useRef(0);
-    var _a = React.useState(initialState), state = _a[0], setState = _a[1];
-    var setRafState = React.useCallback(function (value) {
+    var frame = react.useRef(0);
+    var _a = react.useState(initialState), state = _a[0], setState = _a[1];
+    var setRafState = react.useCallback(function (value) {
         cancelAnimationFrame(frame.current);
         frame.current = requestAnimationFrame(function () {
             setState(function (prevState) {
@@ -2314,8 +2315,8 @@ function useProtect(initialData) {
     for (var _i = 1; _i < arguments.length; _i++) {
         conditions[_i - 1] = arguments[_i];
     }
-    var _a = React.useState(initialData), data = _a[0], setData = _a[1];
-    var messages = React.useMemo(function () {
+    var _a = react.useState(initialData), data = _a[0], setData = _a[1];
+    var messages = react.useMemo(function () {
         return conditions
             .filter(function (condition) { return (typeof condition === "function" ? condition(data, data) : condition); })
             .map(function (result) { return (typeof result === "string" ? result : "Data is protected and cannot be modified."); });
@@ -2358,7 +2359,7 @@ function useProtect(initialData) {
 // 创建一个外部数组来存储所有的回调函数
 var callbacks = [];
 var useScroll = function (callback) {
-    var _a = React.useState({ x: 0, y: 0 }), position = _a[0], setPosition = _a[1];
+    var _a = react.useState({ x: 0, y: 0 }), position = _a[0], setPosition = _a[1];
     var handleScroll = function () {
         var newPosition = {
             x: window.scrollX,
@@ -2368,7 +2369,7 @@ var useScroll = function (callback) {
         // 遍历 callbacks 数组并调用每个回调函数
         callbacks.forEach(function (cb) { return cb(newPosition); });
     };
-    React.useEffect(function () {
+    react.useEffect(function () {
         if (callback) {
             // 将回调函数添加到 callbacks 数组
             callbacks.push(callback);
@@ -2583,14 +2584,14 @@ function useReactive(initialState, deep) {
         callbacks[_i - 2] = arguments[_i];
     }
     var fsr = useForceUpdate();
-    var stateRef = React.useRef(initialState);
-    React.useEffect(function () {
+    var stateRef = react.useRef(initialState);
+    react.useEffect(function () {
         if (typeof deep === "function") {
             callbacks.unshift(deep);
         }
         callbacks.forEach(function (callback) { return callback(stateRef.current); });
     }, [stateRef.current, callbacks]);
-    React.useLayoutEffect(function () {
+    react.useLayoutEffect(function () {
         var reactiveState = null;
         reactiveState = deep !== false ? deepProxy(initialState, fsr) : shallowProxy(initialState, fsr);
         stateRef.current = reactiveState;
@@ -2613,24 +2614,14 @@ var Reactor = /** @class */ (function () {
         if (deepSet === void 0) { deepSet = false; }
         var _this = this;
         this._setState = function (newState) {
-            _this._state = newState;
+            _this._state = newState instanceof Function ? newState(_this._state) : newState;
         };
         this._defaultValue = undefined;
         this._plugins = [];
         this._listeners = [];
         this._deepCloneWhenSet = false;
-        this.setValue = function (newState) {
-            var _a;
-            if (isEqual(_this._state, newState))
-                return;
-            (_a = _this._setState) === null || _a === void 0 ? void 0 : _a.call(_this, newState);
-            _this._listeners.forEach(function (listener) { return listener(newState); });
-            _this._plugins.forEach(function (plugin) {
-                var _a;
-                (_a = plugin.onStateChange) === null || _a === void 0 ? void 0 : _a.call(plugin, newState, _this);
-            });
-        };
         this._state = state;
+        this._defaultValue = cloneDeep(state);
         setState ? (this._setState = setState) : void 0;
         this._deepCloneWhenSet = deepSet;
         plugins ? (this._plugins = plugins) : void 0;
@@ -2657,6 +2648,26 @@ var Reactor = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    // @toFix concurrency and asynchronous issues
+    Reactor.prototype.setValue = function (newState) {
+        var _this = this;
+        var _a;
+        var state = this._state;
+        if (isEqual(this._state, newState))
+            return;
+        (_a = this._setState) === null || _a === void 0 ? void 0 : _a.call(this, function (prevState) {
+            state = newState instanceof Function ? newState(prevState) : newState;
+            // state has already been overwritten by newState, so it doesn't point to this._state refernce again.
+            // we need to update this._state by ourselves.
+            _this._state = state;
+            return state;
+        });
+        this._listeners.forEach(function (listener) { return listener(state); });
+        this._plugins.forEach(function (plugin) {
+            var _a;
+            (_a = plugin.onStateChange) === null || _a === void 0 ? void 0 : _a.call(plugin, state, _this);
+        });
+    };
     Reactor.prototype.subscribe = function (listener) {
         var _this = this;
         this._listeners.push(listener);
@@ -2711,8 +2722,19 @@ var Reactor = /** @class */ (function () {
         }
     };
     Reactor.prototype.set = function (path, value, deepSet) {
-        var newState = setTo(this._state, path, value, deepSet !== null && deepSet !== void 0 ? deepSet : this._deepCloneWhenSet);
-        this.setValue(newState);
+        var _this = this;
+        this.setValue(function (prev) {
+            // @ts-ignore
+            var newValue = get(prev, path, true);
+            if (value instanceof Function) {
+                newValue = value(newValue);
+            }
+            else {
+                newValue = value;
+            }
+            var newState = setTo(prev, path, newValue, deepSet !== null && deepSet !== void 0 ? deepSet : _this._deepCloneWhenSet);
+            return newState;
+        });
     };
     Reactor.prototype.cloneValue = function () {
         return cloneDeep(this._state);
@@ -2720,10 +2742,11 @@ var Reactor = /** @class */ (function () {
     Reactor.prototype.setDefaultValue = function (defaultValue) {
         this._defaultValue = defaultValue;
     };
+    Reactor.prototype.getDefaultValue = function () {
+        return this._defaultValue;
+    };
     Reactor.prototype.reset = function () {
-        if (this._defaultValue) {
-            this.setValue(this._defaultValue);
-        }
+        this.setValue(this._defaultValue);
     };
     Reactor.isReactor = function (obj) {
         return Reactor.prototype.isPrototypeOf(obj);
@@ -2755,16 +2778,30 @@ function listen(target) {
  * @returns Reactor instance
  */
 var useReactor = function (initialValue, plugins) {
-    var _a = React.useState(initialValue), state = _a[0], setState = _a[1];
-    var observer = new Reactor(state, setState, plugins);
-    return observer;
+    var _a = react.useState(initialValue), state = _a[0], setState = _a[1];
+    var reactorRef = react.useRef(null);
+    // Reassign if initial value changes.
+    // useEffect(() => {
+    //   if (reactorRef.current) {
+    //     reactorRef.current.setValue(initialValue);
+    //     reactorRef.current.setDefaultValue(initialValue);
+    //   }
+    // }, [initialValue]);
+    var reactor;
+    if (reactorRef.current) {
+        reactor = reactorRef.current;
+        return reactor;
+    }
+    reactor = new Reactor(state, setState, plugins);
+    reactorRef.current = reactor;
+    return reactor;
 };
 
 var useReactorListener = listen;
 
 function useResize(callback, ref) {
-    var _a = React.useState({ width: 0, height: 0 }), size = _a[0], setSize = _a[1];
-    React.useEffect(function () {
+    var _a = react.useState({ width: 0, height: 0 }), size = _a[0], setSize = _a[1];
+    react.useEffect(function () {
         var updateSize = function () {
             if (ref && ref.current) {
                 setSize({
@@ -2798,13 +2835,13 @@ function useResize(callback, ref) {
  * ```
  */
 function useSafeArea() {
-    var _a = React.useState({
+    var _a = react.useState({
         top: 0,
         right: 0,
         bottom: 0,
         left: 0,
     }), safeArea = _a[0], setSafeArea = _a[1];
-    React.useEffect(function () {
+    react.useEffect(function () {
         var computeSafeArea = function () {
             var style = getComputedStyle(document.body);
             setSafeArea({
@@ -2824,7 +2861,7 @@ function useSafeArea() {
 }
 
 function useSingleton(createInstance) {
-    var instanceRef = React.useRef(null);
+    var instanceRef = react.useRef(null);
     if (instanceRef.current === null) {
         instanceRef.current = createInstance();
     }
@@ -2832,15 +2869,15 @@ function useSingleton(createInstance) {
 }
 
 function useTheme(arg1, arg2) {
-    var _a = React.useState(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), theme = _a[0], setTheme = _a[1];
-    var handleThemeChange = React.useCallback(function (handler) {
+    var _a = react.useState(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), theme = _a[0], setTheme = _a[1];
+    var handleThemeChange = react.useCallback(function (handler) {
         return function (e) {
             var newTheme = e.matches ? "dark" : "light";
             setTheme(newTheme);
             handler(newTheme);
         };
     }, []);
-    React.useEffect(function () {
+    react.useEffect(function () {
         var matcher = window.matchMedia("(prefers-color-scheme: dark)");
         var handler = null;
         if (typeof arg1 === "boolean") {
@@ -2874,7 +2911,7 @@ var useTicker = function (fn, durationOrOptions, options) {
     else if (typeof durationOrOptions === "object") {
         options = durationOrOptions;
     }
-    var _options = React.useMemo(function () {
+    var _options = react.useMemo(function () {
         var _a, _b;
         var immediate = typeof (options === null || options === void 0 ? void 0 : options.immediate) === "boolean"
             ? options.immediate
@@ -2889,21 +2926,21 @@ var useTicker = function (fn, durationOrOptions, options) {
     if (_options.duration !== undefined && _options.duration >= 0) {
         duration = _options.duration;
     }
-    var _a = React.useState(0), tick = _a[0], setTick = _a[1];
-    var _b = React.useState(_options.pauseAtFirst || false), isPaused = _b[0], setIsPaused = _b[1];
+    var _a = react.useState(0), tick = _a[0], setTick = _a[1];
+    var _b = react.useState(_options.pauseAtFirst || false), isPaused = _b[0], setIsPaused = _b[1];
     var status = isPaused ? "off" : "on";
     var startDelay = 0;
-    var intervalRef = React.useRef(null);
-    var pause = React.useCallback(function () { return setIsPaused(true); }, []);
-    var resume = React.useCallback(function () {
+    var intervalRef = react.useRef(null);
+    var pause = react.useCallback(function () { return setIsPaused(true); }, []);
+    var resume = react.useCallback(function () {
         setIsPaused(false);
         if ("first" === _options.immediate && tick === 0) {
             return fn(tick);
         }
     }, [_options.immediate, tick, fn]);
     var reset = function () { return setTick(0); };
-    var mountedRef = React.useRef(false);
-    React.useEffect(function () {
+    var mountedRef = react.useRef(false);
+    react.useEffect(function () {
         if (!mountedRef.current &&
             ["mounted", "all"].includes(_options.immediate)) {
             fn(tick);
@@ -2920,7 +2957,7 @@ var useTicker = function (fn, durationOrOptions, options) {
             setIsPaused(false);
         }, delay);
     };
-    React.useEffect(function () {
+    react.useEffect(function () {
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
         }
@@ -2938,7 +2975,7 @@ var useTicker = function (fn, durationOrOptions, options) {
             }
         };
     }, [isPaused, tick]);
-    React.useEffect(function () {
+    react.useEffect(function () {
         setTimeout(function () {
             if (options === null || options === void 0 ? void 0 : options.pauseAtFirst) {
                 pause();
@@ -2963,8 +3000,8 @@ var useTicker = function (fn, durationOrOptions, options) {
 };
 
 var useTickState = function (initialState) {
-    var _a = React.useState(0), tick = _a[0], setTick = _a[1];
-    var _b = React.useState(initialState), state = _b[0], _setState = _b[1];
+    var _a = react.useState(0), tick = _a[0], setTick = _a[1];
+    var _b = react.useState(initialState), state = _b[0], _setState = _b[1];
     var setState = function (value) {
         _setState(value);
         setTick(function (pre) { return pre + 1; });
@@ -2994,10 +3031,10 @@ var defaultConfig = {
 };
 function useToast(config) {
     if (config === void 0) { config = {}; }
-    var _a = React.useState(__assign(__assign({}, defaultConfig), config)), toastConfig = _a[0], setToastConfig = _a[1];
-    var _b = React.useState(null); _b[0]; var setToastElement = _b[1];
-    var toastRef = React.useRef(null);
-    toastRef.current = React.useCallback(function (text, config) {
+    var _a = react.useState(__assign(__assign({}, defaultConfig), config)), toastConfig = _a[0], setToastConfig = _a[1];
+    var _b = react.useState(null); _b[0]; var setToastElement = _b[1];
+    var toastRef = react.useRef(null);
+    toastRef.current = react.useCallback(function (text, config) {
         if (config === void 0) { config = {}; }
         var _config = __assign(__assign(__assign({}, toastConfig), { text: text }), config);
         setToastConfig(_config);
@@ -3011,7 +3048,7 @@ function useToast(config) {
             setToastElement(null);
         }, _config.duration);
     }, [toastConfig]);
-    var toast = React.useCallback(function (text, config) {
+    var toast = react.useCallback(function (text, config) {
         var _a;
         if (config === void 0) { config = {}; }
         (_a = toastRef.current) === null || _a === void 0 ? void 0 : _a.call(toastRef, text, config);
@@ -3033,7 +3070,7 @@ function useToast(config) {
 
 function useToggle(initial, valueMap) {
     var _a, _b;
-    var _c = React.useState(initial || false), toogle = _c[0], setToogle = _c[1];
+    var _c = react.useState(initial || false), toogle = _c[0], setToogle = _c[1];
     var switchToogle = function (bool) {
         if (typeof bool === "boolean") {
             setToogle(bool);
@@ -3046,8 +3083,8 @@ function useToggle(initial, valueMap) {
 
 var useTree = function (initialTree, options) {
     if (options === void 0) { options = { idKey: "_id" }; }
-    var _a = React.useState(cloneDeep(initialTree)), tree = _a[0], setTree = _a[1];
-    var _b = React.useState(null); _b[0]; var setFilteredTree = _b[1];
+    var _a = react.useState(cloneDeep(initialTree)), tree = _a[0], setTree = _a[1];
+    var _b = react.useState(null); _b[0]; var setFilteredTree = _b[1];
     var idKey = options.idKey;
     var renderNode = options.renderNode || (function () { return null; });
     var filterFn = options.filterFn;
@@ -3242,7 +3279,7 @@ var useTree = function (initialTree, options) {
     /**
      * Render the tree
      */
-    var render = React.useCallback(function () {
+    var render = react.useCallback(function () {
         if (!renderNode) {
             throw new Error("[react-hooks-kit][useTree] You must provide a renderNode function to useTree");
         }
@@ -3278,7 +3315,7 @@ var useTree = function (initialTree, options) {
             return traverse(tree, callback);
         }
     };
-    React.useEffect(function () {
+    react.useEffect(function () {
         if (filterFn) {
             var result = traverse(tree, function (node) {
                 // @ts-ignore @TODO
@@ -3309,7 +3346,7 @@ var useTree = function (initialTree, options) {
 };
 
 function useUnmount(callback) {
-    React.useEffect(function () {
+    react.useEffect(function () {
         return function () {
             callback();
         };
@@ -3317,8 +3354,8 @@ function useUnmount(callback) {
 }
 
 var useUpdate = function (callback, dependencies) {
-    var firstRenderRef = React.useRef(true);
-    React.useEffect(function () {
+    var firstRenderRef = react.useRef(true);
+    react.useEffect(function () {
         if (firstRenderRef.current) {
             firstRenderRef.current = false;
             return;
@@ -3328,8 +3365,8 @@ var useUpdate = function (callback, dependencies) {
 };
 
 var useUpdateEffect = function (callback, dependencies) {
-    var firstRenderRef = React.useRef(true);
-    React.useEffect(function () {
+    var firstRenderRef = react.useRef(true);
+    react.useEffect(function () {
         if (firstRenderRef.current) {
             firstRenderRef.current = false;
             return;
@@ -3339,8 +3376,8 @@ var useUpdateEffect = function (callback, dependencies) {
 };
 
 var useUpdateLayoutEffect = function (callback, dependencies) {
-    var firstRenderRef = React.useRef(true);
-    React.useLayoutEffect(function () {
+    var firstRenderRef = react.useRef(true);
+    react.useLayoutEffect(function () {
         if (firstRenderRef.current) {
             firstRenderRef.current = false;
             return;
@@ -3445,16 +3482,16 @@ function useUrl(callback, name, immediate, config) {
     function getUrlInfo() {
         return __assign(__assign({ params: getParams(window.location.href, config === null || config === void 0 ? void 0 : config.mode, config === null || config === void 0 ? void 0 : config.autoParams, config === null || config === void 0 ? void 0 : config.stringifyParams, config === null || config === void 0 ? void 0 : config.custom), name: name }, window.location), window.history);
     }
-    var _a = React.useState(getUrlInfo()), urlInfo = _a[0], setUrlInfo = _a[1];
-    var memoizedConfig = React.useMemo(function () { return config; }, [config.mode, config.autoParams, config.stringifyParams, config.custom]);
-    React.useEffect(function () {
+    var _a = react.useState(getUrlInfo()), urlInfo = _a[0], setUrlInfo = _a[1];
+    var memoizedConfig = react.useMemo(function () { return config; }, [config.mode, config.autoParams, config.stringifyParams, config.custom]);
+    react.useEffect(function () {
         if (immediate) {
             var urlInfo_1 = getUrlInfo();
             callback === null || callback === void 0 ? void 0 : callback(urlInfo_1);
             setUrlInfo(urlInfo_1);
         }
     }, [immediate, JSON.stringify(memoizedConfig), name]);
-    React.useEffect(function () {
+    react.useEffect(function () {
         var handlePopState = function () {
             var urlInfo = getUrlInfo();
             setUrlInfo(urlInfo);
@@ -3473,9 +3510,9 @@ function useUrl(callback, name, immediate, config) {
 function useVirtualArea(_a, depths) {
     var _this = this;
     var loadMoreItems = _a.loadMoreItems, items = _a.items, hasMore = _a.hasMore, height = _a.height, containerStyle = _a.style, renderTop = _a.renderTop, renderItem = _a.renderItem, itemComponent = _a.itemComponent, itemComponentProps = _a.itemComponentProps, renderEmpty = _a.renderEmpty, renderLoader = _a.renderLoader, renderUnLoaded = _a.renderUnLoaded, loaderComponent = _a.loaderComponent, loaderComponentProps = _a.loaderComponentProps, containerComponent = _a.containerComponent, containerComponentProps = _a.containerComponentProps, renderBottom = _a.renderBottom, observerOptions = _a.observerOptions;
-    var _b = React.useState(false), loading = _b[0], setLoading = _b[1];
-    var loaderRef = React.useRef(null);
-    var loadMore = React.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
+    var _b = react.useState(false), loading = _b[0], setLoading = _b[1];
+    var loaderRef = react.useRef(null);
+    var loadMore = react.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -3490,7 +3527,7 @@ function useVirtualArea(_a, depths) {
             }
         });
     }); }, [loading, hasMore, loadMoreItems]);
-    React.useEffect(function () {
+    react.useEffect(function () {
         var options = {
             root: null,
             rootMargin: "20px",
@@ -3506,14 +3543,14 @@ function useVirtualArea(_a, depths) {
         }
         return function () { return observer.disconnect(); };
     }, [observerOptions, loadMore]);
-    var Container = React.useMemo(function () { return containerComponent || "div"; }, [containerComponent]);
-    var Item = React.useMemo(function () { return itemComponent || "div"; }, [itemComponent]);
-    var Loader = React.useMemo(function () { return loaderComponent || "div"; }, [loaderComponent]);
-    var _containerComponentProps = React.useMemo(function () {
+    var Container = react.useMemo(function () { return containerComponent || "div"; }, [containerComponent]);
+    var Item = react.useMemo(function () { return itemComponent || "div"; }, [itemComponent]);
+    var Loader = react.useMemo(function () { return loaderComponent || "div"; }, [loaderComponent]);
+    var _containerComponentProps = react.useMemo(function () {
         var _a = containerComponentProps !== null && containerComponentProps !== void 0 ? containerComponentProps : {}, style = _a.style, rest = __rest(_a, ["style"]);
         return __assign(__assign({}, rest), { style: __assign(__assign({ overflow: "auto", height: height }, containerStyle), style) });
     }, [containerComponentProps, height, containerStyle]);
-    var render = React.useCallback(function () {
+    var render = react.useCallback(function () {
         return (jsxRuntime.jsxs(Container, __assign({}, _containerComponentProps, { children: [typeof renderTop === "function" ? renderTop() : renderTop, 
                 /** @ts-ignore */
                 (items || []).length === 0 &&
@@ -3567,16 +3604,16 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
     catch (error) {
         console.error(error);
     }
-    var _a = React.useState(initValue), value = _a[0], setValue = _a[1];
-    var oldValueRef = React.useRef(value);
-    var mountedRef = React.useRef(false);
-    React.useEffect(function () {
+    var _a = react.useState(initValue), value = _a[0], setValue = _a[1];
+    var oldValueRef = react.useRef(value);
+    var mountedRef = react.useRef(false);
+    react.useEffect(function () {
         if (!mountedRef.current && immediate) {
             callback(value, oldValueRef.current);
             mountedRef.current = true;
         }
     }, []);
-    React.useEffect(function () {
+    react.useEffect(function () {
         var newValue = undefined;
         try {
             newValue = getter(object, path, strict);
@@ -3594,8 +3631,8 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
 };
 
 function WatchGetterAnimation(getter) {
-    var _a = React.useState(getter()), value = _a[0], setValue = _a[1];
-    React.useEffect(function () {
+    var _a = react.useState(getter()), value = _a[0], setValue = _a[1];
+    react.useEffect(function () {
         var animationFrameId;
         var loop = function () {
             var newValue = getter();
@@ -3616,8 +3653,8 @@ function WatchGetterSetter(getter) {
     for (var _i = 1; _i < arguments.length; _i++) {
         setters[_i - 1] = arguments[_i];
     }
-    var _a = React.useState(getter()), value = _a[0]; _a[1];
-    React.useEffect(function () {
+    var _a = react.useState(getter()), value = _a[0]; _a[1];
+    react.useEffect(function () {
         var _setters = setters.map(function (setter) { return setter; });
         _setters.forEach(function (setter) {
         });
@@ -3642,8 +3679,8 @@ function useWatchGetter(getter) {
 }
 
 function useWhyDidYouUpdate(name, props) {
-    var previousProps = React.useRef({});
-    React.useEffect(function () {
+    var previousProps = react.useRef({});
+    react.useEffect(function () {
         if (previousProps.current) {
             var allKeys = Object.keys(__assign(__assign({}, previousProps.current), props));
             var changesObj_1 = {};

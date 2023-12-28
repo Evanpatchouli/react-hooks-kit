@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef, createContext, useContext, useCallback, Fragment, useLayoutEffect } from 'react';
+import { useEffect, useState, useMemo, useRef, createContext, useContext, useCallback, Fragment, useLayoutEffect } from 'react';
 import { jsx, jsxs } from 'react/jsx-runtime';
 import ReactDOM from 'react-dom';
 
@@ -1693,9 +1693,10 @@ var useMemento = function (initialState, config) {
     ];
 };
 
+// import _cloneDeep from 'lodash.clonedeep';
 function cloneDeep(target, map) {
     if (map === void 0) { map = new Map(); }
-    if (typeof target === 'object' && target !== null) {
+    if (typeof target === "object" && target !== null) {
         var cloneTarget_1 = Array.isArray(target) ? [] : {};
         if (map.get(target)) {
             return map.get(target);
@@ -2611,24 +2612,14 @@ var Reactor = /** @class */ (function () {
         if (deepSet === void 0) { deepSet = false; }
         var _this = this;
         this._setState = function (newState) {
-            _this._state = newState;
+            _this._state = newState instanceof Function ? newState(_this._state) : newState;
         };
         this._defaultValue = undefined;
         this._plugins = [];
         this._listeners = [];
         this._deepCloneWhenSet = false;
-        this.setValue = function (newState) {
-            var _a;
-            if (isEqual(_this._state, newState))
-                return;
-            (_a = _this._setState) === null || _a === void 0 ? void 0 : _a.call(_this, newState);
-            _this._listeners.forEach(function (listener) { return listener(newState); });
-            _this._plugins.forEach(function (plugin) {
-                var _a;
-                (_a = plugin.onStateChange) === null || _a === void 0 ? void 0 : _a.call(plugin, newState, _this);
-            });
-        };
         this._state = state;
+        this._defaultValue = cloneDeep(state);
         setState ? (this._setState = setState) : void 0;
         this._deepCloneWhenSet = deepSet;
         plugins ? (this._plugins = plugins) : void 0;
@@ -2655,6 +2646,26 @@ var Reactor = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    // @toFix concurrency and asynchronous issues
+    Reactor.prototype.setValue = function (newState) {
+        var _this = this;
+        var _a;
+        var state = this._state;
+        if (isEqual(this._state, newState))
+            return;
+        (_a = this._setState) === null || _a === void 0 ? void 0 : _a.call(this, function (prevState) {
+            state = newState instanceof Function ? newState(prevState) : newState;
+            // state has already been overwritten by newState, so it doesn't point to this._state refernce again.
+            // we need to update this._state by ourselves.
+            _this._state = state;
+            return state;
+        });
+        this._listeners.forEach(function (listener) { return listener(state); });
+        this._plugins.forEach(function (plugin) {
+            var _a;
+            (_a = plugin.onStateChange) === null || _a === void 0 ? void 0 : _a.call(plugin, state, _this);
+        });
+    };
     Reactor.prototype.subscribe = function (listener) {
         var _this = this;
         this._listeners.push(listener);
@@ -2709,8 +2720,19 @@ var Reactor = /** @class */ (function () {
         }
     };
     Reactor.prototype.set = function (path, value, deepSet) {
-        var newState = setTo(this._state, path, value, deepSet !== null && deepSet !== void 0 ? deepSet : this._deepCloneWhenSet);
-        this.setValue(newState);
+        var _this = this;
+        this.setValue(function (prev) {
+            // @ts-ignore
+            var newValue = get(prev, path, true);
+            if (value instanceof Function) {
+                newValue = value(newValue);
+            }
+            else {
+                newValue = value;
+            }
+            var newState = setTo(prev, path, newValue, deepSet !== null && deepSet !== void 0 ? deepSet : _this._deepCloneWhenSet);
+            return newState;
+        });
     };
     Reactor.prototype.cloneValue = function () {
         return cloneDeep(this._state);
@@ -2718,10 +2740,11 @@ var Reactor = /** @class */ (function () {
     Reactor.prototype.setDefaultValue = function (defaultValue) {
         this._defaultValue = defaultValue;
     };
+    Reactor.prototype.getDefaultValue = function () {
+        return this._defaultValue;
+    };
     Reactor.prototype.reset = function () {
-        if (this._defaultValue) {
-            this.setValue(this._defaultValue);
-        }
+        this.setValue(this._defaultValue);
     };
     Reactor.isReactor = function (obj) {
         return Reactor.prototype.isPrototypeOf(obj);
@@ -2753,9 +2776,23 @@ function listen(target) {
  * @returns Reactor instance
  */
 var useReactor = function (initialValue, plugins) {
-    var _a = React.useState(initialValue), state = _a[0], setState = _a[1];
-    var observer = new Reactor(state, setState, plugins);
-    return observer;
+    var _a = useState(initialValue), state = _a[0], setState = _a[1];
+    var reactorRef = useRef(null);
+    // Reassign if initial value changes.
+    // useEffect(() => {
+    //   if (reactorRef.current) {
+    //     reactorRef.current.setValue(initialValue);
+    //     reactorRef.current.setDefaultValue(initialValue);
+    //   }
+    // }, [initialValue]);
+    var reactor;
+    if (reactorRef.current) {
+        reactor = reactorRef.current;
+        return reactor;
+    }
+    reactor = new Reactor(state, setState, plugins);
+    reactorRef.current = reactor;
+    return reactor;
 };
 
 var useReactorListener = listen;

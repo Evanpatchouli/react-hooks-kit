@@ -1,33 +1,38 @@
 # ChangeLog
 
+## v0.1.21 2012/12/28
+
+- **<font color="#c09000">Pass tests</font>** for useReactor
+- **<font color="red">Warning : </font>** useReactor exists issues in case of con-currency and asynchronous.
+
 ## v0.1.20 2012/12/26
 
-- <font color="#c09000">Pass tests</font> for useReactive for Array
+- **<font color="#c09000">Pass tests</font>** for useReactive for Array
 
 ## v0.1.19 2012/12/23
 
-- <font color="#c09000">Pass tests</font> for useReactive for Date
-- <font color="#c09000">Pass tests</font> for useReactive for Map
-- <font color="#c09000">Pass tests</font> for useReactive for Set
-- Fix some special key accessing Map and Set
-- <font color="red">Test fails</font> at useReactive for Array
+- **<font color="#c09000">Pass tests</font>** for useReactive for Date
+- **<font color="#c09000">Pass tests</font>** for useReactive for Map
+- **<font color="#c09000">Pass tests</font>** for useReactive for Set
+- **<font color="#2196f3">Fix</font>** some special key accessing Map and Set
+- **<font color="red">Test fails</font>** at useReactive for Array
 
 ## v0.1.18 2012/12/21
 
-- <font color="#c09000">Pass tests</font> for useReactive for rest primitives
-- <font color="#c09000">Pass tests</font> for type changing in primitives
+- **<font color="#c09000">Pass tests</font>** for useReactive for rest primitives
+- **<font color="#c09000">Pass tests</font>** for type changing in primitives
 
 ## v0.1.17 2012/12/21
 
-- <font color="#c09000">Pass tests</font> for useReactive for boolean
+- **<font color="#c09000">Pass tests</font>** for useReactive for boolean
 
 ## v0.1.16 2012/12/21
 
-- <font color="#c09000">Pass tests</font> for useReactive for string
+- **<font color="#c09000">Pass tests</font>** for useReactive for string
 
 ## v0.1.15 2012/12/20
 
-- <font color="#c09000">Pass tests</font> for useReactive for number
+- **<font color="#c09000">Pass tests</font>** for useReactive for number
 
 ## v0.1.14 2012/12/20
 

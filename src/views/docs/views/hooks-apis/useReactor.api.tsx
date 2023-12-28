@@ -66,13 +66,18 @@ export default function UseReactor() {
         },
         {
           name: "setValue",
-          type: "(value: T) => void",
+          type: "(value: T | SetAction<T>) => void",
           desc: "Override the value with value proped.",
         },
         {
           name: "setDefaultValue",
           type: "(value: T) => void",
           desc: "Override the defaultValue with value proped.",
+        },
+        {
+          name: "getDefaultValue",
+          type: "() => T",
+          desc: "get the default value of the reactor.",
         },
         {
           name: "clone",
