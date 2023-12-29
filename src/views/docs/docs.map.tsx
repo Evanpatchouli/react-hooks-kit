@@ -77,17 +77,17 @@ export default {
     UseReactorStore: {
       route: "useReactorStore",
       title: "UseReactorStore",
-      status: "preview",
+      status: "deprecated",
     },
     UseReactorStoreContext: {
       route: "useReactorStoreContext",
       title: "UseReactorStoreContext",
-      status: "preview",
+      status: "deprecated",
     },
     UseReactorStoreRef: {
       route: "useReactorStoreRef",
       title: "UseReactorStoreRef",
-      status: "preview",
+      status: "deprecated",
     },
     UseTickState: {
       route: "useTickState",

@@ -11,6 +11,9 @@ export { default as UseList } from "./stateful-hooks/UseList";
 export { default as UseTree } from "./stateful-hooks/UseTree";
 export { default as UseReactive } from "./stateful-hooks/UseReactive";
 export { default as UseReactor } from "./stateful-hooks/UseReactor";
+export { default as UseReactorStore } from "./stateful-hooks/UseReactorStore";
+export { default as UseReactorStoreContext } from "./stateful-hooks/UseReactorStoreContext";
+export { default as UseReactorStoreRef } from "./stateful-hooks/UseReactorStoreRef";
 export { default as UseMemento } from "./stateful-hooks/UseMemento";
 
 export { default as UseWatch } from "./callback-hooks/UseWatch";

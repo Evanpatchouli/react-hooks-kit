@@ -1,12 +1,12 @@
 import { useToast } from "@hooks/index";
-import { useEventEmitter } from "@hooks/index";
+import { useEmitter } from "@hooks/index";
 import { GlobalListenersContext } from "@/hooks/useEmitter";
 import useReceiver from "@/hooks/useReceiver";
 import { Button } from "@mui/material";
 import { useContext } from "react";
 
 const View = () => {
-  const emitter = useEventEmitter("tester");
+  const emitter = useEmitter("tester");
 
   const toast = useToast();
 

@@ -911,6 +911,101 @@ const locale_en = {
       return: {},
     },
   },
+  useReactorStore: {
+    desc: "A hook to store the Reactor instance.",
+    detail: (
+      <p
+        style={{
+          padding: "20px",
+          background: "#fef",
+          borderRadius: "4px",
+        }}
+      >
+        <strong>⛔ Deprecated</strong> : This hook is deprecated since{" "}
+        <span
+          style={{
+            color: "blue",
+          }}
+        >
+          v0.1.22
+        </span>
+        .
+      </p>
+    ),
+    $p1: "",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useReactorStoreContext: {
+    desc: "A hook to share the Reactor instance with the react context.",
+    detail: (
+      <p
+        style={{
+          padding: "20px",
+          background: "#fef",
+          borderRadius: "4px",
+        }}
+      >
+        <strong>⛔ Deprecated</strong> : This hook is deprecated since{" "}
+        <span
+          style={{
+            color: "blue",
+          }}
+        >
+          v0.1.22
+        </span>
+        .
+      </p>
+    ),
+    $p1: "",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useReactorStoreRef: {
+    desc: "A hook to set the Reactor instance to ref.",
+    detail: (
+      <p
+        style={{
+          padding: "20px",
+          background: "#fef",
+          borderRadius: "4px",
+        }}
+      >
+        <strong>⛔ Deprecated</strong> : This hook is deprecated since{" "}
+        <span
+          style={{
+            color: "blue",
+          }}
+        >
+          v0.1.22
+        </span>
+        .
+      </p>
+    ),
+    $p1: "",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
   __end: "end of locale mappings, please do not delete this line",
 } as const;
 

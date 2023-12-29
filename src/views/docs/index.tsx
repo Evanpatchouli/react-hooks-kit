@@ -137,14 +137,14 @@ export default function Docs() {
                 {Object.entries(docsMap.StatefulHooks).map(([, { route, status }]) => {
                   return (
                     <ListItemButton
-                      sx={{ pl: 4 }}
+                      sx={{ pl: 4, opacity: status === "deprecated" ? "0.5" : "1" }}
                       selected={curRoute === route}
                       onClick={() => linkTo(`/docs/${route}`, true)}
                     >
                       <ListItemIcon>
                         <Status type={status} />
                       </ListItemIcon>
-                      <ListItemText primary={route} />
+                      <ListItemText>{status === "deprecated" ? <del>{route}</del> : route}</ListItemText>
                     </ListItemButton>
                   );
                 })}

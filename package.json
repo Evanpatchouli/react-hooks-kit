@@ -1,14 +1,15 @@
 {
   "name": "@evanpatchouli/react-hooks-kit",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "private": false,
   "homepage": "react-hooks-kit",
   "scripts": {
+    "package": "node scripts/lib.build.js",
     "build": "react-app-rewired build",
     "eject": "react-app-rewired eject",
     "start": "react-app-rewired start",
     "test": "react-app-rewired test",
-    "locale:add": "node scripts/locale.add.mod.js",
+    "locale:add": "node scripts/locale.add.js",
     "locale:add:hook": "node scripts/locale.add.hook.js",
     "view:add:hook": "node scripts/view.add.hook.js"
   },

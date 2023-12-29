@@ -5,7 +5,8 @@ const iconMap = {
   deving: <Icon.DeveloperMode />,
   stable: <></>,
   experimental: <Icon.ScienceOutlined color="secondary" />,
-  preview: <Icon.AccessTime color='disabled' />,
+  preview: <Icon.AccessTime color="disabled" />,
+  deprecated: <Icon.DeleteForeverRounded color="error" />,
 };
 
 export default function Status({ type }: { type: keyof typeof iconMap }) {
