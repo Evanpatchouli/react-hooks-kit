@@ -1354,9 +1354,27 @@ var useReactor = function (initialValue, plugins) {
     return reactor;
 };
 
+/**
+ * ### Parameters
+ * - **initialState** - initial value of the state
+ * - **tickBy**
+ *   + **onSetState** - only when setState invoked will increment the tick
+ *   + **onChange** - only when the dependencies change will increment the tick (useEffect)
+ * - **dependencies** - default will be [state], you can pass a fn or an array:
+ *
+ * ---
+ *
+ * ```ts
+ *
+ * useTickState(0, "onChange", (state) => [state])
+ * // or
+ * // use other variables as dependencies
+ * useTickState(0, "onChange", [num])
+ * ```
+ */
 var useTickState = function (initialState, tickBy, dependencies) {
     if (tickBy === void 0) { tickBy = "onSetState"; }
-    var _a = react.useState(0), tick = _a[0], setTick = _a[1];
+    var _a = react.useState(tickBy === "onSetState" ? 0 : -1), tick = _a[0], setTick = _a[1];
     var _b = react.useState(initialState), state = _b[0], _setState = _b[1];
     var setState = function (value) {
         _setState(value);

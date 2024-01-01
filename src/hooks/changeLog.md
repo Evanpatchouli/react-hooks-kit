@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.24 2024/01/02
+
+- **<font color="#c09000">Pass tests</font>** for useTickState
+
 ## v0.1.23 2024/01/01
 
 - resolve issues of useReactor con-currency

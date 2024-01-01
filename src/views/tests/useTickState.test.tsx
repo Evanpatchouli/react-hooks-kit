@@ -30,4 +30,47 @@ describe("useTickState", () => {
     expect(result.current[0]).toEqual("newer state");
     expect(result.current[2]).toEqual(2);
   });
+
+  // should increment tick after setState no matter whether the state really changes
+  it("should increment tick after setState no matter whether the state really changes", () => {
+    const { result } = renderHook(() => useTickState("test"));
+
+    act(() => {
+      result.current[1]("test");
+    });
+
+    expect(result.current[0]).toEqual("test");
+    expect(result.current[2]).toEqual(1);
+  });
+
+  // When "onSetState", should increment tick after setState no matter whether the state really changes
+  it("should increment tick after setState no matter whether the state really changes", () => {
+    const { result } = renderHook(() => useTickState("test", "onSetState"));
+
+    act(() => {
+      result.current[1]("test");
+    });
+
+    expect(result.current[0]).toEqual("test");
+    expect(result.current[2]).toEqual(1);
+  });
+
+  // When onChange, should increment tick only when the state really changes
+  it("When onChange, should increment tick only when the state really changes", () => {
+    const { result } = renderHook(() => useTickState("test", "onChange"));
+
+    act(() => {
+      result.current[1]("test");
+    });
+
+    expect(result.current[0]).toEqual("test");
+    expect(result.current[2]).toEqual(0);
+
+    act(() => {
+      result.current[1]("new test");
+    });
+
+    expect(result.current[0]).toEqual("new test");
+    expect(result.current[2]).toEqual(1);
+  });
 });

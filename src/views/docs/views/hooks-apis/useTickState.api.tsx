@@ -14,11 +14,11 @@ export default function UseTickState() {
       name: "tickBy",
       type: '"onSetState"|"onChange"',
       defaultValue: "onSetState",
-      desc: "",
+      desc: "The trigger to increment the tick",
     },
     {
       name: "dependencies",
-      type: "Array",
+      type: "Array | (state) => Array",
       defaultValue: "[state]",
       desc: "onChange useEffect dependencies",
     },
