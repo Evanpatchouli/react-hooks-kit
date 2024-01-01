@@ -1,16 +1,28 @@
 import logo from "@/logo.filled.svg";
-import { Box, IconButton } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 import { NotificationsNone, GitHub, Settings } from "@mui/icons-material";
 import pkg from "@/../package.json";
 import "./index.css";
+import { useState } from "react";
 
 export default function Header() {
+  const [version, setVersion] = useState("beta");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setVersion(event.target.value);
+  };
   return (
     <div className="Header">
       <Box alignItems="center" display="flex" gap={2}>
         <div
           onClick={() => {
-            window.open("https://github.com/evanpatchouli/react-hook-kit", "_blank");
+            window.location.href = "#/";
           }}
           style={{ cursor: "pointer", height: "30px" }}
         >
@@ -26,7 +38,19 @@ export default function Header() {
         <a href="#" style={{ fontSize: "18px", fontWeight: "bold" }}>
           {new Text("react-hooks-kit").data}
         </a>
-        <span>v{pkg.version}</span>
+        {/* <span>v{pkg.version}</span> */}
+        <Select
+          size="small"
+          value={version}
+          variant="standard"
+          inputProps={{ "aria-label": "Without label" }}
+          onChange={handleChange}
+        >
+          <MenuItem value={"beta"}>beta</MenuItem>
+          <MenuItem value={"v1"}>v1</MenuItem>
+          {/* <MenuItem value={"v2"}>v2</MenuItem>
+          <MenuItem value={"v3"}>v3</MenuItem> */}
+        </Select>
       </Box>
       <Box display="flex" gap={2}>
         <IconButton style={style.IconBtn}>
