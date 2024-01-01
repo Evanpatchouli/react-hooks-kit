@@ -2107,7 +2107,12 @@ function useWatchGetter(getter) {
     }
 }
 
-var useReactorListener = listen;
+var useReactorListener = function (target, callback) {
+    useEffect(function () {
+        var unsubscribe = listen(target).then(callback);
+        return function () { return unsubscribe(); };
+    }, []);
+};
 
 function useResize(callback, ref) {
     var _a = useState({ width: 0, height: 0 }), size = _a[0], setSize = _a[1];

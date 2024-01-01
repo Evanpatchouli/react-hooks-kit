@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.25 2024/01/02
+
+- **<font color="#c09000">Pass tests</font>** for useMemento
+
 ## v0.1.24 2024/01/02
 
 - **<font color="#c09000">Pass tests</font>** for useTickState
