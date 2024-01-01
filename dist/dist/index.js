@@ -1354,13 +1354,25 @@ var useReactor = function (initialValue, plugins) {
     return reactor;
 };
 
-var useTickState = function (initialState) {
+var useTickState = function (initialState, tickBy, dependencies) {
+    if (tickBy === void 0) { tickBy = "onSetState"; }
     var _a = react.useState(0), tick = _a[0], setTick = _a[1];
     var _b = react.useState(initialState), state = _b[0], _setState = _b[1];
     var setState = function (value) {
         _setState(value);
-        setTick(function (pre) { return pre + 1; });
+        if (tickBy === "onSetState") {
+            setTick(function (pre) { return pre + 1; });
+        }
     };
+    react.useEffect(function () {
+        if (tickBy === "onChange") {
+            setTick(function (pre) { return pre + 1; });
+        }
+    }, dependencies
+        ? typeof dependencies === "function"
+            ? dependencies(state)
+            : dependencies
+        : [state]);
     return [state, setState, tick];
 };
 

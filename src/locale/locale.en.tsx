@@ -579,8 +579,7 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>⚠️ Warning</strong> : useReactive exists some bugs in case of concurrency and asynchronous actions. We
-          are doing our best to fix them.
+          <strong>⚠️ Warning</strong> : please invoke subscribe, on and listeners in useEffect hook area to avoid some unexpectable problems.
         </p>
       </>
     ),
@@ -1002,6 +1001,48 @@ const locale_en = {
     $faqs: <ul></ul>,
     $apis: {
       generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+  
+  useTickState: {
+    desc: "A hook to manage state with tick.",
+    detail: (
+      <>
+        useTickState is a hook that is used to manage state with tick:
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>initialValue</strong> : any
+          </li>
+          <li>
+            <strong>tickBy</strong> : "onSetState" | "onChange"
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "Tick by onSetState(default)",
+    $p2: "Tick by onChange",
+    consideration: (
+      <ol>
+        <Li>When tickby "onSetState", you'd better avoid abuse setState</Li>
+        <Li>When tickby "onChange", you'd better confirm your dependencies</Li>
+      </ol>
+    ),
+    $best: <ul>
+      <Li>
+        Tick by "onSetState", and before invoke setState check whether the new value is differ from the old.
+      </Li>
+    </ul>,
+    $faqs: 
+    <ul>
+      <Li><strong>Q</strong> : Why I need useTickState?</Li>
+      <Li><strong>A</strong> : useTickState give you a more clear tag to tag whether the state changes</Li>
+    </ul>,
+    $apis: {
+      generics: (<></>),
       params: {},
       return: {},
     },

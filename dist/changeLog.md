@@ -1,20 +1,25 @@
 # ChangeLog
 
-## v0.1.22 2012/12/29
+## v0.1.23 2024/01/01
+
+- resolve issues of useReactor con-currency
+- useTickState refactored
+
+## v0.1.22 2023/12/29
 
 - **<font color="red">Deprecated</font>** useReactorStore, useReactorStoreRef, useReactorStoreContext.
 - check entry exports
 
-## v0.1.21 2012/12/28
+## v0.1.21 2023/12/28
 
 - **<font color="#c09000">Pass tests</font>** for useReactor
 - **<font color="red">Warning : </font>** useReactor exists issues in case of con-currency and asynchronous.
 
-## v0.1.20 2012/12/26
+## v0.1.20 2023/12/26
 
 - **<font color="#c09000">Pass tests</font>** for useReactive for Array
 
-## v0.1.19 2012/12/23
+## v0.1.19 2023/12/23
 
 - **<font color="#c09000">Pass tests</font>** for useReactive for Date
 - **<font color="#c09000">Pass tests</font>** for useReactive for Map
@@ -22,53 +27,53 @@
 - **<font color="#2196f3">Fix</font>** some special key accessing Map and Set
 - **<font color="red">Test fails</font>** at useReactive for Array
 
-## v0.1.18 2012/12/21
+## v0.1.18 2023/12/21
 
 - **<font color="#c09000">Pass tests</font>** for useReactive for rest primitives
 - **<font color="#c09000">Pass tests</font>** for type changing in primitives
 
-## v0.1.17 2012/12/21
+## v0.1.17 2023/12/21
 
 - **<font color="#c09000">Pass tests</font>** for useReactive for boolean
 
-## v0.1.16 2012/12/21
+## v0.1.16 2023/12/21
 
 - **<font color="#c09000">Pass tests</font>** for useReactive for string
 
-## v0.1.15 2012/12/20
+## v0.1.15 2023/12/20
 
 - **<font color="#c09000">Pass tests</font>** for useReactive for number
 
-## v0.1.14 2012/12/20
+## v0.1.14 2023/12/20
 
 - useReactive support primitive
 
-## v0.1.13 2012/12/20
+## v0.1.13 2023/12/20
 
 - useReactive support array
 
-## v0.1.12 2012/12/19
+## v0.1.12 2023/12/19
 
 - Pass tests for useTickState
 
-## v0.1.11 2012/12/19
+## v0.1.11 2023/12/19
 
 - Pass tests for useTree
 
-## v0.1.10 2012/12/18
+## v0.1.10 2023/12/18
 
 - Pass tests for useList
 
-## v0.1.9 2012/12/18
+## v0.1.9 2023/12/18
 
 - rename `renderNoData` to `renderEmpty` globally
 
-## v0.1.8 2012/12/18
+## v0.1.8 2023/12/18
 
 - Upgrade type infer of useTree
 - Fill docs of useTree
 
-## v0.1.7 2012/12/18
+## v0.1.7 2023/12/18
 
 - Pass tests for useMeta
   - change 2rd param to options
@@ -80,17 +85,17 @@
   - Fix none target
   - Fix symbol key
 
-## v0.1.6 2012/12/17
+## v0.1.6 2023/12/17
 
 - Refactor `useWatchGetter` to replace Interval with requestAnimation
 - `Receiver` expands a property named `isListening`
 
-## v0.1.5 2012/12/17
+## v0.1.5 2023/12/17
 
 - Change `useEventEmitter` to `useEmitter`
 - Change `useEventListener` to `useReceiver`
 
-## v0.1.4 2012/12/15
+## v0.1.4 2023/12/15
 
 - Pass tests for useLoading
 

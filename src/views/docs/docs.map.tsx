@@ -72,7 +72,7 @@ export default {
     UseReactor: {
       route: "useReactor",
       title: "UseReactor",
-      status: "experimental",
+      status: "new",
     },
     UseReactorStore: {
       route: "useReactorStore",
@@ -92,7 +92,7 @@ export default {
     UseTickState: {
       route: "useTickState",
       title: "UseTickState",
-      status: "stable",
+      status: "new",
     },
     UseMemento: {
       route: "useMemento",

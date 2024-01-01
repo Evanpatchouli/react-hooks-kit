@@ -3,6 +3,7 @@ import Code from "@/components/code";
 import useForceUpdate from "@/hooks/useForceUpdate";
 import useReactor from "@/hooks/useReactor";
 import { Button } from "@mui/material";
+import { useEffect } from "react";
 
 type PluginNames = "greet_to_cr7" | "receive_greet_to_messi";
 
@@ -41,9 +42,11 @@ const View = () => {
     ]
   );
 
-  messi.on("greet_to_messi", (v) => {
-    messi.dispatch("receive_greet_to_messi", v);
-  });
+  useEffect(() => {
+    messi.on("greet_to_messi", (v) => {
+      messi.dispatch("receive_greet_to_messi", v);
+    });
+  }, []);
 
   const cr7 = useReactor(
     {
@@ -76,7 +79,9 @@ const View = () => {
     ]
   );
 
-  cr7.on("greet_to_cr7", (v) => cr7.dispatch("receive_greet_to_cr7", v));
+  useEffect(() => {
+    cr7.on("greet_to_cr7", (v) => cr7.dispatch("receive_greet_to_cr7", v));
+  }, []);
 
   const resetAll = () => {
     messi.set("received", "");

@@ -14,6 +14,7 @@ export { default as UseReactor } from "./stateful-hooks/UseReactor";
 export { default as UseReactorStore } from "./stateful-hooks/UseReactorStore";
 export { default as UseReactorStoreContext } from "./stateful-hooks/UseReactorStoreContext";
 export { default as UseReactorStoreRef } from "./stateful-hooks/UseReactorStoreRef";
+export { default as UseTickState } from "./stateful-hooks/UseTickState";
 export { default as UseMemento } from "./stateful-hooks/UseMemento";
 
 export { default as UseWatch } from "./callback-hooks/UseWatch";

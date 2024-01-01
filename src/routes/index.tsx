@@ -4,6 +4,7 @@ import { lazy } from "react";
 import { Lazy } from "./lazy";
 import Header from "@/components/header";
 import Tests from "@/views/tests";
+import Issues from "@/views/issues";
 
 const Home = lazy(() => import("@/views/home"));
 const Docs = lazy(() => import("@/views/docs"));
@@ -55,6 +56,17 @@ function Routers() {
                       element={<Tests.UseReactorListener />}
                     />
                     <Route path="UseParticle" element={<Tests.UseParticle />} />
+                  </>
+                }
+              />
+              <Route
+                path="issues/*"
+                children={
+                  <>
+                    <Route
+                      path="UseReactor/AsyncThis"
+                      element={<Issues.UseReactor.AsyncThis />}
+                    />
                   </>
                 }
               />
