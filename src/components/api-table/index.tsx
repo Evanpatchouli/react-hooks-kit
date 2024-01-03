@@ -44,7 +44,7 @@ const NumberTag = <Chip label="number" color="secondary" />;
 const BooleanTag = <Chip label="boolean" color="success" />;
 const ObjectTag = <Chip label="object" color="info" />;
 const ReactNodeTag = <Chip label="ReactNode" color="warning" />;
-const UndefinedTag = <Chip label="undefined" color="info" variant="outlined" />;
+const UndefinedTag = <Chip label="undefined" color="default" />;
 const NullTag = <Chip label="null" color="error" variant="outlined" />;
 const AnyTag = <Chip label="any" color="secondary" variant="outlined" />;
 const UnknownTag = <Chip label="unknown" color="error" />;
@@ -55,7 +55,50 @@ const BigIntTag = <Chip label="bigint" color="error" />;
 const FunctionTag = (
   <Chip label="function" color="primary" variant="outlined" />
 );
-const ArrayTag = <Chip label="array" color="error" />;
+const ArrayTag = <Chip label="Array" color="info" variant="outlined" />;
+const SetAction = <T extends string = "any">(type: T) => (
+  <Chip
+    color="primary"
+    variant="outlined"
+    label={`Dispatch<SetStateAction<${type}>>`}
+  />
+);
+
+export const TagFC = {
+  String: (str?: string) =>
+    str?.length ? <Chip label={str} color="primary" /> : StringTag,
+  Number: (num?: number) =>
+    num ? <Chip label={num} color="secondary" /> : NumberTag,
+  Boolean: (bool?: boolean) =>
+    typeof bool === "boolean" ? (
+      <Chip label={`${bool}`} color="success" />
+    ) : (
+      BooleanTag
+    ),
+  Object: () => ObjectTag,
+  ReactNode: () => ReactNodeTag,
+  Undefined: () => UndefinedTag,
+  Null: () => NullTag,
+  Any: () => AnyTag,
+  Unknown: () => UnknownTag,
+  Never: () => NeverTag,
+  Void: () => VoidTag,
+  Symbol: () => SymbolTag,
+  BigInt: () => BigIntTag,
+  Function: (expression?: string) =>
+    expression ? (
+      <Chip label={expression} color="primary" variant="outlined" />
+    ) : (
+      FunctionTag
+    ),
+  Array: (elem?: string) =>
+    elem ? (
+      <Chip label={`Array<${elem}>`} color="info" variant="outlined" />
+    ) : (
+      ArrayTag
+    ),
+  SetAction,
+};
 
 const Tag = (type: string | object): any => {
   if (typeof type === "object") {

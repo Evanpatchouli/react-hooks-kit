@@ -31,7 +31,9 @@ export declare class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin
     private _plugins;
     private _listeners;
     private _deepCloneWhenSet;
+    private _id;
     constructor(state: T, setState?: any, plugins?: P[], deepSet?: boolean);
+    get id(): number;
     get value(): T;
     set value(newState: T);
     setValue(newState: T | SetValueAction<T>): void;

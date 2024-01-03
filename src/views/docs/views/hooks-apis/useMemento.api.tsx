@@ -1,13 +1,12 @@
-import ApiTable from "@/components/api-table";
+import ApiTable, { TagFC } from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import { Chip } from "@mui/material";
 
 export default function UseMemento() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "initialState",
       type: "T",
-      defaultValue: "undefined",
+      defaultValue: TagFC.Null(),
       desc: "initial state of memento",
     },
     {
@@ -41,13 +40,7 @@ export default function UseMemento() {
     },
     {
       name: "[1] setState",
-      type: (
-        <Chip
-          color="primary"
-          variant="outlined"
-          label="Dispatch<SetStateAction<T|null>>"
-        />
-      ),
+      type: TagFC.SetAction("T|null"),
       desc: "set new state to memento (popstate)",
     },
     {
@@ -57,7 +50,7 @@ export default function UseMemento() {
       properties: [
         {
           name: "idKey",
-          type: "string",
+          type: "number | NaN",
           desc: "current state's id",
         },
         {

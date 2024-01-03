@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.0.0 2024/01/03
+
+All stateful hooks got checked, which resulted for a release of **<font color="#2196f3">v1.0.0</font>**!
+
+---
+
 ## v0.1.25 2024/01/02
 
 - **<font color="#c09000">Pass tests</font>** for useMemento

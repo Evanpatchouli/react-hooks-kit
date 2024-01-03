@@ -1,4 +1,4 @@
-import useMemento from "@/hooks/useMemento";
+import useMemento from "@hooks/useMemento";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 

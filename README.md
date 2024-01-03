@@ -1,6 +1,12 @@
 # <h1 align="center">react-hooks-kit</h1>
 
 <p align="center">
+  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-1.0.0-yellowgreen.svg"/></a>
+  <a href="#"><img alt="npm" src="https://img.shields.io/badge/npm-√-yellowgreen.svg"></a>
+  <a href="#"><img alt="react" src="https://img.shields.io/badge/react-16+-yellowgreen.svg"></a>
+  <a href="#"><img alt="lisence" src="https://img.shields.io/badge/lisence-MIT-yellowgreen.svg"></a>
+</p>
+<p align="center">
   <img alt="logo" width="200" src="./public//hook.svg">
 </p>
 
@@ -43,3 +49,9 @@ entirely stable. If a hook with prefix tag of **new**, it means it has passed te
 - Commonly, when a hook passes the first tests, the z should be increased by 1. If a hook is complex, it could increase with a feature passing tests.
 - If a clock hook switch into **cup**, the y in version x.y.z should be increased by 1.
 - If a new hook is created, the y in version x.y.z should be increased by 1.
+
+## Report
+
+- **Test results**
+  - Tests for v1.0.0
+    ![Tests for v1.0.0](./resources/v1.0.0-test.png)

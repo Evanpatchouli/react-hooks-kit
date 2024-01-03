@@ -97,24 +97,24 @@ export default {
     UseMemento: {
       route: "useMemento",
       title: "UseMemento",
-      status: "experimental",
+      status: "new",
     },
   },
   CallbackHooks: {
     UseTicker: {
       route: "useTicker",
       title: "UseTicker",
-      status: "experimental",
+      status: "preview",
     },
     UseDebounce: {
       route: "useDebounce",
       title: "UseDebounce",
-      status: "new",
+      status: "preview",
     },
     UseThrottle: {
       route: "useThrottle",
       title: "UseThrottle",
-      status: "new",
+      status: "preview",
     },
     UseUrl: {
       route: "useUrl",
@@ -146,12 +146,12 @@ export default {
     UsePromise: {
       route: "usePromise",
       title: "UsePromise",
-      status: "experimental",
+      status: "preview",
     },
     UseFetch: {
       route: "useFetch",
       title: "UseFetch",
-      status: "experimental",
+      status: "preview",
     },
     UseGenerator: {
       route: "useGenerator",
@@ -163,22 +163,22 @@ export default {
     UseForceUpdate: {
       route: "useForceUpdate",
       title: "UseForceUpdate",
-      status: "experimental",
+      status: "preview",
     },
     UseForm: {
       route: "useForm",
       title: "UseForm",
-      status: "experimental",
+      status: "preview",
     },
     UseLazy: {
       route: "useLazy",
       title: "UseLazy",
-      status: "experimental",
+      status: "preview",
     },
     UseLazyImg: {
       route: "useLazyImg",
       title: "UseLazyImg",
-      status: "experimental",
+      status: "preview",
     },
     UseLazyAudio: {
       route: "useLazyAudio",
@@ -193,12 +193,12 @@ export default {
     UseMixRef: {
       route: "useMixRef",
       title: "UseMixRef",
-      status: "new",
+      status: "experimental",
     },
     UseSafe: {
       route: "useSafe",
       title: "UseSafe",
-      status: "experimental",
+      status: "preview",
     },
     UseLocalStorage: {
       route: "useLocalStorage",
@@ -215,17 +215,17 @@ export default {
     UseBeforeMount: {
       route: "useBeforeMount",
       title: "UseBeforeMount",
-      status: "experimental",
+      status: "preview",
     },
     UseMount: {
       route: "useMount",
       title: "UseMount",
-      status: "experimental",
+      status: "preview",
     },
     UseUnmount: {
       route: "useUnmount",
       title: "UseUnmount",
-      status: "experimental",
+      status: "preview",
     },
     UseUpdate: {
       route: "useUpdate",
@@ -247,7 +247,7 @@ export default {
     UseTheme: {
       route: "useTheme",
       title: "UseTheme",
-      status: "new",
+      status: "preview",
     },
     UseColor: {
       route: "useColor",
@@ -336,12 +336,12 @@ export default {
     UseSingleTon: {
       route: "useSingleTon",
       title: "UseSingleTon",
-      status: "experimental",
+      status: "preview",
     },
     UseMediaQuery: {
       route: "useMediaQuery",
       title: "UseMediaQuery",
-      status: "experimental",
+      status: "preview",
     },
     UseNetwork: {
       route: "useNetWork",

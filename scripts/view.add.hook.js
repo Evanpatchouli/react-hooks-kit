@@ -80,7 +80,7 @@ export default function ${capitalizeComponentName}() {
 }
 `;
 
-const exampleTemplate = `import ${componentName} from "@/hooks/${componentName}";
+const exampleTemplate = `import ${componentName} from "@hooks/${componentName}";
   
 const View = () => {
   return (

@@ -1,6 +1,12 @@
 # <h1 align="center">react-hooks-kit</h1>
 
 <p align="center">
+  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-1.0.0-yellowgreen.svg"/></a>
+  <a href="#"><img alt="npm" src="https://img.shields.io/badge/npm-√-yellowgreen.svg"></a>
+  <a href="#"><img alt="react" src="https://img.shields.io/badge/react-16+-yellowgreen.svg"></a>
+  <a href="#"><img alt="lisence" src="https://img.shields.io/badge/lisence-MIT-yellowgreen.svg"></a>
+</p>
+<p align="center">
   <img alt="logo" width="200" src="./hook.svg">
 </p>
 

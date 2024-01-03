@@ -19,6 +19,7 @@ export { default as UseMemento } from "./stateful-hooks/UseMemento";
 
 export { default as UseWatch } from "./callback-hooks/UseWatch";
 export { default as UseUrl } from "./callback-hooks/UseUrl";
+export { default as UseReactorListener } from "./callback-hooks/UseReactorListener";
 
 // Event hooks
 export { default as UseEmitter } from "./event-hooks/UseEmitter";

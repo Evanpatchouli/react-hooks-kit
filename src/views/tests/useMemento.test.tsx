@@ -94,7 +94,7 @@ describe("useMemento", () => {
       result.current[2].deleteHistory(1);
     });
 
-    expect(result.current[2].history.length).toBe(1);
+    expect(result.current[2].history.length).toBe(2);
   });
 
   it("should handle clearHistory correctly", () => {

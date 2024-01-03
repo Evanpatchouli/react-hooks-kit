@@ -65,12 +65,16 @@ interface MementoManager<T = any> {
 const useMemento = <T = any>(
   initialState: T,
   config?: MementoConfig
-): [T | null, (newData: T | null | ((prev: T | null) => T | null)) => void, MementoManager] => {
+): [
+  T | null,
+  (newData: T | null | ((prev: T | null) => T | null)) => void,
+  MementoManager
+] => {
   const [state, setState] = useState<HistoryItem<T>>({
     idKey: Ukey(),
-    data: initialState,
+    data: initialState ?? null,
   });
-  const [history, setHistory] = useState<HistoryItem<T>[]>([]);
+  const [history, setHistory] = useState<HistoryItem<T>[]>([state]);
   const [mementos, setMementos] = useState<Memento<T>[]>([]);
   const historySize = useMemo(() => {
     return typeof config?.historySize === "number"
@@ -86,10 +90,14 @@ const useMemento = <T = any>(
   useEffect(() => {
     // 如果 historySize is not a integer, return error.
     if (historySize % 1 !== 0) {
-      throw new Error("[react-hooks-kit][useMemento] historySize must be an integer");
+      throw new Error(
+        "[react-hooks-kit][useMemento] historySize must be an integer"
+      );
     }
     if (historySize < 0) {
-      throw new Error("[react-hooks-kit][useMemento] historySize must be a positive integer");
+      throw new Error(
+        "[react-hooks-kit][useMemento] historySize must be a positive integer"
+      );
     }
     if (history.length > historySize) {
       setHistory(history.slice(-historySize));
@@ -97,19 +105,19 @@ const useMemento = <T = any>(
   }, [historySize]);
 
   const createMemento = (name: string | null = null) => {
-    // If the current state is not in the history, that means it is a new stat and then add it to the history.
-    if (!history.some((item) => item.idKey === state.idKey)) {
-      setHistory([...history, state]);
-    }
     setMementos([...mementos, { ...state, name }]);
   };
 
   const deleteMemento = (idKey?: number | number[]) => {
     if (typeof idKey !== "number" && !idKey) {
       if (config?.strict) {
-        throw new Error("[react-hooks-kit][useMemento] idKey is required to deleteMemento");
+        throw new Error(
+          "[react-hooks-kit][useMemento] idKey is required to deleteMemento"
+        );
       } else {
-        return console.error("[react-hooks-kit][useMemento] idKey is required to deleteMemento");
+        return console.error(
+          "[react-hooks-kit][useMemento] idKey is required to deleteMemento"
+        );
       }
     }
     if (typeof idKey === "number") {
@@ -117,16 +125,24 @@ const useMemento = <T = any>(
     } else {
       if (!Array.isArray(idKey)) {
         if (config?.strict) {
-          throw new Error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          throw new Error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         } else {
-          return console.error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          return console.error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         }
       }
       if (idKey.some((item) => typeof item !== "number")) {
         if (config?.strict) {
-          throw new Error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          throw new Error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         } else {
-          return console.error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          return console.error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         }
       }
       setMementos(mementos.filter((memento) => !idKey.includes(memento.idKey)));
@@ -166,9 +182,13 @@ const useMemento = <T = any>(
       setState(historyItem);
     } else {
       if (config?.strict) {
-        throw new Error(`[react-hooks-kit][useMemento] history with idKey ${idKey} not found`);
+        throw new Error(
+          `[react-hooks-kit][useMemento] history with idKey ${idKey} not found`
+        );
       } else {
-        return console.error(`[react-hooks-kit][useMemento] history with idKey ${idKey} not found`);
+        return console.error(
+          `[react-hooks-kit][useMemento] history with idKey ${idKey} not found`
+        );
       }
     }
   };
@@ -179,9 +199,13 @@ const useMemento = <T = any>(
       setState(memento);
     } else {
       if (config?.strict) {
-        throw new Error(`[react-hooks-kit][useMemento] memento with idKey ${idKey} not found`);
+        throw new Error(
+          `[react-hooks-kit][useMemento] memento with idKey ${idKey} not found`
+        );
       } else {
-        return console.error(`[react-hooks-kit][useMemento] memento with idKey ${idKey} not found`);
+        return console.error(
+          `[react-hooks-kit][useMemento] memento with idKey ${idKey} not found`
+        );
       }
     }
   };
@@ -189,9 +213,13 @@ const useMemento = <T = any>(
   const deleteHistory = (idKey: number | number[]) => {
     if (typeof idKey !== "number" && !idKey) {
       if (config?.strict) {
-        throw new Error("[react-hooks-kit][useMemento] idKey is required to deleteHistory");
+        throw new Error(
+          "[react-hooks-kit][useMemento] idKey is required to deleteHistory"
+        );
       } else {
-        return console.error("[react-hooks-kit][useMemento] idKey is required to deleteHistory");
+        return console.error(
+          "[react-hooks-kit][useMemento] idKey is required to deleteHistory"
+        );
       }
     }
     if (typeof idKey === "number") {
@@ -199,16 +227,24 @@ const useMemento = <T = any>(
     } else {
       if (!Array.isArray(idKey)) {
         if (config?.strict) {
-          throw new Error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          throw new Error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         } else {
-          return console.error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          return console.error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         }
       }
       if (idKey.some((item) => typeof item !== "number")) {
         if (config?.strict) {
-          throw new Error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          throw new Error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         } else {
-          return console.error("[react-hooks-kit][useMemento] idKey must be a number or an array of number");
+          return console.error(
+            "[react-hooks-kit][useMemento] idKey must be a number or an array of number"
+          );
         }
       }
       setHistory(history.filter((item) => !idKey.includes(item.idKey)));
@@ -219,7 +255,10 @@ const useMemento = <T = any>(
     setHistory([]);
   };
 
-  const calcNewState = (newData: T | null | ((prev: T | null) => T | null), pre: HistoryItem<T>) => {
+  const calcNewState = (
+    newData: T | null | ((prev: T | null) => T | null),
+    pre: HistoryItem<T>
+  ) => {
     let newState;
     if (typeof newData !== "function") {
       newState = { idKey: Ukey(), data: newData };
@@ -240,21 +279,21 @@ const useMemento = <T = any>(
         };
       }
     }
-    if (history.some((item) => item.idKey === pre.idKey)) {
-      return newState;
-    }
-    setHistory((h) => {
-      if (history.length - 1 === historySize) {
-        return [...history.slice(1), pre];
-      }
-      return [...history, pre];
-    });
     return newState;
   };
 
   const setNewState = (newData: T | null | ((prev: T | null) => T | null)) => {
     setState((pre) => {
-      return calcNewState(newData, pre);
+      const newState = calcNewState(newData, pre);
+      if (!history.some((item) => item.idKey === newState.idKey)) {
+        setHistory((h) => {
+          if (history.length - 1 === historySize) {
+            return [...history.slice(1), newState];
+          }
+          return [...history, newState];
+        });
+      }
+      return newState;
     });
   };
 
@@ -264,15 +303,19 @@ const useMemento = <T = any>(
       setNewState(target.data);
     } else {
       if (config?.strict) {
-        throw new Error(`[react-hooks-kit][useMemento] target to clone from idKey ${idKey} not found`);
+        throw new Error(
+          `[react-hooks-kit][useMemento] target to clone from idKey ${idKey} not found`
+        );
       } else {
-        return console.error(`[react-hooks-kit][useMemento] target to clone from idKey ${idKey} not found`);
+        return console.error(
+          `[react-hooks-kit][useMemento] target to clone from idKey ${idKey} not found`
+        );
       }
     }
   };
 
   const clear = () => {
-    setState({ idKey: Ukey(), data: null });
+    setState({ idKey: Number.NaN, data: null });
     setHistory([]);
     setMementos([]);
   };

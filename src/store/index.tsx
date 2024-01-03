@@ -23,7 +23,7 @@ export function useStoreSelector<T = any>(
 
 export const useStoreAction = <
   K extends keyof typeof storeAction,
-  V = (typeof storeAction)[K]
+  V = typeof storeModel[typeof storeAction[K]]
 >(
   action: K
 ) => {
@@ -31,9 +31,8 @@ export const useStoreAction = <
   // @ts-ignore
   return (
     // @ts-ignore
-    storeModel[action] ? storeModel[action] : () => {}
-    // @ts-ignore
-  ) as (typeof storeModel)[K];
+    storeModel[storeAction[action]] ? storeModel[storeAction[action]] : () => {}
+  ) as V;
 };
 
 export default useStore;

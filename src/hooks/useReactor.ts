@@ -48,6 +48,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
   private _plugins: P[] = [];
   private _listeners: Listener<Readonly<T>>[] = [];
   private _deepCloneWhenSet: boolean = false;
+  private _id = UKey();
 
   constructor(state: T, setState?: any, plugins?: P[], deepSet: boolean = false) {
     this._state = state;
@@ -65,6 +66,10 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
         return res;
       };
     });
+  }
+
+  get id() {
+    return this._id;
   }
 
   get value(): T {

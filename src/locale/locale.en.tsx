@@ -605,6 +605,19 @@ const locale_en = {
         </p>
       </>
     ),
+    $best: <ul>
+      <Li>
+        <strong>Eazy communicate</strong> : Use Reactor to sync data between web components.
+      </Li>
+    </ul>,
+    $faqs: <ul>
+      <Li>
+        <strong>Q</strong>: Why useReactor instead of useState?
+      </Li>
+      <Li>
+        <strong>A</strong>: Because useReactor makes it easier to manage state and communicate between components.
+      </Li>
+    </ul>,
     $apis: {
       generics: (
         <ul>
@@ -643,8 +656,19 @@ const locale_en = {
         <Li>options is type of object</Li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: <ul>
+      <Li>
+        <strong>Control the virtual nodes</strong> : Avoid to change the original nodes directly.
+      </Li>
+    </ul>,
+    $faqs: <ul>
+      <Li>
+        <strong>Q</strong>: Why useTree instead of useState?
+      </Li>
+      <Li>
+        <strong>A</strong>: Because useTree makes it easier to manage and render tree state.
+      </Li>
+    </ul>,
     $apis: {
       generics: (
         <>
@@ -690,11 +714,31 @@ const locale_en = {
   },
 
   useMemento: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
+    desc: "A hook to manage a state as memento",
+    detail: <>
+      <h4>Parameters : </h4>
+      <ol>
+        <li>
+          <strong>initialState</strong> : any
+        </li>
+        <li>
+          <strong>config</strong> : object
+        </li>
+      </ol>
+      For example:
+    </>,
+    $p1: "The initial state will be the first state in the history. By default, the history size is 10, and the strict mode is false. Therefore, the history will be 10 states at most, and an Error would be thrown out when the idKey is not found.",
+    $p2: "You should know that if you invoke clear api, all will be cleared, including the history, so this action is not rollbackable. Also, after clear, current idKey will be set to NaN. (In future versions, it may be set to other falsy value such null.)",
+    consideration: <ol>
+      <Li>initialState is type of any</Li>
+      <Li>config is type of object of MementoConfig</Li>
+    </ol>,
+    $best: 
+    <ul>
+      <Li>
+        <strong>Strict Mode</strong> : Use strict mode and set idKey to a unique value.
+      </Li>
+    </ul>,
     $faqs: <ul></ul>,
     $apis: {
       generics: <></>,
@@ -1040,6 +1084,49 @@ const locale_en = {
     <ul>
       <Li><strong>Q</strong> : Why I need useTickState?</Li>
       <Li><strong>A</strong> : useTickState give you a more clear tag to tag whether the state changes</Li>
+    </ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useReactorListener: {
+    desc: "A hook to listen Reactor instance's value changes.",
+    detail: (
+      <>
+        useReactorListener is a hook that is used to listen Reactor instance's value changes:
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>reactor</strong> : Reactor instance
+          </li>
+          <li>
+            <strong>callback</strong> : ReactorListener Callback
+          </li>
+          <li>
+            <strong>immediate</strong> : boolean, default is false
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "The immediate listener will be invoked immediately when the listener is registered. Therefor, the first example will not get userCopy sync at initial, and the second example will.",
+    consideration: (
+      <ol>
+        <Li>reactor is type of Reactor instance</Li>
+        <Li>callback is type of ReactorListenerCallback</Li>
+      </ol>
+    ),
+    $best: <ul>
+      <Li>
+        Use immediate listener to sync the value at initial.
+      </Li>
+    </ul>,
+    $faqs: <ul>
+      <Li><strong>Q</strong> : Why I need useReactorListener?</Li>
+      <Li><strong>A</strong> : useReactorListener allows you to listen a Reactor independently.</Li>
     </ul>,
     $apis: {
       generics: (<></>),

@@ -25,6 +25,9 @@ export default function UseReactor() {
   const $p6 = useLocaleSelector(`${hooksName}.$p6`);
   const $p7 = useLocaleSelector(`${hooksName}.$p7`);
   const $p7_notice = useLocaleSelector(`${hooksName}.$p7_notice`);
+  const $best = useLocaleSelector(`${hooksName}.$best`);
+  const $faqs = useLocaleSelector(`${hooksName}.$faqs`);
+
   useEffect(() => {
     document.title = `${hooksName} - ${pkg.homepage}`;
   }, []);
@@ -57,8 +60,8 @@ export default function UseReactor() {
         {$p7_notice}
       </Usage>
       <Consideration>{$consider}</Consideration>
-      <Best></Best>
-      <FAQs></FAQs>
+      <Best>{$best}</Best>
+      <FAQs>{$faqs}</FAQs>
       <UseReactorApi />
     </Article>
   );

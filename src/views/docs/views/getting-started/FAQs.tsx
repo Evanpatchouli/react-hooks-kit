@@ -44,7 +44,7 @@ export default function FAQs() {
       <SubTitle>How about the accessibility ?</SubTitle>
       <p>
         This library is compatible with accessibility. All of the hooks are tested with{" "}
-        <code>eslint-plugin-jsx-a11y</code>.
+        <code>@testing-library/react</code>.
       </p>
       <WasHelpful />
     </Article>

@@ -1175,6 +1175,7 @@ var Reactor = /** @class */ (function () {
         this._plugins = [];
         this._listeners = [];
         this._deepCloneWhenSet = false;
+        this._id = UKey();
         this._state = state;
         this._defaultValue = cloneDeep(state);
         setState ? (this._setState = setState) : void 0;
@@ -1193,6 +1194,13 @@ var Reactor = /** @class */ (function () {
             };
         });
     }
+    Object.defineProperty(Reactor.prototype, "id", {
+        get: function () {
+            return this._id;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(Reactor.prototype, "value", {
         get: function () {
             return this._state;
@@ -1402,9 +1410,9 @@ var useTickState = function (initialState, tickBy, dependencies) {
 var useMemento = function (initialState, config) {
     var _a = useState({
         idKey: UKey(),
-        data: initialState,
+        data: initialState !== null && initialState !== void 0 ? initialState : null,
     }), state = _a[0], setState = _a[1];
-    var _b = useState([]), history = _b[0], setHistory = _b[1];
+    var _b = useState([state]), history = _b[0], setHistory = _b[1];
     var _c = useState([]), mementos = _c[0], setMementos = _c[1];
     var historySize = useMemo(function () {
         return typeof (config === null || config === void 0 ? void 0 : config.historySize) === "number"
@@ -1430,10 +1438,6 @@ var useMemento = function (initialState, config) {
     }, [historySize]);
     var createMemento = function (name) {
         if (name === void 0) { name = null; }
-        // If the current state is not in the history, that means it is a new stat and then add it to the history.
-        if (!history.some(function (item) { return item.idKey === state.idKey; })) {
-            setHistory(__spreadArray(__spreadArray([], history, true), [state], false));
-        }
         setMementos(__spreadArray(__spreadArray([], mementos, true), [__assign(__assign({}, state), { name: name })], false));
     };
     var deleteMemento = function (idKey) {
@@ -1577,20 +1581,20 @@ var useMemento = function (initialState, config) {
                 };
             }
         }
-        if (history.some(function (item) { return item.idKey === pre.idKey; })) {
-            return newState;
-        }
-        setHistory(function (h) {
-            if (history.length - 1 === historySize) {
-                return __spreadArray(__spreadArray([], history.slice(1), true), [pre], false);
-            }
-            return __spreadArray(__spreadArray([], history, true), [pre], false);
-        });
         return newState;
     };
     var setNewState = function (newData) {
         setState(function (pre) {
-            return calcNewState(newData, pre);
+            var newState = calcNewState(newData, pre);
+            if (!history.some(function (item) { return item.idKey === newState.idKey; })) {
+                setHistory(function (h) {
+                    if (history.length - 1 === historySize) {
+                        return __spreadArray(__spreadArray([], history.slice(1), true), [newState], false);
+                    }
+                    return __spreadArray(__spreadArray([], history, true), [newState], false);
+                });
+            }
+            return newState;
         });
     };
     var clone = function (idKey) {
@@ -1608,7 +1612,7 @@ var useMemento = function (initialState, config) {
         }
     };
     var clear = function () {
-        setState({ idKey: UKey(), data: null });
+        setState({ idKey: Number.NaN, data: null });
         setHistory([]);
         setMementos([]);
     };
@@ -2107,11 +2111,15 @@ function useWatchGetter(getter) {
     }
 }
 
-var useReactorListener = function (target, callback) {
+var useReactorListener = function (target, callback, immediate) {
+    if (immediate === void 0) { immediate = false; }
     useEffect(function () {
         var unsubscribe = listen(target).then(callback);
+        if (immediate) {
+            callback(target.value);
+        }
         return function () { return unsubscribe(); };
-    }, []);
+    }, [target.id]);
 };
 
 function useResize(callback, ref) {
