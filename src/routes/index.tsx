@@ -51,7 +51,6 @@ function Routers() {
                     <Route path="" element={<Tests.Nightly />} />
                     <Route path="UseReactive" element={<Tests.UseReactive />} />
                     <Route path="UseReactor" element={<Tests.UseReactor />} />
-                    <Route path="UseParticle" element={<Tests.UseParticle />} />
                   </>
                 }
               />

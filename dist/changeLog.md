@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v1.1.0 2024/01/10
+
+- **<font color="#c09000">Pass tests</font>** for useTicker
+
 ## v1.0.0 2024/01/03
 
 All stateful hooks got checked, which resulted for a release of **<font color="#2196f3">v1.0.0</font>**!

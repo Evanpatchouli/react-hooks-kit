@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useStoreAction, useStoreSelector } from "@/store";
 
 export default function Header() {
-  const [version, setVersion] = useState(`beta-${pkg.version}`);
+  const [version, setVersion] = useState(`${pkg.version}`);
   const handleChange = (event: SelectChangeEvent) => {
     setVersion(event.target.value);
   };
@@ -52,7 +52,7 @@ export default function Header() {
           inputProps={{ "aria-label": "Without label" }}
           onChange={handleChange}
         >
-          <MenuItem value={`beta-${pkg.version}`}>beta-{pkg.version}</MenuItem>
+          <MenuItem value={`${pkg.version}`}>{pkg.version}</MenuItem>
           <MenuItem value={"v1"}>v1</MenuItem>
           {/* <MenuItem value={"v2"}>v2</MenuItem>
           <MenuItem value={"v3"}>v3</MenuItem> */}

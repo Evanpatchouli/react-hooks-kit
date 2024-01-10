@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/react-hooks-kit/static/css/main.c27804bd.css",
-    "main.js": "/react-hooks-kit/static/js/main.de540e37.js",
+    "main.css": "/react-hooks-kit/static/css/main.a9854808.css",
+    "main.js": "/react-hooks-kit/static/js/main.a653ea4d.js",
     "static/js/457.cf5c809f.chunk.js": "/react-hooks-kit/static/js/457.cf5c809f.chunk.js",
-    "static/css/891.b5947688.chunk.css": "/react-hooks-kit/static/css/891.b5947688.chunk.css",
-    "static/js/891.6c73d2bc.chunk.js": "/react-hooks-kit/static/js/891.6c73d2bc.chunk.js",
+    "static/css/964.4af7ea35.chunk.css": "/react-hooks-kit/static/css/964.4af7ea35.chunk.css",
+    "static/js/964.666df518.chunk.js": "/react-hooks-kit/static/js/964.666df518.chunk.js",
     "static/js/787.a5b1f0aa.chunk.js": "/react-hooks-kit/static/js/787.a5b1f0aa.chunk.js",
-    "static/js/817.ad0049de.chunk.js": "/react-hooks-kit/static/js/817.ad0049de.chunk.js",
+    "static/js/216.e23922b8.chunk.js": "/react-hooks-kit/static/js/216.e23922b8.chunk.js",
     "static/media/logo.svg": "/react-hooks-kit/static/media/logo.e3be05329bd1e4952bd0d6482f3e06f1.svg",
     "static/media/logo.filled.svg": "/react-hooks-kit/static/media/logo.filled.16bf1e4e7c8b0a539d2d7c242f486712.svg",
     "index.html": "/react-hooks-kit/index.html",
-    "main.c27804bd.css.map": "/react-hooks-kit/static/css/main.c27804bd.css.map",
-    "main.de540e37.js.map": "/react-hooks-kit/static/js/main.de540e37.js.map",
+    "main.a9854808.css.map": "/react-hooks-kit/static/css/main.a9854808.css.map",
+    "main.a653ea4d.js.map": "/react-hooks-kit/static/js/main.a653ea4d.js.map",
     "457.cf5c809f.chunk.js.map": "/react-hooks-kit/static/js/457.cf5c809f.chunk.js.map",
-    "891.b5947688.chunk.css.map": "/react-hooks-kit/static/css/891.b5947688.chunk.css.map",
-    "891.6c73d2bc.chunk.js.map": "/react-hooks-kit/static/js/891.6c73d2bc.chunk.js.map",
+    "964.4af7ea35.chunk.css.map": "/react-hooks-kit/static/css/964.4af7ea35.chunk.css.map",
+    "964.666df518.chunk.js.map": "/react-hooks-kit/static/js/964.666df518.chunk.js.map",
     "787.a5b1f0aa.chunk.js.map": "/react-hooks-kit/static/js/787.a5b1f0aa.chunk.js.map",
-    "817.ad0049de.chunk.js.map": "/react-hooks-kit/static/js/817.ad0049de.chunk.js.map"
+    "216.e23922b8.chunk.js.map": "/react-hooks-kit/static/js/216.e23922b8.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c27804bd.css",
-    "static/js/main.de540e37.js"
+    "static/css/main.a9854808.css",
+    "static/js/main.a653ea4d.js"
   ]
 }

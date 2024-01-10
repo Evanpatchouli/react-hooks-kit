@@ -37,42 +37,42 @@ export default {
     UsePrevious: {
       route: "usePrevious",
       title: "UsePrevious",
-      status: "new",
+      status: "stable",
     },
     UseToggle: {
       route: "useToggle",
       title: "UseToggle",
-      status: "new",
+      status: "stable",
     },
     UseLoading: {
       route: "useLoading",
       title: "UseLoading",
-      status: "new",
+      status: "stable",
     },
     UseMeta: {
       route: "useMeta",
       title: "UseMeta",
-      status: "new",
+      status: "stable",
     },
     UseList: {
       route: "useList",
       title: "UseList",
-      status: "new",
+      status: "stable",
     },
     UseTree: {
       route: "useTree",
       title: "UseTree",
-      status: "new",
+      status: "stable",
     },
     UseReactive: {
       route: "useReactive",
       title: "UseReactive",
-      status: "new",
+      status: "stable",
     },
     UseReactor: {
       route: "useReactor",
       title: "UseReactor",
-      status: "new",
+      status: "stable",
     },
     UseReactorStore: {
       route: "useReactorStore",
@@ -92,19 +92,19 @@ export default {
     UseTickState: {
       route: "useTickState",
       title: "UseTickState",
-      status: "new",
+      status: "stable",
     },
     UseMemento: {
       route: "useMemento",
       title: "UseMemento",
-      status: "new",
+      status: "stable",
     },
   },
   CallbackHooks: {
     UseTicker: {
       route: "useTicker",
       title: "UseTicker",
-      status: "preview",
+      status: "new",
     },
     UseDebounce: {
       route: "useDebounce",
