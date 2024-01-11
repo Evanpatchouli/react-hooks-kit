@@ -7,7 +7,7 @@
   <a href="#"><img alt="lisence" src="https://img.shields.io/badge/lisence-MIT-yellowgreen.svg"></a>
 </p>
 <p align="center">
-  <img alt="logo" width="200" src="./hook.svg">
+  <img alt="logo" width="200" src="https://evan-oss-bucket1.oss-cn-hangzhou.aliyuncs.com/react-hooks-kit/react-hooks-kit.svg">
 </p>
 
 ## Overeview
