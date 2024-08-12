@@ -1,10 +1,11 @@
 import { useMemo } from "react";
+import { debounce as Dbs } from "lodash";
 
-export function debounce<R = void>(
+function debounce<R = void>(
   fn: (args: any[]) => R,
   delay: number = 200,
   immediate: boolean = false,
-  callback?: (result: ReturnType<typeof fn>) => void
+  callback?: (result: ReturnType<typeof fn>) => void,
 ) {
   // 1.定义一个定时器, 保存上一次的定时器
   let timer: NodeJS.Timeout | null = null;
@@ -15,7 +16,6 @@ export function debounce<R = void>(
     return new Promise((resolve, reject) => {
       // 取消上一次的定时器
       if (timer) clearTimeout(timer);
-
       // 判断是否需要立即执行
       if (immediate && !isInvoke) {
         // @ts-ignore
@@ -23,7 +23,13 @@ export function debounce<R = void>(
         if (callback) callback(result);
         resolve(result);
         isInvoke = true;
+        // 设置延迟来重置isInvoke状态
+        timer = setTimeout(() => {
+          isInvoke = false;
+          timer = null;
+        }, delay);
       } else {
+        isInvoke = true;
         // 延迟执行
         timer = setTimeout(() => {
           // 外部传入的真正要执行的函数

@@ -1761,8 +1761,14 @@ function debounce(fn, delay, immediate, callback) {
                     callback(result);
                 resolve(result);
                 isInvoke = true;
+                // 设置延迟来重置isInvoke状态
+                timer = setTimeout(function () {
+                    isInvoke = false;
+                    timer = null;
+                }, delay);
             }
             else {
+                isInvoke = true;
                 // 延迟执行
                 timer = setTimeout(function () {
                     // 外部传入的真正要执行的函数

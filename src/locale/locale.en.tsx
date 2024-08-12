@@ -1297,6 +1297,26 @@ const locale_en = {
       return: {},
     },
   },
+  
+  useDebounce: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
   __end: "end of locale mappings, please do not delete this line",
 } as const;
 
