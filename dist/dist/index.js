@@ -2143,7 +2143,7 @@ function useResize(callback, ref) {
             else {
                 setSize({ width: window.innerWidth, height: window.innerHeight });
             }
-            callback();
+            callback === null || callback === void 0 ? void 0 : callback();
         };
         window.addEventListener("resize", updateSize);
         updateSize();

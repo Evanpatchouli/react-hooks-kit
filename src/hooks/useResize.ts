@@ -1,6 +1,6 @@
 import { useEffect, useState, RefObject } from "react";
 
-function useResize(callback: () => void, ref?: RefObject<HTMLElement>) {
+function useResize(callback?: () => void, ref?: RefObject<HTMLElement>) {
   const [size, setSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -13,7 +13,7 @@ function useResize(callback: () => void, ref?: RefObject<HTMLElement>) {
       } else {
         setSize({ width: window.innerWidth, height: window.innerHeight });
       }
-      callback();
+      callback?.();
     };
 
     window.addEventListener("resize", updateSize);

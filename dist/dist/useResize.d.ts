@@ -1,5 +1,5 @@
 import { RefObject } from "react";
-declare function useResize(callback: () => void, ref?: RefObject<HTMLElement>): {
+declare function useResize(callback?: () => void, ref?: RefObject<HTMLElement>): {
     width: number;
     height: number;
 };
