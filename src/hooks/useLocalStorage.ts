@@ -1,59 +1,56 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-// 全局的事件监听器
-const listeners = new Set<Function>();
+// 派发StorageEvent事件
+const dispatchStorageEvent = <V = unknown>(key: string, newValue: V) => {
+  const event = new StorageEvent('storage', {
+    key: key,
+    newValue: newValue as any,
+    oldValue: undefined, // 这里我们无法获取旧值，所以使用undefined
+    url: window.location.href,
+  });
+  window.dispatchEvent(event);
+};
 
-window.addEventListener("storage", () => {
-  listeners.forEach((listener) => listener());
-});
-
-type Key = string | string[];
-
-export default function useLocalStorage<T>(
-  key?: Key,
-  initialValue?: T
-): [T | undefined, (value: T | undefined) => void] {
-  const [storedValue, setStoredValue] = useState<T | undefined>(() => {
+export default function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
-      if (!key) return initialValue;
-      const keys = Array.isArray(key) ? key : [key];
-      const item = keys.map((k) => window.localStorage.getItem(k));
-      return item.every((i) => i !== null)
-        ? JSON.parse(item.join(""))
-        : initialValue;
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return initialValue;
     }
   });
 
-  const setValue = (value: T | undefined) => {
+  const setValue = useCallback((value: T) => {
     try {
-      setStoredValue(value);
-      if (key) {
-        const keys = Array.isArray(key) ? key : [key];
-        keys.forEach((k) =>
-          window.localStorage.setItem(k, JSON.stringify(value))
-        );
-      }
+      const valueToStore =
+        value === undefined ? null : JSON.stringify(value);
+      window.localStorage.setItem(key, valueToStore as any);
+      dispatchStorageEvent(key, valueToStore);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-  };
+  }, [key]);
 
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (key && (Array.isArray(key) ? key : [key]).includes(e.key || "")) {
-        setStoredValue(e.newValue ? JSON.parse(e.newValue) : initialValue);
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === key) {
+        setStoredValue(() => {
+          try {
+            return event.newValue ? JSON.parse(event.newValue) : initialValue;
+          } catch (error) {
+            console.error(error);
+            return initialValue;
+          }
+        });
       }
     };
 
-    // 在组件挂载时注册回调函数
-    listeners.add(handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      // 在组件卸载时注销回调函数
-      listeners.delete(handleStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, [key, initialValue]);
 
