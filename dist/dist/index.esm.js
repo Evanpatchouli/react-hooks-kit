@@ -37,7 +37,7 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise, SuppressedError, Symbol */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
 
 var __assign = function() {
@@ -74,8 +74,8 @@ function __awaiter(thisArg, _arguments, P, generator) {
 }
 
 function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -1611,8 +1611,8 @@ var useMemento = function (initialState, config) {
             }
         }
     };
-    var clear = function () {
-        setState({ idKey: Number.NaN, data: null });
+    var clear = function (initialState) {
+        setState({ idKey: Number.NaN, data: initialState !== null && initialState !== void 0 ? initialState : null });
         setHistory([]);
         setMementos([]);
     };
@@ -1962,9 +1962,9 @@ function getParams(url, mode, autoParams, stringifyParams, custom) {
     return params;
 }
 // 全局的事件监听器
-var listeners$1 = new Set();
+var listeners = new Set();
 window.addEventListener("popstate", function () {
-    listeners$1.forEach(function (listener) { return listener(); });
+    listeners.forEach(function (listener) { return listener(); });
 });
 /**
  * ## useUrl hook
@@ -2014,10 +2014,10 @@ function useUrl(callback, name, immediate, config) {
             callback === null || callback === void 0 ? void 0 : callback(urlInfo);
         };
         // 在组件挂载时注册回调函数
-        listeners$1.add(handlePopState);
+        listeners.add(handlePopState);
         return function () {
             // 在组件卸载时注销回调函数
-            listeners$1.delete(handlePopState);
+            listeners.delete(handlePopState);
         };
     }, [callback]);
     return urlInfo;
@@ -2558,52 +2558,54 @@ var useMixRef = function (refs) {
     return setRefs;
 };
 
-// 全局的事件监听器
-var listeners = new Set();
-window.addEventListener("storage", function () {
-    listeners.forEach(function (listener) { return listener(); });
-});
+// 派发StorageEvent事件
+var dispatchStorageEvent = function (key, newValue) {
+    var event = new StorageEvent('storage', {
+        key: key,
+        newValue: newValue,
+        oldValue: undefined,
+        url: window.location.href,
+    });
+    window.dispatchEvent(event);
+};
 function useLocalStorage(key, initialValue) {
     var _a = useState(function () {
         try {
-            if (!key)
-                return initialValue;
-            var keys = Array.isArray(key) ? key : [key];
-            var item = keys.map(function (k) { return window.localStorage.getItem(k); });
-            return item.every(function (i) { return i !== null; })
-                ? JSON.parse(item.join(""))
-                : initialValue;
+            var item = window.localStorage.getItem(key);
+            return item ? JSON.parse(item) : initialValue;
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
             return initialValue;
         }
     }), storedValue = _a[0], setStoredValue = _a[1];
-    var setValue = function (value) {
+    var setValue = useCallback(function (value) {
         try {
-            setStoredValue(value);
-            if (key) {
-                var keys = Array.isArray(key) ? key : [key];
-                keys.forEach(function (k) {
-                    return window.localStorage.setItem(k, JSON.stringify(value));
-                });
-            }
+            var valueToStore = value === undefined ? null : JSON.stringify(value);
+            window.localStorage.setItem(key, valueToStore);
+            dispatchStorageEvent(key, valueToStore);
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    };
+    }, [key]);
     useEffect(function () {
-        var handleStorageChange = function (e) {
-            if (key && (Array.isArray(key) ? key : [key]).includes(e.key || "")) {
-                setStoredValue(e.newValue ? JSON.parse(e.newValue) : initialValue);
+        var handleStorageChange = function (event) {
+            if (event.key === key) {
+                setStoredValue(function () {
+                    try {
+                        return event.newValue ? JSON.parse(event.newValue) : initialValue;
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return initialValue;
+                    }
+                });
             }
         };
-        // 在组件挂载时注册回调函数
-        listeners.add(handleStorageChange);
+        window.addEventListener('storage', handleStorageChange);
         return function () {
-            // 在组件卸载时注销回调函数
-            listeners.delete(handleStorageChange);
+            window.removeEventListener('storage', handleStorageChange);
         };
     }, [key, initialValue]);
     return [storedValue, setValue];

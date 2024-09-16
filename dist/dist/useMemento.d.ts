@@ -42,7 +42,7 @@ interface MementoManager<T = any> {
     goToMemento: (idKey: number) => void;
     deleteHistory: (idKey: number | number[]) => void;
     clearHistory: () => void;
-    clear: () => void;
+    clear: (initialState?: T) => void;
     history: HistoryItem<T>[];
     mementos: Memento<T>[];
     clone: (id: number) => void;

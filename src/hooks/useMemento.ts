@@ -49,7 +49,7 @@ interface MementoManager<T = any> {
   goToMemento: (idKey: number) => void;
   deleteHistory: (idKey: number | number[]) => void;
   clearHistory: () => void;
-  clear: () => void;
+  clear: (initialState?: T) => void;
   history: HistoryItem<T>[];
   mementos: Memento<T>[];
   clone: (id: number) => void;
@@ -66,10 +66,10 @@ const useMemento = <T = any>(
   initialState: T,
   config?: MementoConfig
 ): [
-  T | null,
-  (newData: T | null | ((prev: T | null) => T | null)) => void,
-  MementoManager
-] => {
+    T | null,
+    (newData: T | null | ((prev: T | null) => T | null)) => void,
+    MementoManager
+  ] => {
   const [state, setState] = useState<HistoryItem<T>>({
     idKey: Ukey(),
     data: initialState ?? null,
@@ -80,10 +80,10 @@ const useMemento = <T = any>(
     return typeof config?.historySize === "number"
       ? config.historySize
       : config?.historySize === void 0
-      ? 10
-      : config?.historySize
-      ? 10
-      : 0;
+        ? 10
+        : config?.historySize
+          ? 10
+          : 0;
   }, [config?.historySize]);
 
   // When history size changed, slice the history to latest historySize.
@@ -314,8 +314,8 @@ const useMemento = <T = any>(
     }
   };
 
-  const clear = () => {
-    setState({ idKey: Number.NaN, data: null });
+  const clear = (initialState?: T) => {
+    setState({ idKey: Number.NaN, data: initialState ?? null });
     setHistory([]);
     setMementos([]);
   };
