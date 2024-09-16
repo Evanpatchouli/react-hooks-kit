@@ -2704,19 +2704,42 @@ var useUpdateLayoutEffect = function (callback, dependencies) {
     }, dependencies);
 };
 
-function useAsyncEffect(callback, dependencies) {
-    if (dependencies === void 0) { dependencies = []; }
+function useAsyncEffect(effect, deps, options) {
+    var _this = this;
+    if (deps === void 0) { deps = []; }
     useEffect(function () {
-        var promise = callback();
+        var _a, _b;
         var cleanup;
-        promise.then(function (cleanupFn) {
-            // @ts-ignore
-            cleanup = cleanupFn;
-        });
+        var runEffect = function () { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, effect()];
+                    case 1:
+                        cleanup = _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        try {
+            runEffect();
+        }
+        catch (error) {
+            if (options === null || options === void 0 ? void 0 : options.onError) {
+                (_a = options === null || options === void 0 ? void 0 : options.onError) === null || _a === void 0 ? void 0 : _a.call(options, error);
+            }
+            else {
+                throw error;
+            }
+        }
+        finally {
+            (_b = options === null || options === void 0 ? void 0 : options.onFinally) === null || _b === void 0 ? void 0 : _b.call(options);
+        }
         return function () {
-            cleanup && cleanup();
+            if (cleanup) {
+                cleanup();
+            }
         };
-    }, dependencies);
+    }, deps);
 }
 
 // 创建一个全局的事件监听器列表

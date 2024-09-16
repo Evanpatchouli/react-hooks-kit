@@ -1,20 +1,38 @@
 import { useEffect, DependencyList } from "react";
 
-export default function useAsyncEffect(
-  callback: () => Promise<void | (() => void)>,
-  dependencies: DependencyList = []
+function useAsyncEffect(
+  effect: () => Promise<void | (() => void)>,
+  deps: DependencyList = [],
+  options?: {
+    onError?: (erroe: any) => void;
+    onFinally?: () => void;
+  }
 ) {
   useEffect(() => {
-    const promise = callback();
-    let cleanup: (() => void) | undefined;
+    let cleanup: void | (() => void);
 
-    promise.then((cleanupFn) => {
-      // @ts-ignore
-      cleanup = cleanupFn;
-    });
+    const runEffect = async () => {
+      cleanup = await effect();
+    };
+
+    try {
+      runEffect();
+    } catch (error) {
+      if (options?.onError) {
+        options?.onError?.(error);
+      } else {
+        throw error;
+      }
+    } finally {
+      options?.onFinally?.();
+    }
 
     return () => {
-      cleanup && cleanup();
+      if (cleanup) {
+        cleanup();
+      }
     };
-  }, dependencies);
+  }, deps);
 }
+
+export default useAsyncEffect;
