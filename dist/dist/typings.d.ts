@@ -17,3 +17,5 @@ export type CamelCaseStrings<T> = {
     [P in keyof T as P extends string ? CamelCase<P> : never]: T[P];
 };
 export type CamelCaseArray<T> = (CamelCaseStrings<T> | string | null | undefined | CamelCaseArray<T>)[];
+export type Hintable<T> = T | (string & {});
+export type Option<T = any> = T | undefined;

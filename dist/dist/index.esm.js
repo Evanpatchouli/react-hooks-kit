@@ -2141,7 +2141,10 @@ function useResize(callback, ref) {
             else {
                 setSize({ width: window.innerWidth, height: window.innerHeight });
             }
-            callback === null || callback === void 0 ? void 0 : callback();
+            callback === null || callback === void 0 ? void 0 : callback({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
         };
         window.addEventListener("resize", updateSize);
         updateSize();

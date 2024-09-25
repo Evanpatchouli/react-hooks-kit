@@ -45,3 +45,6 @@ export type CamelCaseArray<T> = (
   | undefined
   | CamelCaseArray<T>
 )[];
+
+export type Hintable<T> = T | (string & {});
+export type Option<T = any> = T | undefined;
