@@ -9,12 +9,12 @@ import Article, {
   Best
 } from "@components/layout/Article";
 import { useEffect } from "react";
-import example1 from "@/views/docs/views/examples/UseMap/example.1";
+import example1 from "@/views/docs/views/examples/UseRecord/example.1";
 import pkg from "@/../package.json";
-import UseMapApi from "@/views/docs/views/hooks-apis/useMap.api";
+import UseRecordApi from "@/views/docs/views/hooks-apis/useRecord.api";
 
-export default function UseMap() {
-  const hooksName = "useMap";
+export default function UseRecord() {
+  const hooksName = "useRecord";
   const $desc = useLocaleSelector(`${hooksName}.desc`);
   const $detail = useLocaleSelector(`${hooksName}.detail`);
   const $best = useLocaleSelector(`${hooksName}.$best`);
@@ -38,7 +38,7 @@ export default function UseMap() {
       <Consideration>{$consider}</Consideration>
       <Best>{$best}</Best>
       <FAQs>{$faqs}</FAQs>
-      <UseMapApi />
+      <UseRecordApi />
     </Article>
   );
 }

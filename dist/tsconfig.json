@@ -19,6 +19,7 @@
     "allowUnusedLabels": true,
     "declaration": true,
     "declarationDir": "dist",
+    "downlevelIteration": true,
   },
-  "include": ["./*.ts", "./*.tsx"],
+  "include": ["./*.ts", "./*.tsx"]
 }

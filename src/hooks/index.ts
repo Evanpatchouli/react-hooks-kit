@@ -2,6 +2,8 @@
 export { default as usePrevious } from "./usePrevious";
 export { default as useToggle } from "./useToggle";
 export { default as useLoading } from "./useLoading";
+export { default as useRecord } from "./useRecord";
+export { default as useMap } from "./useMap";
 export { default as useMeta } from "./useMeta";
 export { default as useList } from "./useList";
 export { default as useTree } from "./useTree";

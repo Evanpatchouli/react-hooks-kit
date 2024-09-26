@@ -6,6 +6,8 @@ export { default as SentMail } from "./SentMail";
 export { default as UsePrevious } from "./stateful-hooks/UsePrevious";
 export { default as UseToggle } from "./stateful-hooks/UseToggle";
 export { default as UseLoading } from "./stateful-hooks/UseLoading";
+export { default as UseRecord } from "./stateful-hooks/UseRecord";
+export { default as UseMap } from "./stateful-hooks/UseMap";
 export { default as UseMeta } from "./stateful-hooks/UseMeta";
 export { default as UseList } from "./stateful-hooks/UseList";
 export { default as UseTree } from "./stateful-hooks/UseTree";

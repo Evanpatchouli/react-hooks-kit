@@ -12,19 +12,6 @@ function usePrevious(value) {
     return ref.current;
 }
 
-function useToggle(initial, valueMap) {
-    var _a, _b;
-    var _c = react.useState(initial || false), toogle = _c[0], setToogle = _c[1];
-    var switchToogle = function (bool) {
-        if (typeof bool === "boolean") {
-            setToogle(bool);
-            return;
-        }
-        setToogle(function (pre) { return !pre; });
-    };
-    return [toogle ? (_a = valueMap === null || valueMap === void 0 ? void 0 : valueMap.true) !== null && _a !== void 0 ? _a : true : (_b = valueMap === null || valueMap === void 0 ? void 0 : valueMap.false) !== null && _b !== void 0 ? _b : false, switchToogle, setToogle];
-}
-
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -103,6 +90,35 @@ function __generator(thisArg, body) {
     }
 }
 
+function __values(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
 function __spreadArray(to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -117,6 +133,19 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
+
+function useToggle(initial, valueMap) {
+    var _a, _b;
+    var _c = __read(react.useState(initial || false), 2), toogle = _c[0], setToogle = _c[1];
+    var switchToogle = function (bool) {
+        if (typeof bool === "boolean") {
+            setToogle(bool);
+            return;
+        }
+        setToogle(function (pre) { return !pre; });
+    };
+    return [toogle ? (_a = valueMap === null || valueMap === void 0 ? void 0 : valueMap.true) !== null && _a !== void 0 ? _a : true : (_b = valueMap === null || valueMap === void 0 ? void 0 : valueMap.false) !== null && _b !== void 0 ? _b : false, switchToogle, setToogle];
+}
 
 function formatLoadingValue(value, boolify) {
     if (boolify === void 0) { boolify = false; }
@@ -174,7 +203,7 @@ var useLoading = function (loadingMap, options) {
         setType: "override",
         boolify: true,
     }; }
-    var _a = react.useState(formatLoadingState(loadingMap, options.boolify)), loading = _a[0], _setLoading = _a[1];
+    var _a = __read(react.useState(formatLoadingState(loadingMap, options.boolify)), 2), loading = _a[0], _setLoading = _a[1];
     var setLoading = function (args1, value) {
         if (value === void 0) { value = true; }
         if (typeof args1 === "object") {
@@ -264,6 +293,142 @@ var useLoading = function (loadingMap, options) {
     returned.plusLoading = plusLoading;
     returned.minusLoading = minusLoading;
     return returned;
+};
+
+function useRecord(initial) {
+    if (initial && typeof initial !== "object") {
+        throw new Error("Initial value must be an object");
+    }
+    var _a = __read(react.useState(initial || Object.create({})), 2), record = _a[0], setRecord = _a[1];
+    function get(key) {
+        // @ts-ignore
+        return record[key];
+    }
+    function set() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (args.length === 0) {
+            throw new Error("No arguments provided");
+        }
+        if (['string', 'number', 'symbol'].includes(typeof args[0])) {
+            var key_1 = args[0];
+            var value_1 = args[1];
+            setRecord(function (prev) {
+                var _a;
+                return __assign(__assign({}, prev), (_a = {}, _a[key_1] = typeof value_1 === 'function' ? value_1(prev[key_1]) : value_1, _a));
+            });
+        }
+        else if (typeof args[0] === 'object') {
+            var state_1 = args[0];
+            var mode_1 = args[1] || 'rehydrate';
+            setRecord(function (prev) {
+                return mode_1 === 'override'
+                    ? __assign(__assign({}, state_1), prev) : __assign(__assign({}, prev), state_1);
+            });
+        }
+        else if (typeof args[0] === 'function') {
+            var setRecordAction_1 = args[0];
+            var mode_2 = args[1] || 'rehydrate';
+            setRecord(function (prev) {
+                var instance = setRecordAction_1(prev);
+                return mode_2 === 'override'
+                    ? __assign({}, instance) : __assign(__assign({}, prev), instance);
+            });
+        }
+        else {
+            throw new Error('Invalid arguments');
+        }
+    }
+    return [record, set, get];
+}
+
+var useMap = function (initialState) {
+    var _a = __read(react.useState(new Map(Object.entries(initialState))), 2), map = _a[0], setMap = _a[1];
+    // 实现
+    function set() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (args.length === 0) {
+            throw new Error('No arguments provided');
+        }
+        if (args.length === 1 && typeof args[0] === 'object') {
+            var record_1 = args[0];
+            var mode_1 = args[1] || 'rehydrate';
+            // 处理 record 和 mode 的逻辑
+            setMap(function (prev) {
+                if (mode_1 === 'override') {
+                    return new Map(Object.entries(record_1));
+                }
+                return new Map(__spreadArray(__spreadArray([], __read(prev), false), __read(Object.entries(record_1)), false));
+            });
+        }
+        else if (args.length === 2 && typeof args[0] === 'function') {
+            var setMapAction_1 = args[0];
+            var mode_2 = args[1] || 'override';
+            // 处理 setMapAction 和 mode 的逻辑
+            setMap(function (prev) {
+                var instance = setMapAction_1(prev);
+                var newmap = instance instanceof Map ? instance : new Map(Object.entries(instance));
+                if (mode_2 === 'override') {
+                    return newmap;
+                }
+                return new Map(__spreadArray(__spreadArray([], __read(prev), false), __read(newmap), false));
+            });
+        }
+        else if (args.length === 2 && typeof args[0] !== 'function' && typeof args[1] === 'function') {
+            var key_1 = args[0];
+            var setValueAction_1 = args[1];
+            // 处理 key 和 setValueAction 的逻辑
+            setMap(function (prev) {
+                var prevValue = map.get(key_1);
+                return new Map(prev.entries()).set(key_1, setValueAction_1(prevValue));
+            });
+        }
+        else if (args.length === 2 && typeof args[0] !== 'function' && typeof args[1] !== 'function') {
+            var key_2 = args[0];
+            var value_1 = args[1];
+            // 处理 key 和 value 的逻辑
+            setMap(function (prev) {
+                return new Map(prev.entries()).set(key_2, value_1);
+            });
+        }
+        else {
+            throw new Error('Invalid arguments');
+        }
+    }
+    function get(key) {
+        return map.get(key);
+    }
+    function del(key) {
+        setMap(function (prev) {
+            if (!prev.has(key)) {
+                return prev;
+            }
+            prev.delete(key);
+            return new Map(prev);
+        });
+    }
+    function add(key, value) {
+        setMap(function (prev) {
+            if (prev.has(key) && prev.get(key) === value) {
+                return prev;
+            }
+            var newMap = new Map(prev);
+            newMap.set(key, value);
+            return newMap;
+        });
+    }
+    return {
+        map: map,
+        set: set,
+        get: get,
+        del: del,
+        add: add
+    };
 };
 
 // import _cloneDeep from 'lodash.clonedeep';
@@ -490,7 +655,7 @@ function get(object, path, strict) {
  * - A: When deepSet is true, the state will be deep cloned when setting the state, otherwise it will be shallow cloned. Deepclone is slower than shallowclone, but it is safer.
  */
 var useMeta = function (initialState, options) {
-    var _a = react.useState(initialState), meta = _a[0], setState = _a[1];
+    var _a = __read(react.useState(initialState), 2), meta = _a[0], setState = _a[1];
     var setMeta = function (args1, value) {
         if (value === void 0) { value = undefined; }
         if (typeof args1 === "object") {
@@ -524,13 +689,13 @@ var UKey = function () {
 
 function useList(initialItems, options, dependencies) {
     var _a, _b;
-    var _c = react.useState(
+    var _c = __read(react.useState(
     // @ts-ignore
-    __spreadArray([], initialItems, true).map(function (item) {
+    __spreadArray([], __read(initialItems), false).map(function (item) {
         var _a;
         return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
-    })), items = _c[0], setItems = _c[1];
-    var _d = react.useState(__spreadArray([], initialItems, true)), originalItems = _d[0], setOriginalItems = _d[1];
+    })), 2), items = _c[0], setItems = _c[1];
+    var _d = __read(react.useState(__spreadArray([], __read(initialItems), false)), 2), originalItems = _d[0], setOriginalItems = _d[1];
     react.useEffect(function () {
         // 去除 唯一id 再设置
         var newItems = items.map(function (item) {
@@ -540,7 +705,7 @@ function useList(initialItems, options, dependencies) {
             }
             return _item;
         });
-        setOriginalItems(__spreadArray([], newItems, true));
+        setOriginalItems(__spreadArray([], __read(newItems), false));
     }, dependencies || []);
     var save = react.useCallback(function () {
         var newItems = items.map(function (item) {
@@ -550,13 +715,13 @@ function useList(initialItems, options, dependencies) {
             }
             return _item;
         });
-        setOriginalItems(__spreadArray([], newItems, true));
+        setOriginalItems(__spreadArray([], __read(newItems), false));
     }, [items]);
     var addItem = react.useCallback(function (item) {
         // @ts-ignore
         setItems(function (prevItems) {
             var _a;
-            return __spreadArray(__spreadArray([], prevItems, true), [__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a))], false);
+            return __spreadArray(__spreadArray([], __read(prevItems), false), [__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a))], false);
         });
     }, [options === null || options === void 0 ? void 0 : options.idKey]);
     var removeItem = react.useCallback(function (id) {
@@ -574,7 +739,7 @@ function useList(initialItems, options, dependencies) {
         if (items !== void 0) {
             setItems(
             // @ts-ignore
-            __spreadArray([], items, true).map(function (item) {
+            __spreadArray([], __read(items), false).map(function (item) {
                 var _a;
                 return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
             }));
@@ -582,7 +747,7 @@ function useList(initialItems, options, dependencies) {
         }
         setItems(
         // @ts-ignore
-        __spreadArray([], originalItems, true).map(function (item) {
+        __spreadArray([], __read(originalItems), false).map(function (item) {
             var _a;
             return (__assign(__assign({}, item), (_a = {}, _a[(options === null || options === void 0 ? void 0 : options.idKey) || "_id"] = UKey(), _a)));
         }));
@@ -594,9 +759,9 @@ function useList(initialItems, options, dependencies) {
         // @ts-ignore
         setItems(newItems);
     }, []);
-    var sortedItems = __spreadArray([], items, true).sort((options === null || options === void 0 ? void 0 : options.sortFn) || (function () { return 0; }));
+    var sortedItems = __spreadArray([], __read(items), false).sort((options === null || options === void 0 ? void 0 : options.sortFn) || (function () { return 0; }));
     var filteredItems = sortedItems.filter((options === null || options === void 0 ? void 0 : options.filterFn) || (function () { return true; }));
-    var _e = react.useState(1), currentPage = _e[0], setCurrentPage = _e[1];
+    var _e = __read(react.useState(1), 2), currentPage = _e[0], setCurrentPage = _e[1];
     var totalPage = react.useMemo(function () {
         var _a;
         return Math.max(1, Math.ceil(filteredItems.length / ((_a = options === null || options === void 0 ? void 0 : options.itemsPerPage) !== null && _a !== void 0 ? _a : 10)));
@@ -651,8 +816,8 @@ function useList(initialItems, options, dependencies) {
 
 var useTree = function (initialTree, options) {
     if (options === void 0) { options = { idKey: "_id" }; }
-    var _a = react.useState(cloneDeep(initialTree)), tree = _a[0], setTree = _a[1];
-    var _b = react.useState(null); _b[0]; var setFilteredTree = _b[1];
+    var _a = __read(react.useState(cloneDeep(initialTree)), 2), tree = _a[0], setTree = _a[1];
+    var _b = __read(react.useState(null), 2); _b[0]; var setFilteredTree = _b[1];
     var idKey = options.idKey;
     var renderNode = options.renderNode || (function () { return null; });
     var filterFn = options.filterFn;
@@ -667,7 +832,7 @@ var useTree = function (initialTree, options) {
         var childrenResults = ((_a = node.children) === null || _a === void 0 ? void 0 : _a.map(function (child) {
             return traverse(child, callback, level + 1, node);
         })) || [];
-        var final = __spreadArray([result], childrenResults, true);
+        var final = __spreadArray([result], __read(childrenResults), false);
         return final;
     };
     var errMsg = "[react-hooks-kit][useTree] Node cannot be its own parent";
@@ -914,7 +1079,7 @@ var useTree = function (initialTree, options) {
 };
 
 function useForceUpdate() {
-    var _a = react.useState(0), set = _a[1];
+    var _a = __read(react.useState(0), 2), set = _a[1];
     return function (callback) {
         set(function (pre) {
             callback === null || callback === void 0 ? void 0 : callback(pre);
@@ -1003,6 +1168,7 @@ var Reactive = /** @class */ (function () {
     return Reactive;
 }());
 function handleSpecialMethods(target, prop, fsr) {
+    var e_1, _a;
     var types = [Array, Date, Map, Set];
     var nonMutatingArrayMethods = [
         "concat",
@@ -1047,11 +1213,20 @@ function handleSpecialMethods(target, prop, fsr) {
             }
         }
     };
-    for (var _i = 0, types_1 = types; _i < types_1.length; _i++) {
-        var Type = types_1[_i];
-        var state_1 = _loop_1(Type);
-        if (typeof state_1 === "object")
-            return state_1.value;
+    try {
+        for (var types_1 = __values(types), types_1_1 = types_1.next(); !types_1_1.done; types_1_1 = types_1.next()) {
+            var Type = types_1_1.value;
+            var state_1 = _loop_1(Type);
+            if (typeof state_1 === "object")
+                return state_1.value;
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (types_1_1 && !types_1_1.done && (_a = types_1.return)) _a.call(types_1);
+        }
+        finally { if (e_1) throw e_1.error; }
     }
     return null;
 }
@@ -1343,7 +1518,7 @@ function listen(target) {
  * @returns Reactor instance
  */
 var useReactor = function (initialValue, plugins) {
-    var _a = react.useState(initialValue), state = _a[0], setState = _a[1];
+    var _a = __read(react.useState(initialValue), 2), state = _a[0], setState = _a[1];
     var reactorRef = react.useRef(null);
     // Reassign if initial value changes.
     // useEffect(() => {
@@ -1382,8 +1557,8 @@ var useReactor = function (initialValue, plugins) {
  */
 var useTickState = function (initialState, tickBy, dependencies) {
     if (tickBy === void 0) { tickBy = "onSetState"; }
-    var _a = react.useState(tickBy === "onSetState" ? 0 : -1), tick = _a[0], setTick = _a[1];
-    var _b = react.useState(initialState), state = _b[0], _setState = _b[1];
+    var _a = __read(react.useState(tickBy === "onSetState" ? 0 : -1), 2), tick = _a[0], setTick = _a[1];
+    var _b = __read(react.useState(initialState), 2), state = _b[0], _setState = _b[1];
     var setState = function (value) {
         _setState(value);
         if (tickBy === "onSetState") {
@@ -1410,12 +1585,12 @@ var useTickState = function (initialState, tickBy, dependencies) {
  * @returns [state, setState, mementoManager]
  */
 var useMemento = function (initialState, config) {
-    var _a = react.useState({
+    var _a = __read(react.useState({
         idKey: UKey(),
         data: initialState !== null && initialState !== void 0 ? initialState : null,
-    }), state = _a[0], setState = _a[1];
-    var _b = react.useState([state]), history = _b[0], setHistory = _b[1];
-    var _c = react.useState([]), mementos = _c[0], setMementos = _c[1];
+    }), 2), state = _a[0], setState = _a[1];
+    var _b = __read(react.useState([state]), 2), history = _b[0], setHistory = _b[1];
+    var _c = __read(react.useState([]), 2), mementos = _c[0], setMementos = _c[1];
     var historySize = react.useMemo(function () {
         return typeof (config === null || config === void 0 ? void 0 : config.historySize) === "number"
             ? config.historySize
@@ -1440,7 +1615,7 @@ var useMemento = function (initialState, config) {
     }, [historySize]);
     var createMemento = function (name) {
         if (name === void 0) { name = null; }
-        setMementos(__spreadArray(__spreadArray([], mementos, true), [__assign(__assign({}, state), { name: name })], false));
+        setMementos(__spreadArray(__spreadArray([], __read(mementos), false), [__assign(__assign({}, state), { name: name })], false));
     };
     var deleteMemento = function (idKey) {
         if (typeof idKey !== "number" && !idKey) {
@@ -1483,7 +1658,7 @@ var useMemento = function (initialState, config) {
             return setHistory(function (prev) {
                 if (prev.length > 0) {
                     setState(prev[prev.length - 1]);
-                    return __spreadArray(__spreadArray([], prev, true), [state], false);
+                    return __spreadArray(__spreadArray([], __read(prev), false), [state], false);
                 }
                 return prev;
             });
@@ -1591,9 +1766,9 @@ var useMemento = function (initialState, config) {
             if (!history.some(function (item) { return item.idKey === newState.idKey; })) {
                 setHistory(function (h) {
                     if (history.length - 1 === historySize) {
-                        return __spreadArray(__spreadArray([], history.slice(1), true), [newState], false);
+                        return __spreadArray(__spreadArray([], __read(history.slice(1)), false), [newState], false);
                     }
-                    return __spreadArray(__spreadArray([], history, true), [newState], false);
+                    return __spreadArray(__spreadArray([], __read(history), false), [newState], false);
                 });
             }
             return newState;
@@ -1663,8 +1838,8 @@ var useTicker = function (fn, durationOrOptions, options) {
     if (_options.duration !== undefined && _options.duration >= 0) {
         duration = _options.duration;
     }
-    var _a = react.useState(0), tick = _a[0], setTick = _a[1];
-    var _b = react.useState(_options.pauseAtFirst || false), isPaused = _b[0], setIsPaused = _b[1];
+    var _a = __read(react.useState(0), 2), tick = _a[0], setTick = _a[1];
+    var _b = __read(react.useState(_options.pauseAtFirst || false), 2), isPaused = _b[0], setIsPaused = _b[1];
     var status = isPaused ? "off" : "on";
     var startDelay = 0;
     var intervalRef = react.useRef(null);
@@ -1905,7 +2080,8 @@ function useThrottle(fn, interval, options) {
 }
 
 function getParams(url, mode, autoParams, stringifyParams, custom) {
-    var _a;
+    var e_1, _a;
+    var _b;
     if (mode === void 0) { mode = "auto"; }
     if (autoParams === void 0) { autoParams = []; }
     if (stringifyParams === void 0) { stringifyParams = []; }
@@ -1914,51 +2090,60 @@ function getParams(url, mode, autoParams, stringifyParams, custom) {
     // 先处理 custom 对象
     for (var key in custom) {
         var value = new URLSearchParams(url).get(key);
-        params[key] = (_a = custom[key]) === null || _a === void 0 ? void 0 : _a.call(custom, value !== null && value !== void 0 ? value : undefined);
+        params[key] = (_b = custom[key]) === null || _b === void 0 ? void 0 : _b.call(custom, value !== null && value !== void 0 ? value : undefined);
     }
     var questionMarkIndex = url.indexOf("?");
     if (questionMarkIndex !== -1) {
         var queryString = url.substring(questionMarkIndex + 1);
         var pairs = queryString.split("&");
-        for (var _i = 0, pairs_1 = pairs; _i < pairs_1.length; _i++) {
-            var pair = pairs_1[_i];
-            var _b = pair.split("="), key = _b[0], value = _b[1];
-            try {
-                var decodedKey = decodeURIComponent(key);
-                var decodedValue = decodeURIComponent(value);
-                if (custom[decodedKey]) {
-                    continue; // 如果这个键在 custom 对象中，我们已经处理过它了
-                }
-                if (stringifyParams.includes(decodedKey)) {
-                    params[decodedKey] = decodedValue;
-                }
-                else if (autoParams.includes(decodedKey) || mode === "auto") {
-                    if (decodedValue === "true") {
-                        params[decodedKey] = true;
+        try {
+            for (var pairs_1 = __values(pairs), pairs_1_1 = pairs_1.next(); !pairs_1_1.done; pairs_1_1 = pairs_1.next()) {
+                var pair = pairs_1_1.value;
+                var _c = __read(pair.split("="), 2), key = _c[0], value = _c[1];
+                try {
+                    var decodedKey = decodeURIComponent(key);
+                    var decodedValue = decodeURIComponent(value);
+                    if (custom[decodedKey]) {
+                        continue; // 如果这个键在 custom 对象中，我们已经处理过它了
                     }
-                    else if (decodedValue === "false") {
-                        params[decodedKey] = false;
+                    if (stringifyParams.includes(decodedKey)) {
+                        params[decodedKey] = decodedValue;
                     }
-                    else if (decodedValue === "null") {
-                        params[decodedKey] = null;
-                    }
-                    else if (decodedValue === "undefined") {
-                        params[decodedKey] = undefined;
-                    }
-                    else if (!isNaN(Number(decodedValue))) {
-                        params[decodedKey] = Number(decodedValue);
+                    else if (autoParams.includes(decodedKey) || mode === "auto") {
+                        if (decodedValue === "true") {
+                            params[decodedKey] = true;
+                        }
+                        else if (decodedValue === "false") {
+                            params[decodedKey] = false;
+                        }
+                        else if (decodedValue === "null") {
+                            params[decodedKey] = null;
+                        }
+                        else if (decodedValue === "undefined") {
+                            params[decodedKey] = undefined;
+                        }
+                        else if (!isNaN(Number(decodedValue))) {
+                            params[decodedKey] = Number(decodedValue);
+                        }
+                        else {
+                            params[decodedKey] = decodedValue;
+                        }
                     }
                     else {
                         params[decodedKey] = decodedValue;
                     }
                 }
-                else {
-                    params[decodedKey] = decodedValue;
+                catch (error) {
+                    console.error("Failed to decode URL parameter:", error);
                 }
             }
-            catch (error) {
-                console.error("Failed to decode URL parameter:", error);
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (pairs_1_1 && !pairs_1_1.done && (_a = pairs_1.return)) _a.call(pairs_1);
             }
+            finally { if (e_1) throw e_1.error; }
         }
     }
     return params;
@@ -2000,7 +2185,7 @@ function useUrl(callback, name, immediate, config) {
     function getUrlInfo() {
         return __assign(__assign({ params: getParams(window.location.href, config === null || config === void 0 ? void 0 : config.mode, config === null || config === void 0 ? void 0 : config.autoParams, config === null || config === void 0 ? void 0 : config.stringifyParams, config === null || config === void 0 ? void 0 : config.custom), name: name }, window.location), window.history);
     }
-    var _a = react.useState(getUrlInfo()), urlInfo = _a[0], setUrlInfo = _a[1];
+    var _a = __read(react.useState(getUrlInfo()), 2), urlInfo = _a[0], setUrlInfo = _a[1];
     var memoizedConfig = react.useMemo(function () { return config; }, [config.mode, config.autoParams, config.stringifyParams, config.custom]);
     react.useEffect(function () {
         if (immediate) {
@@ -2045,7 +2230,7 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
     catch (error) {
         console.error(error);
     }
-    var _a = react.useState(initValue), value = _a[0], setValue = _a[1];
+    var _a = __read(react.useState(initValue), 2), value = _a[0], setValue = _a[1];
     var oldValueRef = react.useRef(value);
     var mountedRef = react.useRef(false);
     react.useEffect(function () {
@@ -2072,7 +2257,7 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
 };
 
 function WatchGetterAnimation(getter) {
-    var _a = react.useState(getter()), value = _a[0], setValue = _a[1];
+    var _a = __read(react.useState(getter()), 2), value = _a[0], setValue = _a[1];
     react.useEffect(function () {
         var animationFrameId;
         var loop = function () {
@@ -2094,7 +2279,7 @@ function WatchGetterSetter(getter) {
     for (var _i = 1; _i < arguments.length; _i++) {
         setters[_i - 1] = arguments[_i];
     }
-    var _a = react.useState(getter()), value = _a[0]; _a[1];
+    var _a = __read(react.useState(getter()), 2), value = _a[0]; _a[1];
     react.useEffect(function () {
         var _setters = setters.map(function (setter) { return setter; });
         _setters.forEach(function (setter) {
@@ -2115,7 +2300,7 @@ function useWatchGetter(getter) {
         return WatchGetterAnimation(getter);
     }
     else {
-        return WatchGetterSetter.apply(void 0, __spreadArray([getter], setters, false));
+        return WatchGetterSetter.apply(void 0, __spreadArray([getter], __read(setters), false));
     }
 }
 
@@ -2131,7 +2316,7 @@ var useReactorListener = function (target, callback, immediate) {
 };
 
 function useResize(callback, ref) {
-    var _a = react.useState({ width: 0, height: 0 }), size = _a[0], setSize = _a[1];
+    var _a = __read(react.useState({ width: 0, height: 0 }), 2), size = _a[0], setSize = _a[1];
     react.useEffect(function () {
         var updateSize = function () {
             if (ref && ref.current) {
@@ -2163,11 +2348,11 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
     else if (callbacksOrDeps) {
         callbacks = callbacksOrDeps;
     }
-    var _a = react.useState({
+    var _a = __read(react.useState({
         status: "idle",
         data: null,
         error: null,
-    }), state = _a[0], setState = _a[1];
+    }), 2), state = _a[0], setState = _a[1];
     var abortController = new AbortController();
     var execute = react.useCallback(function () {
         setState({ status: "pending", data: null, error: null });
@@ -2199,7 +2384,7 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
         return function () {
             abortController.abort();
         };
-    }, __spreadArray([execute], (deps || []), true));
+    }, __spreadArray([execute], __read((deps || [])), false));
     /**
      * Abort the promise
      */
@@ -2212,11 +2397,11 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
 function useFetch(url, options, callbacks, deps) {
     var _this = this;
     if (deps === void 0) { deps = []; }
-    var _a = react.useState({
+    var _a = __read(react.useState({
         data: null,
         loading: true,
         error: null,
-    }), state = _a[0], setState = _a[1];
+    }), 2), state = _a[0], setState = _a[1];
     var abortController = new AbortController();
     var opts = __assign(__assign({}, options), { signal: abortController.signal });
     var fetchData = react.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
@@ -2261,7 +2446,7 @@ function useFetch(url, options, callbacks, deps) {
         return function () {
             abortController.abort();
         };
-    }, __spreadArray([fetchData], deps, true));
+    }, __spreadArray([fetchData], __read(deps), false));
     return state;
 }
 
@@ -2304,11 +2489,11 @@ function useFetch(url, options, callbacks, deps) {
  * ```
  */
 function useGenerator(generatorFn) {
-    var _a = react.useState({
+    var _a = __read(react.useState({
         value: undefined,
         done: false,
         error: null,
-    }), state = _a[0], setState = _a[1];
+    }), 2), state = _a[0], setState = _a[1];
     var execute = react.useCallback(function () {
         var generator = generatorFn();
         var handleResult = function (result) {
@@ -2480,9 +2665,9 @@ var useForm = function (schema, formRef) {
  * ```
  */
 function useLazy(importFunction) {
-    var _a = react.useState(null), module = _a[0], setModule = _a[1];
-    var _b = react.useState(true), loading = _b[0], setLoading = _b[1];
-    var _c = react.useState(null), error = _c[0], setError = _c[1];
+    var _a = __read(react.useState(null), 2), module = _a[0], setModule = _a[1];
+    var _b = __read(react.useState(true), 2), loading = _b[0], setLoading = _b[1];
+    var _c = __read(react.useState(null), 2), error = _c[0], setError = _c[1];
     react.useEffect(function () {
         importFunction()
             .then(function (mod) {
@@ -2527,7 +2712,7 @@ var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
         $errorSrc = (_f = defaultSrc.errorSrc) !== null && _f !== void 0 ? _f : "";
         $actions = (_g = defaultSrc.actions) !== null && _g !== void 0 ? _g : {};
     }
-    var _h = react.useState(LazySourceBuilder($defaultSrc)), source = _h[0], setSource = _h[1];
+    var _h = __read(react.useState(LazySourceBuilder($defaultSrc)), 2), source = _h[0], setSource = _h[1];
     react.useEffect(function () {
         var img = new Image();
         img.src = $src;
@@ -2574,7 +2759,7 @@ var dispatchStorageEvent = function (key, newValue) {
     window.dispatchEvent(event);
 };
 function useLocalStorage(key, initialValue) {
-    var _a = react.useState(function () {
+    var _a = __read(react.useState(function () {
         try {
             var item = window.localStorage.getItem(key);
             return item ? JSON.parse(item) : initialValue;
@@ -2583,7 +2768,7 @@ function useLocalStorage(key, initialValue) {
             console.error(error);
             return initialValue;
         }
-    }), storedValue = _a[0], setStoredValue = _a[1];
+    }), 2), storedValue = _a[0], setStoredValue = _a[1];
     var setValue = react.useCallback(function (value) {
         try {
             var valueToStore = value === undefined ? null : JSON.stringify(value);
@@ -2617,7 +2802,7 @@ function useLocalStorage(key, initialValue) {
 }
 
 function useIndexedDB(dbName, version, upgradeCallback) {
-    var _a = react.useState({ db: null, error: null }), state = _a[0], setState = _a[1];
+    var _a = __read(react.useState({ db: null, error: null }), 2), state = _a[0], setState = _a[1];
     react.useEffect(function () {
         var request = indexedDB.open(dbName, version);
         request.onupgradeneeded = function (event) {
@@ -2766,7 +2951,7 @@ initialListener, config) {
         }
         else if (typeof initialEventNameOrConfig === "object") {
             Object.entries(initialEventNameOrConfig).map(function (_a) {
-                var key = _a[0], value = _a[1];
+                var _b = __read(_a, 2), key = _b[0], value = _b[1];
                 if (value !== void 0) {
                     // @ts-ignore
                     configActual[key] = value;
@@ -2792,7 +2977,7 @@ initialListener, config) {
         }
         globalListeners.forEach(function (value, key) {
             if (key.startsWith("".concat(configActual.namespace, "_").concat(eventName, "_"))) {
-                value.listener.apply(value, args);
+                value.listener.apply(value, __spreadArray([], __read(args), false));
             }
         });
     };
@@ -2862,15 +3047,15 @@ function useReceiver(eventNameOrOptions, callback) {
         name: name,
         namespace: namespace,
     }), subscribe = _a.subscribe, unsubscribe = _a.unsubscribe, emit = _a.emit;
-    var _b = react.useState(true), isListening = _b[0], setIsListening = _b[1];
-    var _c = react.useState(null), eventResult = _c[0], setEventResult = _c[1];
+    var _b = __read(react.useState(true), 2), isListening = _b[0], setIsListening = _b[1];
+    var _c = __read(react.useState(null), 2), eventResult = _c[0], setEventResult = _c[1];
     var eventListener = react.useCallback(function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
         setEventResult(args);
-        cb === null || cb === void 0 ? void 0 : cb.apply(void 0, args);
+        cb === null || cb === void 0 ? void 0 : cb.apply(void 0, __spreadArray([], __read(args), false));
     }, []);
     react.useEffect(function () {
         subscribe(eventName, eventListener);
@@ -2961,7 +3146,7 @@ function useProvide(name, state, options) {
  */
 function useInject(name, options) {
     // @ts-ignore
-    var _a = useReceiver({
+    var _a = __read(useReceiver({
         name: "__Inject::".concat(name, "_").concat(UKey()),
         eventName: "__Provider::".concat(name),
         namespace: (options === null || options === void 0 ? void 0 : options.namespace) || "__provide_inject__",
@@ -2970,7 +3155,7 @@ function useInject(name, options) {
             (_a = options === null || options === void 0 ? void 0 : options.callback) === null || _a === void 0 ? void 0 : _a.call(options, value);
             return value;
         },
-    }), result = _a[0], emit = _a[1].emit;
+    }), 2), result = _a[0], emit = _a[1].emit;
     var query = function () { return emit("__Inject::".concat(name, "::query"), true); };
     react.useEffect(function () {
         query();
@@ -2979,7 +3164,7 @@ function useInject(name, options) {
 }
 
 function useTheme(arg1, arg2) {
-    var _a = react.useState(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), theme = _a[0], setTheme = _a[1];
+    var _a = __read(react.useState(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), 2), theme = _a[0], setTheme = _a[1];
     var handleThemeChange = react.useCallback(function (handler) {
         return function (e) {
             var newTheme = e.matches ? "dark" : "light";
@@ -3035,8 +3220,8 @@ var defaultConfig = {
 };
 function useToast(config) {
     if (config === void 0) { config = {}; }
-    var _a = react.useState(__assign(__assign({}, defaultConfig), config)), toastConfig = _a[0], setToastConfig = _a[1];
-    var _b = react.useState(null); _b[0]; var setToastElement = _b[1];
+    var _a = __read(react.useState(__assign(__assign({}, defaultConfig), config)), 2), toastConfig = _a[0], setToastConfig = _a[1];
+    var _b = __read(react.useState(null), 2); _b[0]; var setToastElement = _b[1];
     var toastRef = react.useRef(null);
     toastRef.current = react.useCallback(function (text, config) {
         if (config === void 0) { config = {}; }
@@ -3111,7 +3296,7 @@ var createMask = function (config) {
     return mask;
 };
 function useGuide(steps, callback, config) {
-    var _a = react.useState(-1), step = _a[0], setStep = _a[1];
+    var _a = __read(react.useState(-1), 2), step = _a[0], setStep = _a[1];
     var maskRef = react.useRef(null);
     var zIndexes = react.useRef(new Map());
     var registered = react.useRef(new Set());
@@ -3216,7 +3401,7 @@ function useGuide(steps, callback, config) {
 function useVirtualArea(_a, depths) {
     var _this = this;
     var loadMoreItems = _a.loadMoreItems, items = _a.items, hasMore = _a.hasMore, height = _a.height, containerStyle = _a.style, renderTop = _a.renderTop, renderItem = _a.renderItem, itemComponent = _a.itemComponent, itemComponentProps = _a.itemComponentProps, renderEmpty = _a.renderEmpty, renderLoader = _a.renderLoader, renderUnLoaded = _a.renderUnLoaded, loaderComponent = _a.loaderComponent, loaderComponentProps = _a.loaderComponentProps, containerComponent = _a.containerComponent, containerComponentProps = _a.containerComponentProps, renderBottom = _a.renderBottom, observerOptions = _a.observerOptions;
-    var _b = react.useState(false), loading = _b[0], setLoading = _b[1];
+    var _b = __read(react.useState(false), 2), loading = _b[0], setLoading = _b[1];
     var loaderRef = react.useRef(null);
     var loadMore = react.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -3286,7 +3471,7 @@ function useVirtualArea(_a, depths) {
         hasMore,
         renderUnLoaded,
         renderBottom
-    ], (depths || []), true));
+    ], __read((depths || [])), false));
     return [loaderRef, loading, items, render];
 }
 
@@ -3458,15 +3643,15 @@ function useBatchHooks(hook, count) {
         args[_i - 2] = arguments[_i];
     }
     if (Array.isArray(hook)) {
-        return hook.map(function (item) { return item.hook.apply(item, item.args); });
+        return hook.map(function (item) { return item.hook.apply(item, __spreadArray([], __read(item.args), false)); });
     }
     else {
-        return Array.from({ length: count }, function () { return hook.apply(void 0, args); });
+        return Array.from({ length: count }, function () { return hook.apply(void 0, __spreadArray([], __read(args), false)); });
     }
 }
 
 function useBattery(onChargingChange, callbacks) {
-    var _a = react.useState(null), batteryStatus = _a[0], setBatteryStatus = _a[1];
+    var _a = __read(react.useState(null), 2), batteryStatus = _a[0], setBatteryStatus = _a[1];
     var _callbacks = react.useMemo(function () {
         return __assign(__assign({}, callbacks), { onChargingChange: (callbacks === null || callbacks === void 0 ? void 0 : callbacks.onChargingChange) || onChargingChange });
     }, [callbacks, onChargingChange]);
@@ -3585,7 +3770,7 @@ function setCookie(name, value, days) {
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 function useCookie(name, initialValue, days) {
-    var _a = react.useState(function () { return getCookie(name) || initialValue; }), value = _a[0], setValue = _a[1];
+    var _a = __read(react.useState(function () { return getCookie(name) || initialValue; }), 2), value = _a[0], setValue = _a[1];
     react.useEffect(function () {
         setCookie(name, value, days);
     }, [name, value, days]);
@@ -3593,7 +3778,7 @@ function useCookie(name, initialValue, days) {
 }
 
 function useConsoleLog() {
-    var _a = react.useState([]), logs = _a[0], setLogs = _a[1];
+    var _a = __read(react.useState([]), 2), logs = _a[0], setLogs = _a[1];
     react.useEffect(function () {
         var originalLog = console.log;
         console.log = function () {
@@ -3602,8 +3787,8 @@ function useConsoleLog() {
                 args[_i] = arguments[_i];
             }
             // @ts-ignore
-            setLogs(function (prevLogs) { return __spreadArray(__spreadArray([], prevLogs, true), [args.join(' ')], false); });
-            originalLog.apply(void 0, args);
+            setLogs(function (prevLogs) { return __spreadArray(__spreadArray([], __read(prevLogs), false), [args.join(' ')], false); });
+            originalLog.apply(void 0, __spreadArray([], __read(args), false));
         };
         return function () {
             console.log = originalLog;
@@ -3632,7 +3817,7 @@ function useHover(onHover) {
 }
 
 function useKeyPress(targetKey) {
-    var _a = react.useState(false), keyPressed = _a[0], setKeyPressed = _a[1];
+    var _a = __read(react.useState(false), 2), keyPressed = _a[0], setKeyPressed = _a[1];
     function downHandler(_a) {
         var key = _a.key;
         if (key === targetKey) {
@@ -3657,7 +3842,7 @@ function useKeyPress(targetKey) {
 }
 
 function useMediaQuery(query) {
-    var _a = react.useState(window.matchMedia(query).matches), matches = _a[0], setMatches = _a[1];
+    var _a = __read(react.useState(window.matchMedia(query).matches), 2), matches = _a[0], setMatches = _a[1];
     react.useEffect(function () {
         var mediaQueryList = window.matchMedia(query);
         var documentChangeHandler = function () { return setMatches(mediaQueryList.matches); };
@@ -3671,7 +3856,7 @@ function useMediaQuery(query) {
 
 function useMousePosition(trigger) {
     if (trigger === void 0) { trigger = "mousemove"; }
-    var _a = react.useState({ x: null, y: null }), mousePosition = _a[0], setMousePosition = _a[1];
+    var _a = __read(react.useState({ x: null, y: null }), 2), mousePosition = _a[0], setMousePosition = _a[1];
     react.useEffect(function () {
         var updateMousePosition = function (ev) {
             setMousePosition({ x: ev.clientX, y: ev.clientY });
@@ -3691,13 +3876,13 @@ function useMousePosition(trigger) {
  * @returns {NetworkStatus}
  */
 function useNetworkStatus(throttleInterval) {
-    var _a = react.useState({
+    var _a = __read(react.useState({
         online: navigator.onLine,
         // @ts-ignore
         downlink: navigator.connection ? navigator.connection.downlink : 0,
         // @ts-ignore
         uplink: navigator.connection ? navigator.connection.uplink : 0,
-    }), status = _a[0], setStatus = _a[1];
+    }), 2), status = _a[0], setStatus = _a[1];
     var throttledUpdateStatus = useThrottle(function () {
         if ((throttleInterval !== null && throttleInterval !== void 0 ? throttleInterval : 0) < 17) {
             console.warn("throttleInterval is suggested to be greater than 16.67ms to avoid too much re-rendering");
@@ -3752,7 +3937,7 @@ function useNetworkStatus(throttleInterval) {
 
 function useOverflow() {
     var ref = react.useRef(null);
-    var _a = react.useState(false), isOverflowing = _a[0], setIsOverflowing = _a[1];
+    var _a = __read(react.useState(false), 2), isOverflowing = _a[0], setIsOverflowing = _a[1];
     react.useEffect(function () {
         var checkOverflow = function () {
             if (ref.current) {
@@ -3821,7 +4006,7 @@ var useRaf = function (callback) {
 
 var useRafState = function (initialState) {
     var frame = react.useRef(0);
-    var _a = react.useState(initialState), state = _a[0], setState = _a[1];
+    var _a = __read(react.useState(initialState), 2), state = _a[0], setState = _a[1];
     var setRafState = react.useCallback(function (value) {
         cancelAnimationFrame(frame.current);
         frame.current = requestAnimationFrame(function () {
@@ -3840,7 +4025,7 @@ function useProtect(initialData) {
     for (var _i = 1; _i < arguments.length; _i++) {
         conditions[_i - 1] = arguments[_i];
     }
-    var _a = react.useState(initialData), data = _a[0], setData = _a[1];
+    var _a = __read(react.useState(initialData), 2), data = _a[0], setData = _a[1];
     var messages = react.useMemo(function () {
         return conditions
             .filter(function (condition) { return (typeof condition === "function" ? condition(data, data) : condition); })
@@ -3884,7 +4069,7 @@ function useProtect(initialData) {
 // 创建一个外部数组来存储所有的回调函数
 var callbacks = [];
 var useScroll = function (callback) {
-    var _a = react.useState({ x: 0, y: 0 }), position = _a[0], setPosition = _a[1];
+    var _a = __read(react.useState({ x: 0, y: 0 }), 2), position = _a[0], setPosition = _a[1];
     var handleScroll = function () {
         var newPosition = {
             x: window.scrollX,
@@ -3928,12 +4113,12 @@ var useScroll = function (callback) {
  * ```
  */
 function useSafeArea() {
-    var _a = react.useState({
+    var _a = __read(react.useState({
         top: 0,
         right: 0,
         bottom: 0,
         left: 0,
-    }), safeArea = _a[0], setSafeArea = _a[1];
+    }), 2), safeArea = _a[0], setSafeArea = _a[1];
     react.useEffect(function () {
         var computeSafeArea = function () {
             var style = getComputedStyle(document.body);
@@ -4009,6 +4194,7 @@ exports.useLazyImage = useLazyImage;
 exports.useList = useList;
 exports.useLoading = useLoading;
 exports.useLocalStorage = useLocalStorage;
+exports.useMap = useMap;
 exports.useMediaQuery = useMediaQuery;
 exports.useMemento = useMemento;
 exports.useMeta = useMeta;
@@ -4028,6 +4214,7 @@ exports.useReactive = useReactive;
 exports.useReactor = useReactor;
 exports.useReactorListener = useReactorListener;
 exports.useReceiver = useReceiver;
+exports.useRecord = useRecord;
 exports.useResize = useResize;
 exports.useRipple = useRipple;
 exports.useSafeArea = useSafeArea;

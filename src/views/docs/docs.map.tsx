@@ -49,6 +49,16 @@ export default {
       title: "UseLoading",
       status: "stable",
     },
+    UseRecord: {
+      route: "useRecord",
+      title: "UseRecord",
+      status: "experimental",
+    },
+    UseMap: {
+      route: "useMap",
+      title: "UseMap",
+      status: "experimental",
+    },
     UseMeta: {
       route: "useMeta",
       title: "UseMeta",

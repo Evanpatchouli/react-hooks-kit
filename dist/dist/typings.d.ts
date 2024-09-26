@@ -19,3 +19,4 @@ export type CamelCaseStrings<T> = {
 export type CamelCaseArray<T> = (CamelCaseStrings<T> | string | null | undefined | CamelCaseArray<T>)[];
 export type Hintable<T> = T | (string & {});
 export type Option<T = any> = T | undefined;
+export type Property<T extends object, K extends string | number | Symbol> = K extends keyof T ? T[K] : any;

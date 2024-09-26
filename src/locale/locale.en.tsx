@@ -9,18 +9,14 @@ const locale_en = {
     desc: "A hook to watch certain property in an object.",
     detail: (
       <>
-        useWatch is a hook that is used to watch the change of certain property,
-        it accepts three parameters, which are:
+        useWatch is a hook that is used to watch the change of certain property, it accepts three parameters, which are:
         <ol>
           <li>target object</li>
-          <li>
-            target property path (like "a.b.c" or ["a", "b", "c"]) or a getter
-            function
-          </li>
+          <li>target property path (like "a.b.c" or ["a", "b", "c"]) or a getter function</li>
           <li>callback function</li>
         </ol>
-        When the target property of the target object changes, useWatch will
-        call the callback function, which accepts two parameters, which are:
+        When the target property of the target object changes, useWatch will call the callback function, which accepts
+        two parameters, which are:
         <ol>
           <li>old value</li>
           <li>new value</li>
@@ -31,26 +27,19 @@ const locale_en = {
     consideration: (
       <ol>
         <Li>target object should be type of object</Li>
-        <Li>
-          target property path should be type of string or array of string, the
-          latter is suggested
-        </Li>
+        <Li>target property path should be type of string or array of string, the latter is suggested</Li>
         <Li>callback function should be type of function</Li>
         <Li>
-          default, the returned will has no excipit type infer, because inter a
-          type from a complex object is difficult, but you can assign type by
-          yourself, like this: <code>const a: string = useWatch(obj, "a")</code>
-          . In the meantime, callback function will auto assign type to old
-          value and new value
+          default, the returned will has no excipit type infer, because inter a type from a complex object is difficult,
+          but you can assign type by yourself, like this: <code>const a: string = useWatch(obj, "a")</code>. In the
+          meantime, callback function will auto assign type to old value and new value
         </Li>
         <Li>
-          the strict will make effects to get the property with special key and
-          may cause energy consumption, the best way is to use array as path
-          instead of string path with strict mode.
+          the strict will make effects to get the property with special key and may cause energy consumption, the best
+          way is to use array as path instead of string path with strict mode.
         </Li>
         <Li>
-          How can I get valueType watched{" "}
-          {"( like c in const obj = { a: { b : { c : 1 } } } )"}?
+          How can I get valueType watched {"( like c in const obj = { a: { b : { c : 1 } } } )"}?
           <p>There are five ways:</p>
           <ol>
             <li>
@@ -69,17 +58,15 @@ const locale_en = {
               <Code lang="ts">{`const c = useWatch(obj, (state) => state.a.b.c, (a, b) => {})`}</Code>
             </li>
             <p>
-              The fourth way is only work with string path not array path, and
-              infer will fail if the one key in path includes "." character.
+              The fourth way is only work with string path not array path, and infer will fail if the one key in path
+              includes "." character.
             </p>
           </ol>
         </Li>
         <p>
-          Therefore, it is suggested to avoid using string includes "." as keys
-          in your object, and then run with string or array path or under
-          non-strict mode with PathValue inferred from the string path.
-          Everything will be fine. Otherwise, use getter instead of path, in
-          this case, you need to confirm your getter always works correctly.
+          Therefore, it is suggested to avoid using string includes "." as keys in your object, and then run with string
+          or array path or under non-strict mode with PathValue inferred from the string path. Everything will be fine.
+          Otherwise, use getter instead of path, in this case, you need to confirm your getter always works correctly.
         </p>
       </ol>
     ),
@@ -88,40 +75,32 @@ const locale_en = {
     desc: "A hook to get url params.",
     detail: (
       <>
-        useUrl is a hook that is used to listen url and get params, it accepts
-        four parameters.
+        useUrl is a hook that is used to listen url and get params, it accepts four parameters.
         <ol>
           <Li>
-            <strong>callback (?)</strong>: The function will be called when url
-            changes.
+            <strong>callback (?)</strong>: The function will be called when url changes.
           </Li>
           <Li>
-            <strong>name (?)</strong>: The name of url listener, if you have
-            multiple url listeners, you can use this parameter to distinguish
-            them.
+            <strong>name (?)</strong>: The name of url listener, if you have multiple url listeners, you can use this
+            parameter to distinguish them.
           </Li>
           <Li>
-            <strong>immediate (false)</strong>: The function will be called
-            immediately when url changes.
+            <strong>immediate (false)</strong>: The function will be called immediately when url changes.
           </Li>
           <Li>
             <strong>config (?)</strong>: The configuration of the params parser.
             <ol>
               <Li>
-                <strong>mode (?)</strong>: The mode of the params parser:
-                `"string"` | `"auto"` = `"auto"`.
+                <strong>mode (?)</strong>: The mode of the params parser: `"string"` | `"auto"` = `"auto"`.
               </Li>
               <Li>
-                <strong>autoParams (?)</strong>: The parameters to treat as
-                auto.
+                <strong>autoParams (?)</strong>: The parameters to treat as auto.
               </Li>
               <Li>
-                <strong>stringifyParams (?)</strong>: The parameters to treat as
-                string.
+                <strong>stringifyParams (?)</strong>: The parameters to treat as string.
               </Li>
               <Li>
-                <strong>custom (?)</strong>: The custom parser of certain query
-                parameters.
+                <strong>custom (?)</strong>: The custom parser of certain query parameters.
               </Li>
             </ol>
           </Li>
@@ -136,20 +115,17 @@ const locale_en = {
           <li>
             <strong>T</strong> - `string` or `object`
             <ul>
+              <li>The string to convert, like `"http://localhost?id=1&name=evan"`</li>
               <li>
-                The string to convert, like `"http://localhost?id=1&name=evan"`
-              </li>
-              <li>
-                object: object to inferred as, like{" "}
-                <code>{'`{ id: "1", name: "evan" }`'}</code>
+                object: object to inferred as, like <code>{'`{ id: "1", name: "evan" }`'}</code>
               </li>
             </ul>
           </li>
         </ol>
         <ol>
           <li>
-            <strong>Mode</strong> - The mode to use when converting: `"string"`
-            | `"fuzzy"` | `"auto"` | `"strict"` | `"any"` = `"auto"`.
+            <strong>Mode</strong> - The mode to use when converting: `"string"` | `"fuzzy"` | `"auto"` | `"strict"` |
+            `"any"` = `"auto"`.
           </li>
           <li>
             <strong>StrictParams</strong> - The parameters to treat as strict.
@@ -180,16 +156,14 @@ const locale_en = {
         <Li>Conditions to protect could be type of boolean, string or null.</Li>
         <ul>
           <Li>
-            <strong>boolean</strong>: if the condition is true, the state will
-            be protected with default error message.
+            <strong>boolean</strong>: if the condition is true, the state will be protected with default error message.
           </Li>
           <Li>
-            <strong>string</strong>: if the condition is not empty string, the
-            state will be protected with the string as error message.
+            <strong>string</strong>: if the condition is not empty string, the state will be protected with the string
+            as error message.
           </Li>
           <Li>
-            <strong>null</strong>: if the condition is null, the state will not
-            be protected
+            <strong>null</strong>: if the condition is null, the state will not be protected
           </Li>
         </ul>
       </ol>
@@ -211,12 +185,10 @@ const locale_en = {
           </li>
           <ul>
             <li>
-              <strong>true</strong> (?) : the value when state is true, default
-              is true
+              <strong>true</strong> (?) : the value when state is true, default is true
             </li>
             <li>
-              <strong>false</strong> (?) : the value when state is false,
-              default is false
+              <strong>false</strong> (?) : the value when state is false, default is false
             </li>
           </ul>
         </ol>
@@ -246,12 +218,10 @@ const locale_en = {
           </li>
           <ul>
             <li>
-              <strong>boolify</strong> (?) : the value when state is true,
-              default is true
+              <strong>boolify</strong> (?) : the value when state is true, default is true
             </li>
             <li>
-              <strong>setType</strong> (?) : invoke setter using "override" or
-              "spread"
+              <strong>setType</strong> (?) : invoke setter using "override" or "spread"
             </li>
           </ul>
         </ol>
@@ -260,10 +230,7 @@ const locale_en = {
     ),
     consideration: (
       <ol>
-        <Li>
-          Returned Value is an array merged with object like the struct
-          following :{" "}
-        </Li>
+        <Li>Returned Value is an array merged with object like the struct following : </Li>
         <Code lang="text" theme="oneLight">
           {`
 [loading, onLoading, unLoading, plusLoading, minusLoading, setLoading]
@@ -278,17 +245,14 @@ const locale_en = {
 }
 `}
         </Code>
+        <Li>When you use loading in count way, you must confirm that plus times is always same with minus times</Li>
         <Li>
-          When you use loading in count way, you must confirm that plus times is
-          always same with minus times
+          By default, the loading value will be false when the loading value is 0, you can disable it by setting boolify
+          to false
         </Li>
         <Li>
-          By default, the loading value will be false when the loading value is
-          0, you can disable it by setting boolify to false
-        </Li>
-        <Li>
-          By default, the set actions will <strong>override</strong> the old
-          value, you can disable it by setting setType to "spread"
+          By default, the set actions will <strong>override</strong> the old value, you can disable it by setting
+          setType to "spread"
         </Li>
       </ol>
     ),
@@ -301,12 +265,10 @@ const locale_en = {
       <>
         <h4>Parameters: </h4>
         <Li>
-          <strong>initialObject</strong> : The initial state object of the meta
-          state.
+          <strong>initialObject</strong> : The initial state object of the meta state.
         </Li>
         <Li>
-          <strong>deepSet</strong> (?): Whether to use deep clone when setting
-          the meta state. Defaults to false.
+          <strong>deepSet</strong> (?): Whether to use deep clone when setting the meta state. Defaults to false.
         </Li>
       </>
     ),
@@ -336,19 +298,16 @@ const locale_en = {
           <strong>Q</strong>: Why useMeta instead of useState?
         </Li>
         <Li>
-          <strong>A</strong>: Because useMeta makes it easier to set deep
-          properties of the state.
+          <strong>A</strong>: Because useMeta makes it easier to set deep properties of the state.
         </Li>
         <br />
         <Li>
           <strong>Q</strong>: What's the difference of deepSet or not?
         </Li>
         <Li>
-          <strong>A</strong>: When deepSet is true, the state will be deep
-          cloned when setting the state, otherwise it will be shallow cloned.
-          Deepclone is slower than shallowclone, but it is safer. Therefore,
-          when the state object is huge, you should avoid using deepSet unless
-          necessary.
+          <strong>A</strong>: When deepSet is true, the state will be deep cloned when setting the state, otherwise it
+          will be shallow cloned. Deepclone is slower than shallowclone, but it is safer. Therefore, when the state
+          object is huge, you should avoid using deepSet unless necessary.
         </Li>
       </ul>
     ),
@@ -362,12 +321,10 @@ const locale_en = {
         <h4>Parameters : </h4>
         <ol>
           <li>
-            <strong>initialValue</strong> : primitives, array, object, Date, Map
-            or Set
+            <strong>initialValue</strong> : primitives, array, object, Date, Map or Set
           </li>
           <li>
-            <strong>deep</strong> (?) : boolean, Whether to deep reactive,
-            default is true
+            <strong>deep</strong> (?) : boolean, Whether to deep reactive, default is true
           </li>
         </ol>
         For example:
@@ -379,10 +336,7 @@ const locale_en = {
     consideration: (
       <>
         <ol>
-          <Li>
-            initialValue could be of primitives, array, object, Date, Map and
-            Set.
-          </Li>
+          <Li>initialValue could be of primitives, array, object, Date, Map and Set.</Li>
           <Li>deep is type of boolean</Li>
         </ol>
         <p
@@ -392,8 +346,7 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>ℹ️ Notice</strong> : Every time you call a method on the
-          reactive object will cause rerender.
+          <strong>ℹ️ Notice</strong> : Every time you call a method on the reactive object will cause rerender.
         </p>
         <p
           style={{
@@ -402,9 +355,8 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>⚠️ Warning</strong> : useReactive makes proxies for all
-          properties on the target as many as possible, some apis will behave
-          differently from the original.
+          <strong>⚠️ Warning</strong> : useReactive makes proxies for all properties on the target as many as possible,
+          some apis will behave differently from the original.
         </p>
       </>
     ),
@@ -412,17 +364,14 @@ const locale_en = {
       <>
         <ul>
           <Li>
-            <strong>Better performance</strong> : Use shallow reactive, and
-            define a property to rerender.
+            <strong>Better performance</strong> : Use shallow reactive, and define a property to rerender.
           </Li>
           <Li>
-            <strong>Better reactive</strong> : Use deep reactive, rerender every
-            when property changes.
+            <strong>Better reactive</strong> : Use deep reactive, rerender every when property changes.
           </Li>
           <Li>
-            <strong>Better security</strong> : Use unwrap (exported from
-            useReactive) to control reactive data, and reassign it to the
-            reactive proxy.
+            <strong>Better security</strong> : Use unwrap (exported from useReactive) to control reactive data, and
+            reassign it to the reactive proxy.
           </Li>
         </ul>
       </>
@@ -433,18 +382,17 @@ const locale_en = {
           <strong>Q</strong>: Why useReactive instead of useState?
         </Li>
         <Li>
-          <strong>A</strong>: Because useReactive simplifies the process of
-          making object reactive. That is you can play react.js like Vue.js.
+          <strong>A</strong>: Because useReactive simplifies the process of making object reactive. That is you can play
+          react.js like Vue.js.
         </Li>
         <br />
         <Li>
           <strong>Q</strong>: What's the difference of deep or not?
         </Li>
         <Li>
-          <strong>A</strong>: When deep is true, the object will be deep
-          reactive, otherwise it will be shallow reactive. Deep reactive means
-          every properties on object will get proxied. Shallow reactive means
-          only the first level properties will get proxied.
+          <strong>A</strong>: When deep is true, the object will be deep reactive, otherwise it will be shallow
+          reactive. Deep reactive means every properties on object will get proxied. Shallow reactive means only the
+          first level properties will get proxied.
         </Li>
       </ul>
     ),
@@ -452,8 +400,7 @@ const locale_en = {
       generics: (
         <ul>
           <li>
-            <strong>T</strong>: suggest to extends primitives | Array | object |
-            Date | Map | Set
+            <strong>T</strong>: suggest to extends primitives | Array | object | Date | Map | Set
           </li>
         </ul>
       ),
@@ -490,8 +437,7 @@ const locale_en = {
           <strong>Q</strong>: Why useList instead of useState?
         </Li>
         <Li>
-          <strong>A</strong>: Because useList makes it easier to manage list
-          state.
+          <strong>A</strong>: Because useList makes it easier to manage list state.
         </Li>
         <br />
         <Li>
@@ -504,20 +450,16 @@ const locale_en = {
               <strong>render</strong>: render the list view
             </li>
             <li>
-              <strong>isolation</strong>: isolate the view data and original
-              data.
+              <strong>isolation</strong>: isolate the view data and original data.
             </li>
             <li>
-              <strong>control</strong>: provide many ways to control the list
-              data.
+              <strong>control</strong>: provide many ways to control the list data.
             </li>
             <li>
-              <strong>backtracking</strong>: provide ability to trace back the
-              list data.
+              <strong>backtracking</strong>: provide ability to trace back the list data.
             </li>
             <li>
-              <strong>pagination</strong>: provide ability to paginate the list
-              data.
+              <strong>pagination</strong>: provide ability to paginate the list data.
             </li>
             <span>...</span>
           </ol>
@@ -541,8 +483,7 @@ const locale_en = {
     desc: "A hook to render huge list in a virtual area way.",
     detail: (
       <>
-        useVirtualArea is a hook that is used to render huge list in a virtual
-        area way:
+        useVirtualArea is a hook that is used to render huge list in a virtual area way:
         <h4>Parameters : </h4>
         <ol>
           <li>
@@ -573,25 +514,23 @@ const locale_en = {
           <strong>Q</strong>: Why useVirtualArea instead of useState?
         </Li>
         <Li>
-          <strong>A</strong>: Because useVirtualArea makes it more efficient to
-          render huge list in a virtual area way.
+          <strong>A</strong>: Because useVirtualArea makes it more efficient to render huge list in a virtual area way.
         </Li>
         <br />
         <Li>
           <strong>Q</strong>: What is virtual area?
         </Li>
         <Li>
-          <strong>A</strong>: Virtual area is a virtual area in your page that
-          is used to render huge list. It is not really a area, but a concept.
+          <strong>A</strong>: Virtual area is a virtual area in your page that is used to render huge list. It is not
+          really a area, but a concept.
         </Li>
         <br />
         <Li>
           <strong>Q</strong>: How about the performance?
         </Li>
         <Li>
-          <strong>A</strong>: It is much more efficient than using useState to
-          render huge list. You can try it by yourself. The performance is
-          similar to react-window.
+          <strong>A</strong>: It is much more efficient than using useState to render huge list. You can try it by
+          yourself. The performance is similar to react-window.
         </Li>
       </ul>
     ),
@@ -599,16 +538,13 @@ const locale_en = {
       generics: (
         <ul>
           <li>
-            <strong>C</strong>: extends keyof React.JSX.IntrinsicElements.
-            Default: "div"
+            <strong>C</strong>: extends keyof React.JSX.IntrinsicElements. Default: "div"
           </li>
           <li>
-            <strong>I</strong>: extends keyof React.JSX.IntrinsicElements.
-            Default: "div"
+            <strong>I</strong>: extends keyof React.JSX.IntrinsicElements. Default: "div"
           </li>
           <li>
-            <strong>L</strong>: extends keyof React.JSX.IntrinsicElements.
-            Default: "div"
+            <strong>L</strong>: extends keyof React.JSX.IntrinsicElements. Default: "div"
           </li>
         </ul>
       ),
@@ -643,8 +579,8 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>⚠️ Warning</strong> : please invoke subscribe, on and
-          listeners in useEffect hook area to avoid some unexpectable problems.
+          <strong>⚠️ Warning</strong> : please invoke subscribe, on and listeners in useEffect hook area to avoid some
+          unexpectable problems.
         </p>
       </>
     ),
@@ -666,16 +602,14 @@ const locale_en = {
             borderRadius: "4px",
           }}
         >
-          <strong>ℹ️ Notice</strong> : Reactor Event Bus is dependent from the
-          Emitter's.
+          <strong>ℹ️ Notice</strong> : Reactor Event Bus is dependent from the Emitter's.
         </p>
       </>
     ),
     $best: (
       <ul>
         <Li>
-          <strong>Eazy communicate</strong> : Use Reactor to sync data between
-          web components.
+          <strong>Eazy communicate</strong> : Use Reactor to sync data between web components.
         </Li>
       </ul>
     ),
@@ -685,8 +619,7 @@ const locale_en = {
           <strong>Q</strong>: Why useReactor instead of useState?
         </Li>
         <Li>
-          <strong>A</strong>: Because useReactor makes it easier to manage state
-          and communicate between components.
+          <strong>A</strong>: Because useReactor makes it easier to manage state and communicate between components.
         </Li>
       </ul>
     ),
@@ -723,8 +656,7 @@ const locale_en = {
     consideration: (
       <ol>
         <Li>
-          initialValue is type of{" "}
-          <span className="txt-secondary">TreeNode</span>
+          initialValue is type of <span className="txt-secondary">TreeNode</span>
         </Li>
         <Li>options is type of object</Li>
       </ol>
@@ -732,8 +664,7 @@ const locale_en = {
     $best: (
       <ul>
         <Li>
-          <strong>Control the virtual nodes</strong> : Avoid to change the
-          original nodes directly.
+          <strong>Control the virtual nodes</strong> : Avoid to change the original nodes directly.
         </Li>
       </ul>
     ),
@@ -743,8 +674,7 @@ const locale_en = {
           <strong>Q</strong>: Why useTree instead of useState?
         </Li>
         <Li>
-          <strong>A</strong>: Because useTree makes it easier to manage and
-          render tree state.
+          <strong>A</strong>: Because useTree makes it easier to manage and render tree state.
         </Li>
       </ul>
     ),
@@ -775,8 +705,7 @@ const locale_en = {
             <strong>hook</strong> : the hook to be executed
           </li>
           <li>
-            <strong>count</strong> (?) : number of times to execute the hook,
-            default is 1
+            <strong>count</strong> (?) : number of times to execute the hook, default is 1
           </li>
         </ol>
         For example:
@@ -820,8 +749,7 @@ const locale_en = {
     $best: (
       <ul>
         <Li>
-          <strong>Strict Mode</strong> : Use strict mode and set idKey to a
-          unique value.
+          <strong>Strict Mode</strong> : Use strict mode and set idKey to a unique value.
         </Li>
       </ul>
     ),
@@ -851,10 +779,8 @@ const locale_en = {
     consideration: <ol>It is just a simple hook, no consideration.</ol>,
     $best: (
       <>
-        This is a React component that allows users to toggle between a light
-        and dark theme. The usePrevious hook is used to keep track of the
-        previous theme, and a message is logged to the console whenever the
-        theme changes.
+        This is a React component that allows users to toggle between a light and dark theme. The usePrevious hook is
+        used to keep track of the previous theme, and a message is logged to the console whenever the theme changes.
       </>
     ),
     $faqs: (
@@ -931,8 +857,7 @@ const locale_en = {
     desc: "A hook to share a state with other components.",
     detail: (
       <>
-        useProvide is a hook that is used to share a state with other
-        components, and it is based on{" "}
+        useProvide is a hook that is used to share a state with other components, and it is based on{" "}
         <a href="#/docs/useEmitter">useEmitter</a>:<h4>Parameters : </h4>
         <ol>
           <li>
@@ -960,8 +885,7 @@ const locale_en = {
     desc: "A hook to inject a state from other components.",
     detail: (
       <>
-        useInject is a hook that is used to inject a state from other
-        components, and it is based on{" "}
+        useInject is a hook that is used to inject a state from other components, and it is based on{" "}
         <a href="#/docs/useReceiver">useReceiver</a>:<h4>Parameters : </h4>
         <ol>
           <li>
@@ -989,26 +913,21 @@ const locale_en = {
     $p2: (
       <>
         <p>
-          <strong>
-            Try to wrapp the target element with Target component.
-          </strong>{" "}
-          The wrapped is different from the raw, they have different method to
-          render and insert the guide element into DOM tree.
+          <strong>Try to wrapp the target element with Target component.</strong> The wrapped is different from the raw,
+          they have different method to render and insert the guide element into DOM tree.
         </p>
         <p>
-          By raw way, useGuide will create a div wrapper on every guidence
-          element, and append it to the target element.
+          By raw way, useGuide will create a div wrapper on every guidence element, and append it to the target element.
         </p>
         <p>
-          By Target wrapped way, useGuide will wrap the target element with pure
-          fregment, and render the guidence element into the fregment with
+          By Target wrapped way, useGuide will wrap the target element with pure fregment, and render the guidence
+          element into the fregment with
           <code> React.createPortal </code>.
         </p>
         <p>
-          The expressional difference in visiable is that the wrapped way will
-          higher the zIndex of target element than mask, and the raw way will
-          not. (Actually, the raw way will higher target too, but for some
-          reason, it may not work.)
+          The expressional difference in visiable is that the wrapped way will higher the zIndex of target element than
+          mask, and the raw way will not. (Actually, the raw way will higher target too, but for some reason, it may not
+          work.)
         </p>
       </>
     ),
@@ -1021,28 +940,24 @@ const locale_en = {
     $best: (
       <ul>
         <Li>
-          Ensure the parent element of the target element has a position of
-          either 'relative' or 'absolute'. This allows the guide element (with
-          'absolute' positioning) to be positioned relative to the parent
-          element.
+          Ensure the parent element of the target element has a position of either 'relative' or 'absolute'. This allows
+          the guide element (with 'absolute' positioning) to be positioned relative to the parent element.
         </Li>
         <Li>
-          If the parent element is a scroll container, ensure it has sufficient
-          height and width to contain all its content. This allows the guide
-          element to correctly follow its target element when the user scrolls.
+          If the parent element is a scroll container, ensure it has sufficient height and width to contain all its
+          content. This allows the guide element to correctly follow its target element when the user scrolls.
         </Li>
         <Li>
-          Avoid using 'overflow: hidden' on the parent element if possible. This
-          could cause the guide element to be clipped or hidden.
+          Avoid using 'overflow: hidden' on the parent element if possible. This could cause the guide element to be
+          clipped or hidden.
         </Li>
         <Li>
-          If the parent element has a high 'z-index' value, you may need to
-          adjust the 'z-index' of the guide element to ensure it appears above
-          the parent element.
+          If the parent element has a high 'z-index' value, you may need to adjust the 'z-index' of the guide element to
+          ensure it appears above the parent element.
         </Li>
         <Li>
-          If the parent element has padding or borders, these values may need to
-          be considered in the positioning calculations for the guide element.
+          If the parent element has padding or borders, these values may need to be considered in the positioning
+          calculations for the guide element.
         </Li>
       </ul>
     ),
@@ -1176,10 +1091,7 @@ const locale_en = {
     ),
     $best: (
       <ul>
-        <Li>
-          Tick by "onSetState", and before invoke setState check whether the new
-          value is differ from the old.
-        </Li>
+        <Li>Tick by "onSetState", and before invoke setState check whether the new value is differ from the old.</Li>
       </ul>
     ),
     $faqs: (
@@ -1188,8 +1100,7 @@ const locale_en = {
           <strong>Q</strong> : Why I need useTickState?
         </Li>
         <Li>
-          <strong>A</strong> : useTickState give you a more clear tag to tag
-          whether the state changes
+          <strong>A</strong> : useTickState give you a more clear tag to tag whether the state changes
         </Li>
       </ul>
     ),
@@ -1204,8 +1115,7 @@ const locale_en = {
     desc: "A hook to listen Reactor instance's value changes.",
     detail: (
       <>
-        useReactorListener is a hook that is used to listen Reactor instance's
-        value changes:
+        useReactorListener is a hook that is used to listen Reactor instance's value changes:
         <h4>Parameters : </h4>
         <ol>
           <li>
@@ -1239,8 +1149,7 @@ const locale_en = {
           <strong>Q</strong> : Why I need useReactorListener?
         </Li>
         <Li>
-          <strong>A</strong> : useReactorListener allows you to listen a Reactor
-          independently.
+          <strong>A</strong> : useReactorListener allows you to listen a Reactor independently.
         </Li>
       </ul>
     ),
@@ -1262,8 +1171,7 @@ const locale_en = {
             <strong>fn</strong> : Callback function
           </li>
           <li>
-            <strong>duration or options</strong> : the duration of ticker's
-            config
+            <strong>duration or options</strong> : the duration of ticker's config
           </li>
           <li>
             <strong>options</strong> : ticker's config
@@ -1275,10 +1183,7 @@ const locale_en = {
     $p1: "",
     consideration: (
       <ol>
-        <li>
-          when immediate is true, only the first resume will call the callback
-          immediately.
-        </li>
+        <li>when immediate is true, only the first resume will call the callback immediately.</li>
       </ol>
     ),
     $best: (
@@ -1297,28 +1202,74 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useDebounce: {
     desc: "",
-    detail: (
-      <>
-      </>
-    ),
+    detail: <></>,
     $p1: "",
-    consideration: (
-      <ol>
-      </ol>
-    ),
+    consideration: <ol></ol>,
     $best: <ul></ul>,
     $faqs: <ul></ul>,
     $apis: {
-      generics: (<></>),
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useMap: {
+    desc: "",
+    detail: <></>,
+    $p1: "",
+    $h2: "Get and Set",
+    $p2: "You can get properties from the map directly by `map.get` or by using get method, and set properties by using set method. `map.set` is omitted from the map.",
+    $h3: "Four overloads of set",
+    $p3: (
+      <>
+        Set method has 4 overloads:
+        <ol>
+          <li>{"set<K> = (key: K, value: T[K]): void;"}</li>
+          <li>{"set<K> = (key: K, setValueAction: (prev: T[K]) => T[K]): void"}</li>
+          <li>{"set(record, mode?: 'rehydrate' | 'override'): void"}</li>
+          <li>{"set(setMapAction: (prev: Map) => T | Map, mode?: 'rehydrate' | 'override'): void"}</li>
+        </ol>
+      </>
+    ),
+    $p4: (
+      <>
+        <p>
+          About 3rd and 4th overload, you can set second parameter to 'rehydrate' to rehydrate the map, or 'override' to
+          override the map. If the mode not specified, it will be 'rehydrate' by default.
+        </p>
+        <p>About 4th overload, the return of setMapAction could be type of a Map instance of a plain object of T.</p>
+      </>
+    ),
+    $h4: "Del and Add",
+    $p5: "You can delete a property by using del method, and add a property by using add method.",
+    consideration: (
+      <ol>
+        <Li>Unless you del, the type of map.get is T[K] actually</Li>
+        <Li>Default set action mode is "rehydrate"</Li>
+      </ol>
+    ),
+    $best: (
+      <ol>
+        <span>If you prefer Map than Object, useMap is a good choice than useRecord</span>
+      </ol>
+    ),
+    $faqs: (
+      <ul>
+        <span css={$css`color: gray;`}>Going to complete</span>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
       params: {},
       return: {},
     },
   },
   
-  useMap: {
+  useRecord: {
     desc: "",
     detail: (
       <>
