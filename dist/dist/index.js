@@ -3,6 +3,7 @@
 var react = require('react');
 var jsxRuntime = require('react/jsx-runtime');
 var ReactDOM = require('react-dom');
+var ReactDomClient = require('react-dom/client');
 
 function usePrevious(value) {
     var ref = react.useRef();
@@ -2315,28 +2316,43 @@ var useReactorListener = function (target, callback, immediate) {
     }, [target.id]);
 };
 
-function useResize(callback, ref) {
-    var _a = __read(react.useState({ width: 0, height: 0 }), 2), size = _a[0], setSize = _a[1];
-    react.useEffect(function () {
-        var updateSize = function () {
-            if (ref && ref.current) {
-                setSize({
-                    width: ref.current.offsetWidth,
-                    height: ref.current.offsetHeight,
+function useResize(_a, deps) {
+    var _b = _a === void 0 ? {} : _a, callback = _b.callback, target = _b.target;
+    if (deps === void 0) { deps = []; }
+    var _c = __read(react.useState({ width: 0, height: 0 }), 2), size = _c[0], setSize = _c[1];
+    react.useLayoutEffect(function () {
+        if (target) {
+            var element_1 = typeof target === "string" ? document.getElementById(target) : target.current;
+            if (element_1) {
+                var resizeObserver_1 = new ResizeObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        setSize({ width: entry.target.clientWidth, height: entry.target.clientHeight });
+                        callback === null || callback === void 0 ? void 0 : callback({
+                            width: entry.target.clientWidth,
+                            height: entry.target.clientHeight,
+                        });
+                    });
                 });
+                resizeObserver_1.observe(element_1);
+                return function () {
+                    resizeObserver_1.unobserve(element_1);
+                };
             }
-            else {
+        }
+        else {
+            var updateSize_1 = function () {
                 setSize({ width: window.innerWidth, height: window.innerHeight });
-            }
-            callback === null || callback === void 0 ? void 0 : callback({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            });
-        };
-        window.addEventListener("resize", updateSize);
-        updateSize();
-        return function () { return window.removeEventListener("resize", updateSize); };
-    }, [callback, ref]);
+                callback === null || callback === void 0 ? void 0 : callback({
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                });
+            };
+            window.addEventListener("resize", updateSize_1);
+            updateSize_1();
+            return function () { return window.removeEventListener("resize", updateSize_1); };
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, deps);
     return size;
 }
 
@@ -3205,9 +3221,9 @@ var createRoot$1 = function (parentDocument) {
         },
     };
 };
-if ("createRoot" in ReactDOM) {
+if ("createRoot" in ReactDomClient) {
     // Adapt to React 18
-    createRoot$1 = ReactDOM.createRoot;
+    createRoot$1 = ReactDomClient.createRoot;
 }
 var defaultConfig = {
     duration: 2000,

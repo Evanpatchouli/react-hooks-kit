@@ -1268,22 +1268,32 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useRecord: {
     desc: "",
-    detail: (
-      <>
-      </>
-    ),
+    detail: <></>,
     $p1: "",
-    consideration: (
-      <ol>
-      </ol>
-    ),
+    consideration: <ol></ol>,
     $best: <ul></ul>,
     $faqs: <ul></ul>,
     $apis: {
-      generics: (<></>),
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useResize: {
+    desc: "",
+    detail: <></>,
+    $p1: "Prop nothing, listen the resize event of window. Try to resize the window and see the changes.",
+    $h2: "Listen an element",
+    $p2: "Prop a ref, listen the resize event of the ref element. Try to drag the sliders to see the changes.",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
       params: {},
       return: {},
     },

@@ -1,7 +1,7 @@
 # <h1 align="center">react-hooks-kit</h1>
 
 <p align="center">
-  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-1.0.0-yellowgreen.svg"/></a>
+  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-1.1.8-yellowgreen.svg"/></a>
   <a href="#"><img alt="npm" src="https://img.shields.io/badge/npm-√-yellowgreen.svg"></a>
   <a href="#"><img alt="react" src="https://img.shields.io/badge/react-16+-yellowgreen.svg"></a>
   <a href="#"><img alt="lisence" src="https://img.shields.io/badge/lisence-MIT-yellowgreen.svg"></a>
@@ -17,7 +17,6 @@
 ## Documentation
 
 - [API - SEE AT GITHUB](https://evanpatchouli.github.io/react-hooks-kit/)
-- [API - SEE AT GITEE](https://jun-laner.gitee.io/react-hooks-kit/)
 
 ## Introduction
 
@@ -52,6 +51,5 @@ entirely stable. If a hook with prefix tag of **new**, it means it has passed te
 
 ## Report
 
-- **Test results**
-  - Tests for v1.0.0
-    ![Tests for v1.0.0](./resources/v1.0.0-test.png)
+- v1.1.8
+  - upgrade `useResize`

@@ -1,8 +1,12 @@
-import { RefObject } from "react";
-declare function useResize(callback?: (size: {
-    width: number;
-    height: number;
-}) => void, ref?: RefObject<HTMLElement>): {
+import { RefObject, DependencyList } from "react";
+export type useResizeOptions = {
+    callback?: (size: {
+        width: number;
+        height: number;
+    }) => void;
+    target?: string | RefObject<HTMLElement>;
+};
+declare function useResize({ callback, target }?: useResizeOptions, deps?: DependencyList): {
     width: number;
     height: number;
 };

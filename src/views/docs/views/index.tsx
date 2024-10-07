@@ -23,6 +23,7 @@ export { default as UseMemento } from "./stateful-hooks/UseMemento";
 export { default as UseDebounce } from "./callback-hooks/UseDebounce";
 export { default as UseWatch } from "./callback-hooks/UseWatch";
 export { default as UseUrl } from "./callback-hooks/UseUrl";
+export { default as UseResize } from "./callback-hooks/UseResize";
 export { default as UseReactorListener } from "./callback-hooks/UseReactorListener";
 export { default as UseTicker } from "./callback-hooks/UseTicker";
 

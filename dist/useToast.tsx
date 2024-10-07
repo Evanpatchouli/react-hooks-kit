@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { useState, useCallback } from "react";
 import ReactDom from "react-dom";
+import ReactDomClient from "react-dom/client";
 
 let createRoot = (parentDocument: Element) => {
   return {
@@ -10,9 +11,9 @@ let createRoot = (parentDocument: Element) => {
   };
 };
 
-if ("createRoot" in ReactDom) {
+if ("createRoot" in ReactDomClient) {
   // Adapt to React 18
-  createRoot = ReactDom.createRoot as typeof createRoot;
+  createRoot = ReactDomClient.createRoot as typeof createRoot;
 }
 
 interface ToastConfig {

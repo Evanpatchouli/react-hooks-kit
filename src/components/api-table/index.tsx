@@ -16,14 +16,7 @@ import { Chip } from "@mui/material";
 
 type DataProps = {
   name: string;
-  type:
-    | "number"
-    | "string"
-    | "ReactNode"
-    | "boolean"
-    | (string & {})
-    | "object"
-    | object;
+  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object;
   defaultValue?: any;
   desc: React.ReactNode;
   details?: React.ReactNode;
@@ -52,29 +45,16 @@ const NeverTag = <Chip label="never" color="error" />;
 const VoidTag = <Chip label="void" color="primary" variant="outlined" />;
 const SymbolTag = <Chip label="symbol" color="error" />;
 const BigIntTag = <Chip label="bigint" color="error" />;
-const FunctionTag = (
-  <Chip label="function" color="primary" variant="outlined" />
-);
+const FunctionTag = <Chip label="function" color="primary" variant="outlined" />;
 const ArrayTag = <Chip label="Array" color="info" variant="outlined" />;
 const SetAction = <T extends string = "any">(type: T) => (
-  <Chip
-    color="primary"
-    variant="outlined"
-    label={`Dispatch<SetStateAction<${type}>>`}
-  />
+  <Chip color="primary" variant="outlined" label={`Dispatch<SetStateAction<${type}>>`} />
 );
 
 export const TagFC = {
-  String: (str?: string) =>
-    str?.length ? <Chip label={str} color="primary" /> : StringTag,
-  Number: (num?: number) =>
-    num ? <Chip label={num} color="secondary" /> : NumberTag,
-  Boolean: (bool?: boolean) =>
-    typeof bool === "boolean" ? (
-      <Chip label={`${bool}`} color="success" />
-    ) : (
-      BooleanTag
-    ),
+  String: (str?: string) => (str?.length ? <Chip label={str} color="primary" /> : StringTag),
+  Number: (num?: number) => (num ? <Chip label={num} color="secondary" /> : NumberTag),
+  Boolean: (bool?: boolean) => (typeof bool === "boolean" ? <Chip label={`${bool}`} color="success" /> : BooleanTag),
   Object: () => ObjectTag,
   ReactNode: () => ReactNodeTag,
   Undefined: () => UndefinedTag,
@@ -86,17 +66,8 @@ export const TagFC = {
   Symbol: () => SymbolTag,
   BigInt: () => BigIntTag,
   Function: (expression?: string) =>
-    expression ? (
-      <Chip label={expression} color="primary" variant="outlined" />
-    ) : (
-      FunctionTag
-    ),
-  Array: (elem?: string) =>
-    elem ? (
-      <Chip label={`Array<${elem}>`} color="info" variant="outlined" />
-    ) : (
-      ArrayTag
-    ),
+    expression ? <Chip label={expression} color="primary" variant="outlined" /> : FunctionTag,
+  Array: (elem?: string) => (elem ? <Chip label={`Array<${elem}>`} color="info" variant="outlined" /> : ArrayTag),
   SetAction,
 };
 
@@ -156,29 +127,26 @@ const Tag = (type: string | object): any => {
   }
 };
 
-const preHandleData = ({
-  name,
-  type,
-  defaultValue,
-  desc,
-  details,
-  properties,
-}: DataProps): DataPreHandled => {
+const preHandleData = ({ name, type, defaultValue, desc, details, properties }: DataProps): DataPreHandled => {
   return {
     name,
     type: Tag(type),
     defaultValue: [undefined, null].includes(defaultValue) ? (
-      <span css={$css`color: gainsboro`}>{defaultValue}</span>
+      <span css={$css`color: gainsboro`}>{`${defaultValue}`}</span>
     ) : typeof defaultValue === "boolean" ? (
       `${defaultValue}`
     ) : typeof defaultValue === "string" ? (
       `"${defaultValue}"`
     ) : typeof defaultValue === "object" ? (
       (() => {
+        if (Array.isArray(defaultValue)) {
+          if (defaultValue.length === 0) {
+            return "[]";
+          }
+          return JSON.stringify(defaultValue);
+        }
         try {
-          return `{ ${Object.keys(defaultValue).map(
-            (key) => `${key}: ${defaultValue[key]}`
-          )} }`;
+          return `{ ${Object.keys(defaultValue).map((key) => `${key}: ${defaultValue[key]}`)} }`;
         } catch (error) {
           return defaultValue;
         }
@@ -196,14 +164,7 @@ const preHandleData = ({
 
 function createData(
   name: string,
-  type:
-    | "number"
-    | "string"
-    | "ReactNode"
-    | "boolean"
-    | (string & {})
-    | "object"
-    | object,
+  type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object,
   defaultValue?: any,
   desc?: React.ReactNode,
   details?: React.ReactNode,
@@ -219,10 +180,7 @@ function createData(
   });
 }
 
-function Row(props: {
-  row: ReturnType<typeof createData>;
-  type?: "param" | "return";
-}) {
+function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "return" }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -243,9 +201,7 @@ function Row(props: {
           {row.name}
         </TableCell>
         <TableCell align="center">{row.type}</TableCell>
-        {props.type === "param" && (
-          <TableCell align="center">{row.defaultValue}</TableCell>
-        )}
+        {props.type === "param" && <TableCell align="center">{row.defaultValue}</TableCell>}
         <TableCell align="right">{row.desc}</TableCell>
       </TableRow>
       <TableRow>
@@ -279,11 +235,7 @@ function Row(props: {
                         {prop.name}
                       </TableCell>
                       <TableCell align="center">{prop.type}</TableCell>
-                      {props.type === "param" && (
-                        <TableCell align="center">
-                          {prop.defaultValue}
-                        </TableCell>
-                      )}
+                      {props.type === "param" && <TableCell align="center">{prop.defaultValue}</TableCell>}
                       <TableCell align="right">{prop.desc}</TableCell>
                     </TableRow>
                   ))}
@@ -316,14 +268,7 @@ export default function ApiTable(
     },
   };
   const rows = props.rows?.map((row) =>
-    createData(
-      row.name,
-      row.type,
-      row.defaultValue,
-      row.desc,
-      row.details,
-      row.properties ?? []
-    )
+    createData(row.name, row.type, row.defaultValue, row.desc, row.details, row.properties ?? [])
   );
   return (
     <TableContainer component={Paper}>
@@ -331,9 +276,7 @@ export default function ApiTable(
         <TableHead>
           <TableRow>
             <TableCell {...headCellAttrs} />
-            <TableCell {...headCellAttrs}>
-              {props?.return ? "ReturnValue" : "Parameters"}
-            </TableCell>
+            <TableCell {...headCellAttrs}>{props?.return ? "ReturnValue" : "Parameters"}</TableCell>
             <TableCell {...headCellAttrs} align="center">
               type
             </TableCell>
@@ -349,11 +292,7 @@ export default function ApiTable(
         </TableHead>
         <TableBody>
           {rows?.map((row) => (
-            <Row
-              key={row.name}
-              row={row}
-              type={props.return ? "return" : "param"}
-            />
+            <Row key={row.name} row={row} type={props.return ? "return" : "param"} />
           ))}
         </TableBody>
       </Table>
