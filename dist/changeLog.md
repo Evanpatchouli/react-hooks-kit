@@ -1,5 +1,26 @@
 # ChangeLog
 
+## v1.2.0
+
+- Docs for useRecord and useMap
+- **<font color="#c09000">Pass tests</font>** for useDebounce
+- **<font color="#c09000">Pass tests</font>** for useThrottle
+
+## v1.1.8
+
+- Upgrade useResize
+
+## v1.1.7
+
+## v1.1.6
+
+## v1.1.4
+
+- Fix useLocalStorage
+- Fix useMemento
+
+## v1.1.1
+
 ## v1.1.0 2024/01/10
 
 - **<font color="#c09000">Pass tests</font>** for useTicker
