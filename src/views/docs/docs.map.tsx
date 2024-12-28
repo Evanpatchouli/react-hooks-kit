@@ -119,12 +119,12 @@ export default {
     UseDebounce: {
       route: "useDebounce",
       title: "UseDebounce",
-      status: "preview",
+      status: "new",
     },
     UseThrottle: {
       route: "useThrottle",
       title: "UseThrottle",
-      status: "preview",
+      status: "new",
     },
     UseUrl: {
       route: "useUrl",

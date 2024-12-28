@@ -1976,15 +1976,19 @@ function useDebounce(fn, delay, immediate, callback) {
     if (typeof delay !== "number") {
         throw new Error("delay must be a number");
     }
+    var fnRef = useRef(fn);
+    var optionsRef = useRef({ immediate: immediate, callback: callback });
+    fnRef.current = fn;
+    optionsRef.current = { immediate: immediate, callback: callback };
     var debounceFn = useMemo(function () {
         if (delay < 0) {
             return emptyFn$1;
         }
         if (delay === 0) {
-            return fn;
+            return fnRef.current;
         }
-        return debounce(fn, delay, immediate, callback);
-    }, [fn, delay, immediate, callback]);
+        return debounce(fnRef.current, delay, optionsRef.current.immediate, optionsRef.current.callback);
+    }, [delay]);
     return debounceFn;
 }
 
@@ -2004,12 +2008,12 @@ function throttle(fn, interval, options) {
         }
         return new Promise(function (resolve, reject) {
             // 2.1.获取当前事件触发时的时间
-            var nowTime = new Date().getTime();
+            var nowTime = Date.now();
             if (!lastTime && !leading)
                 lastTime = nowTime;
             // 2.2.使用当前触发的时间和之前的时间间隔以及上一次开始的时间, 计算出还剩余多长事件需要去触发函数
             var remainTime = interval - (nowTime - lastTime);
-            if (remainTime <= 0) {
+            if (remainTime <= 0 || remainTime > interval) {
                 if (timer) {
                     clearTimeout(timer);
                     timer = null;
@@ -2028,7 +2032,7 @@ function throttle(fn, interval, options) {
             if (trailing && !timer) {
                 timer = setTimeout(function () {
                     timer = null;
-                    lastTime = !leading ? 0 : new Date().getTime();
+                    lastTime = !leading ? 0 : Date.now();
                     // @ts-ignore
                     var result = fn.apply(_this, args);
                     // @ts-ignore
@@ -2066,15 +2070,19 @@ function useThrottle(fn, interval, options) {
     if (options.callback && typeof options.callback !== "function") {
         throw new Error("options.callback must be a function");
     }
+    var fnRef = useRef(fn);
+    var optionsRef = useRef(options);
+    fnRef.current = fn;
+    optionsRef.current = options;
     var throttleFn = useMemo(function () {
         if (interval < 0) {
             return emptyFn;
         }
         if (interval === 0) {
-            return fn;
+            return fnRef.current;
         }
-        return throttle(fn, interval, options);
-    }, [fn, interval, options]);
+        return throttle(fnRef.current, interval, optionsRef.current);
+    }, [interval]);
     return throttleFn;
 }
 

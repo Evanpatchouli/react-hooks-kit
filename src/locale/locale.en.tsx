@@ -1,6 +1,8 @@
 import Code from "@/components/code";
 import Li from "@/components/layout/Li";
 
+const Un = () => <span css={$css`color: gray;`}>Going to complete</span>;
+
 const locale_en = {
   $article: {
     Consideration: "Consideration",
@@ -1188,12 +1190,12 @@ const locale_en = {
     ),
     $best: (
       <ol>
-        <span css={$css`color: gray;`}>Going to complete</span>
+        <Un />
       </ol>
     ),
     $faqs: (
       <ul>
-        <span css={$css`color: gray;`}>Going to complete</span>
+        <Un />
       </ul>
     ),
     $apis: {
@@ -1205,13 +1207,19 @@ const locale_en = {
 
   useDebounce: {
     desc: "",
-    detail: <></>,
-    $p1: "",
+    detail: <>useDebounce is a hook that is used to debounce a function.</>,
+    $p1: "Try to click on the button frequently, and see whether the number changes 1 sec after your last click.",
     consideration: <ol></ol>,
     $best: <ul></ul>,
     $faqs: <ul></ul>,
     $apis: {
-      generics: <></>,
+      generics: (
+        <ul>
+          <li>
+            <strong>R</strong>: suggest to extends primitives | Array | object | Date | Map | Set
+          </li>
+        </ul>
+      ),
       params: {},
       return: {},
     },
@@ -1259,7 +1267,7 @@ const locale_en = {
     ),
     $faqs: (
       <ul>
-        <span css={$css`color: gray;`}>Going to complete</span>
+        <Un />
       </ul>
     ),
     $apis: {
@@ -1270,12 +1278,20 @@ const locale_en = {
   },
 
   useRecord: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    desc: "useRecord is a hook that is used to manage an one-level record object.",
+    detail: <>
+      <h4>Parameters : </h4>
+      <ol>
+        <li>
+          <strong>initialValue</strong> : object
+        </li>
+      </ol>
+      For example:
+    </>,
+    $p1: "You can use setRecord to set a property of the record object.",
+    consideration: <ol><Un /></ol>,
+    $best: <ul><Un /></ul>,
+    $faqs: <ul><Un /></ul>,
     $apis: {
       generics: <></>,
       params: {},
@@ -1289,9 +1305,39 @@ const locale_en = {
     $p1: "Prop nothing, listen the resize event of window. Try to resize the window and see the changes.",
     $h2: "Listen an element",
     $p2: "Prop a ref, listen the resize event of the ref element. Try to drag the sliders to see the changes.",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    consideration: <ol><Un /></ol>,
+    $best: <ul><Un /></ul>,
+    $faqs: <ul><Un /></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useThrottle: {
+    desc: "useThrottle is a hook that is used to throttle a function to be called at most once in a certain period.",
+    detail: (
+      <>
+        <h4>Parameters : </h4>
+        <ol>
+          <Li>
+            <strong>fn</strong> : Callback function
+          </Li>
+          <Li>
+            <strong>interval</strong> : number
+          </Li>
+          <Li>
+            <strong>options</strong> : throttle's config
+          </Li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "Click the button, and see whether the number changes only once during every second.",
+    consideration: <ol><Un /></ol>,
+    $best: <ul><Un /></ul>,
+    $faqs: <ul><Un /></ul>,
     $apis: {
       generics: <></>,
       params: {},

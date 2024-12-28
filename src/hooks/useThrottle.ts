@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 
 interface ThrottleOptions<R = void> {
   leading?: boolean;
@@ -20,12 +20,12 @@ function throttle<R = void>(
   const _throttle = function (...args: any[]) {
     return new Promise((resolve, reject) => {
       // 2.1.获取当前事件触发时的时间
-      const nowTime = new Date().getTime();
+      const nowTime = Date.now();
       if (!lastTime && !leading) lastTime = nowTime;
 
       // 2.2.使用当前触发的时间和之前的时间间隔以及上一次开始的时间, 计算出还剩余多长事件需要去触发函数
       const remainTime = interval - (nowTime - lastTime);
-      if (remainTime <= 0) {
+      if (remainTime <= 0 || remainTime > interval) {
         if (timer) {
           clearTimeout(timer);
           timer = null;
@@ -45,7 +45,7 @@ function throttle<R = void>(
       if (trailing && !timer) {
         timer = setTimeout(() => {
           timer = null;
-          lastTime = !leading ? 0 : new Date().getTime();
+          lastTime = !leading ? 0 : Date.now();
           // @ts-ignore
           const result = fn.apply(this, args);
           // @ts-ignore
@@ -65,7 +65,7 @@ function throttle<R = void>(
   return _throttle;
 }
 
-const emptyFn = () => {};
+const emptyFn = () => { };
 
 export default function useThrottle<R = void>(
   fn: (args: any[]) => R,
@@ -89,15 +89,22 @@ export default function useThrottle<R = void>(
   if (options.callback && typeof options.callback !== "function") {
     throw new Error("options.callback must be a function");
   }
+
+  const fnRef = useRef(fn);
+  const optionsRef = useRef(options);
+
+  fnRef.current = fn;
+  optionsRef.current = options;
+
   const throttleFn = useMemo(() => {
     if (interval < 0) {
       return emptyFn as any as ReturnType<typeof throttle<R>>;
     }
     if (interval === 0) {
-      return fn as any as ReturnType<typeof throttle<R>>;
+      return fnRef.current as any as ReturnType<typeof throttle<R>>;
     }
-    return throttle(fn, interval, options);
-  }, [fn, interval, options]);
+    return throttle(fnRef.current, interval, optionsRef.current);
+  }, [interval]);
 
   return throttleFn;
 }

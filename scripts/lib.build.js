@@ -19,3 +19,14 @@ fs.copySync(srcDir, distDir);
 
 // 在 dist 文件夹中执行 npm install 和 npm run build
 execSync('npm install && npm run build', { cwd: distDir, stdio: 'inherit' });
+
+// 在 dist 文件夹中删除该级目录下所有 ts 文件和 houdini 文件夹
+fs.readdirSync(distDir).forEach((file) => {
+  const filePath = path.resolve(distDir, file);
+  const stat = fs.statSync(filePath);
+  if (stat.isFile() && path.extname(file) === '.ts') {
+    fs.removeSync(filePath);
+  } else if (stat.isDirectory() && file === 'houdini') {
+    fs.removeSync(filePath);
+  }
+});

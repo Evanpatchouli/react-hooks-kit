@@ -21,6 +21,7 @@ export { default as UseMemento } from "./stateful-hooks/UseMemento";
 
 // Callback hooks
 export { default as UseDebounce } from "./callback-hooks/UseDebounce";
+export { default as UseThrottle } from "./callback-hooks/UseThrottle";
 export { default as UseWatch } from "./callback-hooks/UseWatch";
 export { default as UseUrl } from "./callback-hooks/UseUrl";
 export { default as UseResize } from "./callback-hooks/UseResize";

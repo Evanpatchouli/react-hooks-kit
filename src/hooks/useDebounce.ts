@@ -1,5 +1,4 @@
-import { useMemo } from "react";
-import { debounce as Dbs } from "lodash";
+import { useMemo, useRef } from "react";
 
 function debounce<R = void>(
   fn: (args: any[]) => R,
@@ -54,13 +53,13 @@ function debounce<R = void>(
   return _debounce;
 }
 
-const emptyFn = () => {};
+const emptyFn = () => { };
 
 export default function useDebounce<R = void>(
-  fn: (args: any[]) => R,
+  fn: (...args: any[]) => R,
   delay: number = 200,
   immediate: boolean = false,
-  callback?: (result: ReturnType<typeof fn>) => void
+  callback?: (result: R) => void
 ) {
   if (typeof fn !== "function") {
     throw new Error("fn must be a function");
@@ -68,15 +67,22 @@ export default function useDebounce<R = void>(
   if (typeof delay !== "number") {
     throw new Error("delay must be a number");
   }
+
+  const fnRef = useRef(fn);
+  const optionsRef = useRef({ immediate, callback });
+
+  fnRef.current = fn;
+  optionsRef.current = { immediate, callback };
+
   const debounceFn = useMemo(() => {
     if (delay < 0) {
-      return emptyFn as ReturnType<typeof debounce<R>>;
+      return emptyFn as any as ReturnType<typeof debounce<R>>;
     }
     if (delay === 0) {
-      return fn as any as ReturnType<typeof debounce<R>>;
+      return fnRef.current as any as ReturnType<typeof debounce<R>>;
     }
-    return debounce(fn, delay, immediate, callback);
-  }, [fn, delay, immediate, callback]);
+    return debounce(fnRef.current, delay, optionsRef.current.immediate!, optionsRef.current.callback);
+  }, [delay]);
 
   return debounceFn;
 }
