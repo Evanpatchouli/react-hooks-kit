@@ -1,12 +1,20 @@
 import useLocaleSelector from "@/locale/locale.selector";
-import Article, { Body, Consideration, Demo, FAQs, SubTitle, Usage, Best } from "@components/layout/Article";
+import Article, {
+  Body,
+  Consideration,
+  Demo,
+  FAQs,
+  SubTitle,
+  Usage,
+  Best
+} from "@components/layout/Article";
 import { useEffect } from "react";
-import example1 from "../examples/UseWatch/example.1";
+import example1 from "@/views/docs/views/examples/UseWatchGetter/example.1";
 import pkg from "@/../package.json";
-import UseWatchApi from "@/views/docs/views/hooks-apis/useWatch.api";
+import UseWatchGetterApi from "@/views/docs/views/hooks-apis/useWatchGetter.api";
 
-export default function UseWatch() {
-  const hooksName = "useWatch";
+export default function UseWatchGetter() {
+  const hooksName = "useWatchGetter";
   const $desc = useLocaleSelector(`${hooksName}.desc`);
   const $detail = useLocaleSelector(`${hooksName}.detail`);
   const $best = useLocaleSelector(`${hooksName}.$best`);
@@ -14,11 +22,14 @@ export default function UseWatch() {
   const $p1 = useLocaleSelector(`${hooksName}.$p1`);
   const $faqs = useLocaleSelector(`${hooksName}.$faqs`);
   useEffect(() => {
-    document.title = `useWatch - ${pkg.homepage}`;
+    document.title = `${hooksName} - ${pkg.homepage}`;
   }, []);
 
   return (
-    <Article title={hooksName} desc={$desc}>
+    <Article
+      title={hooksName}
+      desc={$desc}
+    >
       <Body>{$detail}</Body>
       <Usage>
         <Demo code={example1.code}>{<example1.View />}</Demo>
@@ -27,7 +38,7 @@ export default function UseWatch() {
       <Consideration>{$consider}</Consideration>
       <Best>{$best}</Best>
       <FAQs>{$faqs}</FAQs>
-      <UseWatchApi />
+      <UseWatchGetterApi />
     </Article>
   );
 }

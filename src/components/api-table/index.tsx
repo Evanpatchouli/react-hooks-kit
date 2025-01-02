@@ -13,10 +13,12 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Chip } from "@mui/material";
+import Required from "../Required";
 
 type DataProps = {
   name: string;
   type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object;
+  required?: boolean;
   defaultValue?: any;
   desc: React.ReactNode;
   details?: React.ReactNode;
@@ -26,6 +28,7 @@ type DataProps = {
 type DataPreHandled = {
   name: string;
   type: string;
+  required?: boolean;
   defaultValue?: string | JSX.Element;
   desc?: React.ReactNode;
   details?: React.ReactNode;
@@ -127,10 +130,19 @@ const Tag = (type: string | object): any => {
   }
 };
 
-const preHandleData = ({ name, type, defaultValue, desc, details, properties }: DataProps): DataPreHandled => {
+const preHandleData = ({
+  name,
+  type,
+  required,
+  defaultValue,
+  desc,
+  details,
+  properties,
+}: DataProps): DataPreHandled => {
   return {
     name,
     type: Tag(type),
+    required,
     defaultValue: [undefined, null].includes(defaultValue) ? (
       <span css={$css`color: gainsboro`}>{`${defaultValue}`}</span>
     ) : typeof defaultValue === "boolean" ? (
@@ -165,6 +177,7 @@ const preHandleData = ({ name, type, defaultValue, desc, details, properties }: 
 function createData(
   name: string,
   type: "number" | "string" | "ReactNode" | "boolean" | (string & {}) | "object" | object,
+  required?: boolean,
   defaultValue?: any,
   desc?: React.ReactNode,
   details?: React.ReactNode,
@@ -173,6 +186,7 @@ function createData(
   return preHandleData({
     name,
     type,
+    required,
     defaultValue,
     desc,
     details,
@@ -198,11 +212,12 @@ function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "retu
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
+          {row.required && <Required />}
           {row.name}
         </TableCell>
         <TableCell align="center">{row.type}</TableCell>
         {props.type === "param" && <TableCell align="center">{row.defaultValue}</TableCell>}
-        <TableCell align="right">{row.desc}</TableCell>
+        <TableCell align="left">{row.desc}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -222,7 +237,7 @@ function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "retu
                           default
                         </TableCell>
                       )}
-                      <TableCell sx={{ fontWeight: "bold" }} align="right">
+                      <TableCell sx={{ fontWeight: "bold" }} align="left">
                         description
                       </TableCell>
                     </TableRow>
@@ -236,7 +251,7 @@ function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "retu
                       </TableCell>
                       <TableCell align="center">{prop.type}</TableCell>
                       {props.type === "param" && <TableCell align="center">{prop.defaultValue}</TableCell>}
-                      <TableCell align="right">{prop.desc}</TableCell>
+                      <TableCell align="left">{prop.desc}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -268,7 +283,7 @@ export default function ApiTable(
     },
   };
   const rows = props.rows?.map((row) =>
-    createData(row.name, row.type, row.defaultValue, row.desc, row.details, row.properties ?? [])
+    createData(row.name, row.type, row.required, row.defaultValue, row.desc, row.details, row.properties ?? [])
   );
   return (
     <TableContainer component={Paper}>
@@ -285,7 +300,7 @@ export default function ApiTable(
                 default
               </TableCell>
             )}
-            <TableCell {...headCellAttrs} align="right">
+            <TableCell {...headCellAttrs} align="center">
               description
             </TableCell>
           </TableRow>

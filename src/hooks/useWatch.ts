@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { PathArray, PathInto, PathValue } from "./utils/types";
+import { PathArray, PathInto } from "./utils/types";
 import isEqual from "./utils/isEqual";
 import get from "./utils/getFrom";
 
@@ -18,26 +18,26 @@ interface UseWatch {
   <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(
     object: T,
     path: P,
-    callback: Callback<V>,
+    callback?: Callback<V>,
     config?: Config
   ): V | undefined;
-  <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(
+  <V extends unknown = any, T extends object = {}>(
     object: T,
     getter: Getter<V, T>,
-    callback: Callback<V>,
+    callback?: Callback<V>,
     config?: Config
   ): V | undefined;
   <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(
     object: T,
     path: P,
-    callback: Callback<V>,
+    callback?: Callback<V>,
     strict?: boolean,
     immediate?: boolean
   ): V | undefined;
-  <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(
+  <V extends unknown = any, T extends object = {}>(
     object: T,
     getter: Getter<V, T>,
-    callback: Callback<V>,
+    callback?: Callback<V>,
     strict?: boolean,
     immediate?: boolean
   ): V | undefined;
@@ -46,7 +46,7 @@ interface UseWatch {
 const useWatch: UseWatch = <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(
   object: T,
   path: P,
-  callback: Callback<V>,
+  callback?: Callback<V>,
   configOrStrict?: Config | boolean,
   immediate?: boolean
 ) => {
@@ -74,7 +74,7 @@ const useWatch: UseWatch = <V extends unknown = any, T extends object = {}, P ex
 
   useEffect(() => {
     if (!mountedRef.current && immediate) {
-      callback(value, oldValueRef.current);
+      callback?.(value, oldValueRef.current);
       mountedRef.current = true;
     }
   }, []);
@@ -87,7 +87,7 @@ const useWatch: UseWatch = <V extends unknown = any, T extends object = {}, P ex
       console.error(error);
     }
     if (!isEqual(newValue as V, oldValueRef.current)) {
-      callback(newValue as V, oldValueRef.current);
+      callback?.(newValue as V, oldValueRef.current);
       setValue(newValue as V);
       oldValueRef.current = newValue as V;
     }

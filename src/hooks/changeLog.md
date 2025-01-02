@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.2.1
+
+- Docs for useWatch and useWatchGetter
+- **<font color="#c09000">Pass tests</font>** for useWatch
+- **<font color="#c09000">Pass tests</font>** for useWatchGetter
+
 ## v1.2.0
 
 - Docs for useRecord and useMap

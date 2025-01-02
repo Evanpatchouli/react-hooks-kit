@@ -26,6 +26,7 @@ const locale_en = {
         For example:
       </>
     ),
+    $p1: "",
     consideration: (
       <ol>
         <Li>target object should be type of object</Li>
@@ -72,6 +73,21 @@ const locale_en = {
         </p>
       </ol>
     ),
+    $best: (
+      <ul>
+        <Un />
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Un />
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
   },
   useUrl: {
     desc: "A hook to get url params.",
@@ -1279,19 +1295,33 @@ const locale_en = {
 
   useRecord: {
     desc: "useRecord is a hook that is used to manage an one-level record object.",
-    detail: <>
-      <h4>Parameters : </h4>
-      <ol>
-        <li>
-          <strong>initialValue</strong> : object
-        </li>
-      </ol>
-      For example:
-    </>,
+    detail: (
+      <>
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>initialValue</strong> : object
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
     $p1: "You can use setRecord to set a property of the record object.",
-    consideration: <ol><Un /></ol>,
-    $best: <ul><Un /></ul>,
-    $faqs: <ul><Un /></ul>,
+    consideration: (
+      <ol>
+        <Un />
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Un />
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Un />
+      </ul>
+    ),
     $apis: {
       generics: <></>,
       params: {},
@@ -1305,9 +1335,21 @@ const locale_en = {
     $p1: "Prop nothing, listen the resize event of window. Try to resize the window and see the changes.",
     $h2: "Listen an element",
     $p2: "Prop a ref, listen the resize event of the ref element. Try to drag the sliders to see the changes.",
-    consideration: <ol><Un /></ol>,
-    $best: <ul><Un /></ul>,
-    $faqs: <ul><Un /></ul>,
+    consideration: (
+      <ol>
+        <Un />
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Un />
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Un />
+      </ul>
+    ),
     $apis: {
       generics: <></>,
       params: {},
@@ -1335,9 +1377,66 @@ const locale_en = {
       </>
     ),
     $p1: "Click the button, and see whether the number changes only once during every second.",
-    consideration: <ol><Un /></ol>,
-    $best: <ul><Un /></ul>,
-    $faqs: <ul><Un /></ul>,
+    consideration: (
+      <ol>
+        <Un />
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Un />
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Un />
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useWatchGetter: {
+    desc: "A hook to watch the getter of a state.",
+    detail: (
+      <>
+        <h4>Parameters : </h4>
+        <ol>
+          <li>
+            <strong>getter</strong> : Getter
+          </li>
+          <li>
+            <strong>callback</strong> : WatcherCallback
+          </li>
+          <li>
+            <strong>updater</strong> : Whether to return a manual reupdate function.
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "The callback will be invoked when the getter result changes.",
+    consideration: (
+      <ol>
+        <Li>
+          If you want to manually reupdate the getter, you can set the updater to true, and the return value will be an
+          array like [value, reupdate func].
+        </Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Un />
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Un />
+      </ul>
+    ),
     $apis: {
       generics: <></>,
       params: {},

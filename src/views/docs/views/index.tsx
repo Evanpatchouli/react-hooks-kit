@@ -20,13 +20,14 @@ export { default as UseTickState } from "./stateful-hooks/UseTickState";
 export { default as UseMemento } from "./stateful-hooks/UseMemento";
 
 // Callback hooks
+export { default as UseTicker } from "./callback-hooks/UseTicker";
 export { default as UseDebounce } from "./callback-hooks/UseDebounce";
 export { default as UseThrottle } from "./callback-hooks/UseThrottle";
-export { default as UseWatch } from "./callback-hooks/UseWatch";
 export { default as UseUrl } from "./callback-hooks/UseUrl";
-export { default as UseResize } from "./callback-hooks/UseResize";
+export { default as UseWatch } from "./callback-hooks/UseWatch";
+export { default as UseWatchGetter } from "./callback-hooks/UseWatchGetter";
 export { default as UseReactorListener } from "./callback-hooks/UseReactorListener";
-export { default as UseTicker } from "./callback-hooks/UseTicker";
+export { default as UseResize } from "./callback-hooks/UseResize";
 
 // Event hooks
 export { default as UseEmitter } from "./event-hooks/UseEmitter";
