@@ -1816,7 +1816,11 @@ var useMemento = function (initialState, config) {
     ];
 };
 
+/* -------------------------------------------------------------------------- */
+/*                                implementation                              */
+/* -------------------------------------------------------------------------- */
 var useTicker = function (fn, durationOrOptions, options) {
+    /* ------------------------- normalize arguments ------------------------- */
     var duration;
     if (typeof durationOrOptions === "number") {
         duration = durationOrOptions;
@@ -1825,82 +1829,87 @@ var useTicker = function (fn, durationOrOptions, options) {
         options = durationOrOptions;
     }
     var _options = react.useMemo(function () {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f;
         var immediate = typeof (options === null || options === void 0 ? void 0 : options.immediate) === "boolean"
             ? options.immediate
                 ? "all"
                 : "none"
-            : (_a = options === null || options === void 0 ? void 0 : options.immediate) !== null && _a !== void 0 ? _a : "none";
-        var runAtFirst = (options === null || options === void 0 ? void 0 : options.callAtFirst) || true;
-        var pauseAtFirst = (options === null || options === void 0 ? void 0 : options.pauseAtFirst) || false;
-        var _duration = (_b = options === null || options === void 0 ? void 0 : options.duration) !== null && _b !== void 0 ? _b : duration;
-        return { immediate: immediate, runAtFirst: runAtFirst, pauseAtFirst: pauseAtFirst, duration: _duration };
-    }, [options]);
-    if (_options.duration !== undefined && _options.duration >= 0) {
-        duration = _options.duration;
-    }
+            : ((_a = options === null || options === void 0 ? void 0 : options.immediate) !== null && _a !== void 0 ? _a : "none");
+        return {
+            immediate: immediate,
+            callAtFirst: (_b = options === null || options === void 0 ? void 0 : options.callAtFirst) !== null && _b !== void 0 ? _b : true,
+            pauseAtFirst: (_c = options === null || options === void 0 ? void 0 : options.pauseAtFirst) !== null && _c !== void 0 ? _c : false,
+            duration: (_e = (_d = options === null || options === void 0 ? void 0 : options.duration) !== null && _d !== void 0 ? _d : duration) !== null && _e !== void 0 ? _e : 1000,
+            delay: (_f = options === null || options === void 0 ? void 0 : options.delay) !== null && _f !== void 0 ? _f : 0,
+        };
+    }, [options, duration]);
+    /* ----------------------------- state / refs ----------------------------- */
     var _a = __read(react.useState(0), 2), tick = _a[0], setTick = _a[1];
-    var _b = __read(react.useState(_options.pauseAtFirst || false), 2), isPaused = _b[0], setIsPaused = _b[1];
-    var status = isPaused ? "off" : "on";
-    var startDelay = 0;
-    var intervalRef = react.useRef(null);
-    var pause = react.useCallback(function () { return setIsPaused(true); }, []);
+    var _b = __read(react.useState(_options.pauseAtFirst), 2), paused = _b[0], setPaused = _b[1];
+    var tickRef = react.useRef(0);
+    var timerRef = react.useRef(null);
+    var fnRef = react.useRef(fn);
+    fnRef.current = fn;
+    var status = paused ? "off" : "on";
+    /* ------------------------------- helpers ------------------------------- */
+    var clear = react.useCallback(function () {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+    }, []);
+    /* ----------------------------- core ticker ----------------------------- */
+    var schedule = react.useCallback(function () {
+        clear();
+        timerRef.current = setTimeout(function () {
+            tickRef.current += 1;
+            var next = tickRef.current;
+            setTick(next);
+            if (_options.callAtFirst || next > 0) {
+                fnRef.current(next);
+            }
+            if (!paused) {
+                schedule(); // recursion (NO interval, NO race)
+            }
+        }, _options.duration);
+    }, [_options.duration, _options.callAtFirst, paused, clear]);
+    /* ------------------------------ controls ------------------------------- */
+    var pause = react.useCallback(function () {
+        setPaused(true);
+        clear();
+    }, [clear]);
     var resume = react.useCallback(function () {
-        setIsPaused(false);
-        if ("first" === _options.immediate && tick === 0) {
-            return fn(tick);
-        }
-    }, [_options.immediate, tick, fn]);
-    var reset = function () { return setTick(0); };
-    var mountedRef = react.useRef(false);
+        setPaused(false);
+    }, []);
+    var reset = react.useCallback(function () {
+        tickRef.current = 0;
+        setTick(0);
+    }, []);
+    var delayedPause = react.useCallback(function (delay) {
+        setTimeout(pause, delay);
+    }, [pause]);
+    var delayedResume = react.useCallback(function (delay) {
+        setTimeout(resume, delay);
+    }, [resume]);
+    /* ------------------------------ lifecycle ------------------------------ */
+    // start / resume
     react.useEffect(function () {
-        if (!mountedRef.current &&
-            ["mounted", "all"].includes(_options.immediate)) {
-            fn(tick);
+        if (!paused) {
+            schedule();
         }
-        mountedRef.current = true;
-    }, [tick]);
-    var delayedPause = function (delay) {
-        setTimeout(function () {
-            setIsPaused(true);
-        }, delay);
-    };
-    var delayedResume = function (delay) {
-        setTimeout(function () {
-            setIsPaused(false);
-        }, delay);
-    };
+        return clear;
+    }, [paused, schedule, clear]);
+    // immediate behaviors
     react.useEffect(function () {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
-        if (!isPaused) {
-            intervalRef.current = setInterval(function () {
-                setTick(function (pre) { return pre + 1; });
-                if (_options.runAtFirst || tick === 0) {
-                    fn(tick);
-                }
-            }, duration !== null && duration !== void 0 ? duration : 1000);
-        }
-        return function () {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
+        var runImmediate = function () {
+            if (_options.immediate === "mounted" || _options.immediate === "all") {
+                fnRef.current(0);
             }
         };
-    }, [isPaused, tick]);
-    react.useEffect(function () {
-        setTimeout(function () {
-            if (options === null || options === void 0 ? void 0 : options.pauseAtFirst) {
-                pause();
-            }
-            else {
-                if (_options.immediate) {
-                    fn(tick);
-                }
-                resume();
-            }
-        }, startDelay);
-    }, [startDelay]);
+        var id = setTimeout(runImmediate, _options.delay);
+        return function () { return clearTimeout(id); };
+    }, [_options.immediate, _options.delay]);
+    /* ----------------------------------------------------------------------- */
     return {
         tick: tick,
         status: status,
@@ -2244,7 +2253,7 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
     var mountedRef = react.useRef(false);
     react.useEffect(function () {
         if (!mountedRef.current && immediate) {
-            callback(value, oldValueRef.current);
+            callback === null || callback === void 0 ? void 0 : callback(value, oldValueRef.current);
             mountedRef.current = true;
         }
     }, []);
@@ -2257,7 +2266,7 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
             console.error(error);
         }
         if (!isEqual(newValue, oldValueRef.current)) {
-            callback(newValue, oldValueRef.current);
+            callback === null || callback === void 0 ? void 0 : callback(newValue, oldValueRef.current);
             setValue(newValue);
             oldValueRef.current = newValue;
         }
@@ -2265,14 +2274,17 @@ var useWatch = function (object, path, callback, configOrStrict, immediate) {
     return value; // PathValue<T, P> | undefined;
 };
 
-function WatchGetterAnimation(getter) {
+function WatchGetterAnimation(getter, callback, updater) {
     var _a = __read(react.useState(getter()), 2), value = _a[0], setValue = _a[1];
+    var valueRef = react.useRef(value);
     react.useEffect(function () {
         var animationFrameId;
         var loop = function () {
             var newValue = getter();
-            if (newValue !== value) {
+            if (newValue !== valueRef.current) {
+                valueRef.current = newValue;
                 setValue(newValue);
+                callback === null || callback === void 0 ? void 0 : callback(newValue);
             }
             animationFrameId = requestAnimationFrame(loop);
         };
@@ -2280,37 +2292,22 @@ function WatchGetterAnimation(getter) {
         return function () {
             cancelAnimationFrame(animationFrameId);
         };
-    }, [getter, value]);
-    return value;
+    }, [getter]);
+    var update = function () {
+        var newValue = getter();
+        if (newValue !== valueRef.current) {
+            valueRef.current = newValue;
+            setValue(newValue);
+            callback === null || callback === void 0 ? void 0 : callback(newValue);
+        }
+    };
+    // @ts-ignore
+    return updater ? [value, update] : value;
 }
-function WatchGetterSetter(getter) {
-    var setters = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        setters[_i - 1] = arguments[_i];
-    }
-    var _a = __read(react.useState(getter()), 2), value = _a[0]; _a[1];
-    react.useEffect(function () {
-        var _setters = setters.map(function (setter) { return setter; });
-        _setters.forEach(function (setter) {
-        });
-        return function () {
-            _setters.forEach(function (setter) {
-            });
-        };
-    }, [getter, setters]);
-    return value;
-}
-function useWatchGetter(getter) {
-    var setters = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        setters[_i - 1] = arguments[_i];
-    }
-    if (setters.length === 0) {
-        return WatchGetterAnimation(getter);
-    }
-    else {
-        return WatchGetterSetter.apply(void 0, __spreadArray([getter], __read(setters), false));
-    }
+function useWatchGetter(getter, callback, updater) {
+    if (callback === void 0) { callback = function () { }; }
+    if (updater === void 0) { updater = false; }
+    return WatchGetterAnimation(getter, callback, updater);
 }
 
 var useReactorListener = function (target, callback, immediate) {

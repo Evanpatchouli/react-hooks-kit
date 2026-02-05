@@ -7,10 +7,10 @@ interface Config {
     immediate?: boolean;
 }
 interface UseWatch {
-    <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(object: T, path: P, callback: Callback<V>, config?: Config): V | undefined;
-    <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(object: T, getter: Getter<V, T>, callback: Callback<V>, config?: Config): V | undefined;
-    <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(object: T, path: P, callback: Callback<V>, strict?: boolean, immediate?: boolean): V | undefined;
-    <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(object: T, getter: Getter<V, T>, callback: Callback<V>, strict?: boolean, immediate?: boolean): V | undefined;
+    <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(object: T, path: P, callback?: Callback<V>, config?: Config): V | undefined;
+    <V extends unknown = any, T extends object = {}>(object: T, getter: Getter<V, T>, callback?: Callback<V>, config?: Config): V | undefined;
+    <V extends unknown = any, T extends object = {}, P extends Path<T> = Path<T>>(object: T, path: P, callback?: Callback<V>, strict?: boolean, immediate?: boolean): V | undefined;
+    <V extends unknown = any, T extends object = {}>(object: T, getter: Getter<V, T>, callback?: Callback<V>, strict?: boolean, immediate?: boolean): V | undefined;
 }
 declare const useWatch: UseWatch;
 export default useWatch;

@@ -1,9 +1,16 @@
 import { renderHook, act } from "@testing-library/react";
 import useTicker from "../../hooks/useTicker";
 
-jest.useFakeTimers();
-
 describe("useTicker", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
   // @1
   it("should start with correct initial state", () => {
     const { result } = renderHook(() => useTicker(() => {}, 1000));
@@ -16,8 +23,9 @@ describe("useTicker", () => {
   it("should tick correctly", () => {
     const { result } = renderHook(() => useTicker(() => {}, 1000));
 
+    act(() => result.current.resume());
+
     act(() => {
-      result.current.resume();
       jest.advanceTimersByTime(3000);
     });
 
@@ -28,15 +36,13 @@ describe("useTicker", () => {
   it("should pause correctly", () => {
     const { result } = renderHook(() => useTicker(() => {}, 1000));
 
-    act(() => {
-      result.current.resume();
-    });
-
-    jest.advanceTimersByTime(2000);
+    act(() => result.current.resume());
 
     act(() => {
-      result.current.pause();
+      jest.advanceTimersByTime(2000);
     });
+
+    act(() => result.current.pause());
 
     expect(result.current.tick).toBe(2);
     expect(result.current.status).toBe("off");
@@ -46,17 +52,14 @@ describe("useTicker", () => {
   it("should resume correctly", () => {
     const { result } = renderHook(() => useTicker(() => {}, 1000));
 
+    act(() => result.current.resume());
+
     act(() => {
       jest.advanceTimersByTime(2000);
     });
 
-    act(() => {
-      result.current.pause();
-    });
-
-    act(() => {
-      result.current.resume();
-    });
+    act(() => result.current.pause());
+    act(() => result.current.resume());
 
     act(() => {
       jest.advanceTimersByTime(2000);
@@ -70,50 +73,52 @@ describe("useTicker", () => {
   it("should reset correctly", () => {
     const { result } = renderHook(() => useTicker(() => {}, 1000));
 
+    act(() => result.current.resume());
+
     act(() => {
-      result.current.resume();
       jest.advanceTimersByTime(3000);
-      result.current.reset();
     });
+
+    act(() => result.current.reset());
 
     expect(result.current.tick).toBe(0);
   });
 
-  // The tow tests below are not working in jest, but they work in browser views and got checked.
-  // // @6
-  // it("should pause after a delay correctly", () => {
-  //   const { result } = renderHook(() => useTicker(() => {}, 1000));
+  // @6
+  it("should pause after a delay correctly", () => {
+    const { result } = renderHook(() => useTicker(() => {}, 1000));
 
-  //   act(() => {
-  //     result.current.delayedPause(2000);
-  //     jest.advanceTimersByTime(3000);
-  //   });
+    act(() => result.current.resume());
 
-  //   expect(result.current.tick).toBe(2);
-  //   expect(result.current.status).toBe("off");
-  // });
+    act(() => result.current.delayedPause(2000));
 
-  // // @7
-  // it("should resume after a delay correctly", () => {
-  //   const { result } = renderHook(() => useTicker(() => {}, 1000));
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
 
-  //   act(() => {
-  //     jest.advanceTimersByTime(2000);
-  //   });
+    expect(result.current.tick).toBe(1);
+    expect(result.current.status).toBe("off");
+  });
 
-  //   act(() => {
-  //     result.current.pause();
-  //   });
+  // @7
+  it("should resume after a delay correctly", () => {
+    const { result } = renderHook(() => useTicker(() => {}, 1000));
 
-  //   act(() => {
-  //     result.current.delayedResume(2000);
-  //   });
+    act(() => result.current.resume());
 
-  //   act(() => {
-  //     jest.advanceTimersByTime(3000);
-  //   });
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
 
-  //   expect(result.current.tick).toBe(3);
-  //   expect(result.current.status).toBe("on");
-  // });
+    act(() => result.current.pause());
+
+    act(() => result.current.delayedResume(2000));
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+
+    expect(result.current.tick).toBe(2);
+    expect(result.current.status).toBe("on");
+  });
 });
