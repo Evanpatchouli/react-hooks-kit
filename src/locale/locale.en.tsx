@@ -1443,6 +1443,52 @@ const locale_en = {
       return: {},
     },
   },
+
+  usePromise: {
+    desc: "",
+    detail: <></>,
+    $p1: "",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
+  useGenerator: {
+    desc: "A hook to manage a generator.",
+    detail: (
+      <p
+        style={{
+          padding: "20px",
+          background: "#fef",
+          borderRadius: "4px",
+        }}
+      >
+        <strong>⛔ Deprecated</strong> : This hook is deprecated since{" "}
+        <span
+          style={{
+            color: "blue",
+          }}
+        >
+          v1.2.2
+        </span>
+        .
+      </p>
+    ),
+    $p1: "",
+    consideration: <ol></ol>,
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
   __end: "end of locale mappings, please do not delete this line",
 } as const;
 

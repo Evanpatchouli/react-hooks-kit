@@ -129,34 +129,34 @@ export default {
     UseUrl: {
       route: "useUrl",
       title: "UseUrl",
-      status: "experimental",
+      status: "new",
     },
     UseWatch: {
       route: "useWatch",
       title: "UseWatch",
-      status: "experimental",
+      status: "new",
     },
     UseWatchGetter: {
       route: "useWatchGetter",
       title: "UseWatchGetter",
-      status: "preview",
+      status: "new",
     },
     UseReactorListener: {
       route: "useReactorListener",
       title: "UseReactorListener",
-      status: "preview",
+      status: "new",
     },
     UseResize: {
       route: "useResize",
       title: "UseResize",
-      status: "experimental",
+      status: "new",
     },
   },
   PromiseHooks: {
     UsePromise: {
       route: "usePromise",
       title: "UsePromise",
-      status: "preview",
+      status: "deprecated",
     },
     UseFetch: {
       route: "useFetch",
@@ -166,7 +166,7 @@ export default {
     UseGenerator: {
       route: "useGenerator",
       title: "UseGenerator",
-      status: "preview",
+      status: "deprecated",
     },
   },
   UtilsHooks: {

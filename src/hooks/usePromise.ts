@@ -18,16 +18,16 @@ export function usePromise<T>(
   promiseFn: () => Promise<T>,
   callbacks?: Callbacks<T>,
   deps?: any[]
-): [PromiseState<T>, () => void];
+): [PromiseState<T>, () => void, () => void];
 export function usePromise<T>(
   promiseFn: () => Promise<T>,
   deps?: any[]
-): [PromiseState<T>, () => void];
+): [PromiseState<T>, () => void, () => void];
 export default function usePromise<T>(
   promiseFn: () => Promise<T>,
   callbacksOrDeps?: Callbacks<T> | any[],
   deps?: any[]
-): [PromiseState<T>, () => void] {
+): [PromiseState<T>, () => void, () => void] {
   let callbacks: Callbacks<T> = {};
   if (Array.isArray(callbacksOrDeps)) {
     deps = callbacksOrDeps;
@@ -43,38 +43,22 @@ export default function usePromise<T>(
 
   const abortController = new AbortController();
 
-  const execute = useCallback(() => {
-    setState({ status: "pending", data: null, error: null });
+  const execute = () => {
+    setState({ ...state, status: "pending" });
     promiseFn()
       .then((data) => {
-        if (!abortController.signal.aborted) {
-          setState({ status: "resolved", data, error: null });
-          if (callbacks.onResolve) {
-            callbacks.onResolve(data);
-          }
-        }
+        setState({ status: "resolved", data, error: null });
+        callbacks.onResolve?.(data);
       })
       .catch((error) => {
-        if (!abortController.signal.aborted) {
-          setState({ status: "rejected", data: null, error });
-          if (callbacks.onReject) {
-            callbacks.onReject(error);
-          }
-        }
+        if (error.name === "AbortError") return;
+        setState({ status: "rejected", data: null, error });
+        callbacks.onReject?.(error);
       })
       .finally(() => {
-        if (callbacks.onFinally) {
-          callbacks.onFinally();
-        }
+        callbacks.onFinally?.();
       });
-  }, [promiseFn, callbacks]);
-
-  useEffect(() => {
-    execute();
-    return () => {
-      abortController.abort();
-    };
-  }, [execute, ...(deps || [])]);
+  }
 
   /**
    * Abort the promise
@@ -83,5 +67,5 @@ export default function usePromise<T>(
     abortController.abort();
   };
 
-  return [state, abort];
+  return [state, abort, execute];
 }

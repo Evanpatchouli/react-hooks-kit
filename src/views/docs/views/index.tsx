@@ -29,6 +29,11 @@ export { default as UseWatchGetter } from "./callback-hooks/UseWatchGetter";
 export { default as UseReactorListener } from "./callback-hooks/UseReactorListener";
 export { default as UseResize } from "./callback-hooks/UseResize";
 
+// Promise hooks
+export { default as UsePromise } from "./promise-hooks/UsePromise";
+// export { default as UseFetch } from "./promise-hooks/UseFetch";
+export { default as UseGenerator } from "./promise-hooks/UseGenerator";
+
 // Event hooks
 export { default as UseEmitter } from "./event-hooks/UseEmitter";
 export { default as UseReceiver } from "./event-hooks/UseReceiver";

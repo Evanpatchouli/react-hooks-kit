@@ -1,11 +1,5 @@
 import logo from "@/logo.filled.svg";
-import {
-  Box,
-  IconButton,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { Box, IconButton, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { NotificationsNone, GitHub, Settings } from "@mui/icons-material";
 import pkg from "@/../package.json";
 import "./index.css";
@@ -53,7 +47,6 @@ export default function Header() {
           onChange={handleChange}
         >
           <MenuItem value={`${pkg.version}`}>{pkg.version}</MenuItem>
-          <MenuItem value={"v1"}>v1</MenuItem>
           {/* <MenuItem value={"v2"}>v2</MenuItem>
           <MenuItem value={"v3"}>v3</MenuItem> */}
         </Select>
