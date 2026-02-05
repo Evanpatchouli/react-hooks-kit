@@ -65,3 +65,5 @@ export { default as useScroll } from "./useScroll";
 export { default as useSafeArea } from "./useSafeArea";
 export { default as useSingleton } from "./useSingleton";
 export { default as useWhyDidYouUpdate } from "./useWhyDidYouUpdate";
+export { default as useTitle } from "./useTitle";
+export { default as useFavicon } from "./useFavicon";

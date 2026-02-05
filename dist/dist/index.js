@@ -4183,6 +4183,187 @@ function useWhyDidYouUpdate(name, props) {
     }, [props]);
 }
 
+/**
+ * **useTitle** is a React Hook that manages and monitors the document title.
+ * ### Parameters
+ * - initialTitle?: `string` - The initial title to set when the component mounts. If not provided, uses the current document title.
+ * ---
+ * ### Return (Array)
+ * - [0] title: `string` - The current document title (reactive to external changes)
+ * - [1] setTitle: `(title: string) => void` - Function to update the document title
+ * ---
+ * ### Usage
+ * ```tsx
+ * const [title, setTitle] = useTitle("My App");
+ *
+ * // Update title
+ * setTitle("New Title");
+ * ```
+ * ---
+ * ### Example
+ * ```tsx
+ * import { useTitle } from "@evanpatchouli/react-hooks-kit";
+ *
+ * const View = () => {
+ *   const [title, setTitle] = useTitle("Home Page");
+ *
+ *   return (
+ *     <div>
+ *       <h1>Current Title: {title}</h1>
+ *       <button onClick={() => setTitle("Updated Title")}>
+ *         Change Title
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ * ```
+ * ---
+ * ### FAQs
+ * - Q: Will the original title be restored when the component unmounts?
+ * - A: Yes, the hook automatically restores the original document title when the component unmounts.
+ * ---
+ * - Q: Can this hook detect title changes made by other components?
+ * - A: Yes, the hook uses MutationObserver to monitor the title element and automatically syncs with external changes.
+ */
+function useTitle(initialTitle) {
+    var _a = __read(react.useState(initialTitle !== null && initialTitle !== void 0 ? initialTitle : document.title), 2), title = _a[0], setTitle = _a[1];
+    var originalTitle = react.useRef(document.title);
+    var isInternalUpdate = react.useRef(false);
+    react.useEffect(function () {
+        if (initialTitle) {
+            isInternalUpdate.current = true;
+            document.title = initialTitle;
+        }
+    }, []);
+    react.useEffect(function () {
+        isInternalUpdate.current = true;
+        document.title = title;
+    }, [title]);
+    react.useEffect(function () {
+        var titleElement = document.querySelector("title");
+        if (!titleElement)
+            return;
+        var savedOriginalTitle = originalTitle.current;
+        var observer = new MutationObserver(function () {
+            if (!isInternalUpdate.current) {
+                setTitle(document.title);
+            }
+            isInternalUpdate.current = false;
+        });
+        observer.observe(titleElement, {
+            childList: true,
+            characterData: true,
+            subtree: true,
+        });
+        return function () {
+            observer.disconnect();
+            document.title = savedOriginalTitle;
+        };
+    }, []);
+    return [title, setTitle];
+}
+
+function useFavicon(iconUrl, options) {
+    var badge = react.useMemo(function () {
+        var _a;
+        if (typeof options === 'string' || typeof options === 'number') {
+            return { content: options };
+        }
+        return (_a = options === null || options === void 0 ? void 0 : options.badge) !== null && _a !== void 0 ? _a : null;
+    }, [options]);
+    react.useEffect(function () {
+        if (!iconUrl)
+            return;
+        // 没 badge 直接设置
+        if (!badge) {
+            setFavicon(iconUrl);
+            return;
+        }
+        createFaviconWithBadge(iconUrl, badge)
+            .then(setFavicon)
+            .catch(function () { return setFavicon(iconUrl); });
+    }, [
+        iconUrl, badge,
+    ]);
+}
+function setFavicon(href) {
+    document.querySelectorAll("link[rel*='icon']").forEach(function (el) { return el.remove(); });
+    var link = document.createElement("link");
+    link.rel = "icon";
+    link.type = "image/png";
+    link.href = href;
+    document.head.appendChild(link);
+}
+/**
+ * Creates a favicon with a badge overlay
+ */
+function createFaviconWithBadge(iconUrl, badge) {
+    return __awaiter(this, void 0, void 0, function () {
+        var content, _a, position, _b, bgColor, _c, textColor, _d, size;
+        return __generator(this, function (_e) {
+            content = badge.content, _a = badge.position, position = _a === void 0 ? "top-right" : _a, _b = badge.bgColor, bgColor = _b === void 0 ? "#ff3b30" : _b, _c = badge.textColor, textColor = _c === void 0 ? "#fff" : _c, _d = badge.size, size = _d === void 0 ? 0.5 : _d;
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    var img = new Image();
+                    img.onload = function () {
+                        try {
+                            var iconSize = Math.max(img.naturalWidth || 0, 64);
+                            var canvas = document.createElement("canvas");
+                            canvas.width = iconSize;
+                            canvas.height = iconSize;
+                            var ctx = canvas.getContext("2d");
+                            if (!ctx)
+                                return reject("ctx failed");
+                            ctx.drawImage(img, 0, 0, iconSize, iconSize);
+                            var badgeSize = Math.max(iconSize * size, 14);
+                            var r = badgeSize / 2;
+                            var padding = iconSize * 0.06;
+                            var x = 0;
+                            var y = 0;
+                            switch (position) {
+                                case "top-left":
+                                    x = r + padding;
+                                    y = r + padding;
+                                    break;
+                                case "bottom-left":
+                                    x = r + padding;
+                                    y = iconSize - r - padding;
+                                    break;
+                                case "bottom-right":
+                                    x = iconSize - r - padding;
+                                    y = iconSize - r - padding;
+                                    break;
+                                default:
+                                    x = iconSize - r - padding;
+                                    y = r + padding;
+                            }
+                            ctx.fillStyle = bgColor;
+                            ctx.beginPath();
+                            ctx.arc(x, y, r, 0, Math.PI * 2);
+                            ctx.fill();
+                            var text = String(content);
+                            if (typeof content === "number" && content > 99) {
+                                text = "99+";
+                            }
+                            ctx.fillStyle = textColor;
+                            ctx.font = "bold ".concat(badgeSize * 0.65, "px system-ui, -apple-system, sans-serif");
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.fillText(text, x, y + 0.5);
+                            resolve(canvas.toDataURL("image/png"));
+                        }
+                        catch (e) {
+                            reject(e);
+                        }
+                    };
+                    img.onerror = function () {
+                        reject(new Error("Failed to load icon: ".concat(iconUrl)));
+                    };
+                    img.src = iconUrl;
+                })];
+        });
+    });
+}
+
 exports.useAsyncEffect = useAsyncEffect;
 exports.useBatchHooks = useBatchHooks;
 exports.useBattery = useBattery;
@@ -4194,6 +4375,7 @@ exports.useCookie = useCookie;
 exports.useDebounce = useDebounce;
 exports.useEmitter = useEmitter;
 exports.useEyeDropper = useEyeDropper;
+exports.useFavicon = useFavicon;
 exports.useFetch = useFetch;
 exports.useForceUpdate = useForceUpdate;
 exports.useForm = useForm;
@@ -4238,6 +4420,7 @@ exports.useTheme = useTheme;
 exports.useThrottle = useThrottle;
 exports.useTickState = useTickState;
 exports.useTicker = useTicker;
+exports.useTitle = useTitle;
 exports.useToast = useToast;
 exports.useToggle = useToggle;
 exports.useTree = useTree;
