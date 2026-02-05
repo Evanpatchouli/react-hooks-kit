@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v1.2.2
+
+- New hook! useFavicon
+- New hook! useTitle
+
 ## v1.2.1
 
 - Docs for useWatch and useWatchGetter
