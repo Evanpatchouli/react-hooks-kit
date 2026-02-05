@@ -2,7 +2,7 @@ import useTitle from "@hooks/useTitle";
 import { Button } from "@mui/material";
 
 const View = () => {
-  const [title, setTitle] = useTitle("useTitle Demo");
+  const [title, setTitle] = useTitle();
 
   return (
     <>

@@ -1445,22 +1445,52 @@ const locale_en = {
   },
   
   useTitle: {
-    desc: "",
+    desc: "A React Hook for managing and monitoring the document title with automatic restoration.",
     detail: (
       <>
+        <p>
+          <code>useTitle</code> provides a reactive way to manage the document title. It returns the current title
+          and a setter function, allowing you to read and update the title dynamically.
+        </p>
+        <p>
+          The hook uses MutationObserver to detect external title changes (e.g., from other components or scripts)
+          and automatically syncs the state. When the component unmounts, the original title is restored.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "The hook returns an array with the current title and a setter function. Switch between tabs above to see different use cases including counters, notifications, timers, and status indicators.",
     consideration: (
       <ol>
+        <li>The document title is a global resource. Multiple components using this hook may conflict with each other.</li>
+        <li>The hook uses MutationObserver which has good browser support but may not work in very old browsers.</li>
+        <li>The original title is restored when the component unmounts, which may override titles set by other components.</li>
+        <li>Frequent title updates (e.g., every second) may impact performance on low-end devices.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: <ul>
+      <li>Use descriptive titles that reflect the current page state or content.</li>
+      <li>For notification counts, use format like <code>(3) New Messages</code> to draw attention.</li>
+      <li>Avoid updating the title too frequently (more than once per second) to prevent performance issues.</li>
+      <li>Place the hook at the top level of your component for consistent behavior.</li>
+      <li>For timers or counters, consider using <code>useEffect</code> to sync the title with state changes.</li>
+      <li>Keep titles concise - browser tabs have limited space for displaying titles.</li>
+    </ul>,
+    $faqs: <ul>
+      <li><strong>Q: Will the original title be restored when the component unmounts?</strong><br/>A: Yes, the hook automatically restores the original document title when the component unmounts.</li>
+      <li><strong>Q: Can this hook detect title changes made by other components?</strong><br/>A: Yes, the hook uses MutationObserver to monitor the title element and automatically syncs with external changes.</li>
+      <li><strong>Q: What happens if multiple components use this hook?</strong><br/>A: They may conflict with each other since the document title is global. Consider using only one instance or coordinating between components.</li>
+      <li><strong>Q: Does this work in all browsers?</strong><br/>A: Yes, MutationObserver is supported in all modern browsers. For older browsers, the hook will still work but won't detect external changes.</li>
+      <li><strong>Q: Can I use this for SEO?</strong><br/>A: This hook changes the title dynamically on the client side. For SEO, set the initial title in your HTML or use server-side rendering.</li>
+    </ul>,
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        initialTitle: "Optional initial title to set when the component mounts. If not provided, uses the current document title.",
+      },
+      return: {
+        "[0] title": "The current document title (reactive to external changes).",
+        "[1] setTitle": "Function to update the document title. Signature: (title: string) => void",
+      },
     },
   },
 
