@@ -17,7 +17,7 @@ export default function Home() {
         </Button>
         <Button
           LinkComponent={"a"}
-          href="https://github.com/evanpatchouli/react-hook-kit"
+          href="https://github.com/Evanpatchouli/react-hooks-kit"
           target="_blank"
           variant="contained"
           sx={{ width: "12rem" }}
