@@ -2308,6 +2308,12 @@ function useWatchGetter(getter, callback, updater) {
     return WatchGetterAnimation(getter, callback, updater);
 }
 
+/**
+ *
+ * @param target
+ * @param callback
+ * @param immediate
+ */
 var useReactorListener = function (target, callback, immediate) {
     if (immediate === void 0) { immediate = false; }
     useEffect(function () {
@@ -2361,9 +2367,7 @@ function useResize(_a, deps) {
 
 function usePromise(promiseFn, callbacksOrDeps, deps) {
     var callbacks = {};
-    if (Array.isArray(callbacksOrDeps)) {
-        deps = callbacksOrDeps;
-    }
+    if (Array.isArray(callbacksOrDeps)) ;
     else if (callbacksOrDeps) {
         callbacks = callbacksOrDeps;
     }
@@ -2373,44 +2377,33 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
         error: null,
     }), 2), state = _a[0], setState = _a[1];
     var abortController = new AbortController();
-    var execute = useCallback(function () {
-        setState({ status: "pending", data: null, error: null });
+    var execute = function () {
+        setState(__assign(__assign({}, state), { status: "pending" }));
         promiseFn()
             .then(function (data) {
-            if (!abortController.signal.aborted) {
-                setState({ status: "resolved", data: data, error: null });
-                if (callbacks.onResolve) {
-                    callbacks.onResolve(data);
-                }
-            }
+            var _a;
+            setState({ status: "resolved", data: data, error: null });
+            (_a = callbacks.onResolve) === null || _a === void 0 ? void 0 : _a.call(callbacks, data);
         })
             .catch(function (error) {
-            if (!abortController.signal.aborted) {
-                setState({ status: "rejected", data: null, error: error });
-                if (callbacks.onReject) {
-                    callbacks.onReject(error);
-                }
-            }
+            var _a;
+            if (error.name === "AbortError")
+                return;
+            setState({ status: "rejected", data: null, error: error });
+            (_a = callbacks.onReject) === null || _a === void 0 ? void 0 : _a.call(callbacks, error);
         })
             .finally(function () {
-            if (callbacks.onFinally) {
-                callbacks.onFinally();
-            }
+            var _a;
+            (_a = callbacks.onFinally) === null || _a === void 0 ? void 0 : _a.call(callbacks);
         });
-    }, [promiseFn, callbacks]);
-    useEffect(function () {
-        execute();
-        return function () {
-            abortController.abort();
-        };
-    }, __spreadArray([execute], __read((deps || [])), false));
+    };
     /**
      * Abort the promise
      */
     var abort = function () {
         abortController.abort();
     };
-    return [state, abort];
+    return [state, abort, execute];
 }
 
 function useFetch(url, options, callbacks, deps) {
