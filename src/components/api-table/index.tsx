@@ -197,13 +197,14 @@ function createData(
 function Row(props: { row: ReturnType<typeof createData>; type?: "param" | "return" }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
+  const expandable = row.properties?.length || row.details
 
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
-            disabled={!row.properties?.length && !row.details}
+            style={{ display: expandable ? "block" : "none" }}
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
@@ -268,12 +269,12 @@ export default function ApiTable(
   props: {
     rows?: Parameters<typeof preHandleData>[0][];
   } & (
-    | {
+      | {
         param?: true;
         return?: false;
       }
-    | { param?: false; return?: true }
-  )
+      | { param?: false; return?: true }
+    )
 ) {
   const headCellAttrs = {
     sx: {

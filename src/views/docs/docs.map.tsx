@@ -156,7 +156,7 @@ export default {
     UsePromise: {
       route: "usePromise",
       title: "UsePromise",
-      status: "deprecated",
+      status: "experimental",
     },
     UseFetch: {
       route: "useFetch",
@@ -376,6 +376,11 @@ export default {
     UseTitle: {
       route: "useTitle",
       title: "UseTitle",
+      status: "new",
+    },
+    UseFavicon: {
+      route: "useFavicon",
+      title: "UseFavicon",
       status: "new",
     },
   },

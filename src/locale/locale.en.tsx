@@ -1509,6 +1509,63 @@ const locale_en = {
       return: {},
     },
   },
+  
+  useFavicon: {
+    desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
+    detail: (
+      <>
+        <p>
+          <code>useFavicon</code> allows you to dynamically change the favicon of your page and add badges to it.
+          It supports multiple use cases including notification counters, status indicators, and custom badges.
+        </p>
+        <p>
+          The hook provides a simple API with function overloading: you can pass just a URL for basic usage,
+          or pass a number/string for quick badge creation, or use the full options object for complete control.
+        </p>
+      </>
+    ),
+    $p1: "The hook supports three usage patterns: basic (just URL), shorthand (URL + badge content), and full configuration (URL + options object). Switch between tabs above to see different examples.",
+    consideration: (
+      <ol>
+        <li>The favicon is a global resource - only one can be displayed at a time. If multiple components use this hook simultaneously, they will conflict.</li>
+        <li>Badge rendering uses canvas, which may have CORS restrictions for cross-origin images. Use same-origin images when possible.</li>
+        <li>Numbers over 99 will automatically display as "99+" to maintain readability.</li>
+        <li>The hook will remove all existing favicon elements and create a new one to avoid browser caching issues.</li>
+      </ol>
+    ),
+    $best: <ul>
+      <li>Use the shorthand syntax <code>useFavicon(url, count)</code> for simple badge counters.</li>
+      <li>When count is 0, pass <code>undefined</code> or <code>void 0</code> to hide the badge instead of showing "0".</li>
+      <li>Place the hook at the top level of your component, not inside conditional statements.</li>
+      <li>Use same-origin images to avoid CORS issues with canvas rendering.</li>
+      <li>For notification badges, use red background (<code>#ff3b30</code>) to draw attention.</li>
+      <li>For status indicators, use small size (<code>size: 0.3</code>) and position at bottom-right.</li>
+    </ul>,
+    $faqs: <ul>
+      <li><strong>Q: Can I use this without a badge?</strong><br/>A: Yes, simply call <code>useFavicon(iconUrl)</code> without the second parameter.</li>
+      <li><strong>Q: What happens if the icon fails to load?</strong><br/>A: The hook will fallback to the original icon URL without the badge.</li>
+      <li><strong>Q: Can I change the badge dynamically?</strong><br/>A: Yes, the hook will update the favicon whenever the iconUrl or badge options change.</li>
+      <li><strong>Q: What happens when the badge content exceeds 99?</strong><br/>A: Numbers over 99 will automatically display as "99+" to maintain readability.</li>
+      <li><strong>Q: Why is my badge not showing?</strong><br/>A: Check if the image is from the same origin. Cross-origin images may fail due to CORS restrictions.</li>
+    </ul>,
+    $apis: {
+      generics: (<></>),
+      params: {
+        iconUrl: "The URL of the favicon image.",
+        badge: "Shorthand for badge content. Can be a string or number. When provided, creates a badge with default settings.",
+        options: "Full configuration object for the favicon.",
+        "options.badge": "Badge configuration to overlay on the favicon.",
+        "options.badge.content": "The content to display in the badge. Numbers over 99 will display as '99+'.",
+        "options.badge.position": "Badge position. One of: 'top-right', 'top-left', 'bottom-right', 'bottom-left'. Defaults to 'top-right'.",
+        "options.badge.bgColor": "Badge background color. Defaults to '#ff3b30'.",
+        "options.badge.textColor": "Badge text color. Defaults to '#fff'.",
+        "options.badge.size": "Badge size as a ratio of icon size (0-1). Defaults to 0.5.",
+      },
+      return: {
+        void: "This hook does not return any value.",
+      },
+    },
+  },
   __end: "end of locale mappings, please do not delete this line",
 } as const;
 
