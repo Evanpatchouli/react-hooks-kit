@@ -1443,6 +1443,26 @@ const locale_en = {
       return: {},
     },
   },
+  
+  useTitle: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
 
   usePromise: {
     desc: "",

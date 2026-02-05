@@ -1,9 +1,9 @@
-const fs = require('fs-extra');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("fs-extra");
+const path = require("path");
+const { execSync } = require("child_process");
 
-const srcDir = path.resolve(__dirname, '../src/hooks');
-const distDir = path.resolve(__dirname, '../dist');
+const srcDir = path.resolve(__dirname, "../src/hooks");
+const distDir = path.resolve(__dirname, "../dist");
 
 // 检查 dist 文件夹是否存在
 if (fs.existsSync(distDir)) {
@@ -18,15 +18,17 @@ fs.mkdirSync(distDir, { recursive: true });
 fs.copySync(srcDir, distDir);
 
 // 在 dist 文件夹中执行 npm install 和 npm run build
-execSync('npm install && npm run build', { cwd: distDir, stdio: 'inherit' });
+execSync("npm install && npm run build", { cwd: distDir, stdio: "inherit" });
 
 // 在 dist 文件夹中删除该级目录下所有 ts 文件和 houdini 文件夹
 fs.readdirSync(distDir).forEach((file) => {
   const filePath = path.resolve(distDir, file);
   const stat = fs.statSync(filePath);
-  if (stat.isFile() && path.extname(file) === '.ts') {
+  const shouldBeDeletedExt = [".ts", ".tsx"];
+  const shouidBeDeletedFolder = ["houdini", "utils"];
+  if (stat.isFile() && shouldBeDeletedExt.includes(path.extname(file))) {
     fs.removeSync(filePath);
-  } else if (stat.isDirectory() && file === 'houdini') {
+  } else if (stat.isDirectory() && shouidBeDeletedFolder.includes(file)) {
     fs.removeSync(filePath);
   }
 });

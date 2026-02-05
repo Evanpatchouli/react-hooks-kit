@@ -373,5 +373,10 @@ export default {
       title: "UseBattery",
       status: "experimental",
     },
+    UseTitle: {
+      route: "useTitle",
+      title: "UseTitle",
+      status: "new",
+    },
   },
 } as const;

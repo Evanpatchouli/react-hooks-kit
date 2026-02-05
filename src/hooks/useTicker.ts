@@ -1,6 +1,8 @@
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 
-interface TickerOptions {
+/* ---------------------------------- types --------------------------------- */
+
+export interface TickerOptions {
   immediate?: "mounted" | "first" | "every" | "all" | "none" | true | false;
   callAtFirst?: boolean;
   pauseAtFirst?: boolean;
@@ -8,50 +10,43 @@ interface TickerOptions {
   delay?: number;
 }
 
-interface Ticker {
+export interface Ticker {
   readonly tick: number;
   readonly status: "off" | "on";
+
   readonly pause: () => void;
   readonly resume: () => void;
   readonly reset: () => void;
+
   readonly delayedPause: (delay: number) => void;
   readonly delayedResume: (delay: number) => void;
 }
 
 /**
- * ## UseTicker API
- * `@desc` - Create a ticker that ticks every `${duration}` milliseconds.
- * ### Arguments
- * - `fn` - the function to be called every tick
- * - `duration` - the duration of each tick
- * - `options` - the options to be passed
- * - `options.immediate` whether to call the function immediately
- *   - `"mounted"` - call the function immediately when the component is mounted
- *   - `"every"` - call the function immediately at every tick
- *   - `"all"` - call the function immediately when the component is mounted and at every tick
- *   - `"none"` - do not call the function immediately any time
- *   - `true` - same as 'all'
- *   - `false` - same as 'none'
- *   - `undefined` - same as 'none'
- * - `options.callAtFirst` - whether to call the function at the first tick
- * - `options.pauseAtFirst` - whether to pause tick initially
- * - `options.duration` - the duration of each tick
+ * @libVersion 1.2.2
  */
 interface UseTicker {
-  (fn: (tick: number) => any, options?: TickerOptions): Ticker;
+  (fn: (tick: number) => void, options?: TickerOptions): Ticker;
   (
-    fn: (tick: number) => any,
+    fn: (tick: number) => void,
     duration?: number,
-    options?: TickerOptions
+    options?: TickerOptions,
   ): Ticker;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                implementation                              */
+/* -------------------------------------------------------------------------- */
+
 const useTicker: UseTicker = (
-  fn: (tick: number) => any,
+  fn: (tick: number) => void,
   durationOrOptions?: number | TickerOptions,
-  options?: TickerOptions
+  options?: TickerOptions,
 ) => {
+  /* ------------------------- normalize arguments ------------------------- */
+
   let duration: number | undefined;
+
   if (typeof durationOrOptions === "number") {
     duration = durationOrOptions;
   } else if (typeof durationOrOptions === "object") {
@@ -64,90 +59,114 @@ const useTicker: UseTicker = (
         ? options.immediate
           ? "all"
           : "none"
-        : options?.immediate ?? "none";
-    const runAtFirst = options?.callAtFirst || true;
-    const pauseAtFirst = options?.pauseAtFirst || false;
-    const _duration = options?.duration ?? duration;
+        : (options?.immediate ?? "none");
 
-    return { immediate, runAtFirst, pauseAtFirst, duration: _duration };
-  }, [options]);
+    return {
+      immediate,
+      callAtFirst: options?.callAtFirst ?? true,
+      pauseAtFirst: options?.pauseAtFirst ?? false,
+      duration: options?.duration ?? duration ?? 1000,
+      delay: options?.delay ?? 0,
+    };
+  }, [options, duration]);
 
-  if (_options.duration !== undefined && _options.duration >= 0) {
-    duration = _options.duration;
-  }
+  /* ----------------------------- state / refs ----------------------------- */
 
   const [tick, setTick] = useState(0);
-  const [isPaused, setIsPaused] = useState(_options.pauseAtFirst || false);
-  const status: "off" | "on" = isPaused ? "off" : "on";
-  const startDelay = 0;
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [paused, setPaused] = useState(_options.pauseAtFirst);
 
-  const pause = useCallback(() => setIsPaused(true), []);
+  const tickRef = useRef(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const fnRef = useRef(fn);
+
+  fnRef.current = fn;
+
+  const status: "off" | "on" = paused ? "off" : "on";
+
+  /* ------------------------------- helpers ------------------------------- */
+
+  const clear = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  /* ----------------------------- core ticker ----------------------------- */
+
+  const schedule = useCallback(() => {
+    clear();
+
+    timerRef.current = setTimeout(() => {
+      tickRef.current += 1;
+
+      const next = tickRef.current;
+      setTick(next);
+
+      if (_options.callAtFirst || next > 0) {
+        fnRef.current(next);
+      }
+
+      if (!paused) {
+        schedule(); // recursion (NO interval, NO race)
+      }
+    }, _options.duration);
+  }, [_options.duration, _options.callAtFirst, paused, clear]);
+
+  /* ------------------------------ controls ------------------------------- */
+
+  const pause = useCallback(() => {
+    setPaused(true);
+    clear();
+  }, [clear]);
+
   const resume = useCallback(() => {
-    setIsPaused(false);
-    if ("first" === _options.immediate && tick === 0) {
-      return fn(tick);
-    }
-  }, [_options.immediate, tick, fn]);
-  const reset = () => setTick(0);
+    setPaused(false);
+  }, []);
 
-  const mountedRef = useRef<boolean>(false);
+  const reset = useCallback(() => {
+    tickRef.current = 0;
+    setTick(0);
+  }, []);
 
+  const delayedPause = useCallback(
+    (delay: number) => {
+      setTimeout(pause, delay);
+    },
+    [pause],
+  );
+
+  const delayedResume = useCallback(
+    (delay: number) => {
+      setTimeout(resume, delay);
+    },
+    [resume],
+  );
+
+  /* ------------------------------ lifecycle ------------------------------ */
+
+  // start / resume
   useEffect(() => {
-    if (
-      !mountedRef.current &&
-      ["mounted", "all"].includes(_options.immediate)
-    ) {
-      fn(tick);
+    if (!paused) {
+      schedule();
     }
-    mountedRef.current = true;
-  }, [tick]);
+    return clear;
+  }, [paused, schedule, clear]);
 
-  const delayedPause = (delay: number) => {
-    setTimeout(() => {
-      setIsPaused(true);
-    }, delay);
-  };
-
-  const delayedResume = (delay: number) => {
-    setTimeout(() => {
-      setIsPaused(false);
-    }, delay);
-  };
-
+  // immediate behaviors
   useEffect(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-
-    if (!isPaused) {
-      intervalRef.current = setInterval(() => {
-        setTick((pre) => pre + 1);
-        if (_options.runAtFirst || tick === 0) {
-          fn(tick);
-        }
-      }, duration ?? 1000);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+    const runImmediate = () => {
+      if (_options.immediate === "mounted" || _options.immediate === "all") {
+        fnRef.current(0);
       }
     };
-  }, [isPaused, tick]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (options?.pauseAtFirst) {
-        pause();
-      } else {
-        if (_options.immediate) {
-          fn(tick);
-        }
-        resume();
-      }
-    }, startDelay);
-  }, [startDelay]);
+    const id = setTimeout(runImmediate, _options.delay);
+
+    return () => clearTimeout(id);
+  }, [_options.immediate, _options.delay]);
+
+  /* ----------------------------------------------------------------------- */
 
   return {
     tick,
