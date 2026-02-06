@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import isEqual from "./utils/isEqual";
 import cloneDeep from "./utils/cloneDeep";
 import { Path, PathValue } from "./utils/types";
@@ -39,10 +39,14 @@ const eventBus: { events: { [key: string]: Listener<any>[] } } = { events: {} };
  * - Reactor is a reactive, proxy, cloneable, resettable, dispatchable, serializable, subscribable, listenable, and pluginable object.
  * ---
  */
-export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> implements ReactorModel {
+export class Reactor<
+  T = any,
+  P extends ReactorPlugin<T> = ReactorPlugin<T>,
+> implements ReactorModel {
   private _state: T;
   private _setState: Dispatch<SetStateAction<T>> = (newState) => {
-    this._state = newState instanceof Function ? newState(this._state) : newState;
+    this._state =
+      newState instanceof Function ? newState(this._state) : newState;
   };
   private _defaultValue: T | undefined = undefined;
   private _plugins: P[] = [];
@@ -50,7 +54,12 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
   private _deepCloneWhenSet: boolean = false;
   private _id = UKey();
 
-  constructor(state: T, setState?: any, plugins?: P[], deepSet: boolean = false) {
+  constructor(
+    state: T,
+    setState?: any,
+    plugins?: P[],
+    deepSet: boolean = false,
+  ) {
     this._state = state;
     this._defaultValue = cloneDeep(state);
     setState ? (this._setState = setState) : void 0;
@@ -128,7 +137,9 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
     }
     eventBus.events[eventName].push(listener);
     return () => {
-      eventBus.events[eventName] = eventBus.events[eventName].filter((l) => l !== listener);
+      eventBus.events[eventName] = eventBus.events[eventName].filter(
+        (l) => l !== listener,
+      );
     };
   }
 
@@ -142,7 +153,7 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
 
   get<P extends Path<T> = Path<T>>(
     path?: P,
-    strict: boolean = true
+    strict: boolean = true,
   ): P extends undefined ? T | undefined : PathValue<T, P> | undefined {
     if (!path) return this._state as any;
     try {
@@ -154,7 +165,11 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
     }
   }
 
-  set<P extends Path<T> = Path<T>>(path: P, value: PathValue<T, P> | SetPropertyAction<T, P>, deepSet?: boolean) {
+  set<P extends Path<T> = Path<T>>(
+    path: P,
+    value: PathValue<T, P> | SetPropertyAction<T, P>,
+    deepSet?: boolean,
+  ) {
     this.setValue((prev) => {
       // @ts-ignore
       let newValue = getter(prev, path, true) as PathValue<T, P>;
@@ -163,7 +178,12 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
       } else {
         newValue = value;
       }
-      const newState = setTo(prev, path as any, newValue, deepSet ?? this._deepCloneWhenSet);
+      const newState = setTo(
+        prev,
+        path as any,
+        newValue,
+        deepSet ?? this._deepCloneWhenSet,
+      );
       return newState;
     });
   }
@@ -194,7 +214,9 @@ export class Reactor<T = any, P extends ReactorPlugin<T> = ReactorPlugin<T>> imp
  * @param target listened Reactive store
  * @returns unlistener
  */
-export function listen<T = any>(target: Omit<Reactor<T>, "_state" | "_setState">) {
+export function listen<T = any>(
+  target: Omit<Reactor<T>, "_state" | "_setState">,
+) {
   return {
     then: (...fns: ((value: T) => any)[]) => {
       const fn = (value: T) => fns.forEach((f) => f(value));
@@ -205,12 +227,80 @@ export function listen<T = any>(target: Omit<Reactor<T>, "_state" | "_setState">
 }
 
 /**
- * useReactor is a React Hook that returns a Reactor instance.
- * @param initialValue
- * @param plugins
- * @returns Reactor instance
+ * **useReactor** is a React Hook that returns a Reactor instance for advanced state management.
+ * ### Parameters
+ * - initialValue: `T` - The initial state value.
+ * - plugins?: `ReactorPlugin<T>[]` - Optional array of plugins to extend Reactor functionality.
+ *   - Each plugin can have: name, action, onStateChange, onAction callbacks.
+ * ---
+ * ### Return (Reactor Instance)
+ * A Reactor instance with the following properties and methods:
+ * - **value**: `T` - Get or set the current state value.
+ * - **subscribe**: `(listener: (state: T) => any) => () => void` - Subscribe to state changes.
+ * - **get**: `(path?: string) => any` - Get value by path (e.g., "user.name").
+ * - **set**: `(path: string, value: any) => void` - Set value by path.
+ * - **setValue**: `(newState: T | ((prev: T) => T)) => void` - Update the entire state.
+ * - **dispatch**: `(action: string, payload?: any) => void` - Dispatch plugin actions.
+ * - **emit**: `(eventName: string, payload?: any) => void` - Emit custom events.
+ * - **on**: `(eventName: string, listener: Function) => () => void` - Listen to custom events.
+ * - **clone**: `() => Reactor<T>` - Clone the reactor instance.
+ * - **reset**: `() => void` - Reset to initial value.
+ * - **toJSON**: `() => T` - Serialize to JSON.
+ * ---
+ * ### Usage
+ * ```tsx
+ * const reactor = useReactor({ count: 0, user: { name: "John" } });
+ *
+ * // Direct value access
+ * reactor.value.count; // 0
+ * reactor.value = { count: 1, user: { name: "Alice" } };
+ *
+ * // Path-based access
+ * reactor.get("user.name"); // "John"
+ * reactor.set("count", 10);
+ *
+ * // Subscribe to changes
+ * reactor.subscribe((state) => console.log(state));
+ *
+ * // Reset to initial value
+ * reactor.reset();
+ * ```
+ * ---
+ * ### Example
+ * ```tsx
+ * import { useReactor } from "@evanpatchouli/react-hooks-kit";
+ *
+ * const Counter = () => {
+ *   const reactor = useReactor({ count: 0 });
+ *
+ *   return (
+ *     <div>
+ *       <p>Count: {reactor.value.count}</p>
+ *       <button onClick={() => reactor.set("count", reactor.get("count") + 1)}>
+ *         Increment
+ *       </button>
+ *       <button onClick={() => reactor.reset()}>
+ *         Reset
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ * ```
+ * ---
+ * ### FAQs
+ * - Q: Why useReactor instead of useState?
+ * - A: Reactor provides advanced features like path-based access, subscriptions, plugins, and event system.
+ * ---
+ * - Q: When should I use plugins?
+ * - A: Use plugins to add custom logic that runs on state changes or actions, like logging, validation, or side effects.
+ * ---
+ * - Q: Can I use Reactor outside of React components?
+ * - A: Yes, you can create a Reactor instance directly using `new Reactor(initialValue)`, but it won't trigger React re-renders.
  */
-export const useReactor = <T = any>(initialValue: T, plugins?: ReactorPlugin<T>[]): Reactor<T> => {
+export const useReactor = <T = any>(
+  initialValue: T,
+  plugins?: ReactorPlugin<T>[],
+): Reactor<T> => {
   const [state, setState] = useState<T>(initialValue);
   const reactorRef = useRef<Reactor<T> | null>(null);
 

@@ -1,6 +1,5 @@
 import useMap from "@hooks/useMap";
 import { Button } from "@mui/material";
-import { count } from "console";
 
 const View = () => {
   const { map, set, get } = useMap({

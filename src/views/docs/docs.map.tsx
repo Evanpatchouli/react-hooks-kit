@@ -57,7 +57,7 @@ export default {
     UseMap: {
       route: "useMap",
       title: "UseMap",
-      status: "experimental",
+      status: "new",
     },
     UseMeta: {
       route: "useMeta",

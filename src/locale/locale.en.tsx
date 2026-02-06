@@ -589,7 +589,28 @@ const locale_en = {
     ),
     consideration: (
       <>
-        <ol></ol>
+        <ol>
+          <Li>
+            Direct mutation of reactor.value properties won't trigger re-renders. Always use set() or setValue() to
+            update state.
+          </Li>
+          <Li>
+            Use path-based set() method (e.g., set("user.name", "John")) for updating nested properties instead of
+            direct assignment.
+          </Li>
+          <Li>
+            Reactor is best suited for managing complex object state. For simple primitive values, consider using
+            useState instead.
+          </Li>
+          <Li>
+            Plugin actions are executed synchronously during state changes. Avoid heavy computations in plugin
+            callbacks.
+          </Li>
+          <Li>
+            The event bus (emit/on) is isolated to Reactor instances only and doesn't share events with useEmitter or
+            useReceiver hooks.
+          </Li>
+        </ol>
         <p
           style={{
             padding: "20px",
@@ -627,7 +648,28 @@ const locale_en = {
     $best: (
       <ul>
         <Li>
-          <strong>Eazy communicate</strong> : Use Reactor to sync data between web components.
+          <strong>Component Communication</strong>: Use Reactor's event bus (emit/on) to sync data between components
+          without prop drilling.
+        </Li>
+        <Li>
+          <strong>Plugin System</strong>: Leverage plugins for cross-cutting concerns like logging, validation, or
+          persistence to keep component logic clean.
+        </Li>
+        <Li>
+          <strong>Path-based Access</strong>: Use get("user.profile.name") and set("user.profile.name", value) for
+          deeply nested properties instead of manual traversal.
+        </Li>
+        <Li>
+          <strong>State Subscription</strong>: Use subscribe() to react to state changes in other parts of your
+          application without tight coupling.
+        </Li>
+        <Li>
+          <strong>Default Values</strong>: Set default values with setDefaultValue() and use reset() to easily restore
+          initial state (useful for forms).
+        </Li>
+        <Li>
+          <strong>State Cloning</strong>: Use cloneValue() when you need an independent copy of the state for
+          comparison or undo functionality.
         </Li>
       </ul>
     ),
@@ -637,7 +679,23 @@ const locale_en = {
           <strong>Q</strong>: Why useReactor instead of useState?
         </Li>
         <Li>
-          <strong>A</strong>: Because useReactor makes it easier to manage state and communicate between components.
+          <strong>A</strong>: Reactor provides advanced features like path-based access, subscriptions, plugins, event
+          system, and easier state management for complex objects. It's ideal when you need more than simple state
+          updates.
+        </Li>
+        <Li>
+          <strong>Q</strong>: When should I use plugins?
+        </Li>
+        <Li>
+          <strong>A</strong>: Use plugins to add custom logic that runs on state changes or actions, such as logging,
+          validation, persistence, or side effects. Plugins help keep your component code clean and reusable.
+        </Li>
+        <Li>
+          <strong>Q</strong>: Can I use Reactor outside of React components?
+        </Li>
+        <Li>
+          <strong>A</strong>: Yes, you can create a Reactor instance directly using `new Reactor(initialValue)`, but it
+          won't trigger React re-renders. Use useReactor hook inside components for automatic re-rendering.
         </Li>
       </ul>
     ),
@@ -1242,9 +1300,23 @@ const locale_en = {
   },
 
   useMap: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
+    desc: "A React Hook that manages a Map state with convenient methods for manipulation.",
+    detail: (
+      <>
+        useMap is a hook that provides a convenient way to manage Map state in React. It wraps the native Map data
+        structure and provides methods like set, get, del, and add to manipulate the map state. The returned map is
+        readonly, which means you cannot use map.set() directly, but must use the provided set() method to trigger
+        re-renders.
+        <h4>Parameters:</h4>
+        <ol>
+          <li>
+            <strong>initialState</strong>: T extends Object - The initial state object that will be converted to a Map.
+          </li>
+        </ol>
+        For example:
+      </>
+    ),
+    $p1: "Basic usage: initialize a map with an object, and use get() to retrieve values and set() to update values.",
     $h2: "Get and Set",
     $p2: "You can get properties from the map directly by `map.get` or by using get method, and set properties by using set method. `map.set` is omitted from the map.",
     $h3: "Four overloads of set",
@@ -1283,7 +1355,27 @@ const locale_en = {
     ),
     $faqs: (
       <ul>
-        <Un />
+        <Li>
+          <strong>Q</strong>: Why useMap instead of useState with Map?
+        </Li>
+        <Li>
+          <strong>A</strong>: useMap provides convenient methods (set, get, del, add) and ensures immutability
+          automatically. You don't need to manually create a new Map instance to trigger re-renders.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What's the difference between 'rehydrate' and 'override' mode?
+        </Li>
+        <Li>
+          <strong>A</strong>: 'rehydrate' merges new values with existing ones (keeps existing keys), while 'override'
+          replaces the entire map (removes all existing keys).
+        </Li>
+        <Li>
+          <strong>Q</strong>: Can I use map.set() directly?
+        </Li>
+        <Li>
+          <strong>A</strong>: No, the returned map is readonly. You must use the provided set() method to trigger
+          re-renders.
+        </Li>
       </ul>
     ),
     $apis: {
