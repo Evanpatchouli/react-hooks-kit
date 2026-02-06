@@ -82,7 +82,7 @@ export default {
     UseReactor: {
       route: "useReactor",
       title: "UseReactor",
-      status: "stable",
+      status: "new",
     },
     UseReactorStore: {
       route: "useReactorStore",
