@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/react-hooks-kit/static/css/main.a9854808.css",
-    "main.js": "/react-hooks-kit/static/js/main.d16415e8.js",
+    "main.js": "/react-hooks-kit/static/js/main.0604ec1f.js",
     "static/js/457.7673f789.chunk.js": "/react-hooks-kit/static/js/457.7673f789.chunk.js",
-    "static/css/743.34088681.chunk.css": "/react-hooks-kit/static/css/743.34088681.chunk.css",
-    "static/js/743.9f3e38ed.chunk.js": "/react-hooks-kit/static/js/743.9f3e38ed.chunk.js",
+    "static/css/381.f24550a9.chunk.css": "/react-hooks-kit/static/css/381.f24550a9.chunk.css",
+    "static/js/381.d5477512.chunk.js": "/react-hooks-kit/static/js/381.d5477512.chunk.js",
     "static/js/787.a5b1f0aa.chunk.js": "/react-hooks-kit/static/js/787.a5b1f0aa.chunk.js",
     "static/js/788.5f42137a.chunk.js": "/react-hooks-kit/static/js/788.5f42137a.chunk.js",
     "static/media/logo.svg": "/react-hooks-kit/static/media/logo.e3be05329bd1e4952bd0d6482f3e06f1.svg",
     "static/media/logo.filled.svg": "/react-hooks-kit/static/media/logo.filled.16bf1e4e7c8b0a539d2d7c242f486712.svg",
     "index.html": "/react-hooks-kit/index.html",
     "main.a9854808.css.map": "/react-hooks-kit/static/css/main.a9854808.css.map",
-    "main.d16415e8.js.map": "/react-hooks-kit/static/js/main.d16415e8.js.map",
+    "main.0604ec1f.js.map": "/react-hooks-kit/static/js/main.0604ec1f.js.map",
     "457.7673f789.chunk.js.map": "/react-hooks-kit/static/js/457.7673f789.chunk.js.map",
-    "743.34088681.chunk.css.map": "/react-hooks-kit/static/css/743.34088681.chunk.css.map",
-    "743.9f3e38ed.chunk.js.map": "/react-hooks-kit/static/js/743.9f3e38ed.chunk.js.map",
+    "381.f24550a9.chunk.css.map": "/react-hooks-kit/static/css/381.f24550a9.chunk.css.map",
+    "381.d5477512.chunk.js.map": "/react-hooks-kit/static/js/381.d5477512.chunk.js.map",
     "787.a5b1f0aa.chunk.js.map": "/react-hooks-kit/static/js/787.a5b1f0aa.chunk.js.map",
     "788.5f42137a.chunk.js.map": "/react-hooks-kit/static/js/788.5f42137a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a9854808.css",
-    "static/js/main.d16415e8.js"
+    "static/js/main.0604ec1f.js"
   ]
 }

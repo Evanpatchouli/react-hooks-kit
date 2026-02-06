@@ -2895,7 +2895,7 @@ var useUpdateEffect = function (callback, dependencies) {
     }, dependencies);
 };
 
-var useUpdateLayoutEffect = function (callback, dependencies) {
+var useLayoutUpdateEffect = function (callback, dependencies) {
     var firstRenderRef = useRef(true);
     useLayoutEffect(function () {
         if (firstRenderRef.current) {
@@ -4362,4 +4362,4 @@ function createFaviconWithBadge(iconUrl, badge) {
     });
 }
 
-export { useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGenerator, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImage, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetworkStatus as useNetwork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnmount as useUnMount, useUpdate, useUpdateEffect, useUpdateLayoutEffect, useUrl, useVirtualArea, useWatch, useWatchGetter, useWhyDidYouUpdate };
+export { useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGenerator, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImage, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetworkStatus as useNetwork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnmount as useUnMount, useUpdate, useUpdateEffect, useLayoutUpdateEffect, useUrl, useVirtualArea, useWatch, useWatchGetter, useWhyDidYouUpdate };

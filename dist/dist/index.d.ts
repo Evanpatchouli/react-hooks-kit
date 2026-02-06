@@ -33,7 +33,7 @@ export { default as useMount } from "./useMount";
 export { default as useUnMount } from "./useUnMount";
 export { default as useUpdate } from "./useUpdate";
 export { default as useUpdateEffect } from "./useUpdateEffect";
-export { default as useUpdateLayoutEffect } from "./useUpdateLayoutEffect";
+export { default as useLayoutUpdateEffect } from "./useLayoutUpdateEffect";
 export { default as useAsyncEffect } from "./useAsyncEffect";
 export { default as useEmitter } from "./useEmitter";
 export { default as useReceiver } from "./useReceiver";

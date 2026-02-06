@@ -11,6 +11,7 @@ export { default as useReactive } from "./useReactive";
 export { default as useReactor } from "./useReactor";
 export { default as useTickState } from "./useTickState";
 export { default as useMemento } from "./useMemento";
+export { default as useReflect } from "./useReflect";
 
 // callback hooks
 export { default as useTicker } from "./useTicker";
@@ -42,7 +43,6 @@ export { default as useMount } from "./useMount";
 export { default as useUnMount } from "./useUnMount";
 export { default as useUpdate } from "./useUpdate";
 export { default as useUpdateEffect } from "./useUpdateEffect";
-export { default as useUpdateLayoutEffect } from "./useUpdateLayoutEffect";
 export { default as useAsyncEffect } from "./useAsyncEffect";
 
 // event hooks
@@ -68,6 +68,7 @@ export { default as useBattery } from "./useBattery";
 export { default as useClickAway } from "./useClickAway";
 export { default as useCookie } from "./useCookie";
 export { default as useConsoleLog } from "./useConsoleLog";
+export { default as useDimensions } from "./useDimensions";
 export { default as useEyeDropper } from "./useEyeDropper";
 export { default as useHover } from "./useHover";
 export { default as useKeyPress } from "./useKeyPress";

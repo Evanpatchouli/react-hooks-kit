@@ -1596,6 +1596,246 @@ const locale_en = {
       },
     },
   },
+  
+  useClickAway: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useCookie: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useDimensions: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useHover: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useKeyPress: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useMousePosition: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useOverflow: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useRaf: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useRafState: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useScroll: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useSafeArea: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+  
+  useAsyncEffect: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
   __end: "end of locale mappings, please do not delete this line",
 } as const;
 

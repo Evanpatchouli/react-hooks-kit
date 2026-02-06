@@ -221,7 +221,7 @@ export default {
       status: "preview",
     },
   },
-  LifetimeHooks: {
+  LifecycleHooks: {
     UseBeforeMount: {
       route: "useBeforeMount",
       title: "UseBeforeMount",
@@ -247,9 +247,9 @@ export default {
       title: "UseUpdateEffect",
       status: "preview",
     },
-    UseUpdateLayoutEffect: {
-      route: "useUpdateLayoutEffect",
-      title: "UseUpdateLayoutEffect",
+    UseAsyncEffect: {
+      route: "useAsyncEffect",
+      title: "UseAsyncEffect",
       status: "preview",
     },
   },
@@ -328,6 +328,16 @@ export default {
       title: "UseProtect",
       status: "experimental",
     },
+    UseRaf: {
+      route: "useRaf",
+      title: "UseRaf",
+      status: "preview",
+    },
+    UseRafState: {
+      route: "useRafState",
+      title: "UseRafState",
+      status: "preview",
+    },
     UseReflect: {
       route: "useReflect",
       title: "UseReflect",
@@ -338,10 +348,35 @@ export default {
       title: "UseBatchHooks",
       status: "experimental",
     },
+    UseClickAway: {
+      route: "useClickAway",
+      title: "UseClickAway",
+      status: "preview",
+    },
     UseConsoleLog: {
       route: "useConsoleLog",
       title: "UseConsoleLog",
       status: "experimental",
+    },
+    UseCookie: {
+      route: "useCookie",
+      title: "UseCookie",
+      status: "preview",
+    },
+    UseDimensions: {
+      route: "useDimensions",
+      title: "UseDimensions",
+      status: "preview",
+    },
+    UseSafeArea: {
+      route: "useSafeArea",
+      title: "UseSafeArea",
+      status: "preview",
+    },
+    UseScroll: {
+      route: "useScroll",
+      title: "UseScroll",
+      status: "preview",
     },
     UseSingleTon: {
       route: "useSingleTon",
@@ -353,10 +388,20 @@ export default {
       title: "UseMediaQuery",
       status: "preview",
     },
+    UseMousePosition: {
+      route: "useMousePosition",
+      title: "UseMousePosition",
+      status: "preview",
+    },
     UseNetwork: {
       route: "useNetWork",
       title: "UseNetWork",
       status: "experimental",
+    },
+    UseOverflow: {
+      route: "useOverflow",
+      title: "UseOverflow",
+      status: "preview",
     },
     UseWhyDidYouUpdate: {
       route: "useWhyDidYouUpdate",
@@ -366,6 +411,16 @@ export default {
     UseEyeDropper: {
       route: "useEyeDropper",
       title: "UseEyeDropper",
+      status: "preview",
+    },
+    UseHover: {
+      route: "useHover",
+      title: "UseHover",
+      status: "preview",
+    },
+    UseKeyPress: {
+      route: "useKeyPress",
+      title: "UseKeyPress",
       status: "preview",
     },
     UseBattery: {

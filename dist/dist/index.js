@@ -2897,7 +2897,7 @@ var useUpdateEffect = function (callback, dependencies) {
     }, dependencies);
 };
 
-var useUpdateLayoutEffect = function (callback, dependencies) {
+var useLayoutUpdateEffect = function (callback, dependencies) {
     var firstRenderRef = react.useRef(true);
     react.useLayoutEffect(function () {
         if (firstRenderRef.current) {
@@ -4427,7 +4427,7 @@ exports.useTree = useTree;
 exports.useUnMount = useUnmount;
 exports.useUpdate = useUpdate;
 exports.useUpdateEffect = useUpdateEffect;
-exports.useUpdateLayoutEffect = useUpdateLayoutEffect;
+exports.useLayoutUpdateEffect = useLayoutUpdateEffect;
 exports.useUrl = useUrl;
 exports.useVirtualArea = useVirtualArea;
 exports.useWatch = useWatch;

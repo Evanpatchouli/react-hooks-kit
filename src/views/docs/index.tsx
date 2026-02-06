@@ -241,12 +241,12 @@ export default function Docs() {
               }}
             >
               <ListItemIcon>🔮</ListItemIcon>
-              <ListItemText primary="Lifetime hooks" />
+              <ListItemText primary="Lifecycle hooks" />
               {open[5] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[5]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {Object.entries(docsMap.LifetimeHooks).map(([, { route, status }]) => {
+                {Object.entries(docsMap.LifecycleHooks).map(([, { route, status }]) => {
                   return (
                     <ListItemButton
                       sx={{ pl: 4 }}
@@ -378,7 +378,7 @@ export default function Docs() {
                         //   break;
                         // case "CallbackHooks":
                         //   break;
-                        // case "LifetimeHooks":
+                        // case "LifecycleHooks":
                         //   break;
                         // case "PromiseHooks":
                         //   break;
