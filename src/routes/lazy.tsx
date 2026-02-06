@@ -1,5 +1,4 @@
 import React from "react";
-import { CropRotate } from "@mui/icons-material";
 import Loading from "@/components/Loading";
 
 export function Lazy(props: { children: React.ReactNode }) {

@@ -5,10 +5,8 @@
   "homepage": "react-hooks-kit",
   "scripts": {
     "package": "node scripts/lib.build.js",
-    "build": "react-app-rewired build",
-    "eject": "react-app-rewired eject",
-    "start": "react-app-rewired start",
-    "test": "react-app-rewired test",
+    "build": "vite build",
+    "start": "vite",
     "locale:add": "node scripts/locale.add.js",
     "locale:add:hook": "node scripts/locale.add.hook.js",
     "view:add:hook": "node scripts/view.add.hook.js"
@@ -47,7 +45,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.64",
+    "@types/node": "^24.10.1",
     "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.17",
     "customize-cra": "^1.0.0",
@@ -67,6 +65,8 @@
     "@types/lodash.clonedeep": "^4.5.9",
     "@types/react-syntax-highlighter": "^15.5.10",
     "prop-types": "^15.8.1",
-    "webpack": "^5.89.0"
+    "@vitejs/plugin-react": "^5.1.1",
+    "globals": "^16.5.0",
+    "vite": "^7.2.4"
   }
 }
