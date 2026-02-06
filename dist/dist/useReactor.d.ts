@@ -66,10 +66,75 @@ export declare function listen<T = any>(target: Omit<Reactor<T>, "_state" | "_se
     then: (...fns: ((value: T) => any)[]) => () => void;
 };
 /**
- * useReactor is a React Hook that returns a Reactor instance.
- * @param initialValue
- * @param plugins
- * @returns Reactor instance
+ * **useReactor** is a React Hook that returns a Reactor instance for advanced state management.
+ * ### Parameters
+ * - initialValue: `T` - The initial state value.
+ * - plugins?: `ReactorPlugin<T>[]` - Optional array of plugins to extend Reactor functionality.
+ *   - Each plugin can have: name, action, onStateChange, onAction callbacks.
+ * ---
+ * ### Return (Reactor Instance)
+ * A Reactor instance with the following properties and methods:
+ * - **value**: `T` - Get or set the current state value.
+ * - **subscribe**: `(listener: (state: T) => any) => () => void` - Subscribe to state changes.
+ * - **get**: `(path?: string) => any` - Get value by path (e.g., "user.name").
+ * - **set**: `(path: string, value: any) => void` - Set value by path.
+ * - **setValue**: `(newState: T | ((prev: T) => T)) => void` - Update the entire state.
+ * - **dispatch**: `(action: string, payload?: any) => void` - Dispatch plugin actions.
+ * - **emit**: `(eventName: string, payload?: any) => void` - Emit custom events.
+ * - **on**: `(eventName: string, listener: Function) => () => void` - Listen to custom events.
+ * - **clone**: `() => Reactor<T>` - Clone the reactor instance.
+ * - **reset**: `() => void` - Reset to initial value.
+ * - **toJSON**: `() => T` - Serialize to JSON.
+ * ---
+ * ### Usage
+ * ```tsx
+ * const reactor = useReactor({ count: 0, user: { name: "John" } });
+ *
+ * // Direct value access
+ * reactor.value.count; // 0
+ * reactor.value = { count: 1, user: { name: "Alice" } };
+ *
+ * // Path-based access
+ * reactor.get("user.name"); // "John"
+ * reactor.set("count", 10);
+ *
+ * // Subscribe to changes
+ * reactor.subscribe((state) => console.log(state));
+ *
+ * // Reset to initial value
+ * reactor.reset();
+ * ```
+ * ---
+ * ### Example
+ * ```tsx
+ * import { useReactor } from "@evanpatchouli/react-hooks-kit";
+ *
+ * const Counter = () => {
+ *   const reactor = useReactor({ count: 0 });
+ *
+ *   return (
+ *     <div>
+ *       <p>Count: {reactor.value.count}</p>
+ *       <button onClick={() => reactor.set("count", reactor.get("count") + 1)}>
+ *         Increment
+ *       </button>
+ *       <button onClick={() => reactor.reset()}>
+ *         Reset
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ * ```
+ * ---
+ * ### FAQs
+ * - Q: Why useReactor instead of useState?
+ * - A: Reactor provides advanced features like path-based access, subscriptions, plugins, and event system.
+ * ---
+ * - Q: When should I use plugins?
+ * - A: Use plugins to add custom logic that runs on state changes or actions, like logging, validation, or side effects.
+ * ---
+ * - Q: Can I use Reactor outside of React components?
+ * - A: Yes, you can create a Reactor instance directly using `new Reactor(initialValue)`, but it won't trigger React re-renders.
  */
 export declare const useReactor: <T = any>(initialValue: T, plugins?: ReactorPlugin<T>[] | undefined) => Reactor<T, ReactorPlugin<T>>;
 /**

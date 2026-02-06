@@ -51,6 +51,11 @@ entirely stable. If a hook with prefix tag of **new**, it means it has passed te
 
 ## Report
 
+- v1.3.0
+ - migrate cra to vite
+ - Pass tests for useMap
+ - Pass tests for useReactor
+
 - v1.2.3
   - Add new hook useFavicon
 

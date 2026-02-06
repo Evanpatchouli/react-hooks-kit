@@ -28,4 +28,7 @@ export default defineConfig({
     setupFiles: "./src/setupTests.ts",
     css: true,
   },
+  build: {
+    outDir: "docs",
+  },
 });

@@ -1,5 +1,10 @@
 # ChangeLog
 
+- v1.3.0
+ - migrate **<font color="red">cra</font>** to **<font color="#2196f3">vite</font>**
+ - **<font color="#c09000">Pass tests</font>** for useMap
+ - **<font color="#c09000">Pass tests</font>** for useReactor
+
 ## v1.2.3
 
 - New hook! useFavicon

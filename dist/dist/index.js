@@ -345,6 +345,80 @@ function useRecord(initial) {
     return [record, set, get];
 }
 
+/**
+ * **useMap** is a React Hook that manages a Map state with convenient methods for manipulation.
+ * ### Parameters
+ * - initialState: `T extends Object` - The initial state object that will be converted to a Map.
+ * ---
+ * ### Return (Object)
+ * - map: `ReadonlyMap<T>` - The readonly Map instance (cannot use set/delete/clear directly).
+ * - set: `function` - Set values in the map, has four overloads:
+ *   + (key: K, value: Property<T, K>): void - Set a single key-value pair.
+ *   + (key: K, setValueAction: (prev?: Property<T, K>) => Property<T, K>): void - Set value using a function.
+ *   + (record: Partial<T>, mode?: 'rehydrate' | 'override'): void - Set multiple key-value pairs.
+ *   + (setMapAction: (prev: Map<K, Property<T, K>>) => T | Map<K, Property<T, K>>, mode?: 'rehydrate' | 'override'): void - Set using a function that receives the previous Map.
+ * - get: `(key: K) => Property<T, K>` - Get value by key.
+ * - del: `(key: Hintable<keyof T>) => void` - Delete a key from the map.
+ * - add: `(key: K, value: Property<T, K>) => void` - Add or update a key-value pair (alias for set).
+ * ---
+ * ### Usage
+ * ```tsx
+ * const { map, set, get, del, add } = useMap({
+ *   name: "John",
+ *   age: 18
+ * });
+ *
+ * // Set single value
+ * set("name", "Evan");
+ *
+ * // Set with function
+ * set("age", (prev) => (prev || 0) + 1);
+ *
+ * // Set multiple values
+ * set({ name: "Alice", age: 25 }, "rehydrate");
+ *
+ * // Get value
+ * const name = get("name");
+ *
+ * // Delete key
+ * del("age");
+ * ```
+ * ---
+ * ### Example
+ * ```tsx
+ * import { useMap } from "@evanpatchouli/react-hooks-kit";
+ *
+ * const UserProfile = () => {
+ *   const { map, set, get, del } = useMap({
+ *     username: "john_doe",
+ *     email: "john@example.com",
+ *     age: 25
+ *   });
+ *
+ *   return (
+ *     <div>
+ *       <p>Username: {get("username")}</p>
+ *       <button onClick={() => set("age", (prev) => (prev || 0) + 1)}>
+ *         Increment Age
+ *       </button>
+ *       <button onClick={() => del("email")}>
+ *         Remove Email
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ * ```
+ * ---
+ * ### FAQs
+ * - Q: Why useMap instead of useState with Map?
+ * - A: useMap provides convenient methods (set, get, del, add) and ensures immutability automatically.
+ * ---
+ * - Q: What's the difference between 'rehydrate' and 'override' mode?
+ * - A: 'rehydrate' merges new values with existing ones, 'override' replaces the entire map.
+ * ---
+ * - Q: Can I use map.set() directly?
+ * - A: No, the returned map is readonly. Use the provided set() method instead.
+ */
 var useMap = function (initialState) {
     var _a = __read(react.useState(new Map(Object.entries(initialState))), 2), map = _a[0], setMap = _a[1];
     // 实现
@@ -354,51 +428,57 @@ var useMap = function (initialState) {
             args[_i] = arguments[_i];
         }
         if (args.length === 0) {
-            throw new Error('No arguments provided');
+            throw new Error("No arguments provided");
         }
-        if (args.length === 1 && typeof args[0] === 'object') {
-            var record_1 = args[0];
-            var mode_1 = args[1] || 'rehydrate';
-            // 处理 record 和 mode 的逻辑
-            setMap(function (prev) {
-                if (mode_1 === 'override') {
-                    return new Map(Object.entries(record_1));
-                }
-                return new Map(__spreadArray(__spreadArray([], __read(prev), false), __read(Object.entries(record_1)), false));
-            });
-        }
-        else if (args.length === 2 && typeof args[0] === 'function') {
-            var setMapAction_1 = args[0];
-            var mode_2 = args[1] || 'override';
-            // 处理 setMapAction 和 mode 的逻辑
+        var firstArg = args[0];
+        var secondArg = args[1];
+        // 判断第一个参数是否为函数 - map action 模式
+        if (typeof firstArg === "function") {
+            var setMapAction_1 = firstArg;
+            var mode_1 = secondArg || "override";
             setMap(function (prev) {
                 var instance = setMapAction_1(prev);
-                var newmap = instance instanceof Map ? instance : new Map(Object.entries(instance));
-                if (mode_2 === 'override') {
+                var newmap = instance instanceof Map
+                    ? instance
+                    : new Map(Object.entries(instance));
+                if (mode_1 === "override") {
                     return newmap;
                 }
                 return new Map(__spreadArray(__spreadArray([], __read(prev), false), __read(newmap), false));
             });
         }
-        else if (args.length === 2 && typeof args[0] !== 'function' && typeof args[1] === 'function') {
-            var key_1 = args[0];
-            var setValueAction_1 = args[1];
-            // 处理 key 和 setValueAction 的逻辑
+        // 判断第一个参数是否为对象（非基本类型） - record 模式
+        else if (typeof firstArg === "object" && firstArg !== null) {
+            var record_1 = firstArg;
+            var mode_2 = secondArg || "rehydrate";
             setMap(function (prev) {
-                var prevValue = map.get(key_1);
-                return new Map(prev.entries()).set(key_1, setValueAction_1(prevValue));
+                if (mode_2 === "override") {
+                    return new Map(Object.entries(record_1));
+                }
+                return new Map(__spreadArray(__spreadArray([], __read(prev), false), __read(Object.entries(record_1)), false));
             });
         }
-        else if (args.length === 2 && typeof args[0] !== 'function' && typeof args[1] !== 'function') {
-            var key_2 = args[0];
-            var value_1 = args[1];
-            // 处理 key 和 value 的逻辑
-            setMap(function (prev) {
-                return new Map(prev.entries()).set(key_2, value_1);
-            });
+        // key-value 模式（第一个参数是基本类型）
+        else if (args.length === 2) {
+            var key_1 = firstArg;
+            // 判断第二个参数是否为函数 - key + setValueAction
+            if (typeof secondArg === "function") {
+                var setValueAction_1 = secondArg;
+                setMap(function (prev) {
+                    var prevValue = map.get(key_1);
+                    return new Map(prev.entries()).set(key_1, setValueAction_1(prevValue));
+                });
+            }
+            // key + value
+            else {
+                var value_1 = secondArg;
+                setMap(function (prev) {
+                    return new Map(prev.entries()).set(key_1, value_1);
+                });
+            }
         }
         else {
-            throw new Error('Invalid arguments');
+            throw new Error("Invalid arguments");
         }
     }
     function get(key) {
@@ -428,7 +508,7 @@ var useMap = function (initialState) {
         set: set,
         get: get,
         del: del,
-        add: add
+        add: add,
     };
 };
 
@@ -1347,7 +1427,8 @@ var Reactor = /** @class */ (function () {
         if (deepSet === void 0) { deepSet = false; }
         var _this = this;
         this._setState = function (newState) {
-            _this._state = newState instanceof Function ? newState(_this._state) : newState;
+            _this._state =
+                newState instanceof Function ? newState(_this._state) : newState;
         };
         this._defaultValue = undefined;
         this._plugins = [];
@@ -1513,10 +1594,75 @@ function listen(target) {
     };
 }
 /**
- * useReactor is a React Hook that returns a Reactor instance.
- * @param initialValue
- * @param plugins
- * @returns Reactor instance
+ * **useReactor** is a React Hook that returns a Reactor instance for advanced state management.
+ * ### Parameters
+ * - initialValue: `T` - The initial state value.
+ * - plugins?: `ReactorPlugin<T>[]` - Optional array of plugins to extend Reactor functionality.
+ *   - Each plugin can have: name, action, onStateChange, onAction callbacks.
+ * ---
+ * ### Return (Reactor Instance)
+ * A Reactor instance with the following properties and methods:
+ * - **value**: `T` - Get or set the current state value.
+ * - **subscribe**: `(listener: (state: T) => any) => () => void` - Subscribe to state changes.
+ * - **get**: `(path?: string) => any` - Get value by path (e.g., "user.name").
+ * - **set**: `(path: string, value: any) => void` - Set value by path.
+ * - **setValue**: `(newState: T | ((prev: T) => T)) => void` - Update the entire state.
+ * - **dispatch**: `(action: string, payload?: any) => void` - Dispatch plugin actions.
+ * - **emit**: `(eventName: string, payload?: any) => void` - Emit custom events.
+ * - **on**: `(eventName: string, listener: Function) => () => void` - Listen to custom events.
+ * - **clone**: `() => Reactor<T>` - Clone the reactor instance.
+ * - **reset**: `() => void` - Reset to initial value.
+ * - **toJSON**: `() => T` - Serialize to JSON.
+ * ---
+ * ### Usage
+ * ```tsx
+ * const reactor = useReactor({ count: 0, user: { name: "John" } });
+ *
+ * // Direct value access
+ * reactor.value.count; // 0
+ * reactor.value = { count: 1, user: { name: "Alice" } };
+ *
+ * // Path-based access
+ * reactor.get("user.name"); // "John"
+ * reactor.set("count", 10);
+ *
+ * // Subscribe to changes
+ * reactor.subscribe((state) => console.log(state));
+ *
+ * // Reset to initial value
+ * reactor.reset();
+ * ```
+ * ---
+ * ### Example
+ * ```tsx
+ * import { useReactor } from "@evanpatchouli/react-hooks-kit";
+ *
+ * const Counter = () => {
+ *   const reactor = useReactor({ count: 0 });
+ *
+ *   return (
+ *     <div>
+ *       <p>Count: {reactor.value.count}</p>
+ *       <button onClick={() => reactor.set("count", reactor.get("count") + 1)}>
+ *         Increment
+ *       </button>
+ *       <button onClick={() => reactor.reset()}>
+ *         Reset
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ * ```
+ * ---
+ * ### FAQs
+ * - Q: Why useReactor instead of useState?
+ * - A: Reactor provides advanced features like path-based access, subscriptions, plugins, and event system.
+ * ---
+ * - Q: When should I use plugins?
+ * - A: Use plugins to add custom logic that runs on state changes or actions, like logging, validation, or side effects.
+ * ---
+ * - Q: Can I use Reactor outside of React components?
+ * - A: Yes, you can create a Reactor instance directly using `new Reactor(initialValue)`, but it won't trigger React re-renders.
  */
 var useReactor = function (initialValue, plugins) {
     var _a = __read(react.useState(initialValue), 2), state = _a[0], setState = _a[1];
@@ -1815,6 +1961,32 @@ var useMemento = function (initialState, config) {
         },
     ];
 };
+
+function useReflect(initialValue) {
+    var ref = react.useRef(initialValue);
+    var fsr = useForceUpdate();
+    return {
+        get: function (prop) {
+            if (prop === void 0 || ref.current === null) {
+                // @ts-ignore
+                return ref.current;
+            }
+            // @ts-ignore
+            return Reflect.get(ref.current, prop);
+        },
+        set: function (key, val) {
+            var res = Reflect.set(ref.current, key, val);
+            fsr();
+            return res;
+        },
+        has: function (key) {
+            return Reflect.has(ref.current, key);
+        },
+        apply: function (func) {
+            return Reflect.apply(func, ref.current, []);
+        },
+    };
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                implementation                              */
@@ -2897,17 +3069,6 @@ var useUpdateEffect = function (callback, dependencies) {
     }, dependencies);
 };
 
-var useLayoutUpdateEffect = function (callback, dependencies) {
-    var firstRenderRef = react.useRef(true);
-    react.useLayoutEffect(function () {
-        if (firstRenderRef.current) {
-            firstRenderRef.current = false;
-            return;
-        }
-        return callback();
-    }, dependencies);
-};
-
 function useAsyncEffect(effect, deps, options) {
     var _this = this;
     if (deps === void 0) { deps = []; }
@@ -3811,6 +3972,31 @@ function useConsoleLog() {
     return logs;
 }
 
+function useDimensions() {
+    var ref = react.useRef(null);
+    var _a = __read(react.useState({ width: 0, height: 0, top: 0, left: 0 }), 2), dimensions = _a[0], setDimensions = _a[1];
+    react.useEffect(function () {
+        var observeTarget = ref.current;
+        if (!observeTarget)
+            return;
+        var resizeObserver = new ResizeObserver(function (entries) {
+            entries.forEach(function (entry) {
+                setDimensions({
+                    width: entry.contentRect.width,
+                    height: entry.contentRect.height,
+                    top: entry.contentRect.top,
+                    left: entry.contentRect.left,
+                });
+            });
+        });
+        resizeObserver.observe(observeTarget);
+        return function () {
+            resizeObserver.unobserve(observeTarget);
+        };
+    }, [ref]);
+    return [ref, dimensions];
+}
+
 function useEyeDropper () {
 }
 
@@ -4373,6 +4559,7 @@ exports.useClickAway = useClickAway;
 exports.useConsoleLog = useConsoleLog;
 exports.useCookie = useCookie;
 exports.useDebounce = useDebounce;
+exports.useDimensions = useDimensions;
 exports.useEmitter = useEmitter;
 exports.useEyeDropper = useEyeDropper;
 exports.useFavicon = useFavicon;
@@ -4411,6 +4598,7 @@ exports.useReactor = useReactor;
 exports.useReactorListener = useReactorListener;
 exports.useReceiver = useReceiver;
 exports.useRecord = useRecord;
+exports.useReflect = useReflect;
 exports.useResize = useResize;
 exports.useRipple = useRipple;
 exports.useSafeArea = useSafeArea;
@@ -4427,7 +4615,6 @@ exports.useTree = useTree;
 exports.useUnMount = useUnmount;
 exports.useUpdate = useUpdate;
 exports.useUpdateEffect = useUpdateEffect;
-exports.useLayoutUpdateEffect = useLayoutUpdateEffect;
 exports.useUrl = useUrl;
 exports.useVirtualArea = useVirtualArea;
 exports.useWatch = useWatch;
