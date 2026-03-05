@@ -69,6 +69,7 @@ export { default as useClickAway } from "./useClickAway";
 export { default as useCookie } from "./useCookie";
 export { default as useConsoleLog } from "./useConsoleLog";
 export { default as useDimensions } from "./useDimensions";
+export { default as useDimensionsById } from "./useDimensionsById";
 export { default as useEyeDropper } from "./useEyeDropper";
 export { default as useHover } from "./useHover";
 export { default as useKeyPress } from "./useKeyPress";

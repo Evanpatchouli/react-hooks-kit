@@ -1,8 +1,16 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type RefObject } from "react";
 
-function useDimensions() {
-  const ref = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0, top: 0, left: 0 });
+function useDimensions(): [
+  RefObject<HTMLDivElement | null>,
+  { width: number; height: number; top: number; left: number },
+] {
+  const ref = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0,
+  });
 
   useEffect(() => {
     const observeTarget = ref.current;
