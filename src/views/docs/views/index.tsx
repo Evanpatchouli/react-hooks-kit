@@ -46,6 +46,10 @@ export { default as UseParticle } from "./ui-ux-hooks/UseParticle";
 export { default as UseVirtualArea } from "./ui-ux-hooks/UseVirtualArea";
 export { default as UseGuide } from "./ui-ux-hooks/UseGuide";
 
+// Utility hooks
+export { default as UseInfiniteScroll } from "./utility-hooks/UseInfiniteScroll";
+export { default as UseAutoPageSize } from "./utility-hooks/UseAutoPageSize";
+
 // Other hooks
 export { default as UseProtect } from "./other/UseProtect";
 export { default as UseBatchHooks } from "./other/UseBatchHooks";

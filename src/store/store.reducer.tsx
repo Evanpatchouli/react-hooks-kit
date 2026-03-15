@@ -1,16 +1,17 @@
 import storeAction from "./store.action";
-import { StoreType } from "./store.context";
+import { StoreState } from "./store.context";
 
 const storeReducer = (
-  state: StoreType,
+  state: StoreState,
   action: {
     type: keyof typeof storeAction;
-    payload: any;
+    payload?: any;
   }
-): StoreType => {
+): StoreState => {
   const { type, payload } = action;
   switch (type) {
     case "SET_LOCALE":
+      console.log("SET_LOCALE", payload);
       return {
         ...state,
         locale: payload,

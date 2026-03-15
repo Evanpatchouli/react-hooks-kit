@@ -220,6 +220,16 @@ export default {
       title: "UseIndexDB",
       status: "preview",
     },
+    useInfiniteScroll: {
+      route: "useInfiniteScroll",
+      title: "UseInfiniteScroll",
+      status: "new",
+    },
+    useAutoPageSize: {
+      route: "useAutoPageSize",
+      title: "UseAutoPageSize",
+      status: "new",
+    },
   },
   LifecycleHooks: {
     UseBeforeMount: {
@@ -277,7 +287,7 @@ export default {
     UseVirtualArea: {
       route: "useVirtualArea",
       title: "UseVirtualArea",
-      status: "experimental",
+      status: "deprecated",
     },
     UseRipple: {
       route: "useRipple",

@@ -1535,7 +1535,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useTitle: {
     desc: "A React Hook for managing and monitoring the document title with automatic restoration.",
     detail: (
@@ -1568,11 +1568,11 @@ const locale_en = {
       <li>Keep titles concise - browser tabs have limited space for displaying titles.</li>
     </ul>,
     $faqs: <ul>
-      <li><strong>Q: Will the original title be restored when the component unmounts?</strong><br/>A: Yes, the hook automatically restores the original document title when the component unmounts.</li>
-      <li><strong>Q: Can this hook detect title changes made by other components?</strong><br/>A: Yes, the hook uses MutationObserver to monitor the title element and automatically syncs with external changes.</li>
-      <li><strong>Q: What happens if multiple components use this hook?</strong><br/>A: They may conflict with each other since the document title is global. Consider using only one instance or coordinating between components.</li>
-      <li><strong>Q: Does this work in all browsers?</strong><br/>A: Yes, MutationObserver is supported in all modern browsers. For older browsers, the hook will still work but won't detect external changes.</li>
-      <li><strong>Q: Can I use this for SEO?</strong><br/>A: This hook changes the title dynamically on the client side. For SEO, set the initial title in your HTML or use server-side rendering.</li>
+      <li><strong>Q: Will the original title be restored when the component unmounts?</strong><br />A: Yes, the hook automatically restores the original document title when the component unmounts.</li>
+      <li><strong>Q: Can this hook detect title changes made by other components?</strong><br />A: Yes, the hook uses MutationObserver to monitor the title element and automatically syncs with external changes.</li>
+      <li><strong>Q: What happens if multiple components use this hook?</strong><br />A: They may conflict with each other since the document title is global. Consider using only one instance or coordinating between components.</li>
+      <li><strong>Q: Does this work in all browsers?</strong><br />A: Yes, MutationObserver is supported in all modern browsers. For older browsers, the hook will still work but won't detect external changes.</li>
+      <li><strong>Q: Can I use this for SEO?</strong><br />A: This hook changes the title dynamically on the client side. For SEO, set the initial title in your HTML or use server-side rendering.</li>
     </ul>,
     $apis: {
       generics: (<></>),
@@ -1631,7 +1631,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
@@ -1664,11 +1664,11 @@ const locale_en = {
       <li>For status indicators, use small size (<code>size: 0.3</code>) and position at bottom-right.</li>
     </ul>,
     $faqs: <ul>
-      <li><strong>Q: Can I use this without a badge?</strong><br/>A: Yes, simply call <code>useFavicon(iconUrl)</code> without the second parameter.</li>
-      <li><strong>Q: What happens if the icon fails to load?</strong><br/>A: The hook will fallback to the original icon URL without the badge.</li>
-      <li><strong>Q: Can I change the badge dynamically?</strong><br/>A: Yes, the hook will update the favicon whenever the iconUrl or badge options change.</li>
-      <li><strong>Q: What happens when the badge content exceeds 99?</strong><br/>A: Numbers over 99 will automatically display as "99+" to maintain readability.</li>
-      <li><strong>Q: Why is my badge not showing?</strong><br/>A: Check if the image is from the same origin. Cross-origin images may fail due to CORS restrictions.</li>
+      <li><strong>Q: Can I use this without a badge?</strong><br />A: Yes, simply call <code>useFavicon(iconUrl)</code> without the second parameter.</li>
+      <li><strong>Q: What happens if the icon fails to load?</strong><br />A: The hook will fallback to the original icon URL without the badge.</li>
+      <li><strong>Q: Can I change the badge dynamically?</strong><br />A: Yes, the hook will update the favicon whenever the iconUrl or badge options change.</li>
+      <li><strong>Q: What happens when the badge content exceeds 99?</strong><br />A: Numbers over 99 will automatically display as "99+" to maintain readability.</li>
+      <li><strong>Q: Why is my badge not showing?</strong><br />A: Check if the image is from the same origin. Cross-origin images may fail due to CORS restrictions.</li>
     </ul>,
     $apis: {
       generics: (<></>),
@@ -1688,7 +1688,7 @@ const locale_en = {
       },
     },
   },
-  
+
   useClickAway: {
     desc: "",
     detail: (
@@ -1708,7 +1708,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useCookie: {
     desc: "",
     detail: (
@@ -1728,7 +1728,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useDimensions: {
     desc: "",
     detail: (
@@ -1748,7 +1748,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useHover: {
     desc: "",
     detail: (
@@ -1768,7 +1768,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useKeyPress: {
     desc: "",
     detail: (
@@ -1788,7 +1788,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useMousePosition: {
     desc: "",
     detail: (
@@ -1808,7 +1808,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useOverflow: {
     desc: "",
     detail: (
@@ -1828,7 +1828,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useRaf: {
     desc: "",
     detail: (
@@ -1848,7 +1848,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useRafState: {
     desc: "",
     detail: (
@@ -1868,7 +1868,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useScroll: {
     desc: "",
     detail: (
@@ -1888,7 +1888,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useSafeArea: {
     desc: "",
     detail: (
@@ -1908,7 +1908,7 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useAsyncEffect: {
     desc: "",
     detail: (
@@ -1928,8 +1928,196 @@ const locale_en = {
       return: {},
     },
   },
-  
+
   useDimensionsById: {
+    desc: "",
+    detail: (
+      <>
+      </>
+    ),
+    $p1: "",
+    consideration: (
+      <ol>
+      </ol>
+    ),
+    $best: <ul></ul>,
+    $faqs: <ul></ul>,
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {},
+    },
+  },
+
+  useInfiniteScroll: {
+    desc: "A React Hook for implementing infinite scrolling with automatic load detection using IntersectionObserver.",
+    detail: (
+      <>
+        <p>
+          <code>useInfiniteScroll</code> provides a simple way to implement infinite scrolling in React
+          applications. It automatically detects when a loader element becomes visible and triggers
+          asynchronous data loading using the browser’s <code>IntersectionObserver</code> API.
+        </p>
+        <p>
+          The hook manages the entire lifecycle of an infinite list: loading state, accumulated items,
+          concurrency control, and viewport/container visibility detection. It also supports both
+          page-level scrolling and scrollable container elements.
+        </p>
+        <p>
+          By returning a <code>loader</code> element that must be rendered at the bottom of your list,
+          the hook can observe its visibility and trigger additional data loading when users scroll
+          near the end of the content.
+        </p>
+      </>
+    ),
+    $p1: "Render the returned loader element at the bottom of your list. When it enters the viewport (or container), the hook automatically triggers loadMore and appends new items.",
+    consideration: (
+      <ol>
+        <li>
+          The <code>loader</code> element must be rendered in the DOM for the observer to detect it.
+          If it is conditionally hidden, infinite loading will not trigger.
+        </li>
+        <li>
+          The <code>loadMore</code> function should be stable (e.g., wrapped with <code>useCallback</code>
+          or referencing stable state) to avoid unnecessary re-observation or unexpected requests.
+        </li>
+        <li>
+          When using <code>mode="container"</code>, ensure the container element has a fixed height
+          and <code>overflow: auto</code> or <code>overflow: scroll</code> so scrolling events occur
+          inside the container.
+        </li>
+        <li>
+          The hook prevents concurrent requests internally, but your API should still be idempotent
+          or safe against repeated calls in case of network retries.
+        </li>
+        <li>
+          If the loader is already visible when mounted (for example when the list is short),
+          the hook will immediately trigger loading until the viewport/container is filled.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>
+          Always place the returned <code>loader</code> at the bottom of your list items so the
+          observer can detect when the user reaches the end.
+        </li>
+        <li>
+          Use <code>preloadDistance</code> (e.g., 200–400px) to start loading before the user
+          actually reaches the bottom for smoother UX.
+        </li>
+        <li>
+          When working with scrollable panels or chat-style layouts, use
+          <code>mode="container"</code> with <code>containerRef</code> or <code>containerId</code>.
+        </li>
+        <li>
+          Keep pagination state outside the hook (e.g., page or cursor) and update it inside
+          <code>loadMore</code>.
+        </li>
+        <li>
+          Use <code>reload()</code> when filters or query parameters change to restart the list
+          from the beginning.
+        </li>
+        <li>
+          Use <code>triggerLoadMore()</code> if you need to manually load more data
+          (for example when a button is clicked).
+        </li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why is the loader not triggering?</strong>
+          <br />
+          A: Ensure the loader element is rendered and visible in the DOM. The observer only works
+          if the element exists and can intersect with the viewport or container.
+        </li>
+        <li>
+          <strong>Q: Can I use this with a scrollable container instead of the window?</strong>
+          <br />
+          A: Yes. Set <code>mode="container"</code> and provide either <code>containerRef</code> or
+          <code>containerId</code>.
+        </li>
+        <li>
+          <strong>Q: Can I manually control the loaded items?</strong>
+          <br />
+          A: Yes. Use the returned <code>setItems</code> function to modify the list manually.
+        </li>
+        <li>
+          <strong>Q: How do I reset the list?</strong>
+          <br />
+          A: Call <code>reset()</code> to clear the items and loading state, or use
+          <code>reload()</code> to reset and immediately fetch the first page again.
+        </li>
+        <li>
+          <strong>Q: What happens if the list is shorter than the viewport?</strong>
+          <br />
+          A: The hook automatically triggers additional loads until the viewport or container
+          becomes filled or <code>hasMore</code> becomes false.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (
+        <>
+          <p>
+            <code>{"<T, C>"}</code>
+          </p>
+          <ul>
+            <li>
+              <code>T</code> — Type of items returned by <code>loadMore</code>.
+            </li>
+            <li>
+              <code>C</code> — HTML element type used as the loader container. Defaults to{" "}
+              <code>"div"</code>.
+            </li>
+          </ul>
+        </>
+      ),
+      params: {
+        loadMore:
+          "Async function used to fetch the next batch of items. Should return an array of items or void.",
+        hasMore:
+          "Boolean indicating whether more data is available. When false, loading stops permanently.",
+        loader:
+          "Custom loading indicator. Can be a ReactNode or a function returning a ReactNode.",
+        component:
+          "HTML element type used as the wrapper for the loader element. Defaults to 'div'.",
+        props:
+          "Props passed to the loader container element.",
+        preloadDistance:
+          "Distance in pixels from the viewport/container bottom that triggers preloading. Defaults to 200.",
+        observerOptions:
+          "Custom IntersectionObserver options for advanced control.",
+        disabled:
+          "When true, automatic loading is disabled.",
+        mode:
+          "Scroll detection mode. 'viewport' observes the window, 'container' observes a specific scroll container, and 'auto' chooses automatically.",
+        containerId:
+          "ID of the scroll container element. Takes priority when mode='container'.",
+        containerRef:
+          "Ref to the scroll container element when mode='container'. Used if containerId is not provided.",
+      },
+      return: {
+        loader:
+          "React element that must be rendered at the end of the list to trigger loading when it becomes visible.",
+        loading:
+          "Boolean indicating whether a request is currently in progress.",
+        items:
+          "Accumulated array of loaded items.",
+        setItems:
+          "State setter allowing manual modification of the items array.",
+        reset:
+          "Clears all items and resets the loading state.",
+        reload:
+          "Resets the list and immediately triggers the first load.",
+        triggerLoadMore:
+          "Manually triggers the loadMore function.",
+      },
+    },
+  },
+
+  useAutoPageSize: {
     desc: "",
     detail: (
       <>

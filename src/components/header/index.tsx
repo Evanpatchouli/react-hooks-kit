@@ -8,9 +8,6 @@ import { useStoreAction, useStoreSelector } from "@/store";
 
 export default function Header() {
   const [version, setVersion] = useState(`${pkg.version}`);
-  const handleChange = (event: SelectChangeEvent) => {
-    setVersion(event.target.value);
-  };
   const locale = useStoreSelector("locale") as "en" | "cn";
   const setLocale = useStoreAction("SET_LOCALE");
   const toggleLocale = () => {
@@ -44,7 +41,7 @@ export default function Header() {
           value={version}
           variant="standard"
           inputProps={{ "aria-label": "Without label" }}
-          onChange={handleChange}
+          onChange={toggleLocale}
         >
           <MenuItem value={`${pkg.version}`}>{pkg.version}</MenuItem>
           {/* <MenuItem value={"v2"}>v2</MenuItem>

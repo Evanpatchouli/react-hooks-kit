@@ -17,6 +17,7 @@ import Deving from "@/components/Deving";
 import Dial from "@/components/dial";
 import { Title } from "@/components/layout/Article";
 import Status from "@/components/Status";
+import capitalize from "@/utils/capitalize";
 
 export default function Docs() {
   const [open, setOpen] = useMeta({
@@ -29,6 +30,7 @@ export default function Docs() {
     6: false,
     7: false,
     8: false,
+    9: false,
   });
 
   const url = useUrl();
@@ -324,11 +326,39 @@ export default function Docs() {
                 setOpen(8, !open[8]);
               }}
             >
-              <ListItemIcon>🪄</ListItemIcon>
-              <ListItemText primary="Other hooks" />
+              <ListItemIcon>🎉</ListItemIcon>
+              <ListItemText primary="Utils hooks" />
               {open[8] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={open[8]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {Object.entries(docsMap.UtilsHooks).map(([, { route, status }]) => {
+                  return (
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      selected={curRoute === route}
+                      onClick={() => linkTo(`/docs/${route}`, true)}
+                    >
+                      <ListItemIcon>
+                        <Status type={status} />
+                      </ListItemIcon>
+                      <ListItemText primary={route} />
+                    </ListItemButton>
+                  );
+                })}
+              </List>
+            </Collapse>
+
+            <ListItemButton
+              onClick={() => {
+                setOpen(9, !open[9]);
+              }}
+            >
+              <ListItemIcon>🪄</ListItemIcon>
+              <ListItemText primary="Other hooks" />
+              {open[9] ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={open[9]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {Object.entries(docsMap.OtherHooks).map(([, { route, status }]) => {
                   return (
@@ -360,14 +390,12 @@ export default function Docs() {
                   const module: keyof typeof docsMap = _module as any;
                   return Object.entries(views as { [x: string]: { route: string; title: string } }).map(
                     ([ViewElem, meta]) => {
-                      // console.log(
-                      //   `${module} ${ViewElem} ${JSON.stringify(meta)}`
-                      // );
+                      const elemKey = capitalize(ViewElem)
                       let ElemRender: Option<React.FC> = void 0;
                       switch (module) {
                         case "GettingStarted":
-                          if (ViewElem in GettingStarted) {
-                            ElemRender = GettingStarted[ViewElem as keyof typeof GettingStarted];
+                          if (elemKey in GettingStarted) {
+                            ElemRender = GettingStarted[elemKey as keyof typeof GettingStarted];
                           }
                           break;
                         // case "SentMail":
@@ -389,13 +417,12 @@ export default function Docs() {
                         // case "OtherHooks":
                         //   break;
                         default:
-                          if (ViewElem in View) {
-                            ElemRender = View[ViewElem as keyof typeof View];
+                          if (elemKey in View) {
+                            ElemRender = View[elemKey as keyof typeof View];
                           }
                           // console.log(`${ViewElem}`, View[ViewElem as keyof typeof View] ? true : false);
                           break;
                       }
-                      // console.log(`${ViewElem} route: ${meta.route}`);
                       return ElemRender ? (
                         <Route path={meta.route} element={<ElemRender />} />
                       ) : (
