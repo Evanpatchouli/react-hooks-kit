@@ -1,54 +1,74 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-interface SafeArea {
+interface SafeAreaInsets {
   top: number;
   right: number;
   bottom: number;
   left: number;
 }
 
+// 防抖处理，避免 resize 频繁触发
+function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
 /**
  * @hook useSafeArea
  * @availability iOS Safari, Android Chrome
- * @css
- * ```css
- * body {
- *   --safe-area-inset-top: env(safe-area-inset-top);
- *   --safe-area-inset-right: env(safe-area-inset-right);
- *   --safe-area-inset-bottom: env(safe-area-inset-bottom);
- *   --safe-area-inset-left: env(safe-area-inset-left);
- * }
- * ```
  */
-export default function useSafeArea(): SafeArea {
-  const [safeArea, setSafeArea] = useState<SafeArea>({
+export default function useSafeArea(): SafeAreaInsets {
+  const [insets, setInsets] = useState<SafeAreaInsets>({
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
   });
 
-  useEffect(() => {
-    const computeSafeArea = () => {
-      const style = getComputedStyle(document.body);
-      setSafeArea({
-        top: parseInt(style.getPropertyValue("--safe-area-inset-top"), 10),
-        right: parseInt(style.getPropertyValue("--safe-area-inset-right"), 10),
-        bottom: parseInt(
-          style.getPropertyValue("--safe-area-inset-bottom"),
-          10
-        ),
-        left: parseInt(style.getPropertyValue("--safe-area-inset-left"), 10),
-      });
+  const compute = useCallback(() => {
+    // 方案：动态创建 div 测量（不依赖 CSS 变量）+ 监听 resize
+    const div = document.createElement("div");
+    div.style.cssText = `
+      position: fixed;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) 
+                env(safe-area-inset-bottom) env(safe-area-inset-left);
+      visibility: hidden;
+      pointer-events: none;
+    `;
+    document.body.appendChild(div);
+
+    const style = window.getComputedStyle(div);
+    const parse = (val: string) => {
+      const num = parseInt(val, 10);
+      return isNaN(num) ? 0 : num;
     };
 
-    window.addEventListener("resize", computeSafeArea);
-    computeSafeArea();
+    setInsets({
+      top: parse(style.paddingTop),
+      right: parse(style.paddingRight),
+      bottom: parse(style.paddingBottom),
+      left: parse(style.paddingLeft),
+    });
 
-    return () => {
-      window.removeEventListener("resize", computeSafeArea);
-    };
+    document.body.removeChild(div);
   }, []);
 
-  return safeArea;
+  useEffect(() => {
+    compute();
+    // 防抖处理 resize，100ms 足够
+    const debouncedCompute = debounce(compute, 100);
+    window.addEventListener("resize", debouncedCompute);
+    // iOS 方向变化可能需要 orientationchange
+    window.addEventListener("orientationchange", compute);
+
+    return () => {
+      window.removeEventListener("resize", debouncedCompute);
+      window.removeEventListener("orientationchange", compute);
+    };
+  }, [compute]);
+
+  return insets;
 }
