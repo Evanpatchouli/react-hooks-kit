@@ -1,5 +1,13 @@
 # ChangeLog
 
+## v1.4.0
+
+- New hook! useQrcodeScan
+- Add lazy HTML5 scanning and an injectable WeChat adapter
+- Add image decoding and normalized scan result metadata
+- Add observable camera permission, torch, and zoom state and controls
+- Add scanner lifecycle state, camera switching, concurrency guards, and tests
+
 - v1.3.0
  - migrate **<font color="red">cra</font>** to **<font color="#2196f3">vite</font>**
  - **<font color="#c09000">Pass tests</font>** for useMap

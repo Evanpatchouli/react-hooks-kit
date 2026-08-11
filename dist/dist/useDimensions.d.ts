@@ -1,8 +1,11 @@
-/// <reference types="react" />
-declare function useDimensions(): (import("react").MutableRefObject<null> | {
-    width: number;
-    height: number;
-    top: number;
-    left: number;
-})[];
+import { type RefObject } from "react";
+declare function useDimensions(): [
+    RefObject<HTMLDivElement | null>,
+    {
+        width: number;
+        height: number;
+        top: number;
+        left: number;
+    }
+];
 export default useDimensions;

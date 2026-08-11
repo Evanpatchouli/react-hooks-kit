@@ -52,6 +52,7 @@
     "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.17",
     "customize-cra": "^1.0.0",
+    "html5-qrcode": "2.3.8",
     "lodash.clonedeep": "^4.5.0",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",

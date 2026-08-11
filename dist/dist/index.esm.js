@@ -2091,7 +2091,7 @@ var useTicker = function (fn, durationOrOptions, options) {
     };
 };
 
-function debounce(fn, delay, immediate, callback) {
+function debounce$1(fn, delay, immediate, callback) {
     if (delay === void 0) { delay = 200; }
     if (immediate === void 0) { immediate = false; }
     // 1.定义一个定时器, 保存上一次的定时器
@@ -2168,7 +2168,7 @@ function useDebounce(fn, delay, immediate, callback) {
         if (delay === 0) {
             return fnRef.current;
         }
-        return debounce(fnRef.current, delay, optionsRef.current.immediate, optionsRef.current.callback);
+        return debounce$1(fnRef.current, delay, optionsRef.current.immediate, optionsRef.current.callback);
     }, [delay]);
     return debounceFn;
 }
@@ -3972,7 +3972,12 @@ function useConsoleLog() {
 
 function useDimensions() {
     var ref = useRef(null);
-    var _a = __read(useState({ width: 0, height: 0, top: 0, left: 0 }), 2), dimensions = _a[0], setDimensions = _a[1];
+    var _a = __read(useState({
+        width: 0,
+        height: 0,
+        top: 0,
+        left: 0,
+    }), 2), dimensions = _a[0], setDimensions = _a[1];
     useEffect(function () {
         var observeTarget = ref.current;
         if (!observeTarget)
@@ -3993,6 +3998,35 @@ function useDimensions() {
         };
     }, [ref]);
     return [ref, dimensions];
+}
+
+function useDimensionsById(id) {
+    var _a = __read(useState({
+        width: 0,
+        height: 0,
+        top: 0,
+        left: 0,
+    }), 2), dimensions = _a[0], setDimensions = _a[1];
+    useEffect(function () {
+        var observeTarget = document.getElementById(id);
+        if (!observeTarget)
+            return;
+        var resizeObserver = new ResizeObserver(function (entries) {
+            entries.forEach(function (entry) {
+                setDimensions({
+                    width: entry.contentRect.width,
+                    height: entry.contentRect.height,
+                    top: entry.contentRect.top,
+                    left: entry.contentRect.left,
+                });
+            });
+        });
+        resizeObserver.observe(observeTarget);
+        return function () {
+            resizeObserver.unobserve(observeTarget);
+        };
+    }, [id]); // 每次id变化时重新获取
+    return dimensions;
 }
 
 function useEyeDropper () {
@@ -4297,18 +4331,21 @@ var useScroll = function (callback) {
     return position;
 };
 
+// 防抖处理，避免 resize 频繁触发
+function debounce(fn, delay) {
+    var timer;
+    return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        clearTimeout(timer);
+        timer = setTimeout(function () { return fn.apply(void 0, __spreadArray([], __read(args), false)); }, delay);
+    };
+}
 /**
  * @hook useSafeArea
  * @availability iOS Safari, Android Chrome
- * @css
- * ```css
- * body {
- *   --safe-area-inset-top: env(safe-area-inset-top);
- *   --safe-area-inset-right: env(safe-area-inset-right);
- *   --safe-area-inset-bottom: env(safe-area-inset-bottom);
- *   --safe-area-inset-left: env(safe-area-inset-left);
- * }
- * ```
  */
 function useSafeArea() {
     var _a = __read(useState({
@@ -4316,24 +4353,38 @@ function useSafeArea() {
         right: 0,
         bottom: 0,
         left: 0,
-    }), 2), safeArea = _a[0], setSafeArea = _a[1];
-    useEffect(function () {
-        var computeSafeArea = function () {
-            var style = getComputedStyle(document.body);
-            setSafeArea({
-                top: parseInt(style.getPropertyValue("--safe-area-inset-top"), 10),
-                right: parseInt(style.getPropertyValue("--safe-area-inset-right"), 10),
-                bottom: parseInt(style.getPropertyValue("--safe-area-inset-bottom"), 10),
-                left: parseInt(style.getPropertyValue("--safe-area-inset-left"), 10),
-            });
+    }), 2), insets = _a[0], setInsets = _a[1];
+    var compute = useCallback(function () {
+        // 方案：动态创建 div 测量（不依赖 CSS 变量）+ 监听 resize
+        var div = document.createElement("div");
+        div.style.cssText = "\n      position: fixed;\n      padding: env(safe-area-inset-top) env(safe-area-inset-right) \n                env(safe-area-inset-bottom) env(safe-area-inset-left);\n      visibility: hidden;\n      pointer-events: none;\n    ";
+        document.body.appendChild(div);
+        var style = window.getComputedStyle(div);
+        var parse = function (val) {
+            var num = parseInt(val, 10);
+            return isNaN(num) ? 0 : num;
         };
-        window.addEventListener("resize", computeSafeArea);
-        computeSafeArea();
-        return function () {
-            window.removeEventListener("resize", computeSafeArea);
-        };
+        setInsets({
+            top: parse(style.paddingTop),
+            right: parse(style.paddingRight),
+            bottom: parse(style.paddingBottom),
+            left: parse(style.paddingLeft),
+        });
+        document.body.removeChild(div);
     }, []);
-    return safeArea;
+    useEffect(function () {
+        compute();
+        // 防抖处理 resize，100ms 足够
+        var debouncedCompute = debounce(compute, 100);
+        window.addEventListener("resize", debouncedCompute);
+        // iOS 方向变化可能需要 orientationchange
+        window.addEventListener("orientationchange", compute);
+        return function () {
+            window.removeEventListener("resize", debouncedCompute);
+            window.removeEventListener("orientationchange", compute);
+        };
+    }, [compute]);
+    return insets;
 }
 
 function useSingleton(createInstance) {
@@ -4548,4 +4599,1780 @@ function createFaviconWithBadge(iconUrl, badge) {
     });
 }
 
-export { useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useDimensions, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGenerator, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImage, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetworkStatus as useNetwork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useReflect, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnmount as useUnMount, useUpdate, useUpdateEffect, useUrl, useVirtualArea, useWatch, useWatchGetter, useWhyDidYouUpdate };
+var DEFAULT_CAMERA = {
+    facingMode: { ideal: "environment" },
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
+};
+var DEFAULT_FORMATS = ["qr_code"];
+var scannerContainerSequence = 0;
+var html5QrcodeModulePromise = null;
+var loadDefaultHtml5Qrcode = function () {
+    html5QrcodeModulePromise !== null && html5QrcodeModulePromise !== void 0 ? html5QrcodeModulePromise : (html5QrcodeModulePromise = import('html5-qrcode'));
+    return html5QrcodeModulePromise;
+};
+var defaultIsWechatEnvironment = function () {
+    return typeof navigator !== "undefined" && /MicroMessenger/i.test(navigator.userAgent);
+};
+var normalizeError$1 = function (error) {
+    return error instanceof Error ? error : new Error(String(error));
+};
+/**
+ * A per-hook QR code scanning service with a lazy HTML5 implementation and an optional
+ * application-provided WeChat adapter.
+ */
+var QrcodeScanService = /** @class */ (function () {
+    function QrcodeScanService(options) {
+        if (options === void 0) { options = {}; }
+        var _a, _b;
+        this.scanner = null;
+        this.currentMode = "none";
+        this.isScanning = false;
+        this.isPaused = false;
+        this.operation = 0;
+        this.cameraSwitchRequest = 0;
+        this.abortController = null;
+        this.lastHtml5Options = null;
+        this.ownedContainers = new WeakMap();
+        this.pendingScanners = new WeakSet();
+        this.disposedScanners = new WeakSet();
+        this.wechatAdapter = options.wechatAdapter;
+        this.isWechatEnvironment =
+            (_a = options.isWechatEnvironment) !== null && _a !== void 0 ? _a : defaultIsWechatEnvironment;
+        this.loadHtml5Qrcode = (_b = options.loadHtml5Qrcode) !== null && _b !== void 0 ? _b : loadDefaultHtml5Qrcode;
+    }
+    /** Returns the mode that `auto` resolves to in the current environment. */
+    QrcodeScanService.prototype.getRecommendedMode = function () {
+        return this.isWechatAvailable() ? "wechat" : "html5";
+    };
+    /** Returns whether a requested concrete mode can run. */
+    QrcodeScanService.prototype.validateMode = function (mode) {
+        if (mode === "wechat" && !this.isWechatAvailable()) {
+            return {
+                valid: false,
+                reason: "WeChat scanning requires a WeChat browser and an available wechatAdapter.",
+            };
+        }
+        if (mode === "html5" && typeof document === "undefined") {
+            return {
+                valid: false,
+                reason: "HTML5 scanning requires a browser document.",
+            };
+        }
+        return { valid: true };
+    };
+    /** Starts a scan. A newer start or stop operation supersedes pending work. */
+    QrcodeScanService.prototype.start = function (options) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function () {
+            var operation, abortController, mode, validation, error_1, normalizedError;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        operation = ++this.operation;
+                        (_a = this.abortController) === null || _a === void 0 ? void 0 : _a.abort();
+                        abortController = new AbortController();
+                        this.abortController = abortController;
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 7, , 8]);
+                        mode = options.mode === "auto" ? this.getRecommendedMode() : options.mode;
+                        validation = this.validateMode(mode);
+                        if (!validation.valid) {
+                            throw new Error(validation.reason);
+                        }
+                        if (options.formats.length === 0) {
+                            throw new Error("At least one scan format must be provided.");
+                        }
+                        if (mode === "html5") {
+                            this.assertContainer(options.containerId);
+                        }
+                        return [4 /*yield*/, this.stopActiveScanner()];
+                    case 2:
+                        _c.sent();
+                        if (!this.isCurrent(operation))
+                            return [2 /*return*/];
+                        this.currentMode = mode;
+                        this.isScanning = true;
+                        this.isPaused = false;
+                        if (!(mode === "wechat")) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.startWechat(options, abortController.signal, operation)];
+                    case 3:
+                        _c.sent();
+                        return [3 /*break*/, 6];
+                    case 4: return [4 /*yield*/, this.startHtml5(options, operation)];
+                    case 5:
+                        _c.sent();
+                        _c.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
+                        error_1 = _c.sent();
+                        if (!this.isCurrent(operation))
+                            return [2 /*return*/];
+                        normalizedError = normalizeError$1(error_1);
+                        this.isScanning = false;
+                        this.isPaused = false;
+                        this.currentMode = "none";
+                        (_b = options.onError) === null || _b === void 0 ? void 0 : _b.call(options, normalizedError);
+                        throw normalizedError;
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /** Stops the active scanner. Calling `stop` while idle is safe. */
+    QrcodeScanService.prototype.stop = function () {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function () {
+            var mode, scannerStop, adapterStop;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        ++this.operation;
+                        (_a = this.abortController) === null || _a === void 0 ? void 0 : _a.abort();
+                        this.abortController = null;
+                        mode = this.currentMode;
+                        this.currentMode = "none";
+                        this.isScanning = false;
+                        this.isPaused = false;
+                        scannerStop = this.stopActiveScanner();
+                        adapterStop = mode === "wechat" && ((_b = this.wechatAdapter) === null || _b === void 0 ? void 0 : _b.cancel)
+                            ? Promise.resolve(this.wechatAdapter.cancel())
+                            : Promise.resolve();
+                        return [4 /*yield*/, Promise.all([scannerStop, adapterStop])];
+                    case 1:
+                        _c.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /** Pauses an active HTML5 scanner and its video stream. */
+    QrcodeScanService.prototype.pause = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (this.currentMode !== "html5" || !this.scanner || !this.isScanning) {
+                    throw new Error("An active HTML5 scanner is required before pausing.");
+                }
+                this.scanner.pause(true);
+                this.isPaused = true;
+                return [2 /*return*/];
+            });
+        });
+    };
+    /** Resumes a paused HTML5 scanner. */
+    QrcodeScanService.prototype.resume = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (this.currentMode !== "html5" || !this.scanner || !this.isPaused) {
+                    throw new Error("A paused HTML5 scanner is required before resuming.");
+                }
+                this.scanner.resume();
+                this.isPaused = false;
+                return [2 /*return*/];
+            });
+        });
+    };
+    /** Switches to a requested camera, or cycles to the next available camera. */
+    QrcodeScanService.prototype.switchCamera = function (cameraId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var request, operation, runningScanner, cameras, target, runningCameraId_1, currentIndex, pendingStart, startedOperation, error;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.currentMode !== "html5" ||
+                            !this.scanner ||
+                            !this.isScanning ||
+                            !this.lastHtml5Options) {
+                            throw new Error("An active HTML5 scanner is required before switching cameras.");
+                        }
+                        request = ++this.cameraSwitchRequest;
+                        operation = this.operation;
+                        runningScanner = this.scanner;
+                        return [4 /*yield*/, this.getCameras()];
+                    case 1:
+                        cameras = _a.sent();
+                        this.assertCurrentCameraOperation(request, operation, runningScanner);
+                        if (cameras.length === 0) {
+                            throw new Error("No camera was found.");
+                        }
+                        if (cameraId) {
+                            target = cameras.find(function (camera) { return camera.id === cameraId; });
+                            if (!target) {
+                                throw new Error("Camera ".concat(cameraId, " was not found."));
+                            }
+                        }
+                        else {
+                            if (cameras.length < 2) {
+                                throw new Error("At least two cameras are required to switch cameras.");
+                            }
+                            runningCameraId_1 = this.getRunningCameraId();
+                            currentIndex = cameras.findIndex(function (camera) { return camera.id === runningCameraId_1; });
+                            target = cameras[(currentIndex + 1 + cameras.length) % cameras.length];
+                        }
+                        this.assertCurrentCameraOperation(request, operation, runningScanner);
+                        pendingStart = this.start(__assign(__assign({}, this.lastHtml5Options), { mode: "html5", camera: target.id }));
+                        startedOperation = this.operation;
+                        return [4 /*yield*/, pendingStart];
+                    case 2:
+                        _a.sent();
+                        if (request !== this.cameraSwitchRequest ||
+                            !this.isCurrent(startedOperation) ||
+                            this.currentMode !== "html5" ||
+                            !this.isScanning) {
+                            error = new Error("Camera switch was superseded by a newer operation.");
+                            error.name = "AbortError";
+                            throw error;
+                        }
+                        return [2 /*return*/, target];
+                }
+            });
+        });
+    };
+    /** Returns browser cameras. Labels may be empty until camera permission is granted. */
+    QrcodeScanService.prototype.getCameras = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var Html5Qrcode, cameras;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (typeof navigator === "undefined") {
+                            throw new Error("Camera enumeration requires a browser environment.");
+                        }
+                        return [4 /*yield*/, this.loadHtml5Qrcode()];
+                    case 1:
+                        Html5Qrcode = (_a.sent()).Html5Qrcode;
+                        return [4 /*yield*/, Html5Qrcode.getCameras()];
+                    case 2:
+                        cameras = _a.sent();
+                        return [2 /*return*/, cameras.map(function (_a) {
+                                var id = _a.id, label = _a.label;
+                                return ({ id: id, label: label });
+                            })];
+                }
+            });
+        });
+    };
+    /** Decodes one browser image file without requesting camera permission. */
+    QrcodeScanService.prototype.scanImage = function (file, options) {
+        var _a, _b;
+        if (options === void 0) { options = {}; }
+        try {
+            this.assertImageFile(file, options.maxFileSize);
+            if (((_a = options.formats) !== null && _a !== void 0 ? _a : DEFAULT_FORMATS).length === 0) {
+                throw new Error("At least one scan format must be provided.");
+            }
+            this.assertImageContainer(options.containerId, (_b = options.showImage) !== null && _b !== void 0 ? _b : false);
+        }
+        catch (error) {
+            return Promise.reject(normalizeError$1(error));
+        }
+        return this.scanImageInternal(file, options).catch(function (error) {
+            throw normalizeError$1(error);
+        });
+    };
+    QrcodeScanService.prototype.scanImageInternal = function (file, options) {
+        var _a, _b, _c, _d, _e, _f;
+        return __awaiter(this, void 0, void 0, function () {
+            var formats, operation, previousMode, scannerStop, adapterStop, module, showImage, container, scanner, rawResult, result, error_2;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        formats = (_a = options.formats) !== null && _a !== void 0 ? _a : DEFAULT_FORMATS;
+                        operation = ++this.operation;
+                        (_b = this.abortController) === null || _b === void 0 ? void 0 : _b.abort();
+                        this.abortController = null;
+                        previousMode = this.currentMode;
+                        this.currentMode = "none";
+                        this.isScanning = false;
+                        this.isPaused = false;
+                        scannerStop = this.stopActiveScanner();
+                        adapterStop = previousMode === "wechat" && ((_c = this.wechatAdapter) === null || _c === void 0 ? void 0 : _c.cancel)
+                            ? Promise.resolve(this.wechatAdapter.cancel())
+                            : Promise.resolve();
+                        return [4 /*yield*/, Promise.all([scannerStop, adapterStop])];
+                    case 1:
+                        _g.sent();
+                        this.assertCurrentImageOperation(operation);
+                        return [4 /*yield*/, this.loadHtml5Qrcode()];
+                    case 2:
+                        module = _g.sent();
+                        this.assertCurrentImageOperation(operation);
+                        showImage = (_d = options.showImage) !== null && _d !== void 0 ? _d : false;
+                        container = this.resolveImageContainer(options.containerId, showImage);
+                        try {
+                            scanner = new module.Html5Qrcode(container.id, {
+                                formatsToSupport: this.mapFormats(module, formats),
+                                useBarCodeDetectorIfSupported: ((_e = options.useNativeDetector) !== null && _e !== void 0 ? _e : true) &&
+                                    this.getSupportsNativeDetector(),
+                                verbose: (_f = options.verbose) !== null && _f !== void 0 ? _f : false,
+                            });
+                        }
+                        catch (error) {
+                            if (container.owned)
+                                container.element.remove();
+                            throw normalizeError$1(error);
+                        }
+                        if (container.owned)
+                            this.ownedContainers.set(scanner, container.element);
+                        this.scanner = scanner;
+                        _g.label = 3;
+                    case 3:
+                        _g.trys.push([3, 12, , 14]);
+                        this.pendingScanners.add(scanner);
+                        rawResult = void 0;
+                        _g.label = 4;
+                    case 4:
+                        _g.trys.push([4, , 6, 7]);
+                        return [4 /*yield*/, scanner.scanFileV2(file, showImage)];
+                    case 5:
+                        rawResult = _g.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
+                        this.pendingScanners.delete(scanner);
+                        return [7 /*endfinally*/];
+                    case 7:
+                        if (!!this.isActiveScanner(operation, scanner)) return [3 /*break*/, 9];
+                        return [4 /*yield*/, this.disposeScanner(scanner)];
+                    case 8:
+                        _g.sent();
+                        this.assertCurrentImageOperation(operation);
+                        _g.label = 9;
+                    case 9:
+                        result = this.normalizeResult(module, rawResult, "image");
+                        if (!!showImage) return [3 /*break*/, 11];
+                        if (this.scanner === scanner)
+                            this.scanner = null;
+                        return [4 /*yield*/, this.disposeScanner(scanner)];
+                    case 10:
+                        _g.sent();
+                        _g.label = 11;
+                    case 11: return [2 /*return*/, result];
+                    case 12:
+                        error_2 = _g.sent();
+                        if (this.scanner === scanner)
+                            this.scanner = null;
+                        return [4 /*yield*/, this.disposeScanner(scanner)];
+                    case 13:
+                        _g.sent();
+                        throw normalizeError$1(error_2);
+                    case 14: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /** Returns camera capabilities for the active HTML5 video track. */
+    QrcodeScanService.prototype.getCameraCapabilities = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var capabilities, settings, torchCapability, torchSupported, zoomCapability, zoomMin, zoomMax, zoomSupported;
+            return __generator(this, function (_a) {
+                if (this.currentMode !== "html5" || !this.scanner || !this.isScanning) {
+                    return [2 /*return*/, null];
+                }
+                try {
+                    capabilities = this.scanner.getRunningTrackCapabilities();
+                    settings = this.scanner.getRunningTrackSettings();
+                    torchCapability = capabilities.torch;
+                    torchSupported = Array.isArray(torchCapability)
+                        ? torchCapability.indexOf(true) >= 0 &&
+                            torchCapability.indexOf(false) >= 0
+                        : torchCapability === true;
+                    zoomCapability = capabilities.zoom;
+                    zoomMin = this.finiteNumberOrNull(zoomCapability === null || zoomCapability === void 0 ? void 0 : zoomCapability.min);
+                    zoomMax = this.finiteNumberOrNull(zoomCapability === null || zoomCapability === void 0 ? void 0 : zoomCapability.max);
+                    zoomSupported = zoomMin !== null && zoomMax !== null && zoomMax >= zoomMin;
+                    return [2 /*return*/, {
+                            torch: {
+                                supported: torchSupported,
+                                enabled: typeof settings.torch === "boolean" ? settings.torch : null,
+                            },
+                            zoom: {
+                                supported: zoomSupported,
+                                value: this.finiteNumberOrNull(settings.zoom),
+                                min: zoomSupported ? zoomMin : null,
+                                max: zoomSupported ? zoomMax : null,
+                                step: zoomSupported
+                                    ? this.positiveFiniteNumberOrNull(zoomCapability === null || zoomCapability === void 0 ? void 0 : zoomCapability.step)
+                                    : null,
+                            },
+                        }];
+                }
+                catch (error) {
+                    throw normalizeError$1(error);
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
+    /** Enables or disables the camera torch and returns the refreshed capabilities. */
+    QrcodeScanService.prototype.setTorch = function (enabled) {
+        return __awaiter(this, void 0, void 0, function () {
+            var scanner, capabilities, advanced, refreshed;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        scanner = this.getActiveHtml5Scanner("torch");
+                        return [4 /*yield*/, this.getCameraCapabilities()];
+                    case 1:
+                        capabilities = _a.sent();
+                        if (!(capabilities === null || capabilities === void 0 ? void 0 : capabilities.torch.supported)) {
+                            throw new Error("The active camera does not support torch control.");
+                        }
+                        advanced = { torch: enabled };
+                        return [4 /*yield*/, scanner.applyVideoConstraints({ advanced: [advanced] })];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.getCameraCapabilities()];
+                    case 3:
+                        refreshed = _a.sent();
+                        if (!refreshed) {
+                            throw new Error("The active camera stopped before torch was applied.");
+                        }
+                        return [2 /*return*/, refreshed];
+                }
+            });
+        });
+    };
+    /** Applies a camera zoom value and returns the refreshed capabilities. */
+    QrcodeScanService.prototype.setZoom = function (value) {
+        return __awaiter(this, void 0, void 0, function () {
+            var scanner, capabilities, advanced, refreshed;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!Number.isFinite(value)) {
+                            throw new Error("Camera zoom must be a finite number.");
+                        }
+                        scanner = this.getActiveHtml5Scanner("zoom");
+                        return [4 /*yield*/, this.getCameraCapabilities()];
+                    case 1:
+                        capabilities = _a.sent();
+                        if (!(capabilities === null || capabilities === void 0 ? void 0 : capabilities.zoom.supported)) {
+                            throw new Error("The active camera does not support zoom control.");
+                        }
+                        if (value < capabilities.zoom.min || value > capabilities.zoom.max) {
+                            throw new Error("Camera zoom must be between ".concat(capabilities.zoom.min, " and ").concat(capabilities.zoom.max, "."));
+                        }
+                        advanced = { zoom: value };
+                        return [4 /*yield*/, scanner.applyVideoConstraints({ advanced: [advanced] })];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.getCameraCapabilities()];
+                    case 3:
+                        refreshed = _a.sent();
+                        if (!refreshed) {
+                            throw new Error("The active camera stopped before zoom was applied.");
+                        }
+                        return [2 /*return*/, refreshed];
+                }
+            });
+        });
+    };
+    /** Returns the actual mode used by the current or most recent scan. */
+    QrcodeScanService.prototype.getCurrentMode = function () {
+        return this.currentMode;
+    };
+    /** Returns whether this service is starting, scanning, or paused. */
+    QrcodeScanService.prototype.getIsScanning = function () {
+        return this.isScanning;
+    };
+    /** Returns whether the current user agent is WeChat. */
+    QrcodeScanService.prototype.getIsWechatEnv = function () {
+        return this.isWechatEnvironment();
+    };
+    /** Returns whether the browser exposes the native BarcodeDetector API. */
+    QrcodeScanService.prototype.getSupportsNativeDetector = function () {
+        if (typeof window === "undefined")
+            return false;
+        var BarcodeDetectorConstructor = window.BarcodeDetector;
+        if (typeof BarcodeDetectorConstructor !== "function")
+            return false;
+        try {
+            new BarcodeDetectorConstructor({ formats: ["qr_code"] });
+            return true;
+        }
+        catch (_a) {
+            return false;
+        }
+    };
+    /** Releases the camera and invalidates all pending operations. */
+    QrcodeScanService.prototype.destroy = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.stop()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    QrcodeScanService.prototype.isWechatAvailable = function () {
+        var _a, _b, _c;
+        return (this.getIsWechatEnv() &&
+            Boolean(this.wechatAdapter) &&
+            ((_c = (_b = (_a = this.wechatAdapter) === null || _a === void 0 ? void 0 : _a.isAvailable) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : true));
+    };
+    QrcodeScanService.prototype.assertContainer = function (containerId) {
+        if (!containerId) {
+            throw new Error("containerId is required for HTML5 scanning.");
+        }
+        if (!document.getElementById(containerId)) {
+            throw new Error("Container #".concat(containerId, " does not exist."));
+        }
+    };
+    QrcodeScanService.prototype.assertImageFile = function (file, maxFileSize) {
+        if (typeof File === "undefined" || !(file instanceof File)) {
+            throw new Error("scanImage requires a browser File object.");
+        }
+        if (file.type && !file.type.startsWith("image/")) {
+            throw new Error("scanImage only accepts image files.");
+        }
+        if (maxFileSize !== undefined &&
+            (!Number.isFinite(maxFileSize) || maxFileSize <= 0)) {
+            throw new Error("maxFileSize must be a positive finite number.");
+        }
+        if (maxFileSize !== undefined && file.size > maxFileSize) {
+            throw new Error("Image file size ".concat(file.size, " exceeds the ").concat(maxFileSize, " byte limit."));
+        }
+    };
+    QrcodeScanService.prototype.resolveImageContainer = function (containerId, showImage) {
+        var _a;
+        if (typeof document === "undefined") {
+            throw new Error("Image scanning requires a browser document.");
+        }
+        if (containerId) {
+            var host = document.getElementById(containerId);
+            if (!host) {
+                throw new Error("Container #".concat(containerId, " does not exist."));
+            }
+            var element_1 = this.createOwnedScannerContainer(host, false);
+            return { id: element_1.id, element: element_1, owned: true };
+        }
+        if (showImage) {
+            throw new Error("containerId is required when showImage is true.");
+        }
+        var parent = (_a = document.body) !== null && _a !== void 0 ? _a : document.documentElement;
+        if (!parent) {
+            throw new Error("Image scanning requires an initialized browser document.");
+        }
+        var element = this.createOwnedScannerContainer(parent, true);
+        return { id: element.id, element: element, owned: true };
+    };
+    QrcodeScanService.prototype.createOwnedScannerContainer = function (parent, hidden) {
+        var element = document.createElement("div");
+        element.id =
+            "react-hooks-kit-qrcode-scanner-".concat(++scannerContainerSequence);
+        element.hidden = hidden;
+        parent.appendChild(element);
+        return element;
+    };
+    QrcodeScanService.prototype.assertImageContainer = function (containerId, showImage) {
+        if (typeof document === "undefined") {
+            throw new Error("Image scanning requires a browser document.");
+        }
+        if (showImage && !containerId) {
+            throw new Error("containerId is required when showImage is true.");
+        }
+        if (containerId && !document.getElementById(containerId)) {
+            throw new Error("Container #".concat(containerId, " does not exist."));
+        }
+    };
+    QrcodeScanService.prototype.assertCurrentImageOperation = function (operation) {
+        if (this.isCurrent(operation))
+            return;
+        this.throwSupersededImageError();
+    };
+    QrcodeScanService.prototype.throwSupersededImageError = function () {
+        var error = new Error("Image scan was superseded by a newer operation.");
+        error.name = "AbortError";
+        throw error;
+    };
+    QrcodeScanService.prototype.assertCurrentCameraOperation = function (request, operation, scanner) {
+        if (request === this.cameraSwitchRequest &&
+            this.isCurrent(operation) &&
+            this.scanner === scanner &&
+            this.currentMode === "html5" &&
+            this.isScanning) {
+            return;
+        }
+        var error = new Error("Camera switch was superseded by a newer operation.");
+        error.name = "AbortError";
+        throw error;
+    };
+    QrcodeScanService.prototype.getActiveHtml5Scanner = function (feature) {
+        if (this.currentMode !== "html5" || !this.scanner || !this.isScanning) {
+            throw new Error("An active HTML5 scanner is required before controlling camera ".concat(feature, "."));
+        }
+        return this.scanner;
+    };
+    QrcodeScanService.prototype.finiteNumberOrNull = function (value) {
+        return typeof value === "number" && Number.isFinite(value) ? value : null;
+    };
+    QrcodeScanService.prototype.positiveFiniteNumberOrNull = function (value) {
+        var number = this.finiteNumberOrNull(value);
+        return number !== null && number > 0 ? number : null;
+    };
+    QrcodeScanService.prototype.createBasicResult = function (text, source) {
+        return {
+            text: text,
+            source: source,
+            format: null,
+            formatName: null,
+            contentType: null,
+            bounds: null,
+            decoderName: null,
+            timestamp: Date.now(),
+        };
+    };
+    QrcodeScanService.prototype.normalizeResult = function (module, rawResult, source) {
+        var _a, _b, _c, _d;
+        var result = rawResult.result;
+        var bounds = result.bounds;
+        return {
+            text: rawResult.decodedText,
+            source: source,
+            format: result.format === undefined
+                ? null
+                : this.unmapFormat(module, result.format.format),
+            formatName: (_b = (_a = result.format) === null || _a === void 0 ? void 0 : _a.formatName) !== null && _b !== void 0 ? _b : null,
+            contentType: result.decodedTextType === undefined
+                ? null
+                : result.decodedTextType === 1
+                    ? "url"
+                    : "unknown",
+            bounds: bounds
+                ? {
+                    x: bounds.x,
+                    y: bounds.y,
+                    width: bounds.width,
+                    height: bounds.height,
+                }
+                : null,
+            decoderName: (_d = (_c = result.debugData) === null || _c === void 0 ? void 0 : _c.decoderName) !== null && _d !== void 0 ? _d : null,
+            timestamp: Date.now(),
+        };
+    };
+    QrcodeScanService.prototype.startWechat = function (options, signal, operation) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.wechatAdapter.scan({
+                            signal: signal,
+                            formats: options.formats,
+                        })];
+                    case 1:
+                        result = _b.sent();
+                        if (!this.isCurrent(operation))
+                            return [2 /*return*/];
+                        this.isScanning = false;
+                        this.currentMode = "none";
+                        if (result === null) {
+                            (_a = options.onCancel) === null || _a === void 0 ? void 0 : _a.call(options);
+                        }
+                        else {
+                            options.onSuccess(result, this.createBasicResult(result, "wechat"));
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    QrcodeScanService.prototype.startHtml5 = function (options, operation) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var module, useNativeDetector, host, ownedContainer, scanner, camera, cameraIdOrConfig, configuration, error_3;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.loadHtml5Qrcode()];
+                    case 1:
+                        module = _b.sent();
+                        if (!this.isCurrent(operation))
+                            return [2 /*return*/];
+                        useNativeDetector = options.useNativeDetector && this.getSupportsNativeDetector();
+                        host = document.getElementById(options.containerId);
+                        if (!host) {
+                            throw new Error("Container #".concat(options.containerId, " does not exist."));
+                        }
+                        ownedContainer = this.createOwnedScannerContainer(host, false);
+                        try {
+                            scanner = new module.Html5Qrcode(ownedContainer.id, {
+                                formatsToSupport: this.mapFormats(module, options.formats),
+                                useBarCodeDetectorIfSupported: useNativeDetector,
+                                verbose: options.verbose,
+                            });
+                        }
+                        catch (error) {
+                            ownedContainer.remove();
+                            throw error;
+                        }
+                        this.ownedContainers.set(scanner, ownedContainer);
+                        this.scanner = scanner;
+                        this.lastHtml5Options = options;
+                        camera = (_a = options.camera) !== null && _a !== void 0 ? _a : DEFAULT_CAMERA;
+                        cameraIdOrConfig = typeof camera === "string" ? camera : { facingMode: "environment" };
+                        configuration = {
+                            fps: options.fps,
+                            qrbox: options.qrbox,
+                            aspectRatio: options.aspectRatio,
+                            disableFlip: options.disableFlip,
+                            videoConstraints: typeof camera === "string" ? undefined : camera,
+                        };
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, 9, , 11]);
+                        this.pendingScanners.add(scanner);
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, , 5, 6]);
+                        return [4 /*yield*/, scanner.start(cameraIdOrConfig, configuration, function (decodedText, rawResult) {
+                                if (!_this.isActiveScanner(operation, scanner))
+                                    return;
+                                options.onSuccess(decodedText, _this.normalizeResult(module, rawResult, "camera"));
+                                if (options.stopOnSuccess) {
+                                    void _this.stop().catch(function (error) { var _a; return (_a = options.onError) === null || _a === void 0 ? void 0 : _a.call(options, normalizeError$1(error)); });
+                                }
+                            }, function (message) {
+                                var _a;
+                                if (_this.isActiveScanner(operation, scanner)) {
+                                    (_a = options.onDecodeError) === null || _a === void 0 ? void 0 : _a.call(options, message);
+                                }
+                            })];
+                    case 4:
+                        _b.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
+                        this.pendingScanners.delete(scanner);
+                        return [7 /*endfinally*/];
+                    case 6:
+                        if (!!this.isActiveScanner(operation, scanner)) return [3 /*break*/, 8];
+                        return [4 /*yield*/, this.disposeScanner(scanner)];
+                    case 7:
+                        _b.sent();
+                        _b.label = 8;
+                    case 8: return [3 /*break*/, 11];
+                    case 9:
+                        error_3 = _b.sent();
+                        if (this.scanner === scanner)
+                            this.scanner = null;
+                        return [4 /*yield*/, this.disposeScanner(scanner)];
+                    case 10:
+                        _b.sent();
+                        throw error_3;
+                    case 11: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    QrcodeScanService.prototype.mapFormats = function (module, formats) {
+        var supported = module.Html5QrcodeSupportedFormats;
+        var formatMap = {
+            qr_code: supported.QR_CODE,
+            aztec: supported.AZTEC,
+            codabar: supported.CODABAR,
+            code_39: supported.CODE_39,
+            code_93: supported.CODE_93,
+            code_128: supported.CODE_128,
+            data_matrix: supported.DATA_MATRIX,
+            maxicode: supported.MAXICODE,
+            itf: supported.ITF,
+            ean_13: supported.EAN_13,
+            ean_8: supported.EAN_8,
+            pdf_417: supported.PDF_417,
+            rss_14: supported.RSS_14,
+            rss_expanded: supported.RSS_EXPANDED,
+            upc_a: supported.UPC_A,
+            upc_e: supported.UPC_E,
+            upc_ean_extension: supported.UPC_EAN_EXTENSION,
+        };
+        return formats.map(function (format) { return formatMap[format]; });
+    };
+    QrcodeScanService.prototype.unmapFormat = function (module, format) {
+        var _a;
+        var supported = module.Html5QrcodeSupportedFormats;
+        var formatMap = [
+            [supported.QR_CODE, "qr_code"],
+            [supported.AZTEC, "aztec"],
+            [supported.CODABAR, "codabar"],
+            [supported.CODE_39, "code_39"],
+            [supported.CODE_93, "code_93"],
+            [supported.CODE_128, "code_128"],
+            [supported.DATA_MATRIX, "data_matrix"],
+            [supported.MAXICODE, "maxicode"],
+            [supported.ITF, "itf"],
+            [supported.EAN_13, "ean_13"],
+            [supported.EAN_8, "ean_8"],
+            [supported.PDF_417, "pdf_417"],
+            [supported.RSS_14, "rss_14"],
+            [supported.RSS_EXPANDED, "rss_expanded"],
+            [supported.UPC_A, "upc_a"],
+            [supported.UPC_E, "upc_e"],
+            [supported.UPC_EAN_EXTENSION, "upc_ean_extension"],
+        ];
+        var mappedFormat = formatMap.find(function (_a) {
+            var _b = __read(_a, 1), value = _b[0];
+            return value === format;
+        });
+        return (_a = mappedFormat === null || mappedFormat === void 0 ? void 0 : mappedFormat[1]) !== null && _a !== void 0 ? _a : null;
+    };
+    QrcodeScanService.prototype.getRunningCameraId = function () {
+        var _a, _b;
+        try {
+            return (_a = this.scanner) === null || _a === void 0 ? void 0 : _a.getRunningTrackSettings().deviceId;
+        }
+        catch (_c) {
+            var camera = (_b = this.lastHtml5Options) === null || _b === void 0 ? void 0 : _b.camera;
+            return typeof camera === "string" ? camera : undefined;
+        }
+    };
+    QrcodeScanService.prototype.isCurrent = function (operation) {
+        return operation === this.operation;
+    };
+    QrcodeScanService.prototype.isActiveScanner = function (operation, scanner) {
+        return this.isCurrent(operation) && this.scanner === scanner;
+    };
+    QrcodeScanService.prototype.stopActiveScanner = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var scanner, error_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        scanner = this.scanner;
+                        this.scanner = null;
+                        if (!scanner)
+                            return [2 /*return*/];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, this.disposeScanner(scanner)];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_4 = _a.sent();
+                        if (!this.scanner)
+                            this.scanner = scanner;
+                        throw error_4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    QrcodeScanService.prototype.disposeScanner = function (scanner) {
+        return __awaiter(this, void 0, void 0, function () {
+            var ownedContainer_1, stopError, error_5, ownedContainer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.disposedScanners.has(scanner))
+                            return [2 /*return*/];
+                        if (this.pendingScanners.has(scanner)) {
+                            ownedContainer_1 = this.ownedContainers.get(scanner);
+                            if (ownedContainer_1)
+                                ownedContainer_1.hidden = true;
+                            return [2 /*return*/];
+                        }
+                        if (!scanner.isScanning) return [3 /*break*/, 4];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, scanner.stop()];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_5 = _a.sent();
+                        stopError = error_5;
+                        return [3 /*break*/, 4];
+                    case 4:
+                        try {
+                            scanner.clear();
+                        }
+                        catch (error) {
+                            stopError !== null && stopError !== void 0 ? stopError : (stopError = error);
+                        }
+                        if (stopError)
+                            throw normalizeError$1(stopError);
+                        ownedContainer = this.ownedContainers.get(scanner);
+                        if (ownedContainer) {
+                            this.ownedContainers.delete(scanner);
+                            ownedContainer.remove();
+                        }
+                        this.disposedScanners.add(scanner);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return QrcodeScanService;
+}());
+
+var DEFAULT_OPTIONS = {
+    fps: 10,
+    qrbox: 250,
+    aspectRatio: 1,
+    disableFlip: false,
+    formats: ["qr_code"],
+    useNativeDetector: true,
+    verbose: false,
+    stopOnSuccess: false,
+};
+var normalizeError = function (error) {
+    return error instanceof Error ? error : new Error(String(error));
+};
+var createFallbackScanResult = function (text, source) { return ({
+    text: text,
+    source: source,
+    format: null,
+    formatName: null,
+    contentType: null,
+    bounds: null,
+    decoderName: null,
+    timestamp: Date.now(),
+}); };
+var queryCameraPermission = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var status_1;
+    var _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                if (typeof navigator === "undefined" ||
+                    !navigator.mediaDevices ||
+                    !((_b = navigator.permissions) === null || _b === void 0 ? void 0 : _b.query)) {
+                    return [2 /*return*/, { state: "unsupported", status: null }];
+                }
+                _c.label = 1;
+            case 1:
+                _c.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, navigator.permissions.query({
+                        name: "camera",
+                    })];
+            case 2:
+                status_1 = _c.sent();
+                return [2 /*return*/, {
+                        state: status_1.state,
+                        status: status_1,
+                    }];
+            case 3:
+                _c.sent();
+                return [2 /*return*/, { state: "unsupported", status: null }];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var getInitialCameraPermissionState = function () {
+    var _a;
+    return typeof navigator === "undefined" ||
+        !navigator.mediaDevices ||
+        !((_a = navigator.permissions) === null || _a === void 0 ? void 0 : _a.query)
+        ? "unsupported"
+        : "unknown";
+};
+var validateImageScanRequest = function (file, options) {
+    var _a;
+    if (typeof File === "undefined" || !(file instanceof File)) {
+        throw new Error("scanImage requires a browser File object.");
+    }
+    if (file.type && !file.type.startsWith("image/")) {
+        throw new Error("scanImage only accepts image files.");
+    }
+    if (options.maxFileSize !== undefined &&
+        (!Number.isFinite(options.maxFileSize) || options.maxFileSize <= 0)) {
+        throw new Error("maxFileSize must be a positive finite number.");
+    }
+    if (options.maxFileSize !== undefined &&
+        file.size > options.maxFileSize) {
+        throw new Error("Image file size ".concat(file.size, " exceeds the ").concat(options.maxFileSize, " byte limit."));
+    }
+    if (((_a = options.formats) === null || _a === void 0 ? void 0 : _a.length) === 0) {
+        throw new Error("At least one scan format must be provided.");
+    }
+    if (typeof document === "undefined") {
+        throw new Error("Image scanning requires a browser document.");
+    }
+    if (options.showImage && !options.containerId) {
+        throw new Error("containerId is required when showImage is true.");
+    }
+    if (options.containerId &&
+        !document.getElementById(options.containerId)) {
+        throw new Error("Container #".concat(options.containerId, " does not exist."));
+    }
+};
+var isScanningStatus = function (status) {
+    return status === "starting" || status === "scanning" || status === "paused";
+};
+/**
+ * **useQrcodeScan** is a React Hook that scans QR codes and barcodes from a
+ * camera, an image file, or an application-provided WeChat adapter.
+ * ### Parameters
+ * - options?: `UseQrcodeScanOptions | QrcodeScanMode` - Shared scanner options, or a mode string for concise usage.
+ *   - mode: `"auto" | "wechat" | "html5"?` - The preferred live scanner mode. Defaults to `"auto"`.
+ *   - wechatAdapter: `QrcodeScanWechatAdapter?` - An application-owned WeChat JS-SDK bridge.
+ *   - service: `QrcodeScanServiceLike?` - A stable custom scanner service. The first value is used for the Hook lifetime.
+ *   - onSuccess: `((result: string, details?: QrcodeScanResult) => void)?` - The default success callback for live and image scans.
+ *   - onError: `((error: Error) => void)?` - The default operational error callback.
+ *   - onCancel: `(() => void)?` - The default WeChat cancellation callback.
+ *   - onDecodeError: `((message: string) => void)?` - Receives non-fatal per-frame decode misses.
+ * ---
+ * ### Return (Object)
+ * - status: `QrcodeScanStatus` - The lifecycle state, including `decoding` for image files.
+ * - isScanning: `boolean` - Whether a live scanner is starting, running, or paused.
+ * - isPaused: `boolean` - Whether an HTML5 camera scan is paused.
+ * - isDecodingImage: `boolean` - Whether an image file is currently being decoded.
+ * - result: `string | null` - The latest decoded text, retained for backwards compatibility.
+ * - scanResult: `QrcodeScanResult | null` - The normalized result source, format, bounds, content type, decoder, and timestamp.
+ * - error: `Error | null` - The latest operational or device-control error.
+ * - mode: `"wechat" | "html5" | "none"` - The active live scanner mode. Image decoding keeps this as `none`.
+ * - cameraCapabilities: `QrcodeCameraCapabilities | null` - Torch and zoom support for the active camera track.
+ * - cameraPermission: `QrcodeCameraPermissionState` - The observable camera permission without prompting on mount.
+ * - isWechatEnv: `boolean` - Whether the current user agent is WeChat.
+ * - supportsNativeDetector: `boolean` - Whether the native BarcodeDetector API is exposed.
+ * - start: `(options?: QrcodeScanStartOptions) => Promise<void>` - Starts a live scan. Per-scan callbacks override shared callbacks.
+ * - stop: `() => Promise<void>` - Stops scanning, clears image previews, and releases the camera.
+ * - pause: `() => Promise<void>` - Pauses an HTML5 camera scan.
+ * - resume: `() => Promise<void>` - Resumes a paused HTML5 camera scan.
+ * - switchCamera: `(cameraId?: string) => Promise<QrcodeCamera>` - Selects a camera or cycles to the next one.
+ * - getCameras: `() => Promise<QrcodeCamera[]>` - Requests access when needed and lists browser cameras.
+ * - scanImage: `(file: File, options?: QrcodeImageScanStartOptions) => Promise<QrcodeScanResult>` - Decodes one image after stopping any live scan.
+ * - refreshCameraCapabilities: `() => Promise<QrcodeCameraCapabilities | null>` - Refreshes the active camera feature snapshot.
+ * - setTorch: `(enabled: boolean) => Promise<QrcodeCameraCapabilities>` - Applies torch state when supported.
+ * - setZoom: `(value: number) => Promise<QrcodeCameraCapabilities>` - Applies an in-range zoom value when supported.
+ * - refreshCameraPermission: `() => Promise<QrcodeCameraPermissionState>` - Re-queries camera permission without requesting it.
+ * - clearResult: `() => void` - Clears both text and structured results.
+ * - clearError: `() => void` - Clears the latest error without stopping an active scanner.
+ * - reset: `() => Promise<void>` - Stops scanning and clears session result and error state.
+ * ---
+ * ### Usage
+ * ```tsx
+ * const scanner = useQrcodeScan({ mode: "auto" });
+ *
+ * await scanner.start({ containerId: "qr-reader" });
+ * const capabilities = await scanner.refreshCameraCapabilities();
+ * if (capabilities?.torch.supported) await scanner.setTorch(true);
+ * if (capabilities?.zoom.supported && capabilities.zoom.min !== null) {
+ *   await scanner.setZoom(capabilities.zoom.min);
+ * }
+ *
+ * const imageResult = await scanner.scanImage(file, {
+ *   formats: ["qr_code"],
+ *   maxFileSize: 8 * 1024 * 1024,
+ * });
+ * ```
+ * ---
+ * ### Example
+ * ```tsx
+ * import { useQrcodeScan } from "@evanpatchouli/react-hooks-kit";
+ *
+ * const Scanner = () => {
+ *   const scanner = useQrcodeScan({
+ *     onSuccess: (_text, details) => console.log(details),
+ *   });
+ *
+ *   return (
+ *     <section>
+ *       <div id="qr-reader" />
+ *       <button
+ *         onClick={() => void scanner.start({ containerId: "qr-reader" })}
+ *       >
+ *         Start camera
+ *       </button>
+ *       <input
+ *         type="file"
+ *         accept="image/*"
+ *         onChange={(event) => {
+ *           const file = event.currentTarget.files?.[0];
+ *           if (file) void scanner.scanImage(file);
+ *         }}
+ *       />
+ *       <p>Permission: {scanner.cameraPermission}</p>
+ *       {scanner.scanResult ? <p>{scanner.scanResult.text}</p> : null}
+ *     </section>
+ *   );
+ * };
+ * ```
+ * ---
+ * ### FAQs
+ * - Q: Why does camera scanning fail on an HTTP page?
+ * - A: Camera access requires a secure context such as HTTPS or localhost. Image scanning does not request camera permission.
+ * ---
+ * - Q: Why are format, bounds, or content type sometimes null?
+ * - A: The selected browser decoder does not always provide every metadata field.
+ * ---
+ * - Q: Why are torch or zoom unsupported on a device with a camera?
+ * - A: Support is reported by the currently active camera track and can change after switching cameras.
+ * ---
+ * - Q: Does `granted` guarantee that camera startup will succeed?
+ * - A: No. Device availability, browser policy, and concurrent camera use can still prevent startup.
+ * ---
+ * - Q: Does the Hook configure the WeChat JS-SDK?
+ * - A: No. Inject a `wechatAdapter` so the application can own its app ID, signature API, and SDK readiness.
+ */
+var useQrcodeScan = function (options) {
+    var _a;
+    if (options === void 0) { options = {}; }
+    var config = typeof options === "string" ? { mode: options } : options;
+    var requestedMode = (_a = config.mode) !== null && _a !== void 0 ? _a : "auto";
+    var callbacksRef = useRef({
+        onSuccess: config.onSuccess,
+        onError: config.onError,
+        onCancel: config.onCancel,
+        onDecodeError: config.onDecodeError,
+    });
+    callbacksRef.current = {
+        onSuccess: config.onSuccess,
+        onError: config.onError,
+        onCancel: config.onCancel,
+        onDecodeError: config.onDecodeError,
+    };
+    var _b = __read(useState(function () {
+        var _a;
+        return (_a = config.service) !== null && _a !== void 0 ? _a : new QrcodeScanService({ wechatAdapter: config.wechatAdapter });
+    }), 1), service = _b[0];
+    var _c = __read(useState("idle"), 2), status = _c[0], setStatus = _c[1];
+    var _d = __read(useState(null), 2), result = _d[0], setResult = _d[1];
+    var _e = __read(useState(null), 2), scanResult = _e[0], setScanResult = _e[1];
+    var _f = __read(useState(null), 2), error = _f[0], setError = _f[1];
+    var _g = __read(useState("none"), 2), mode = _g[0], setMode = _g[1];
+    var _h = __read(useState(null), 2), cameraCapabilities = _h[0], setCameraCapabilities = _h[1];
+    var _j = __read(useState(getInitialCameraPermissionState), 2), cameraPermission = _j[0], setCameraPermission = _j[1];
+    var _k = __read(useState(function () { return ({
+        isWechatEnv: service.getIsWechatEnv(),
+        supportsNativeDetector: service.getSupportsNativeDetector(),
+    }); }), 1), environment = _k[0];
+    var mountedRef = useRef(false);
+    var operationRef = useRef(0);
+    var controlOperationRef = useRef(0);
+    var permissionOperationRef = useRef(0);
+    var permissionListenerRef = useRef(null);
+    useEffect(function () {
+        mountedRef.current = true;
+        return function () {
+            mountedRef.current = false;
+            ++operationRef.current;
+            void service.destroy().catch(function () { return undefined; });
+        };
+    }, [service]);
+    var isCurrent = useCallback(function (operation) {
+        return mountedRef.current && operation === operationRef.current;
+    }, []);
+    var replacePermissionListener = useCallback(function (permissionStatus) {
+        var currentListener = permissionListenerRef.current;
+        if (currentListener) {
+            currentListener.status.removeEventListener("change", currentListener.listener);
+            permissionListenerRef.current = null;
+        }
+        if (!permissionStatus)
+            return;
+        var listener = function () {
+            if (mountedRef.current) {
+                setCameraPermission(permissionStatus.state);
+            }
+        };
+        permissionStatus.addEventListener("change", listener);
+        permissionListenerRef.current = { status: permissionStatus, listener: listener };
+    }, []);
+    var refreshCameraPermission = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var operation, permission;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    operation = ++permissionOperationRef.current;
+                    return [4 /*yield*/, queryCameraPermission()];
+                case 1:
+                    permission = _a.sent();
+                    if (mountedRef.current &&
+                        operation === permissionOperationRef.current) {
+                        replacePermissionListener(permission.status);
+                        setCameraPermission(permission.state);
+                    }
+                    return [2 /*return*/, permission.state];
+            }
+        });
+    }); }, [replacePermissionListener]);
+    useEffect(function () {
+        void refreshCameraPermission();
+        return function () {
+            ++permissionOperationRef.current;
+            replacePermissionListener(null);
+        };
+    }, [refreshCameraPermission, replacePermissionListener]);
+    var start = useCallback(function (startOptions) {
+        if (startOptions === void 0) { startOptions = {}; }
+        return __awaiter(void 0, void 0, void 0, function () {
+            var operation, controlOperation, perScanCallbacks, errorWasReported, terminalSuccessHandled, scanOptions, pendingStart, activeMode, capabilities, startError_1, normalizedError;
+            var _b, _c, _d, _e;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
+                    case 0:
+                        operation = ++operationRef.current;
+                        controlOperation = ++controlOperationRef.current;
+                        perScanCallbacks = {
+                            onSuccess: startOptions.onSuccess,
+                            onError: startOptions.onError,
+                            onCancel: startOptions.onCancel,
+                            onDecodeError: startOptions.onDecodeError,
+                        };
+                        errorWasReported = false;
+                        terminalSuccessHandled = false;
+                        if (mountedRef.current) {
+                            setError(null);
+                            setResult(null);
+                            setScanResult(null);
+                            setCameraCapabilities(null);
+                            setStatus("starting");
+                            setMode("none");
+                        }
+                        scanOptions = __assign(__assign(__assign({}, DEFAULT_OPTIONS), startOptions), { mode: (_b = startOptions.mode) !== null && _b !== void 0 ? _b : requestedMode, formats: (_c = startOptions.formats) !== null && _c !== void 0 ? _c : DEFAULT_OPTIONS.formats, onSuccess: function (decodedValue, decodedDetails) {
+                                var _a, _b;
+                                if (!isCurrent(operation))
+                                    return;
+                                if (scanOptions.stopOnSuccess && terminalSuccessHandled)
+                                    return;
+                                terminalSuccessHandled = scanOptions.stopOnSuccess;
+                                var fallbackSource = service.getCurrentMode() === "wechat" ||
+                                    scanOptions.mode === "wechat" ||
+                                    (scanOptions.mode === "auto" && service.getIsWechatEnv())
+                                    ? "wechat"
+                                    : "camera";
+                                var details = decodedDetails
+                                    ? decodedDetails.text === decodedValue
+                                        ? decodedDetails
+                                        : __assign(__assign({}, decodedDetails), { text: decodedValue })
+                                    : createFallbackScanResult(decodedValue, fallbackSource);
+                                setResult(decodedValue);
+                                setScanResult(details);
+                                if (scanOptions.stopOnSuccess) {
+                                    ++controlOperationRef.current;
+                                    setStatus("idle");
+                                    setMode("none");
+                                    setCameraCapabilities(null);
+                                }
+                                else {
+                                    setStatus("scanning");
+                                    setMode(service.getCurrentMode());
+                                }
+                                (_b = ((_a = perScanCallbacks.onSuccess) !== null && _a !== void 0 ? _a : callbacksRef.current.onSuccess)) === null || _b === void 0 ? void 0 : _b(decodedValue, details);
+                            }, onError: function (scanError) {
+                                var _a, _b;
+                                if (!isCurrent(operation))
+                                    return;
+                                errorWasReported = true;
+                                setError(scanError);
+                                setStatus("error");
+                                setMode("none");
+                                setCameraCapabilities(null);
+                                (_b = ((_a = perScanCallbacks.onError) !== null && _a !== void 0 ? _a : callbacksRef.current.onError)) === null || _b === void 0 ? void 0 : _b(scanError);
+                            }, onCancel: function () {
+                                var _a, _b;
+                                if (!isCurrent(operation))
+                                    return;
+                                setStatus("idle");
+                                setMode("none");
+                                setCameraCapabilities(null);
+                                (_b = ((_a = perScanCallbacks.onCancel) !== null && _a !== void 0 ? _a : callbacksRef.current.onCancel)) === null || _b === void 0 ? void 0 : _b();
+                            }, onDecodeError: function (message) {
+                                var _a, _b;
+                                if (!isCurrent(operation))
+                                    return;
+                                (_b = ((_a = perScanCallbacks.onDecodeError) !== null && _a !== void 0 ? _a : callbacksRef.current.onDecodeError)) === null || _b === void 0 ? void 0 : _b(message);
+                            } });
+                        _f.label = 1;
+                    case 1:
+                        _f.trys.push([1, 8, , 9]);
+                        pendingStart = service.start(scanOptions);
+                        return [4 /*yield*/, Promise.resolve()];
+                    case 2:
+                        _f.sent();
+                        if (isCurrent(operation) &&
+                            service.getCurrentMode() === "wechat" &&
+                            service.getIsScanning()) {
+                            setMode("wechat");
+                            setStatus("scanning");
+                        }
+                        return [4 /*yield*/, pendingStart];
+                    case 3:
+                        _f.sent();
+                        if (!isCurrent(operation))
+                            return [2 /*return*/];
+                        activeMode = service.getCurrentMode();
+                        setMode(activeMode);
+                        setStatus(service.getIsScanning() ? "scanning" : "idle");
+                        if (!(activeMode === "html5" && service.getIsScanning())) return [3 /*break*/, 7];
+                        setCameraPermission("granted");
+                        void refreshCameraPermission();
+                        if (!service.getCameraCapabilities) return [3 /*break*/, 7];
+                        _f.label = 4;
+                    case 4:
+                        _f.trys.push([4, 6, , 7]);
+                        return [4 /*yield*/, service.getCameraCapabilities()];
+                    case 5:
+                        capabilities = _f.sent();
+                        if (isCurrent(operation) &&
+                            controlOperation === controlOperationRef.current) {
+                            setCameraCapabilities(capabilities);
+                        }
+                        return [3 /*break*/, 7];
+                    case 6:
+                        _f.sent();
+                        if (isCurrent(operation) &&
+                            controlOperation === controlOperationRef.current) {
+                            setCameraCapabilities(null);
+                        }
+                        return [3 /*break*/, 7];
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
+                        startError_1 = _f.sent();
+                        normalizedError = normalizeError(startError_1);
+                        if (isCurrent(operation)) {
+                            setError(normalizedError);
+                            setStatus("error");
+                            setMode("none");
+                            setCameraCapabilities(null);
+                            if (normalizedError.name === "NotAllowedError") {
+                                setCameraPermission("denied");
+                                void refreshCameraPermission();
+                            }
+                            if (!errorWasReported) {
+                                (_e = ((_d = perScanCallbacks.onError) !== null && _d !== void 0 ? _d : callbacksRef.current.onError)) === null || _e === void 0 ? void 0 : _e(normalizedError);
+                            }
+                        }
+                        throw normalizedError;
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    }, [isCurrent, refreshCameraPermission, requestedMode, service]);
+    var stop = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var operation, stopError_1, normalizedError;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    operation = ++operationRef.current;
+                    ++controlOperationRef.current;
+                    if (mountedRef.current) {
+                        setStatus("stopping");
+                        setCameraCapabilities(null);
+                    }
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, service.stop()];
+                case 2:
+                    _c.sent();
+                    if (!isCurrent(operation))
+                        return [2 /*return*/];
+                    setStatus("idle");
+                    setMode("none");
+                    setCameraCapabilities(null);
+                    return [3 /*break*/, 4];
+                case 3:
+                    stopError_1 = _c.sent();
+                    normalizedError = normalizeError(stopError_1);
+                    if (isCurrent(operation)) {
+                        setError(normalizedError);
+                        setStatus("error");
+                        setMode("none");
+                        setCameraCapabilities(null);
+                        (_b = (_a = callbacksRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedError);
+                    }
+                    throw normalizedError;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }, [isCurrent, service]);
+    var pause = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var operation, pauseError_1, normalizedError;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    operation = operationRef.current;
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, service.pause()];
+                case 2:
+                    _c.sent();
+                    if (isCurrent(operation))
+                        setStatus("paused");
+                    return [3 /*break*/, 4];
+                case 3:
+                    pauseError_1 = _c.sent();
+                    normalizedError = normalizeError(pauseError_1);
+                    if (isCurrent(operation)) {
+                        setError(normalizedError);
+                        (_b = (_a = callbacksRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedError);
+                    }
+                    throw normalizedError;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }, [isCurrent, service]);
+    var resume = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var operation, resumeError_1, normalizedError;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    operation = operationRef.current;
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, service.resume()];
+                case 2:
+                    _c.sent();
+                    if (isCurrent(operation))
+                        setStatus("scanning");
+                    return [3 /*break*/, 4];
+                case 3:
+                    resumeError_1 = _c.sent();
+                    normalizedError = normalizeError(resumeError_1);
+                    if (isCurrent(operation)) {
+                        setError(normalizedError);
+                        (_b = (_a = callbacksRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedError);
+                    }
+                    throw normalizedError;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }, [isCurrent, service]);
+    var switchCamera = useCallback(function (cameraId) { return __awaiter(void 0, void 0, void 0, function () {
+        var lifecycleOperation, controlOperation, camera, capabilities, switchError_1, normalizedError, capabilities;
+        var _c, _d;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    lifecycleOperation = operationRef.current;
+                    controlOperation = ++controlOperationRef.current;
+                    if (mountedRef.current)
+                        setCameraCapabilities(null);
+                    _e.label = 1;
+                case 1:
+                    _e.trys.push([1, 7, , 13]);
+                    return [4 /*yield*/, service.switchCamera(cameraId)];
+                case 2:
+                    camera = _e.sent();
+                    if (!isCurrent(lifecycleOperation)) return [3 /*break*/, 6];
+                    setError(null);
+                    setMode(service.getCurrentMode());
+                    setStatus("scanning");
+                    setCameraPermission("granted");
+                    void refreshCameraPermission();
+                    if (!service.getCameraCapabilities) return [3 /*break*/, 6];
+                    _e.label = 3;
+                case 3:
+                    _e.trys.push([3, 5, , 6]);
+                    return [4 /*yield*/, service.getCameraCapabilities()];
+                case 4:
+                    capabilities = _e.sent();
+                    if (isCurrent(lifecycleOperation) &&
+                        controlOperation === controlOperationRef.current) {
+                        setCameraCapabilities(capabilities);
+                    }
+                    return [3 /*break*/, 6];
+                case 5:
+                    _e.sent();
+                    if (isCurrent(lifecycleOperation) &&
+                        controlOperation === controlOperationRef.current) {
+                        setCameraCapabilities(null);
+                    }
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/, camera];
+                case 7:
+                    switchError_1 = _e.sent();
+                    normalizedError = normalizeError(switchError_1);
+                    if (!isCurrent(lifecycleOperation)) return [3 /*break*/, 12];
+                    setError(normalizedError);
+                    if (normalizedError.name === "NotAllowedError") {
+                        setCameraPermission("denied");
+                        void refreshCameraPermission();
+                    }
+                    if (!(service.getCameraCapabilities && service.getIsScanning())) return [3 /*break*/, 11];
+                    _e.label = 8;
+                case 8:
+                    _e.trys.push([8, 10, , 11]);
+                    return [4 /*yield*/, service.getCameraCapabilities()];
+                case 9:
+                    capabilities = _e.sent();
+                    if (isCurrent(lifecycleOperation) &&
+                        controlOperation === controlOperationRef.current) {
+                        setCameraCapabilities(capabilities);
+                    }
+                    return [3 /*break*/, 11];
+                case 10:
+                    _e.sent();
+                    return [3 /*break*/, 11];
+                case 11:
+                    (_d = (_c = callbacksRef.current).onError) === null || _d === void 0 ? void 0 : _d.call(_c, normalizedError);
+                    _e.label = 12;
+                case 12: throw normalizedError;
+                case 13: return [2 /*return*/];
+            }
+        });
+    }); }, [isCurrent, refreshCameraPermission, service]);
+    var getCameras = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var cameras, cameraError_1, normalizedError;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, service.getCameras()];
+                case 1:
+                    cameras = _c.sent();
+                    if (mountedRef.current) {
+                        setError(null);
+                        setCameraPermission("granted");
+                        void refreshCameraPermission();
+                    }
+                    return [2 /*return*/, cameras];
+                case 2:
+                    cameraError_1 = _c.sent();
+                    normalizedError = normalizeError(cameraError_1);
+                    if (mountedRef.current) {
+                        setError(normalizedError);
+                        if (normalizedError.name === "NotAllowedError") {
+                            setCameraPermission("denied");
+                            void refreshCameraPermission();
+                        }
+                        (_b = (_a = callbacksRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedError);
+                    }
+                    throw normalizedError;
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); }, [refreshCameraPermission, service]);
+    var scanImage = useCallback(function (file, imageOptions) {
+        if (imageOptions === void 0) { imageOptions = {}; }
+        return __awaiter(void 0, void 0, void 0, function () {
+            var imageSuccess, imageError, serviceOptions, normalizedError, operation, details, imageScanError_1, normalizedError;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        imageSuccess = imageOptions.onSuccess, imageError = imageOptions.onError, serviceOptions = __rest(imageOptions, ["onSuccess", "onError"]);
+                        try {
+                            validateImageScanRequest(file, imageOptions);
+                            if (!service.scanImage) {
+                                throw new Error("The configured QR code scan service does not support image scanning.");
+                            }
+                        }
+                        catch (validationError) {
+                            normalizedError = normalizeError(validationError);
+                            if (mountedRef.current) {
+                                setError(normalizedError);
+                                (_a = (imageError !== null && imageError !== void 0 ? imageError : callbacksRef.current.onError)) === null || _a === void 0 ? void 0 : _a(normalizedError);
+                            }
+                            throw normalizedError;
+                        }
+                        operation = ++operationRef.current;
+                        ++controlOperationRef.current;
+                        if (mountedRef.current) {
+                            setError(null);
+                            setResult(null);
+                            setScanResult(null);
+                            setCameraCapabilities(null);
+                            setMode("none");
+                            setStatus("decoding");
+                        }
+                        _d.label = 1;
+                    case 1:
+                        _d.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, service.scanImage(file, serviceOptions)];
+                    case 2:
+                        details = _d.sent();
+                        if (!isCurrent(operation))
+                            return [2 /*return*/, details];
+                        setResult(details.text);
+                        setScanResult(details);
+                        setStatus("idle");
+                        setMode("none");
+                        (_b = (imageSuccess !== null && imageSuccess !== void 0 ? imageSuccess : callbacksRef.current.onSuccess)) === null || _b === void 0 ? void 0 : _b(details.text, details);
+                        return [2 /*return*/, details];
+                    case 3:
+                        imageScanError_1 = _d.sent();
+                        normalizedError = normalizeError(imageScanError_1);
+                        if (isCurrent(operation)) {
+                            setError(normalizedError);
+                            setStatus("error");
+                            setMode("none");
+                            (_c = (imageError !== null && imageError !== void 0 ? imageError : callbacksRef.current.onError)) === null || _c === void 0 ? void 0 : _c(normalizedError);
+                        }
+                        throw normalizedError;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    }, [isCurrent, service]);
+    var refreshCameraCapabilities = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var operation, capabilities, capabilityError_1, normalizedError;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    operation = ++controlOperationRef.current;
+                    if (!service.getCameraCapabilities) {
+                        if (mountedRef.current)
+                            setCameraCapabilities(null);
+                        return [2 /*return*/, null];
+                    }
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, service.getCameraCapabilities()];
+                case 2:
+                    capabilities = _c.sent();
+                    if (mountedRef.current &&
+                        operation === controlOperationRef.current) {
+                        setCameraCapabilities(capabilities);
+                        setError(null);
+                    }
+                    return [2 /*return*/, capabilities];
+                case 3:
+                    capabilityError_1 = _c.sent();
+                    normalizedError = normalizeError(capabilityError_1);
+                    if (mountedRef.current &&
+                        operation === controlOperationRef.current) {
+                        setError(normalizedError);
+                        (_b = (_a = callbacksRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedError);
+                    }
+                    throw normalizedError;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }, [service]);
+    var setTorch = useCallback(function (enabled) { return __awaiter(void 0, void 0, void 0, function () {
+        var operation, capabilities, torchError_1, normalizedError;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    operation = ++controlOperationRef.current;
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    if (!service.setTorch) {
+                        throw new Error("The configured QR code scan service does not support torch control.");
+                    }
+                    return [4 /*yield*/, service.setTorch(enabled)];
+                case 2:
+                    capabilities = _c.sent();
+                    if (mountedRef.current &&
+                        operation === controlOperationRef.current) {
+                        setCameraCapabilities(capabilities);
+                        setError(null);
+                    }
+                    return [2 /*return*/, capabilities];
+                case 3:
+                    torchError_1 = _c.sent();
+                    normalizedError = normalizeError(torchError_1);
+                    if (mountedRef.current &&
+                        operation === controlOperationRef.current) {
+                        setError(normalizedError);
+                        (_b = (_a = callbacksRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedError);
+                    }
+                    throw normalizedError;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }, [service]);
+    var setZoom = useCallback(function (value) { return __awaiter(void 0, void 0, void 0, function () {
+        var operation, capabilities, zoomError_1, normalizedError;
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    operation = ++controlOperationRef.current;
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    if (!service.setZoom) {
+                        throw new Error("The configured QR code scan service does not support zoom control.");
+                    }
+                    return [4 /*yield*/, service.setZoom(value)];
+                case 2:
+                    capabilities = _c.sent();
+                    if (mountedRef.current &&
+                        operation === controlOperationRef.current) {
+                        setCameraCapabilities(capabilities);
+                        setError(null);
+                    }
+                    return [2 /*return*/, capabilities];
+                case 3:
+                    zoomError_1 = _c.sent();
+                    normalizedError = normalizeError(zoomError_1);
+                    if (mountedRef.current &&
+                        operation === controlOperationRef.current) {
+                        setError(normalizedError);
+                        (_b = (_a = callbacksRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedError);
+                    }
+                    throw normalizedError;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }, [service]);
+    var clearResult = useCallback(function () {
+        setResult(null);
+        setScanResult(null);
+    }, []);
+    var clearError = useCallback(function () {
+        setError(null);
+        setStatus(function (currentStatus) {
+            return currentStatus === "error"
+                ? service.getIsScanning()
+                    ? "scanning"
+                    : "idle"
+                : currentStatus;
+        });
+    }, [service]);
+    var reset = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, stop()];
+                case 1:
+                    _a.sent();
+                    if (mountedRef.current) {
+                        setResult(null);
+                        setScanResult(null);
+                        setError(null);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [stop]);
+    return {
+        status: status,
+        isScanning: isScanningStatus(status),
+        isPaused: status === "paused",
+        isDecodingImage: status === "decoding",
+        result: result,
+        scanResult: scanResult,
+        error: error,
+        mode: mode,
+        cameraCapabilities: cameraCapabilities,
+        cameraPermission: cameraPermission,
+        isWechatEnv: environment.isWechatEnv,
+        supportsNativeDetector: environment.supportsNativeDetector,
+        start: start,
+        stop: stop,
+        pause: pause,
+        resume: resume,
+        switchCamera: switchCamera,
+        getCameras: getCameras,
+        scanImage: scanImage,
+        refreshCameraCapabilities: refreshCameraCapabilities,
+        setTorch: setTorch,
+        setZoom: setZoom,
+        refreshCameraPermission: refreshCameraPermission,
+        clearResult: clearResult,
+        clearError: clearError,
+        reset: reset,
+    };
+};
+
+export { QrcodeScanService, useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useDimensions, useDimensionsById, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGenerator, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImage, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetworkStatus as useNetwork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useQrcodeScan, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useReflect, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnmount as useUnMount, useUpdate, useUpdateEffect, useUrl, useVirtualArea, useWatch, useWatchGetter, useWhyDidYouUpdate };

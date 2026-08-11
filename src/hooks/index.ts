@@ -86,3 +86,33 @@ export { default as useSingleton } from "./useSingleton";
 export { default as useWhyDidYouUpdate } from "./useWhyDidYouUpdate";
 export { default as useTitle } from "./useTitle";
 export { default as useFavicon } from "./useFavicon";
+export {
+  default as useQrcodeScan,
+  QrcodeScanService,
+} from "./useQrcodeScan";
+export type {
+  QrcodeCamera,
+  QrcodeCameraCapabilities,
+  QrcodeCameraPermissionState,
+  QrcodeImageScanOptions,
+  QrcodeImageScanStartOptions,
+  QrcodeScanActiveMode,
+  QrcodeScanBox,
+  QrcodeScanBounds,
+  QrcodeScanContentType,
+  QrcodeScanFormat,
+  QrcodeScanMode,
+  QrcodeScanOptions,
+  QrcodeScanResult,
+  QrcodeScanServiceLike,
+  QrcodeScanServiceOptions,
+  QrcodeScanSource,
+  QrcodeScanStartOptions,
+  QrcodeScanStatus,
+  QrcodeScanWechatAdapter,
+  QrcodeWechatScanContext,
+  UseQrcodeScanActions,
+  UseQrcodeScanOptions,
+  UseQrcodeScanReturn,
+  UseQrcodeScanState,
+} from "./useQrcodeScan";
