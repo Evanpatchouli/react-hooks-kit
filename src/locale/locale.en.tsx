@@ -1930,12 +1930,13 @@ const locale_en = {
   },
 
   useDimensionsById: {
-    desc: "",
+    desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
       <>
+        <p><code>useDimensionsById</code> tracks an element with <code>ResizeObserver</code> and returns its width, height, top, and left values.</p>
       </>
     ),
-    $p1: "",
+    $p1: "The target element must exist in the document and have the supplied id.",
     consideration: (
       <ol>
       </ol>
@@ -1947,6 +1948,21 @@ const locale_en = {
       params: {},
       return: {},
     },
+  },
+
+  useQrcodeScan: {
+    desc: "Scan QR codes and barcodes from a camera or image file.",
+    detail: (
+      <>
+        <p><code>useQrcodeScan</code> provides live camera scanning, image decoding, normalized result metadata, camera permission state, torch, and zoom controls.</p>
+        <p>Camera access requires HTTPS or localhost. Image decoding does not request camera permission.</p>
+      </>
+    ),
+    $p1: "Render the scanner container before calling start. Use scanImage when you only need to decode an image.",
+    consideration: <ol><li>Camera permission and device availability depend on the browser and active camera.</li><li>Stop the scanner when leaving the page to release the camera.</li></ol>,
+    $best: <ul><li>Handle scanner errors in the onError callback.</li><li>Check cameraCapabilities before using torch or zoom.</li></ul>,
+    $faqs: <ul><li>Camera scanning requires a secure context such as HTTPS or localhost.</li></ul>,
+    $apis: { generics: (<></>), params: {}, return: {} },
   },
 
   useInfiniteScroll: {

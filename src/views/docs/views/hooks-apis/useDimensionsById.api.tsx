@@ -1,15 +1,9 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
   
 export default function UseDimensionsById() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
+    { name: "id", type: "string", desc: "The id of the element to observe." },
     // {
     //   name: "valueMap",
     //   type: "object",
@@ -33,12 +27,10 @@ export default function UseDimensionsById() {
   ];
   
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
+    { name: "width", type: "number", desc: "Observed content width." },
+    { name: "height", type: "number", desc: "Observed content height." },
+    { name: "top", type: "number", desc: "Observed content top offset." },
+    { name: "left", type: "number", desc: "Observed content left offset." },
     // {
     //   name: "[1] toggle",
     //   type: "() => void",

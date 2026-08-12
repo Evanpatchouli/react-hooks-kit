@@ -56,3 +56,5 @@ export { default as UseBatchHooks } from "./other/UseBatchHooks";
 export { default as UseReflect } from "./other/UseReflect";
 export { default as UseTitle } from "./other/UseTitle";
 export { default as UseFavicon } from "./other/UseFavicon";
+export { default as UseDimensionsById } from "./other/UseDimensionsById";
+export { default as UseQrcodeScan } from "./other/UseQrcodeScan";

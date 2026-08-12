@@ -333,6 +333,11 @@ export default {
     },
   },
   OtherHooks: {
+    UseQrcodeScan: {
+      route: "useQrcodeScan",
+      title: "UseQrcodeScan",
+      status: "new",
+    },
     UseProtect: {
       route: "useProtect",
       title: "UseProtect",
@@ -376,6 +381,11 @@ export default {
     UseDimensions: {
       route: "useDimensions",
       title: "UseDimensions",
+      status: "preview",
+    },
+    UseDimensionsById: {
+      route: "useDimensionsById",
+      title: "UseDimensionsById",
       status: "preview",
     },
     UseSafeArea: {
