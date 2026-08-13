@@ -10,7 +10,7 @@
 - [x] useBroadcastChannel
 - [x] useClickAway
 - [x] useConsoleLog
-- [ ] useCookie
+- [x] useCookie
 - [ ] useDimensions
 - [ ] useDimensionsById
 - [ ] useEmitter
