@@ -7,7 +7,7 @@
 - [x] useBatchHooks
 - [x] useBattery
 - [x] useBeforeMount
-- [ ] useBroadcastChannel
+- [x] useBroadcastChannel
 - [ ] useClickAway
 - [ ] useConsoleLog
 - [ ] useCookie
