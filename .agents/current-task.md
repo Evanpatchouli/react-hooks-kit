@@ -1,6 +1,6 @@
 任务：按 test.todo.md 顺序为已有实现补充 hook 测试，逐项运行并修复失败项；每个 hook 通过后独立暂存并提交。
 
-状态：进行中（useAsyncEffect b79e8f7、useAutoPageSize 73e803b、useBatchHooks 98a3f7e、useBattery f672b7f、useBeforeMount 9b97757 已完成，当前处理 useBroadcastChannel）。
+状态：进行中（useAsyncEffect b79e8f7、useAutoPageSize 73e803b、useBatchHooks 98a3f7e、useBattery f672b7f、useBeforeMount 9b97757、useBroadcastChannel 70ff710 已完成，当前处理 useClickAway）。
 
 约束：
 - 测试文件放在 src/views/tests。

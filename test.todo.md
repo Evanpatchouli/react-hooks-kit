@@ -8,7 +8,7 @@
 - [x] useBattery
 - [x] useBeforeMount
 - [x] useBroadcastChannel
-- [ ] useClickAway
+- [x] useClickAway
 - [ ] useConsoleLog
 - [ ] useCookie
 - [ ] useDimensions
