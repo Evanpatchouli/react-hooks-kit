@@ -67,9 +67,16 @@ function useBattery(
   }, [callbacks, onChargingChange]);
 
   useEffect(() => {
+    let active = true;
     let battery: BatteryManager | null = null;
+    let handleChargingChange: (() => void) | null = null;
+    let handleLevelChange: (() => void) | null = null;
+    let handleChargingTimeChange: (() => void) | null = null;
+    let handleDischargingTimeChange: (() => void) | null = null;
 
     navigator.getBattery().then((bat: BatteryManager) => {
+      if (!active) return;
+
       battery = bat;
       setBatteryStatus({
         charging: battery.charging,
@@ -87,7 +94,7 @@ function useBattery(
         });
       };
 
-      const handleChargingChange = () => {
+      handleChargingChange = () => {
         updateAllBatteryInfo();
         if (_callbacks.onChargingChange) {
           _callbacks.onChargingChange({
@@ -99,7 +106,7 @@ function useBattery(
         }
       };
 
-      const handleLevelChange = () => {
+      handleLevelChange = () => {
         updateAllBatteryInfo();
         if (_callbacks.onLevelChange) {
           _callbacks.onLevelChange({
@@ -111,7 +118,7 @@ function useBattery(
         }
       };
 
-      const handleChargingTimeChange = () => {
+      handleChargingTimeChange = () => {
         updateAllBatteryInfo();
         if (_callbacks.onChargingTimeChange) {
           _callbacks.onChargingTimeChange({
@@ -123,7 +130,7 @@ function useBattery(
         }
       };
 
-      const handleDischargingTimeChange = () => {
+      handleDischargingTimeChange = () => {
         updateAllBatteryInfo();
         if (_callbacks.onDischargingTimeChange) {
           _callbacks.onDischargingTimeChange({
@@ -142,11 +149,20 @@ function useBattery(
     });
 
     return () => {
+      active = false;
       if (battery) {
-        battery.onchargingchange = null;
-        battery.onlevelchange = null;
-        battery.onchargingtimechange = null;
-        battery.ondischargingtimechange = null;
+        if (handleChargingChange) {
+          battery.removeEventListener("chargingchange", handleChargingChange);
+        }
+        if (handleLevelChange) {
+          battery.removeEventListener("levelchange", handleLevelChange);
+        }
+        if (handleChargingTimeChange) {
+          battery.removeEventListener("chargingtimechange", handleChargingTimeChange);
+        }
+        if (handleDischargingTimeChange) {
+          battery.removeEventListener("dischargingtimechange", handleDischargingTimeChange);
+        }
       }
     };
   }, [_callbacks]);
