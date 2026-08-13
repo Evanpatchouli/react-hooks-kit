@@ -12,7 +12,7 @@
 - [x] useConsoleLog
 - [x] useCookie
 - [x] useDimensions
-- [ ] useDimensionsById
+- [x] useDimensionsById
 - [ ] useEmitter
 - [ ] useEyeDropper
 - [ ] useFavicon
