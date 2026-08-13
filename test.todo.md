@@ -9,7 +9,7 @@
 - [x] useBeforeMount
 - [x] useBroadcastChannel
 - [x] useClickAway
-- [ ] useConsoleLog
+- [x] useConsoleLog
 - [ ] useCookie
 - [ ] useDimensions
 - [ ] useDimensionsById
