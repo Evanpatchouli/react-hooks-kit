@@ -2,7 +2,7 @@
 
 ## 待编写测试
 
-- [ ] useAsyncEffect
+- [x] useAsyncEffect
 - [ ] useAutoPageSize
 - [ ] useBatchHooks
 - [ ] useBattery
