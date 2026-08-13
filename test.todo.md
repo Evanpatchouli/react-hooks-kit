@@ -13,7 +13,7 @@
 - [x] useCookie
 - [x] useDimensions
 - [x] useDimensionsById
-- [ ] useEmitter
+- [x] useEmitter
 - [ ] useEyeDropper
 - [ ] useFavicon
 - [ ] useFetch
