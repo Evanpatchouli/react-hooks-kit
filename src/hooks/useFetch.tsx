@@ -1,15 +1,20 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface FetchState<T> {
   data: T | null;
   loading: boolean;
-  error: any;
+  error: unknown;
 }
 
 interface Callbacks<T> {
   onResolve?: (value: T) => void;
-  onReject?: (reason: any) => void;
+  onReject?: (reason: unknown) => void;
   onFinally?: () => void;
+}
+
+interface FetchHttpError {
+  status: number;
+  statusText: string;
 }
 
 export default function useFetch<T>(
@@ -23,40 +28,65 @@ export default function useFetch<T>(
     loading: true,
     error: null,
   });
+  const optionsRef = useRef(options);
+  const callbacksRef = useRef(callbacks);
 
-  const abortController = new AbortController();
-  const opts = { ...options, signal: abortController.signal };
-
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await fetch(url, opts);
-      const data = await res.json();
-      if (!abortController.signal.aborted) {
-        setState({ data, loading: false, error: null });
-        if (callbacks?.onResolve) {
-          callbacks.onResolve(data);
-        }
-      }
-    } catch (error) {
-      if (!abortController.signal.aborted) {
-        setState({ data: null, loading: false, error });
-        if (callbacks?.onReject) {
-          callbacks.onReject(error);
-        }
-      }
-    } finally {
-      if (callbacks?.onFinally) {
-        callbacks.onFinally();
-      }
-    }
-  }, [url, opts, callbacks]);
+  optionsRef.current = options;
+  callbacksRef.current = callbacks;
 
   useEffect(() => {
-    fetchData();
+    const abortController = new AbortController();
+    let settled = false;
+
+    setState((previousState) => ({
+      data: previousState.data,
+      loading: true,
+      error: null,
+    }));
+
+    const fetchData = async () => {
+      try {
+        const requestOptions = {
+          ...optionsRef.current,
+          signal: abortController.signal,
+        };
+        const response = await fetch(url, requestOptions);
+
+        if (!response.ok) {
+          const error: FetchHttpError = {
+            status: response.status,
+            statusText: response.statusText,
+          };
+          throw error;
+        }
+
+        const data = (await response.json()) as T;
+        if (!abortController.signal.aborted) {
+          settled = true;
+          setState({ data, loading: false, error: null });
+          callbacksRef.current?.onResolve?.(data);
+        }
+      } catch (error) {
+        if (!abortController.signal.aborted) {
+          settled = true;
+          setState({ data: null, loading: false, error });
+          callbacksRef.current?.onReject?.(error);
+        }
+      } finally {
+        if (!abortController.signal.aborted && !settled) {
+          settled = true;
+        }
+        if (!abortController.signal.aborted) {
+          callbacksRef.current?.onFinally?.();
+        }
+      }
+    };
+
+    void fetchData();
     return () => {
       abortController.abort();
     };
-  }, [fetchData, ...deps]);
+  }, [url, ...deps]);
 
   return state;
 }

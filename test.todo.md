@@ -16,7 +16,7 @@
 - [x] useEmitter
 - [ ] useEyeDropper
 - [x] useFavicon
-- [ ] useFetch
+- [x] useFetch
 - [ ] useForceUpdate
 - [ ] useForm
 - [ ] useGenerator
