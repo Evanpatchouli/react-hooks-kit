@@ -6,7 +6,7 @@
 - [x] useAutoPageSize
 - [x] useBatchHooks
 - [x] useBattery
-- [ ] useBeforeMount
+- [x] useBeforeMount
 - [ ] useBroadcastChannel
 - [ ] useClickAway
 - [ ] useConsoleLog
