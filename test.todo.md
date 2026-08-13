@@ -15,7 +15,7 @@
 - [x] useDimensionsById
 - [x] useEmitter
 - [ ] useEyeDropper
-- [ ] useFavicon
+- [x] useFavicon
 - [ ] useFetch
 - [ ] useForceUpdate
 - [ ] useForm
