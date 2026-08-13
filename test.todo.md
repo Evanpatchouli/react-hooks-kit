@@ -3,7 +3,7 @@
 ## 待编写测试
 
 - [x] useAsyncEffect
-- [ ] useAutoPageSize
+- [x] useAutoPageSize
 - [ ] useBatchHooks
 - [ ] useBattery
 - [ ] useBeforeMount
