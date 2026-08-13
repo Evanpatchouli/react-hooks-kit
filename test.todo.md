@@ -11,7 +11,7 @@
 - [x] useClickAway
 - [x] useConsoleLog
 - [x] useCookie
-- [ ] useDimensions
+- [x] useDimensions
 - [ ] useDimensionsById
 - [ ] useEmitter
 - [ ] useEyeDropper
