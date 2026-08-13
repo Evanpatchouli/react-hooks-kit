@@ -17,7 +17,7 @@
 - [ ] useEyeDropper
 - [x] useFavicon
 - [x] useFetch
-- [ ] useForceUpdate
+- [x] useForceUpdate
 - [ ] useForm
 - [ ] useGenerator
 - [ ] useGuide
