@@ -4,7 +4,7 @@
 
 - [x] useAsyncEffect
 - [x] useAutoPageSize
-- [ ] useBatchHooks
+- [x] useBatchHooks
 - [ ] useBattery
 - [ ] useBeforeMount
 - [ ] useBroadcastChannel
