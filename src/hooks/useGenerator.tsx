@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 
 type GeneratorState<T> = {
   value: T | undefined;
@@ -53,25 +53,49 @@ export default function useGenerator<T>(
     error: null,
   });
 
-  const execute = useCallback(() => {
+  useEffect(() => {
+    let active = true;
     const generator = generatorFn();
-    const handleResult = (result: IteratorResult<Promise<T>, void>) => {
-      if (result.done) {
-        setState((prevState) => ({ ...prevState, done: true }));
-      } else {
-        result.value
-          .then((value) => setState({ value, done: false, error: null }))
-          .catch((error) => setState((prevState) => ({ ...prevState, error })));
+
+    const handleError = (error: unknown) => {
+      if (active) {
+        setState((prevState) => ({ ...prevState, error }));
       }
     };
-    const iterate = (nextValue?: unknown) => {
-      const result = generator.next(nextValue);
-      handleResult(result);
-    };
-    iterate();
-  }, [generatorFn]);
 
-  execute();
+    const iterate = (nextValue?: unknown): void => {
+      let result: IteratorResult<Promise<T>, void>;
+
+      try {
+        result = generator.next(nextValue);
+      } catch (error) {
+        handleError(error);
+        return;
+      }
+
+      if (result.done) {
+        if (active) {
+          setState((prevState) => ({ ...prevState, done: true }));
+        }
+      } else {
+        Promise.resolve(result.value).then(
+          (value) => {
+            if (!active) return;
+            setState({ value, done: false, error: null });
+            iterate(value);
+          },
+          handleError
+        );
+      }
+    };
+
+    setState({ value: undefined, done: false, error: null });
+    iterate();
+
+    return () => {
+      active = false;
+    };
+  }, [generatorFn]);
 
   return state;
 }

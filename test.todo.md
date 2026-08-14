@@ -19,7 +19,7 @@
 - [x] useFetch
 - [x] useForceUpdate
 - [x] useForm
-- [ ] useGenerator
+- [x] useGenerator
 - [ ] useGuide
 - [ ] useHover
 - [ ] useIndexDB
