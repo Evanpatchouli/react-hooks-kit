@@ -41,7 +41,7 @@ const useForm = <T = any>(
           );
           break;
       }
-      if (!formController.validates(fieldsTovalidate as any)) {
+      if (!(await formController.validates(fieldsTovalidate as any))) {
         return;
       }
       const formData = formController.gets();
@@ -78,34 +78,30 @@ const useForm = <T = any>(
     validate: (key: keyof FormSchema) => {
       const validator = formSchema[key].validator;
       const value = formController.get(key);
-      return new Promise<boolean>((rs, rj) => {
+      return new Promise<boolean>((resolve) => {
         if (value === undefined || value === null || `${value}`.trim() === "") {
           if (formSchema[key].required) {
             console.warn(`${String(key)} is required`, "warning");
-            return rs(false);
+            return resolve(false);
           }
         }
         if (validator) {
-          const error = validator(value);
-          error
-            .then((v) => {
-              if (v) {
-                console.warn(error, "warning");
-                return rs(false);
+          Promise.resolve()
+            .then(() => validator(value))
+            .then((errorMessage) => {
+              if (errorMessage) {
+                console.warn(errorMessage, "warning");
+                resolve(false);
               } else {
-                return rs(true);
+                resolve(true);
               }
             })
-            .catch((err) => {
+            .catch((error) => {
               console.warn(error, "warning");
-              rs(false);
+              resolve(false);
             });
-          if (error) {
-            console.warn(error, "warning");
-            return false;
-          }
         } else {
-          rs(true);
+          resolve(true);
         }
       });
     },

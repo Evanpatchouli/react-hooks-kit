@@ -18,7 +18,7 @@
 - [x] useFavicon
 - [x] useFetch
 - [x] useForceUpdate
-- [ ] useForm
+- [x] useForm
 - [ ] useGenerator
 - [ ] useGuide
 - [ ] useHover
