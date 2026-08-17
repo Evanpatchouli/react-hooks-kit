@@ -1,5 +1,9 @@
 # Architecture decisions
 
+## 2026-08-17: Use 2.0.0 as the tested-Hook milestone
+
+Version 2.0.0 marks the point where every implemented Hook in the project checklist has automated coverage, alongside the accumulated Hook correctness fixes after v1.4.0. The release notes do not label the release as an intentional breaking API migration because the Git range does not establish a single documented breaking contract change.
+
 ## 2026-08-17: Wrap the native EyeDropper API without a fallback picker
 
 `useEyeDropper` 对齐 VueUse，仅包装浏览器原生 EyeDropper API，并通过 `isSupported` 暴露能力。库不实现 canvas 截屏或 DOM 颜色推断回退，因为它们无法等价拾取屏幕任意位置，且会引入权限、跨域和显著体积成本。`open` 在不支持时返回 `undefined`，原生取消或 AbortSignal 中止则保持 rejection。

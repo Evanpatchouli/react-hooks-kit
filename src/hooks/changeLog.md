@@ -1,5 +1,31 @@
 # ChangeLog
 
+## v2.0.0 2026/08/17
+
+Version 2.0.0 marks the completion of automated coverage for every implemented Hook in the project test checklist. The changes below summarize the Git history after v1.4.0.
+
+### Added
+
+- Add `useEyeDropper`, backed by the native EyeDropper API, with capability detection, an initial color, `AbortSignal` forwarding, public types, and unmount-safe state updates.
+- Add production documentation configuration and refresh the generated library and documentation artifacts.
+
+### Fixed
+
+- Harden asynchronous and lifecycle behavior across `useAsyncEffect`, `useBeforeMount`, `useBattery`, `useFetch`, `useGenerator`, `useLazy`, `useLazyImg`, `usePromise`, `useRaf`, `useRafState`, `useUnMount`, and `useVirtualArea`.
+- Correct browser event, observer, and resource cleanup behavior across `useConsoleLog`, `useGuide`, `useHover`, `useInfiniteScroll`, `useKeyPress`, `useMediaQuery`, `useNetwork`, `useParticle`, `useRipple`, `useSafeArea`, `useScroll`, `useTheme`, and `useToast`.
+- Correct state, storage, and callback behavior across `useCookie`, `useForceUpdate`, `useForm`, `useIndexDB`, `useLocalStorage`, `useMixRef`, `useProtect`, `useReceiver`, `useRecord`, `useReflect`, `useSingleton`, `useTitle`, `useUrl`, and `useWhyDidYouUpdate`.
+- Eliminate nullable request diagnostics from the `useIndexDB` event callbacks without changing runtime behavior.
+
+### Testing
+
+- Complete the Hook test checklist with 76 test files and 472 passing tests at release verification.
+- Add focused coverage for browser integrations, event namespaces, lifecycle cleanup, asynchronous cancellation, and state updates.
+
+### Documentation
+
+- Document `useEyeDropper` usage, browser support behavior, cancellation, and native error propagation.
+- Record the Hook testing milestone and retain generated API declarations for the public package.
+
 ## v1.4.0
 
 - New hook! useQrcodeScan

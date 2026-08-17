@@ -1,5 +1,11 @@
 # Handoff
 
+## 2026-08-17: v2.0.0 release metadata
+
+项目、源码包和发布包版本已统一提升至 2.0.0。`src/hooks/changeLog.md` 与发布副本基于 `cff1970..HEAD` 的 60 个提交整理，涵盖 useEyeDropper、新文档配置、39 个 Hook 修复、完整测试覆盖和生成产物同步；没有声明 Git 历史无法证明的破坏性变化。三份 README 的徽章与 Report 已同步。
+
+验证通过：三个 package JSON 可解析且版本一致、独立 Hook TypeScript 检查零诊断、全量 76 个测试文件/472 个测试、Rollup 发布包构建、发布包清单、changelog/README 副本一致、diff whitespace 和 UTF-8 无 BOM。`useIndexDB.ts` 原有三处 TS18047 已通过非空请求控制流修复，Rollup 不再输出对应警告。未创建 Git tag、未执行 Git commit 或 npm publish。
+
 ## 2026-08-17: useEyeDropper
 
 `useEyeDropper` 已参考 VueUse 完成：它封装浏览器原生 EyeDropper API，提供 `isSupported`、`sRGBHex` 和稳定的 `open` 回调，并支持 `initialValue` 与 `AbortSignal`。原生取消/错误保持 Promise rejection，不支持的浏览器返回 `undefined`，异步拾色完成时若组件已卸载则不再写状态。

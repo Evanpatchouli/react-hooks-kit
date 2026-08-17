@@ -3074,7 +3074,7 @@ function useIndexedDB(dbName, version, upgradeCallback) {
     useEffect(function () {
         var active = true;
         var db = null;
-        var request = null;
+        var request;
         setState({ db: null, error: null });
         try {
             request = indexedDB.open(dbName, version);

@@ -1,7 +1,7 @@
 # <h1 align="center">react-hooks-kit</h1>
 
 <p align="center">
-  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-1.4.0-yellowgreen.svg"/></a>
+  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-2.0.0-yellowgreen.svg"/></a>
   <a href="#"><img alt="npm" src="https://img.shields.io/badge/npm-√-yellowgreen.svg"></a>
   <a href="#"><img alt="react" src="https://img.shields.io/badge/react-18+-yellowgreen.svg"></a>
   <a href="#"><img alt="lisence" src="https://img.shields.io/badge/lisence-MIT-yellowgreen.svg"></a>
@@ -126,6 +126,13 @@ entirely stable. If a hook with prefix tag of **new**, it means it has passed te
 - If a new hook is created, the y in version x.y.z should be increased by 1.
 
 ## Report
+
+- v2.0.0
+  - Add useEyeDropper with native color picking, capability detection, cancellation, public types, and lifecycle safety
+  - Complete automated coverage for every implemented Hook with 76 test files and 472 passing tests
+  - Harden asynchronous effects, animation frames, lazy operations, promises, and unmount behavior
+  - Correct browser listeners, observers, resource cleanup, state, storage, and callback handling across the Hook library
+  - Add production documentation configuration and refresh generated package and documentation artifacts
 
 - v1.4.0
   - Add useQrcodeScan with lazy HTML5 scanning and an injectable WeChat adapter

@@ -20,7 +20,7 @@ export default function useIndexedDB(
   useEffect(() => {
     let active = true;
     let db: IDBDatabase | null = null;
-    let request: IDBOpenDBRequest | null = null;
+    let request: IDBOpenDBRequest;
 
     setState({ db: null, error: null });
 
