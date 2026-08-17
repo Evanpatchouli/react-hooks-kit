@@ -1,18 +1,17 @@
 import { useEffect, useRef } from "react";
 
 function useHover(onHover: () => void) {
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const handleHover = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target)) {
-        onHover();
-      }
-    };
+    const element = ref.current;
+    if (!element) return;
 
-    document.addEventListener("mouseover", handleHover);
+    const handleHover = () => onHover();
+
+    element.addEventListener("mouseenter", handleHover);
     return () => {
-      document.removeEventListener("mouseover", handleHover);
+      element.removeEventListener("mouseenter", handleHover);
     };
   }, [onHover]);
 

@@ -21,7 +21,7 @@
 - [x] useForm
 - [x] useGenerator
 - [x] useGuide
-- [ ] useHover
+- [x] useHover
 - [ ] useIndexDB
 - [ ] useInfiniteScroll
 - [ ] useInject
