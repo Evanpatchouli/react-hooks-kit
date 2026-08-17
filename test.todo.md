@@ -48,7 +48,7 @@
 - [x] useRipple
 - [x] useSafeArea
 - [x] useScroll
-- [ ] useSingleton
+- [x] useSingleton
 - [ ] useTheme
 - [ ] useTitle
 - [ ] useToast

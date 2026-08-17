@@ -1,13 +1,15 @@
 import { useRef } from 'react';
 
-function useSingleton<T>(createInstance: () => T): T {
-  const instanceRef = useRef<T | null>(null);
+const UNINITIALIZED = Symbol("useSingleton.uninitialized");
 
-  if (instanceRef.current === null) {
+function useSingleton<T>(createInstance: () => T): T {
+  const instanceRef = useRef<T | typeof UNINITIALIZED>(UNINITIALIZED);
+
+  if (instanceRef.current === UNINITIALIZED) {
     instanceRef.current = createInstance();
   }
 
-  return instanceRef.current;
+  return instanceRef.current as T;
 }
 
 export default useSingleton;
