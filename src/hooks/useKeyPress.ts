@@ -16,6 +16,7 @@ function useKeyPress(targetKey: string) {
   };
 
   useEffect(() => {
+    setKeyPressed(false);
     window.addEventListener("keydown", downHandler);
     window.addEventListener("keyup", upHandler);
 

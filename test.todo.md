@@ -25,7 +25,7 @@
 - [x] useIndexDB
 - [x] useInfiniteScroll
 - [x] useInject
-- [ ] useKeyPress
+- [x] useKeyPress
 - [ ] useLazy
 - [ ] useLazyImg
 - [ ] useLocalStorage
