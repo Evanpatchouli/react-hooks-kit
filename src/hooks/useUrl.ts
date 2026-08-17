@@ -20,49 +20,40 @@ function getParams<T>(
   const params: {
     [key: string]: string | number | boolean | null | undefined;
   } = {};
+  const searchParams = new URL(url, window.location.href).searchParams;
 
   // 先处理 custom 对象
   for (const key in custom) {
-    const value = new URLSearchParams(url).get(key);
+    const value = searchParams.get(key);
     params[key] = custom[key as keyof T]?.(value ?? undefined);
   }
 
-  const questionMarkIndex = url.indexOf("?");
-  if (questionMarkIndex !== -1) {
-    const queryString = url.substring(questionMarkIndex + 1);
-    const pairs = queryString.split("&");
-    for (const pair of pairs) {
-      const [key, value] = pair.split("=");
-      try {
-        const decodedKey = decodeURIComponent(key);
-        const decodedValue = decodeURIComponent(value);
-        if (custom[decodedKey as keyof T]) {
-          continue; // 如果这个键在 custom 对象中，我们已经处理过它了
-        }
-        if (stringifyParams.includes(decodedKey)) {
-          params[decodedKey] = decodedValue;
-        } else if (autoParams.includes(decodedKey) || mode === "auto") {
-          if (decodedValue === "true") {
-            params[decodedKey] = true;
-          } else if (decodedValue === "false") {
-            params[decodedKey] = false;
-          } else if (decodedValue === "null") {
-            params[decodedKey] = null;
-          } else if (decodedValue === "undefined") {
-            params[decodedKey] = undefined;
-          } else if (!isNaN(Number(decodedValue))) {
-            params[decodedKey] = Number(decodedValue);
-          } else {
-            params[decodedKey] = decodedValue;
-          }
-        } else {
-          params[decodedKey] = decodedValue;
-        }
-      } catch (error) {
-        console.error("Failed to decode URL parameter:", error);
-      }
+  searchParams.forEach((decodedValue, decodedKey) => {
+    if (custom[decodedKey as keyof T]) {
+      return;
     }
-  }
+
+    if (stringifyParams.includes(decodedKey)) {
+      params[decodedKey] = decodedValue;
+    } else if (autoParams.includes(decodedKey) || mode === "auto") {
+      if (decodedValue === "true") {
+        params[decodedKey] = true;
+      } else if (decodedValue === "false") {
+        params[decodedKey] = false;
+      } else if (decodedValue === "null") {
+        params[decodedKey] = null;
+      } else if (decodedValue === "undefined") {
+        params[decodedKey] = undefined;
+      } else if (decodedValue !== "" && !isNaN(Number(decodedValue))) {
+        params[decodedKey] = Number(decodedValue);
+      } else {
+        params[decodedKey] = decodedValue;
+      }
+    } else {
+      params[decodedKey] = decodedValue;
+    }
+  });
+
   return params as T;
 }
 
@@ -131,6 +122,7 @@ function useUrl<
   >
 > {
   function getUrlInfo() {
+    const history = window.history;
     return {
       params: getParams(
         window.location.href,
@@ -141,7 +133,12 @@ function useUrl<
       ),
       name: name,
       ...window.location,
-      ...window.history,
+      ...history,
+      back: history.back.bind(history),
+      forward: history.forward.bind(history),
+      go: history.go.bind(history),
+      pushState: history.pushState.bind(history),
+      replaceState: history.replaceState.bind(history),
     };
   }
   const [urlInfo, setUrlInfo] = useState<

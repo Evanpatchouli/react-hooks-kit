@@ -55,7 +55,7 @@
 - [x] useUnMount
 - [x] useUpdate
 - [x] useUpdateEffect
-- [ ] useUrl
+- [x] useUrl
 - [ ] useVirtualArea
 - [ ] useWhyDidYouUpdate
 
