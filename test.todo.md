@@ -51,7 +51,7 @@
 - [x] useSingleton
 - [x] useTheme
 - [x] useTitle
-- [ ] useToast
+- [x] useToast
 - [ ] useUnMount
 - [ ] useUpdate
 - [ ] useUpdateEffect
