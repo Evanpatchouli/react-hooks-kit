@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 // 派发StorageEvent事件
 const dispatchStorageEvent = <V = unknown>(key: string, newValue: V) => {
@@ -11,16 +11,22 @@ const dispatchStorageEvent = <V = unknown>(key: string, newValue: V) => {
   window.dispatchEvent(event);
 };
 
+const readStoredValue = <T,>(key: string, initialValue: T): T => {
+  try {
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : initialValue;
+  } catch (error) {
+    console.error(error);
+    return initialValue;
+  }
+};
+
 export default function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
-      return initialValue;
-    }
-  });
+  const initialValueRef = useRef(initialValue);
+  initialValueRef.current = initialValue;
+  const [storedValue, setStoredValue] = useState<T>(() =>
+    readStoredValue(key, initialValue)
+  );
 
   const setValue = useCallback((value: T) => {
     try {
@@ -34,16 +40,20 @@ export default function useLocalStorage<T>(key: string, initialValue: T): [T, (v
   }, [key]);
 
   useEffect(() => {
+    setStoredValue(readStoredValue(key, initialValueRef.current));
+
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === key) {
-        setStoredValue(() => {
-          try {
-            return event.newValue ? JSON.parse(event.newValue) : initialValue;
-          } catch (error) {
-            console.error(error);
-            return initialValue;
-          }
-        });
+        if (!event.newValue) {
+          setStoredValue(initialValueRef.current);
+          return;
+        }
+        try {
+          setStoredValue(JSON.parse(event.newValue));
+        } catch (error) {
+          console.error(error);
+          setStoredValue(initialValueRef.current);
+        }
       }
     };
 
@@ -52,7 +62,7 @@ export default function useLocalStorage<T>(key: string, initialValue: T): [T, (v
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [key, initialValue]);
+  }, [key]);
 
   return [storedValue, setValue];
 }

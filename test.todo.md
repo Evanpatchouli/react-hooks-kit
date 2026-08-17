@@ -28,7 +28,7 @@
 - [x] useKeyPress
 - [x] useLazy
 - [x] useLazyImg
-- [ ] useLocalStorage
+- [x] useLocalStorage
 - [ ] useMediaQuery
 - [ ] useMixRef
 - [ ] useMount
