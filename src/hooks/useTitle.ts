@@ -77,6 +77,7 @@ export default function useTitle(initialTitle?: string) {
       characterData: true,
       subtree: true,
     });
+    isInternalUpdate.current = false;
 
     return () => {
       observer.disconnect();

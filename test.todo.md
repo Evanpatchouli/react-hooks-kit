@@ -50,7 +50,7 @@
 - [x] useScroll
 - [x] useSingleton
 - [x] useTheme
-- [ ] useTitle
+- [x] useTitle
 - [ ] useToast
 - [ ] useUnMount
 - [ ] useUpdate
