@@ -20,7 +20,7 @@
 - [x] useForceUpdate
 - [x] useForm
 - [x] useGenerator
-- [ ] useGuide
+- [x] useGuide
 - [ ] useHover
 - [ ] useIndexDB
 - [ ] useInfiniteScroll

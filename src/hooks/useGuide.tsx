@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from "react-dom";
+import { createRoot as createReactRoot } from "react-dom/client";
 
-let createRoot = (targetDocument: Element) => {
+type GuideRoot = {
+  render: (element: JSX.Element) => void;
+  unmount: () => void;
+};
+
+const createRoot = (targetDocument: Element): GuideRoot => {
+  const root = createReactRoot(targetDocument);
   return {
     render: (element: JSX.Element) => {
-      ReactDOM.render(element, targetDocument);
+      root.render(element);
+    },
+    unmount: () => {
+      queueMicrotask(() => root.unmount());
     },
   };
 };
-
-if ("createRoot" in ReactDOM) {
-  // Adapt to React 18
-  createRoot = ReactDOM.createRoot as typeof createRoot;
-}
 
 export type Render = {
   id: string;
@@ -78,17 +83,26 @@ const createMask = (config?: MaskConfig) => {
   mask.style.cursor = "default";
   mask.style.userSelect = "none";
   mask.style.webkitUserSelect = "none";
-  mask.style.pointerEvents = "none !important";
+  mask.style.setProperty("pointer-events", "none", "important");
   const maskConfig = config;
   if (maskConfig) {
-    if (maskConfig.backgroundColor) {
+    if (maskConfig.backgroundColor !== undefined) {
       mask.style.backgroundColor = maskConfig.backgroundColor;
     }
-    if (maskConfig.opacity) {
+    if (maskConfig.opacity !== undefined) {
       mask.style.opacity = maskConfig.opacity.toString();
     }
-    if (maskConfig.zIndex) {
+    if (maskConfig.zIndex !== undefined) {
       mask.style.zIndex = maskConfig.zIndex.toString();
+    }
+    if (maskConfig.pointerEvents !== undefined) {
+      const pointerEvents = String(maskConfig.pointerEvents);
+      const important = /\s*!important$/i.test(pointerEvents);
+      mask.style.setProperty(
+        "pointer-events",
+        pointerEvents.replace(/\s*!important$/i, ""),
+        important ? "important" : ""
+      );
     }
   }
 
@@ -168,23 +182,29 @@ function useGuide(
         target?.appendChild(container);
         if (container && target) {
           // @ts-ignore
-          createRoot(container).render(
+          const root = createRoot(container);
+          root.render(
             // @ts-ignore
             render(id, currentStep.name, currentStep.data, currentStep.ids)
           );
-          return container;
+          return { container, root };
         }
       }
     );
 
-    callback?.(step, currentStep);
+    if (currentStep) {
+      callback?.(step, currentStep);
+    }
 
     return () => {
-      if (currentStep && rootDom && maskRef.current) {
+      if (currentStep && rootDom && maskRef.current?.parentNode === rootDom) {
         rootDom.removeChild(mask);
         maskRef.current = null;
       }
-      renders?.forEach((elem) => elem?.remove());
+      renders?.forEach((rendered) => {
+        rendered?.root.unmount();
+        rendered?.container.remove();
+      });
       // 当不再需要引导元素时，恢复原始的 zIndex
       zIndexes.current.forEach((zIndex, id) => {
         const element = document.getElementById(id);
@@ -194,7 +214,7 @@ function useGuide(
       });
       zIndexes.current.clear();
     };
-  }, [step, steps]);
+  }, [step, steps, callback, config]);
 
   const start = useCallback(() => setStep(0), []);
   const stop = useCallback(() => setStep(-1), []);
