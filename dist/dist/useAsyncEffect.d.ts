@@ -1,6 +1,6 @@
-import { DependencyList } from "react";
+import { type DependencyList } from "react";
 declare function useAsyncEffect(effect: () => Promise<void | (() => void)>, deps?: DependencyList, options?: {
-    onError?: (erroe: any) => void;
+    onError?: (error: unknown) => void;
     onFinally?: () => void;
 }): void;
 export default useAsyncEffect;

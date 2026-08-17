@@ -1,5 +1,12 @@
 # Lessons
 
+## 2026-08-17: EyeDropper browser API wrapper
+
+- 实验性浏览器 API 不应依赖当前 TypeScript DOM lib 是否已声明；在 Hook 内定义最小公开接口，可以保持类型安全并避免全局声明污染。
+- 能力状态可在挂载时检测以兼容 SSR，而执行动作应再次读取构造器，避免闭包持有过期的浏览器能力。
+- 原生拾色取消本身是可观察业务结果，Hook 不应擅自吞掉异常；调用方可按需区分 `AbortError`。
+- 异步原生交互可能在组件卸载后才完成，返回结果仍可兑现，但 React 状态更新必须由挂载引用保护。
+
 ## 2026-08-11: QR scanner migration
 
 - Browser scanner libraries should be loaded on first use, not at the library entry point.

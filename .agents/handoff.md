@@ -1,5 +1,11 @@
 # Handoff
 
+## 2026-08-17: useEyeDropper
+
+`useEyeDropper` 已参考 VueUse 完成：它封装浏览器原生 EyeDropper API，提供 `isSupported`、`sRGBHex` 和稳定的 `open` 回调，并支持 `initialValue` 与 `AbortSignal`。原生取消/错误保持 Promise rejection，不支持的浏览器返回 `undefined`，异步拾色完成时若组件已卸载则不再写状态。
+
+公开类型、JSDoc、入口导出、使用文档与测试 TODO 已同步，`dist` 和 `docs` 生成产物已刷新。按用户要求保留现有 1.4.0 版本且不写入发布 changelog。验证通过：专项 6/6、全量 76 个文件/472 个测试、Rollup 库打包、Vite 文档站生产构建、生成声明审计、diff whitespace 和 UTF-8 无 BOM。独立 TypeScript 检查仍被既有 `useIndexDB.ts` 三处 TS18047 阻断，Rollup 仅将其作为警告；本任务没有修改该文件。未执行 Git commit 或发布。
+
 `useQrcodeScan` 1.4.0 now includes camera and image scanning, normalized result metadata, observable camera permission, torch, zoom, capability refresh, and guarded scanner/container lifecycles. The source implementation lives in `src/hooks/useQrcodeScan.ts`, with its scanner service in `src/hooks/utils/qrcodeScanService.ts`.
 
 Public exports, Hook-standard JSDoc, README, changelog, tests, generated `dist` declarations/bundles, and `docs` artifacts are synchronized without changing the already-unreleased 1.4.0 version.

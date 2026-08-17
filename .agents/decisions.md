@@ -1,5 +1,9 @@
 # Architecture decisions
 
+## 2026-08-17: Wrap the native EyeDropper API without a fallback picker
+
+`useEyeDropper` 对齐 VueUse，仅包装浏览器原生 EyeDropper API，并通过 `isSupported` 暴露能力。库不实现 canvas 截屏或 DOM 颜色推断回退，因为它们无法等价拾取屏幕任意位置，且会引入权限、跨域和显著体积成本。`open` 在不支持时返回 `undefined`，原生取消或 AbortSignal 中止则保持 rejection。
+
 ## 2026-08-11: Keep WeChat SDK setup outside the Hook library
 
 The library exposes `QrcodeScanWechatAdapter` instead of embedding a business app ID, signature endpoint, or SDK bootstrap logic. This keeps the public package reusable and lets applications own WeChat security configuration.

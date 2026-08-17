@@ -54,6 +54,7 @@ export { default as useConsoleLog } from "./useConsoleLog";
 export { default as useDimensions } from "./useDimensions";
 export { default as useDimensionsById } from "./useDimensionsById";
 export { default as useEyeDropper } from "./useEyeDropper";
+export type { EyeDropperApi, EyeDropperConstructor, EyeDropperOpenOptions, EyeDropperResult, UseEyeDropperOptions, UseEyeDropperReturn, } from "./useEyeDropper";
 export { default as useHover } from "./useHover";
 export { default as useKeyPress } from "./useKeyPress";
 export { default as useMediaQuery } from "./useMediaQuery";

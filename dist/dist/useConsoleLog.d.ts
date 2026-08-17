@@ -1,2 +1,2 @@
-declare function useConsoleLog(): never[];
+declare function useConsoleLog(): string[];
 export default useConsoleLog;

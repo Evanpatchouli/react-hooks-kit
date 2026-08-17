@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback, useMemo, Fragment, useLayoutEffect, createContext, useContext } from 'react';
 import { jsx, jsxs } from 'react/jsx-runtime';
-import ReactDOM from 'react-dom';
-import ReactDomClient from 'react-dom/client';
+import ReactDom, { flushSync } from 'react-dom';
+import ReactDomClient, { createRoot as createRoot$2 } from 'react-dom/client';
 
 function usePrevious(value) {
     var ref = useRef();
@@ -324,7 +324,7 @@ function useRecord(initial) {
             var mode_1 = args[1] || 'rehydrate';
             setRecord(function (prev) {
                 return mode_1 === 'override'
-                    ? __assign(__assign({}, state_1), prev) : __assign(__assign({}, prev), state_1);
+                    ? __assign({}, state_1) : __assign(__assign({}, prev), state_1);
             });
         }
         else if (typeof args[0] === 'function') {
@@ -1159,12 +1159,12 @@ var useTree = function (initialTree, options) {
 
 function useForceUpdate() {
     var _a = __read(useState(0), 2), set = _a[1];
-    return function (callback) {
+    return useCallback(function (callback) {
         set(function (pre) {
             callback === null || callback === void 0 ? void 0 : callback(pre);
             return pre + 1;
         });
-    };
+    }, []);
 }
 
 function isEqual(a, b) {
@@ -1981,7 +1981,9 @@ function useReflect(initialValue) {
             return Reflect.has(ref.current, key);
         },
         apply: function (func) {
-            return Reflect.apply(func, ref.current, []);
+            var result = Reflect.apply(func, ref.current, [ref.current]);
+            fsr();
+            return result;
         },
     };
 }
@@ -2268,72 +2270,49 @@ function useThrottle(fn, interval, options) {
 }
 
 function getParams(url, mode, autoParams, stringifyParams, custom) {
-    var e_1, _a;
-    var _b;
+    var _a;
     if (mode === void 0) { mode = "auto"; }
     if (autoParams === void 0) { autoParams = []; }
     if (stringifyParams === void 0) { stringifyParams = []; }
     if (custom === void 0) { custom = {}; }
     var params = {};
+    var searchParams = new URL(url, window.location.href).searchParams;
     // 先处理 custom 对象
     for (var key in custom) {
-        var value = new URLSearchParams(url).get(key);
-        params[key] = (_b = custom[key]) === null || _b === void 0 ? void 0 : _b.call(custom, value !== null && value !== void 0 ? value : undefined);
+        var value = searchParams.get(key);
+        params[key] = (_a = custom[key]) === null || _a === void 0 ? void 0 : _a.call(custom, value !== null && value !== void 0 ? value : undefined);
     }
-    var questionMarkIndex = url.indexOf("?");
-    if (questionMarkIndex !== -1) {
-        var queryString = url.substring(questionMarkIndex + 1);
-        var pairs = queryString.split("&");
-        try {
-            for (var pairs_1 = __values(pairs), pairs_1_1 = pairs_1.next(); !pairs_1_1.done; pairs_1_1 = pairs_1.next()) {
-                var pair = pairs_1_1.value;
-                var _c = __read(pair.split("="), 2), key = _c[0], value = _c[1];
-                try {
-                    var decodedKey = decodeURIComponent(key);
-                    var decodedValue = decodeURIComponent(value);
-                    if (custom[decodedKey]) {
-                        continue; // 如果这个键在 custom 对象中，我们已经处理过它了
-                    }
-                    if (stringifyParams.includes(decodedKey)) {
-                        params[decodedKey] = decodedValue;
-                    }
-                    else if (autoParams.includes(decodedKey) || mode === "auto") {
-                        if (decodedValue === "true") {
-                            params[decodedKey] = true;
-                        }
-                        else if (decodedValue === "false") {
-                            params[decodedKey] = false;
-                        }
-                        else if (decodedValue === "null") {
-                            params[decodedKey] = null;
-                        }
-                        else if (decodedValue === "undefined") {
-                            params[decodedKey] = undefined;
-                        }
-                        else if (!isNaN(Number(decodedValue))) {
-                            params[decodedKey] = Number(decodedValue);
-                        }
-                        else {
-                            params[decodedKey] = decodedValue;
-                        }
-                    }
-                    else {
-                        params[decodedKey] = decodedValue;
-                    }
-                }
-                catch (error) {
-                    console.error("Failed to decode URL parameter:", error);
-                }
+    searchParams.forEach(function (decodedValue, decodedKey) {
+        if (custom[decodedKey]) {
+            return;
+        }
+        if (stringifyParams.includes(decodedKey)) {
+            params[decodedKey] = decodedValue;
+        }
+        else if (autoParams.includes(decodedKey) || mode === "auto") {
+            if (decodedValue === "true") {
+                params[decodedKey] = true;
+            }
+            else if (decodedValue === "false") {
+                params[decodedKey] = false;
+            }
+            else if (decodedValue === "null") {
+                params[decodedKey] = null;
+            }
+            else if (decodedValue === "undefined") {
+                params[decodedKey] = undefined;
+            }
+            else if (decodedValue !== "" && !isNaN(Number(decodedValue))) {
+                params[decodedKey] = Number(decodedValue);
+            }
+            else {
+                params[decodedKey] = decodedValue;
             }
         }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (pairs_1_1 && !pairs_1_1.done && (_a = pairs_1.return)) _a.call(pairs_1);
-            }
-            finally { if (e_1) throw e_1.error; }
+        else {
+            params[decodedKey] = decodedValue;
         }
-    }
+    });
     return params;
 }
 // 全局的事件监听器
@@ -2371,7 +2350,8 @@ window.addEventListener("popstate", function () {
 function useUrl(callback, name, immediate, config) {
     if (config === void 0) { config = {}; }
     function getUrlInfo() {
-        return __assign(__assign({ params: getParams(window.location.href, config === null || config === void 0 ? void 0 : config.mode, config === null || config === void 0 ? void 0 : config.autoParams, config === null || config === void 0 ? void 0 : config.stringifyParams, config === null || config === void 0 ? void 0 : config.custom), name: name }, window.location), window.history);
+        var history = window.history;
+        return __assign(__assign(__assign({ params: getParams(window.location.href, config === null || config === void 0 ? void 0 : config.mode, config === null || config === void 0 ? void 0 : config.autoParams, config === null || config === void 0 ? void 0 : config.stringifyParams, config === null || config === void 0 ? void 0 : config.custom), name: name }, window.location), history), { back: history.back.bind(history), forward: history.forward.bind(history), go: history.go.bind(history), pushState: history.pushState.bind(history), replaceState: history.replaceState.bind(history) });
     }
     var _a = __read(useState(getUrlInfo()), 2), urlInfo = _a[0], setUrlInfo = _a[1];
     var memoizedConfig = useMemo(function () { return config; }, [config.mode, config.autoParams, config.stringifyParams, config.custom]);
@@ -2539,7 +2519,9 @@ function useResize(_a, deps) {
 
 function usePromise(promiseFn, callbacksOrDeps, deps) {
     var callbacks = {};
-    if (Array.isArray(callbacksOrDeps)) ;
+    if (Array.isArray(callbacksOrDeps)) {
+        deps = callbacksOrDeps;
+    }
     else if (callbacksOrDeps) {
         callbacks = callbacksOrDeps;
     }
@@ -2548,33 +2530,64 @@ function usePromise(promiseFn, callbacksOrDeps, deps) {
         data: null,
         error: null,
     }), 2), state = _a[0], setState = _a[1];
-    var abortController = new AbortController();
-    var execute = function () {
-        setState(__assign(__assign({}, state), { status: "pending" }));
-        promiseFn()
+    var promiseFnRef = useRef(promiseFn);
+    var callbacksRef = useRef(callbacks);
+    var requestIdRef = useRef(0);
+    var activeRequestRef = useRef(null);
+    promiseFnRef.current = promiseFn;
+    callbacksRef.current = callbacks;
+    var abort = useCallback(function () {
+        var _a;
+        (_a = activeRequestRef.current) === null || _a === void 0 ? void 0 : _a.controller.abort();
+    }, []);
+    var execute = useCallback(function () {
+        var _a;
+        (_a = activeRequestRef.current) === null || _a === void 0 ? void 0 : _a.controller.abort();
+        var id = requestIdRef.current + 1;
+        requestIdRef.current = id;
+        var controller = new AbortController();
+        activeRequestRef.current = { id: id, controller: controller };
+        setState({ status: "pending", data: null, error: null });
+        var promise;
+        try {
+            promise = promiseFnRef.current();
+        }
+        catch (error) {
+            promise = Promise.reject(error);
+        }
+        Promise.resolve(promise)
             .then(function (data) {
-            var _a;
-            setState({ status: "resolved", data: data, error: null });
-            (_a = callbacks.onResolve) === null || _a === void 0 ? void 0 : _a.call(callbacks, data);
+            var _a, _b;
+            var activeRequest = activeRequestRef.current;
+            if (!controller.signal.aborted &&
+                (activeRequest === null || activeRequest === void 0 ? void 0 : activeRequest.id) === id) {
+                setState({ status: "resolved", data: data, error: null });
+                (_b = (_a = callbacksRef.current).onResolve) === null || _b === void 0 ? void 0 : _b.call(_a, data);
+            }
         })
             .catch(function (error) {
-            var _a;
-            if (error.name === "AbortError")
+            var _a, _b;
+            var activeRequest = activeRequestRef.current;
+            if (controller.signal.aborted ||
+                (activeRequest === null || activeRequest === void 0 ? void 0 : activeRequest.id) !== id) {
                 return;
+            }
             setState({ status: "rejected", data: null, error: error });
-            (_a = callbacks.onReject) === null || _a === void 0 ? void 0 : _a.call(callbacks, error);
+            (_b = (_a = callbacksRef.current).onReject) === null || _b === void 0 ? void 0 : _b.call(_a, error);
         })
             .finally(function () {
-            var _a;
-            (_a = callbacks.onFinally) === null || _a === void 0 ? void 0 : _a.call(callbacks);
+            var _a, _b;
+            var activeRequest = activeRequestRef.current;
+            if (!controller.signal.aborted &&
+                (activeRequest === null || activeRequest === void 0 ? void 0 : activeRequest.id) === id) {
+                (_b = (_a = callbacksRef.current).onFinally) === null || _b === void 0 ? void 0 : _b.call(_a);
+            }
         });
-    };
-    /**
-     * Abort the promise
-     */
-    var abort = function () {
-        abortController.abort();
-    };
+    }, []);
+    useEffect(function () {
+        execute();
+        return abort;
+    }, __spreadArray([execute, abort], __read((deps || [])), false));
     return [state, abort, execute];
 }
 
@@ -2586,51 +2599,70 @@ function useFetch(url, options, callbacks, deps) {
         loading: true,
         error: null,
     }), 2), state = _a[0], setState = _a[1];
-    var abortController = new AbortController();
-    var opts = __assign(__assign({}, options), { signal: abortController.signal });
-    var fetchData = useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
-        var res, data, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, 4, 5]);
-                    return [4 /*yield*/, fetch(url, opts)];
-                case 1:
-                    res = _a.sent();
-                    return [4 /*yield*/, res.json()];
-                case 2:
-                    data = _a.sent();
-                    if (!abortController.signal.aborted) {
-                        setState({ data: data, loading: false, error: null });
-                        if (callbacks === null || callbacks === void 0 ? void 0 : callbacks.onResolve) {
-                            callbacks.onResolve(data);
-                        }
-                    }
-                    return [3 /*break*/, 5];
-                case 3:
-                    error_1 = _a.sent();
-                    if (!abortController.signal.aborted) {
-                        setState({ data: null, loading: false, error: error_1 });
-                        if (callbacks === null || callbacks === void 0 ? void 0 : callbacks.onReject) {
-                            callbacks.onReject(error_1);
-                        }
-                    }
-                    return [3 /*break*/, 5];
-                case 4:
-                    if (callbacks === null || callbacks === void 0 ? void 0 : callbacks.onFinally) {
-                        callbacks.onFinally();
-                    }
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
-            }
-        });
-    }); }, [url, opts, callbacks]);
+    var optionsRef = useRef(options);
+    var callbacksRef = useRef(callbacks);
+    optionsRef.current = options;
+    callbacksRef.current = callbacks;
     useEffect(function () {
-        fetchData();
+        var abortController = new AbortController();
+        var settled = false;
+        setState(function (previousState) { return ({
+            data: previousState.data,
+            loading: true,
+            error: null,
+        }); });
+        var fetchData = function () { return __awaiter(_this, void 0, void 0, function () {
+            var requestOptions, response, error, data, error_1;
+            var _a, _b, _c, _d, _e, _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        _g.trys.push([0, 3, 4, 5]);
+                        requestOptions = __assign(__assign({}, optionsRef.current), { signal: abortController.signal });
+                        return [4 /*yield*/, fetch(url, requestOptions)];
+                    case 1:
+                        response = _g.sent();
+                        if (!response.ok) {
+                            error = {
+                                status: response.status,
+                                statusText: response.statusText,
+                            };
+                            throw error;
+                        }
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        data = (_g.sent());
+                        if (!abortController.signal.aborted) {
+                            settled = true;
+                            setState({ data: data, loading: false, error: null });
+                            (_b = (_a = callbacksRef.current) === null || _a === void 0 ? void 0 : _a.onResolve) === null || _b === void 0 ? void 0 : _b.call(_a, data);
+                        }
+                        return [3 /*break*/, 5];
+                    case 3:
+                        error_1 = _g.sent();
+                        if (!abortController.signal.aborted) {
+                            settled = true;
+                            setState({ data: null, loading: false, error: error_1 });
+                            (_d = (_c = callbacksRef.current) === null || _c === void 0 ? void 0 : _c.onReject) === null || _d === void 0 ? void 0 : _d.call(_c, error_1);
+                        }
+                        return [3 /*break*/, 5];
+                    case 4:
+                        if (!abortController.signal.aborted && !settled) {
+                            settled = true;
+                        }
+                        if (!abortController.signal.aborted) {
+                            (_f = (_e = callbacksRef.current) === null || _e === void 0 ? void 0 : _e.onFinally) === null || _f === void 0 ? void 0 : _f.call(_e);
+                        }
+                        return [7 /*endfinally*/];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        }); };
+        void fetchData();
         return function () {
             abortController.abort();
         };
-    }, __spreadArray([fetchData], __read(deps), false));
+    }, __spreadArray([url], __read(deps), false));
     return state;
 }
 
@@ -2678,25 +2710,43 @@ function useGenerator(generatorFn) {
         done: false,
         error: null,
     }), 2), state = _a[0], setState = _a[1];
-    var execute = useCallback(function () {
+    useEffect(function () {
+        var active = true;
         var generator = generatorFn();
-        var handleResult = function (result) {
-            if (result.done) {
-                setState(function (prevState) { return (__assign(__assign({}, prevState), { done: true })); });
-            }
-            else {
-                result.value
-                    .then(function (value) { return setState({ value: value, done: false, error: null }); })
-                    .catch(function (error) { return setState(function (prevState) { return (__assign(__assign({}, prevState), { error: error })); }); });
+        var handleError = function (error) {
+            if (active) {
+                setState(function (prevState) { return (__assign(__assign({}, prevState), { error: error })); });
             }
         };
         var iterate = function (nextValue) {
-            var result = generator.next(nextValue);
-            handleResult(result);
+            var result;
+            try {
+                result = generator.next(nextValue);
+            }
+            catch (error) {
+                handleError(error);
+                return;
+            }
+            if (result.done) {
+                if (active) {
+                    setState(function (prevState) { return (__assign(__assign({}, prevState), { done: true })); });
+                }
+            }
+            else {
+                Promise.resolve(result.value).then(function (value) {
+                    if (!active)
+                        return;
+                    setState({ value: value, done: false, error: null });
+                    iterate(value);
+                }, handleError);
+            }
         };
+        setState({ value: undefined, done: false, error: null });
         iterate();
+        return function () {
+            active = false;
+        };
     }, [generatorFn]);
-    execute();
     return state;
 }
 
@@ -2706,32 +2756,37 @@ var useForm = function (schema, formRef) {
         return function (e) { return __awaiter(void 0, void 0, void 0, function () {
             var fieldsTovalidate, formData;
             return __generator(this, function (_a) {
-                e.preventDefault();
-                fieldsTovalidate = validates;
-                switch (typeof validates) {
-                    case "boolean":
-                        if (validates) {
-                            fieldsTovalidate = undefined;
+                switch (_a.label) {
+                    case 0:
+                        e.preventDefault();
+                        fieldsTovalidate = validates;
+                        switch (typeof validates) {
+                            case "boolean":
+                                if (validates) {
+                                    fieldsTovalidate = undefined;
+                                }
+                                else {
+                                    fieldsTovalidate = [];
+                                }
+                                break;
+                            case "string":
+                                fieldsTovalidate = [validates];
+                                break;
+                            case "object":
+                                fieldsTovalidate = fieldsTovalidate === null || fieldsTovalidate === void 0 ? void 0 : fieldsTovalidate.filter(function (field) {
+                                    return Object.keys(formSchema).includes(field);
+                                });
+                                break;
                         }
-                        else {
-                            fieldsTovalidate = [];
+                        return [4 /*yield*/, formController.validates(fieldsTovalidate)];
+                    case 1:
+                        if (!(_a.sent())) {
+                            return [2 /*return*/];
                         }
-                        break;
-                    case "string":
-                        fieldsTovalidate = [validates];
-                        break;
-                    case "object":
-                        fieldsTovalidate = fieldsTovalidate === null || fieldsTovalidate === void 0 ? void 0 : fieldsTovalidate.filter(function (field) {
-                            return Object.keys(formSchema).includes(field);
-                        });
-                        break;
+                        formData = formController.gets();
+                        handler(formData);
+                        return [2 /*return*/];
                 }
-                if (!formController.validates(fieldsTovalidate)) {
-                    return [2 /*return*/];
-                }
-                formData = formController.gets();
-                handler(formData);
-                return [2 /*return*/];
             });
         }); };
     };
@@ -2757,36 +2812,32 @@ var useForm = function (schema, formRef) {
         validate: function (key) {
             var validator = formSchema[key].validator;
             var value = formController.get(key);
-            return new Promise(function (rs, rj) {
+            return new Promise(function (resolve) {
                 if (value === undefined || value === null || "".concat(value).trim() === "") {
                     if (formSchema[key].required) {
                         console.warn("".concat(String(key), " is required"), "warning");
-                        return rs(false);
+                        return resolve(false);
                     }
                 }
                 if (validator) {
-                    var error_1 = validator(value);
-                    error_1
-                        .then(function (v) {
-                        if (v) {
-                            console.warn(error_1, "warning");
-                            return rs(false);
+                    Promise.resolve()
+                        .then(function () { return validator(value); })
+                        .then(function (errorMessage) {
+                        if (errorMessage) {
+                            console.warn(errorMessage, "warning");
+                            resolve(false);
                         }
                         else {
-                            return rs(true);
+                            resolve(true);
                         }
                     })
-                        .catch(function (err) {
-                        console.warn(error_1, "warning");
-                        rs(false);
+                        .catch(function (error) {
+                        console.warn(error, "warning");
+                        resolve(false);
                     });
-                    if (error_1) {
-                        console.warn(error_1, "warning");
-                        return false;
-                    }
                 }
                 else {
-                    rs(true);
+                    resolve(true);
                 }
             });
         },
@@ -2853,21 +2904,29 @@ function useLazy(importFunction) {
     var _b = __read(useState(true), 2), loading = _b[0], setLoading = _b[1];
     var _c = __read(useState(null), 2), error = _c[0], setError = _c[1];
     useEffect(function () {
+        var active = true;
         importFunction()
             .then(function (mod) {
+            if (!active)
+                return;
             setModule(mod);
             setLoading(false);
         })
             .catch(function (err) {
+            if (!active)
+                return;
             setError(err);
             setLoading(false);
         });
-    }, [importFunction]);
+        return function () {
+            active = false;
+        };
+    }, []);
     return { module: module, loading: loading, error: error };
 }
 
 var LazySourceBuilder = function (src, loaded, error) {
-    var _src = src;
+    var _src = new String(src);
     _src.loaded = loaded;
     _src.error = error;
     return _src;
@@ -2892,23 +2951,40 @@ var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
     }
     else if (typeof src === "string" && typeof defaultSrc === "object") {
         $src = src;
-        $defaultSrc = (_e = defaultSrc.src) !== null && _e !== void 0 ? _e : "";
+        $defaultSrc = (_e = defaultSrc.defaultSrc) !== null && _e !== void 0 ? _e : "";
         $errorSrc = (_f = defaultSrc.errorSrc) !== null && _f !== void 0 ? _f : "";
         $actions = (_g = defaultSrc.actions) !== null && _g !== void 0 ? _g : {};
     }
     var _h = __read(useState(LazySourceBuilder($defaultSrc)), 2), source = _h[0], setSource = _h[1];
+    var defaultSrcRef = useRef($defaultSrc);
+    var errorSrcRef = useRef($errorSrc);
+    var actionsRef = useRef($actions);
+    defaultSrcRef.current = $defaultSrc;
+    errorSrcRef.current = $errorSrc;
+    actionsRef.current = $actions;
     useEffect(function () {
+        var active = true;
         var img = new Image();
-        img.src = $src;
+        setSource(LazySourceBuilder(defaultSrcRef.current));
         img.onload = function () {
-            var _a;
+            var _a, _b;
+            if (!active)
+                return;
             setSource(LazySourceBuilder($src, true, false));
-            (_a = actions === null || actions === void 0 ? void 0 : actions.onLoad) === null || _a === void 0 ? void 0 : _a.call(actions, true);
+            (_b = (_a = actionsRef.current).onLoad) === null || _b === void 0 ? void 0 : _b.call(_a, true);
         };
         img.onerror = function () {
             var _a, _b;
-            setSource(LazySourceBuilder((_a = ($errorSrc || $defaultSrc)) !== null && _a !== void 0 ? _a : "", false, true));
-            (_b = $actions === null || $actions === void 0 ? void 0 : $actions.onError) === null || _b === void 0 ? void 0 : _b.call($actions, true);
+            if (!active)
+                return;
+            setSource(LazySourceBuilder(errorSrcRef.current || defaultSrcRef.current, false, true));
+            (_b = (_a = actionsRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, true);
+        };
+        img.src = $src;
+        return function () {
+            active = false;
+            img.onload = null;
+            img.onerror = null;
         };
     }, [$src]);
     return source;
@@ -2916,19 +2992,15 @@ var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
 
 var useMixRef = function (refs) {
     var setRefs = useCallback(function (node) {
-        // Refs expect a DOM node. Pass it if it exists.
-        if (node) {
-            refs.forEach(function (ref) {
-                if (typeof ref === "function") {
-                    ref(node);
-                }
-                else if (ref) {
-                    // @ts-ignore
-                    ref.current = node;
-                }
-            });
-        }
-    }, []);
+        refs.forEach(function (ref) {
+            if (typeof ref === "function") {
+                ref(node);
+            }
+            else if (ref) {
+                ref.current = node;
+            }
+        });
+    }, [refs]);
     return setRefs;
 };
 
@@ -2942,16 +3014,21 @@ var dispatchStorageEvent = function (key, newValue) {
     });
     window.dispatchEvent(event);
 };
+var readStoredValue = function (key, initialValue) {
+    try {
+        var item = window.localStorage.getItem(key);
+        return item ? JSON.parse(item) : initialValue;
+    }
+    catch (error) {
+        console.error(error);
+        return initialValue;
+    }
+};
 function useLocalStorage(key, initialValue) {
+    var initialValueRef = useRef(initialValue);
+    initialValueRef.current = initialValue;
     var _a = __read(useState(function () {
-        try {
-            var item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
-        }
-        catch (error) {
-            console.error(error);
-            return initialValue;
-        }
+        return readStoredValue(key, initialValue);
     }), 2), storedValue = _a[0], setStoredValue = _a[1];
     var setValue = useCallback(function (value) {
         try {
@@ -2964,48 +3041,84 @@ function useLocalStorage(key, initialValue) {
         }
     }, [key]);
     useEffect(function () {
+        setStoredValue(readStoredValue(key, initialValueRef.current));
         var handleStorageChange = function (event) {
             if (event.key === key) {
-                setStoredValue(function () {
-                    try {
-                        return event.newValue ? JSON.parse(event.newValue) : initialValue;
-                    }
-                    catch (error) {
-                        console.error(error);
-                        return initialValue;
-                    }
-                });
+                if (!event.newValue) {
+                    setStoredValue(initialValueRef.current);
+                    return;
+                }
+                try {
+                    setStoredValue(JSON.parse(event.newValue));
+                }
+                catch (error) {
+                    console.error(error);
+                    setStoredValue(initialValueRef.current);
+                }
             }
         };
         window.addEventListener('storage', handleStorageChange);
         return function () {
             window.removeEventListener('storage', handleStorageChange);
         };
-    }, [key, initialValue]);
+    }, [key]);
     return [storedValue, setValue];
 }
 
 function useIndexedDB(dbName, version, upgradeCallback) {
     var _a = __read(useState({ db: null, error: null }), 2), state = _a[0], setState = _a[1];
+    var upgradeCallbackRef = useRef(upgradeCallback);
     useEffect(function () {
-        var request = indexedDB.open(dbName, version);
+        upgradeCallbackRef.current = upgradeCallback;
+    }, [upgradeCallback]);
+    useEffect(function () {
+        var active = true;
+        var db = null;
+        var request = null;
+        setState({ db: null, error: null });
+        try {
+            request = indexedDB.open(dbName, version);
+        }
+        catch (error) {
+            setState({ db: null, error: error });
+            return function () {
+                active = false;
+            };
+        }
         request.onupgradeneeded = function (event) {
-            upgradeCallback(request.result);
+            upgradeCallbackRef.current(request.result);
         };
         request.onsuccess = function () {
-            setState({ db: request.result, error: null });
+            var openedDb = request.result;
+            if (!active) {
+                openedDb.close();
+                return;
+            }
+            db = openedDb;
+            setState({ db: openedDb, error: null });
         };
         request.onerror = function () {
-            setState({ db: null, error: request.error });
+            if (active) {
+                setState({ db: null, error: request.error });
+            }
         };
-    }, [dbName, version, upgradeCallback]);
+        return function () {
+            active = false;
+            db === null || db === void 0 ? void 0 : db.close();
+            db = null;
+        };
+    }, [dbName, version]);
     return state;
 }
 
 function useBeforeMount(callback) {
     var callbackRef = useRef(callback);
+    var hasRunRef = useRef(false);
     // 在组件挂载前执行回调
-    callbackRef.current();
+    if (!hasRunRef.current) {
+        hasRunRef.current = true;
+        callbackRef.current();
+    }
     // 确保回调在组件卸载时不会再次执行
     useEffect(function () { }, []);
 }
@@ -3038,11 +3151,13 @@ var useMount = function (callback, arg2, arg3) {
 };
 
 function useUnmount(callback) {
+    var callbackRef = useRef(callback);
+    callbackRef.current = callback;
     useEffect(function () {
         return function () {
-            callback();
+            callbackRef.current();
         };
-    }, []); // 空数组表示这个 useEffect 只会在组件挂载后执行一次
+    }, []);
 }
 
 var useUpdate = function (callback, dependencies) {
@@ -3071,36 +3186,46 @@ function useAsyncEffect(effect, deps, options) {
     var _this = this;
     if (deps === void 0) { deps = []; }
     useEffect(function () {
-        var _a, _b;
+        var active = true;
         var cleanup;
         var runEffect = function () { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, effect()];
+            var nextCleanup, error_1;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, 3, 4]);
+                        return [4 /*yield*/, effect()];
                     case 1:
-                        cleanup = _a.sent();
-                        return [2 /*return*/];
+                        nextCleanup = _b.sent();
+                        if (active) {
+                            cleanup = nextCleanup;
+                        }
+                        else {
+                            nextCleanup === null || nextCleanup === void 0 ? void 0 : nextCleanup();
+                        }
+                        return [3 /*break*/, 4];
+                    case 2:
+                        error_1 = _b.sent();
+                        if (options === null || options === void 0 ? void 0 : options.onError) {
+                            options.onError(error_1);
+                        }
+                        else {
+                            throw error_1;
+                        }
+                        return [3 /*break*/, 4];
+                    case 3:
+                        (_a = options === null || options === void 0 ? void 0 : options.onFinally) === null || _a === void 0 ? void 0 : _a.call(options);
+                        return [7 /*endfinally*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         }); };
-        try {
-            runEffect();
-        }
-        catch (error) {
-            if (options === null || options === void 0 ? void 0 : options.onError) {
-                (_a = options === null || options === void 0 ? void 0 : options.onError) === null || _a === void 0 ? void 0 : _a.call(options, error);
-            }
-            else {
-                throw error;
-            }
-        }
-        finally {
-            (_b = options === null || options === void 0 ? void 0 : options.onFinally) === null || _b === void 0 ? void 0 : _b.call(options);
-        }
+        void runEffect();
         return function () {
-            if (cleanup) {
-                cleanup();
-            }
+            active = false;
+            cleanup === null || cleanup === void 0 ? void 0 : cleanup();
+            cleanup = undefined;
         };
     }, deps);
 }
@@ -3206,15 +3331,10 @@ function useReceiver(eventNameOrOptions, callback) {
         eventName = eventNameOrOptions.eventName;
         name = eventNameOrOptions.name || "_receiver_".concat(UKey());
         namespace = eventNameOrOptions.namespace || "default";
-        cb = eventNameOrOptions.callback;
-        if (cb) {
-            if (callback) {
-                console.warn("[react-hooks-kit][useReceiver] callback is ignored when options.callback is set");
-            }
-            else {
-                cb = callback;
-            }
+        if (eventNameOrOptions.callback && callback) {
+            console.warn("[react-hooks-kit][useReceiver] callback is ignored when options.callback is set");
         }
+        cb = eventNameOrOptions.callback || callback;
     }
     var _a = useEmitter({
         name: name,
@@ -3222,13 +3342,16 @@ function useReceiver(eventNameOrOptions, callback) {
     }), subscribe = _a.subscribe, unsubscribe = _a.unsubscribe, emit = _a.emit;
     var _b = __read(useState(true), 2), isListening = _b[0], setIsListening = _b[1];
     var _c = __read(useState(null), 2), eventResult = _c[0], setEventResult = _c[1];
+    var callbackRef = useRef(cb);
+    callbackRef.current = cb;
     var eventListener = useCallback(function () {
+        var _a;
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
         setEventResult(args);
-        cb === null || cb === void 0 ? void 0 : cb.apply(void 0, __spreadArray([], __read(args), false));
+        (_a = callbackRef.current) === null || _a === void 0 ? void 0 : _a.call.apply(_a, __spreadArray([callbackRef], __read(args), false));
     }, []);
     useEffect(function () {
         subscribe(eventName, eventListener);
@@ -3348,23 +3471,26 @@ function useTheme(arg1, arg2) {
     useEffect(function () {
         var matcher = window.matchMedia("(prefers-color-scheme: dark)");
         var handler = null;
-        if (typeof arg1 === "boolean") {
-            if (arg1 && arg2) {
-                handler = handleThemeChange(arg2);
-                matcher.addEventListener("change", handler);
-            }
+        var shouldListen = typeof arg1 === "boolean" ? arg1 : true;
+        var onThemeChange = typeof arg1 === "function" ? arg1 : arg2;
+        if (!shouldListen) {
+            return;
         }
-        else if (arg1) {
-            handler = handleThemeChange(arg1);
+        handler = handleThemeChange(onThemeChange !== null && onThemeChange !== void 0 ? onThemeChange : (function () { }));
+        if (matcher.addEventListener) {
             matcher.addEventListener("change", handler);
         }
         else {
-            handler = handleThemeChange(function () { });
-            matcher.addEventListener("change", handler);
+            matcher.addListener(handler);
         }
         return function () {
             if (handler) {
-                matcher.removeEventListener("change", handler);
+                if (matcher.removeEventListener) {
+                    matcher.removeEventListener("change", handler);
+                }
+                else {
+                    matcher.removeListener(handler);
+                }
             }
         };
     }, [arg1, arg2, handleThemeChange]);
@@ -3372,11 +3498,15 @@ function useTheme(arg1, arg2) {
 }
 
 var createRoot$1 = function (parentDocument) {
-    return {
+    var root = {
         render: function (element) {
-            ReactDOM.render(element, parentDocument);
+            ReactDom.render(element, parentDocument);
+        },
+        unmount: function () {
+            ReactDom.unmountComponentAtNode(parentDocument);
         },
     };
+    return root;
 };
 if ("createRoot" in ReactDomClient) {
     // Adapt to React 18
@@ -3394,22 +3524,89 @@ var defaultConfig = {
 function useToast(config) {
     if (config === void 0) { config = {}; }
     var _a = __read(useState(__assign(__assign({}, defaultConfig), config)), 2), toastConfig = _a[0], setToastConfig = _a[1];
-    var _b = __read(useState(null), 2); _b[0]; var setToastElement = _b[1];
     var toastRef = useRef(null);
+    var activeToastsRef = useRef(new Set());
+    var delayedToastsRef = useRef(new Set());
     toastRef.current = useCallback(function (text, config) {
+        var _a;
         if (config === void 0) { config = {}; }
-        var _config = __assign(__assign(__assign({}, toastConfig), { text: text }), config);
+        var _config = __assign(__assign(__assign({}, toastConfig), config), (text !== undefined ? { text: text } : {}));
         setToastConfig(_config);
-        var element = document.createElement("div");
-        setToastElement(element);
-        document.body.appendChild(element);
-        var root = createRoot$1(element);
-        root.render(jsx("div", __assign({ style: __assign(__assign({ position: _config.position }, _config.style), { color: _config.color, left: "50%", top: _config.placement === "center" ? "50%" : "10%", transform: _config.placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)", backgroundColor: _config.bgColor, padding: "4px 12px", paddingBottom: "6px", borderRadius: "4px", fontSize: "14px" }), className: _config.className }, { children: _config.text })));
-        setTimeout(function () {
-            document.body.removeChild(element);
-            setToastElement(null);
-        }, _config.duration);
+        var showToast = function () {
+            var _a;
+            var element = document.createElement("div");
+            var root = createRoot$1(element);
+            var instance = { element: element, root: root };
+            var placement = _config.placement;
+            var placementStyle = typeof placement === "object"
+                ? {
+                    left: "".concat(placement.x, "px"),
+                    top: "".concat(placement.y, "px"),
+                    transform: "none",
+                }
+                : placement === "center"
+                    ? {
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                    }
+                    : placement === "bottom"
+                        ? {
+                            left: "50%",
+                            bottom: "10%",
+                            transform: "translateX(-50%)",
+                        }
+                        : {
+                            left: "50%",
+                            top: "10%",
+                            transform: "translateX(-50%)",
+                        };
+            var removeToast = function () {
+                if (instance.timer !== undefined) {
+                    clearTimeout(instance.timer);
+                    instance.timer = undefined;
+                }
+                instance.root.unmount();
+                if (instance.element.parentNode) {
+                    instance.element.parentNode.removeChild(instance.element);
+                }
+                activeToastsRef.current.delete(instance);
+            };
+            document.body.appendChild(element);
+            activeToastsRef.current.add(instance);
+            flushSync(function () {
+                root.render(jsx("div", __assign({ style: __assign(__assign(__assign({ position: _config.position }, placementStyle), _config.style), { color: _config.color, backgroundColor: _config.bgColor, padding: "4px 12px", paddingBottom: "6px", borderRadius: "4px", fontSize: "14px" }), className: _config.className }, { children: _config.text })));
+            });
+            instance.timer = setTimeout(removeToast, Math.max(0, (_a = _config.duration) !== null && _a !== void 0 ? _a : 0));
+        };
+        var delay = Math.max(0, (_a = _config.delay) !== null && _a !== void 0 ? _a : 0);
+        if (delay === 0) {
+            showToast();
+        }
+        else {
+            var timer_1;
+            timer_1 = setTimeout(function () {
+                if (timer_1 !== undefined) {
+                    delayedToastsRef.current.delete(timer_1);
+                }
+                showToast();
+            }, delay);
+            delayedToastsRef.current.add(timer_1);
+        }
     }, [toastConfig]);
+    useEffect(function () {
+        return function () {
+            delayedToastsRef.current.forEach(function (timer) { return clearTimeout(timer); });
+            delayedToastsRef.current.clear();
+            activeToastsRef.current.forEach(function (instance) {
+                instance.root.unmount();
+                if (instance.element.parentNode) {
+                    instance.element.parentNode.removeChild(instance.element);
+                }
+            });
+            activeToastsRef.current.clear();
+        };
+    }, []);
     var toast = useCallback(function (text, config) {
         var _a;
         if (config === void 0) { config = {}; }
@@ -3431,16 +3628,16 @@ function useToast(config) {
 }
 
 var createRoot = function (targetDocument) {
+    var root = createRoot$2(targetDocument);
     return {
         render: function (element) {
-            ReactDOM.render(element, targetDocument);
+            root.render(element);
+        },
+        unmount: function () {
+            queueMicrotask(function () { return root.unmount(); });
         },
     };
 };
-if ("createRoot" in ReactDOM) {
-    // Adapt to React 18
-    createRoot = ReactDOM.createRoot;
-}
 var createMask = function (config) {
     var mask = document.createElement("div");
     mask.style.position = "fixed";
@@ -3453,17 +3650,22 @@ var createMask = function (config) {
     mask.style.cursor = "default";
     mask.style.userSelect = "none";
     mask.style.webkitUserSelect = "none";
-    mask.style.pointerEvents = "none !important";
+    mask.style.setProperty("pointer-events", "none", "important");
     var maskConfig = config;
     if (maskConfig) {
-        if (maskConfig.backgroundColor) {
+        if (maskConfig.backgroundColor !== undefined) {
             mask.style.backgroundColor = maskConfig.backgroundColor;
         }
-        if (maskConfig.opacity) {
+        if (maskConfig.opacity !== undefined) {
             mask.style.opacity = maskConfig.opacity.toString();
         }
-        if (maskConfig.zIndex) {
+        if (maskConfig.zIndex !== undefined) {
             mask.style.zIndex = maskConfig.zIndex.toString();
+        }
+        if (maskConfig.pointerEvents !== undefined) {
+            var pointerEvents = String(maskConfig.pointerEvents);
+            var important = /\s*!important$/i.test(pointerEvents);
+            mask.style.setProperty("pointer-events", pointerEvents.replace(/\s*!important$/i, ""), important ? "important" : "");
         }
     }
     return mask;
@@ -3527,19 +3729,26 @@ function useGuide(steps, callback, config) {
             target === null || target === void 0 ? void 0 : target.appendChild(container);
             if (container && target) {
                 // @ts-ignore
-                createRoot(container).render(
+                var root = createRoot(container);
+                root.render(
                 // @ts-ignore
                 render(id, currentStep.name, currentStep.data, currentStep.ids));
-                return container;
+                return { container: container, root: root };
             }
         });
-        callback === null || callback === void 0 ? void 0 : callback(step, currentStep);
+        if (currentStep) {
+            callback === null || callback === void 0 ? void 0 : callback(step, currentStep);
+        }
         return function () {
-            if (currentStep && rootDom && maskRef.current) {
+            var _a;
+            if (currentStep && rootDom && ((_a = maskRef.current) === null || _a === void 0 ? void 0 : _a.parentNode) === rootDom) {
                 rootDom.removeChild(mask);
                 maskRef.current = null;
             }
-            renders === null || renders === void 0 ? void 0 : renders.forEach(function (elem) { return elem === null || elem === void 0 ? void 0 : elem.remove(); });
+            renders === null || renders === void 0 ? void 0 : renders.forEach(function (rendered) {
+                rendered === null || rendered === void 0 ? void 0 : rendered.root.unmount();
+                rendered === null || rendered === void 0 ? void 0 : rendered.container.remove();
+            });
             // 当不再需要引导元素时，恢复原始的 zIndex
             zIndexes.current.forEach(function (zIndex, id) {
                 var element = document.getElementById(id);
@@ -3549,7 +3758,7 @@ function useGuide(steps, callback, config) {
             });
             zIndexes.current.clear();
         };
-    }, [step, steps]);
+    }, [step, steps, callback, config]);
     var start = useCallback(function () { return setStep(0); }, []);
     var stop = useCallback(function () { return setStep(-1); }, []);
     var next = useCallback(function () { return setStep(function (prev) { return Math.min(prev + 1, steps.length - 1); }); }, [steps]);
@@ -3576,21 +3785,41 @@ function useVirtualArea(_a, depths) {
     var loadMoreItems = _a.loadMoreItems, items = _a.items, hasMore = _a.hasMore, height = _a.height, containerStyle = _a.style, renderTop = _a.renderTop, renderItem = _a.renderItem, itemComponent = _a.itemComponent, itemComponentProps = _a.itemComponentProps, renderEmpty = _a.renderEmpty, renderLoader = _a.renderLoader, renderUnLoaded = _a.renderUnLoaded, loaderComponent = _a.loaderComponent, loaderComponentProps = _a.loaderComponentProps, containerComponent = _a.containerComponent, containerComponentProps = _a.containerComponentProps, renderBottom = _a.renderBottom, observerOptions = _a.observerOptions;
     var _b = __read(useState(false), 2), loading = _b[0], setLoading = _b[1];
     var loaderRef = useRef(null);
+    var loadingRef = useRef(false);
+    var mountedRef = useRef(true);
     var loadMore = useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    if (loading || !hasMore)
+                    if (loadingRef.current || !hasMore)
                         return [2 /*return*/];
+                    loadingRef.current = true;
                     setLoading(true);
-                    return [4 /*yield*/, loadMoreItems()];
+                    _b.label = 1;
                 case 1:
-                    _a.sent();
-                    setLoading(false);
-                    return [2 /*return*/];
+                    _b.trys.push([1, 3, 4, 5]);
+                    return [4 /*yield*/, loadMoreItems()];
+                case 2:
+                    _b.sent();
+                    return [3 /*break*/, 5];
+                case 3:
+                    _b.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    loadingRef.current = false;
+                    if (mountedRef.current) {
+                        setLoading(false);
+                    }
+                    return [7 /*endfinally*/];
+                case 5: return [2 /*return*/];
             }
         });
-    }); }, [loading, hasMore, loadMoreItems]);
+    }); }, [hasMore, loadMoreItems]);
+    useEffect(function () {
+        return function () {
+            mountedRef.current = false;
+        };
+    }, []);
     useEffect(function () {
         var options = {
             root: null,
@@ -3598,7 +3827,8 @@ function useVirtualArea(_a, depths) {
             threshold: 1.0,
         };
         var observer = new IntersectionObserver(function (entries) {
-            if (entries[0].isIntersecting) {
+            var _a;
+            if ((_a = entries[0]) === null || _a === void 0 ? void 0 : _a.isIntersecting) {
                 loadMore();
             }
         }, __assign(__assign({}, options), observerOptions));
@@ -3689,6 +3919,10 @@ var useRipple = function (config) {
         var animationFrameId = null;
         var handleClick = function (event) {
             var _a, _b;
+            if (animationFrameId !== null) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
             var rect = button.getBoundingClientRect();
             var x = event.clientX - rect.left;
             var y = event.clientY - rect.top;
@@ -3708,8 +3942,9 @@ var useRipple = function (config) {
                     animationFrameId = requestAnimationFrame(animate);
                 }
                 else {
-                    if (animationFrameId) {
+                    if (animationFrameId !== null) {
                         cancelAnimationFrame(animationFrameId);
+                        animationFrameId = null;
                     }
                 }
             };
@@ -3721,14 +3956,14 @@ var useRipple = function (config) {
         button.addEventListener("mouseleave", hiddenRipple);
         return function () {
             var _a;
-            if (animationFrameId) {
+            if (animationFrameId !== null) {
                 cancelAnimationFrame(animationFrameId);
             }
             button.removeEventListener((_a = config.trigger) !== null && _a !== void 0 ? _a : "mousedown", handleClick);
             button.removeEventListener("mouseup", hiddenRipple);
             button.removeEventListener("mouseleave", hiddenRipple);
         };
-    }, []);
+    }, [config]);
     return ref;
 };
 
@@ -3763,40 +3998,43 @@ function useParticle(config, enable) {
         mounted.current = true;
     }, []);
     useEffect(function () {
-        var _a;
+        var _a, _b, _c, _d, _e;
         var element = ref.current;
         if (!element)
             return;
-        var trigger = config.trigger || "mousedown";
-        var duration = config.duration || 500;
-        var color = config.color || null;
-        var num = config.num || 10;
-        var size = (_a = config.size) !== null && _a !== void 0 ? _a : 3;
+        var trigger = (_a = config.trigger) !== null && _a !== void 0 ? _a : "mousedown";
+        var duration = (_b = config.duration) !== null && _b !== void 0 ? _b : 500;
+        var color = (_c = config.color) !== null && _c !== void 0 ? _c : null;
+        var num = (_d = config.num) !== null && _d !== void 0 ? _d : 10;
+        var size = (_e = config.size) !== null && _e !== void 0 ? _e : 3;
         var animationFrameId = null;
         var handleTrigger = function (event) {
             if (!enable)
                 return;
+            if (animationFrameId !== null) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
             var x = event.clientX - element.getBoundingClientRect().left;
             var y = event.clientY - element.getBoundingClientRect().top;
             var startTime = performance.now();
-            console.log("x: ".concat(x, ", y: ").concat(y));
             element.style.setProperty("--particle-x", "".concat(x, "px"));
             element.style.setProperty("--particle-y", "".concat(y, "px"));
             element.style.setProperty("--particle-size", "".concat(size));
-            element.style.setProperty("--particle-color", null === color ? null : color);
-            element.style.setProperty("--particle-time", "".concat(performance.now() / duration)); // "0"
+            element.style.setProperty("--particle-color", color !== null && color !== void 0 ? color : "");
+            element.style.setProperty("--particle-time", "0");
             element.style.setProperty("--particle-num", "".concat(num)); // "10"
             element.style.backgroundImage = "paint(particle)";
             var animate = function (time) {
-                var _a;
-                var progress = (time - startTime) / ((_a = config.duration) !== null && _a !== void 0 ? _a : 500); // Convert time to seconds
+                var progress = duration === 0 ? 1 : (time - startTime) / duration;
                 element.style.setProperty("--particle-time", "".concat(progress));
                 if (progress < 1) {
                     animationFrameId = requestAnimationFrame(animate);
                 }
                 else {
-                    if (animationFrameId) {
+                    if (animationFrameId !== null) {
                         cancelAnimationFrame(animationFrameId);
+                        animationFrameId = null;
                     }
                 }
             };
@@ -3805,8 +4043,11 @@ function useParticle(config, enable) {
         element.addEventListener(trigger, handleTrigger);
         return function () {
             element.removeEventListener(trigger, handleTrigger);
+            if (animationFrameId !== null) {
+                cancelAnimationFrame(animationFrameId);
+            }
         };
-    }, [ref, config]);
+    }, [ref, config, enable]);
     return ref;
 }
 
@@ -3829,8 +4070,15 @@ function useBattery(onChargingChange, callbacks) {
         return __assign(__assign({}, callbacks), { onChargingChange: (callbacks === null || callbacks === void 0 ? void 0 : callbacks.onChargingChange) || onChargingChange });
     }, [callbacks, onChargingChange]);
     useEffect(function () {
+        var active = true;
         var battery = null;
+        var handleChargingChange = null;
+        var handleLevelChange = null;
+        var handleChargingTimeChange = null;
+        var handleDischargingTimeChange = null;
         navigator.getBattery().then(function (bat) {
+            if (!active)
+                return;
             battery = bat;
             setBatteryStatus({
                 charging: battery.charging,
@@ -3846,7 +4094,7 @@ function useBattery(onChargingChange, callbacks) {
                     dischargingTime: battery.dischargingTime,
                 });
             };
-            var handleChargingChange = function () {
+            handleChargingChange = function () {
                 updateAllBatteryInfo();
                 if (_callbacks.onChargingChange) {
                     _callbacks.onChargingChange({
@@ -3857,7 +4105,7 @@ function useBattery(onChargingChange, callbacks) {
                     });
                 }
             };
-            var handleLevelChange = function () {
+            handleLevelChange = function () {
                 updateAllBatteryInfo();
                 if (_callbacks.onLevelChange) {
                     _callbacks.onLevelChange({
@@ -3868,7 +4116,7 @@ function useBattery(onChargingChange, callbacks) {
                     });
                 }
             };
-            var handleChargingTimeChange = function () {
+            handleChargingTimeChange = function () {
                 updateAllBatteryInfo();
                 if (_callbacks.onChargingTimeChange) {
                     _callbacks.onChargingTimeChange({
@@ -3879,7 +4127,7 @@ function useBattery(onChargingChange, callbacks) {
                     });
                 }
             };
-            var handleDischargingTimeChange = function () {
+            handleDischargingTimeChange = function () {
                 updateAllBatteryInfo();
                 if (_callbacks.onDischargingTimeChange) {
                     _callbacks.onDischargingTimeChange({
@@ -3896,11 +4144,20 @@ function useBattery(onChargingChange, callbacks) {
             battery.addEventListener("dischargingtimechange", handleDischargingTimeChange);
         });
         return function () {
+            active = false;
             if (battery) {
-                battery.onchargingchange = null;
-                battery.onlevelchange = null;
-                battery.onchargingtimechange = null;
-                battery.ondischargingtimechange = null;
+                if (handleChargingChange) {
+                    battery.removeEventListener("chargingchange", handleChargingChange);
+                }
+                if (handleLevelChange) {
+                    battery.removeEventListener("levelchange", handleLevelChange);
+                }
+                if (handleChargingTimeChange) {
+                    battery.removeEventListener("chargingtimechange", handleChargingTimeChange);
+                }
+                if (handleDischargingTimeChange) {
+                    battery.removeEventListener("dischargingtimechange", handleDischargingTimeChange);
+                }
             }
         };
     }, [_callbacks]);
@@ -3923,24 +4180,38 @@ function useClickAway(onClickAway) {
     return ref;
 }
 
+function decodeCookieValue(value) {
+    try {
+        return decodeURIComponent(value);
+    }
+    catch (_a) {
+        return value;
+    }
+}
 function getCookie(name) {
     if (typeof document === 'undefined') {
         return null;
     }
-    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? decodeURIComponent(match[2]) : null;
+    var encodedName = encodeURIComponent(name);
+    var cookie = document.cookie
+        .split(";")
+        .map(function (part) { return part.trim(); })
+        .find(function (part) { return part.startsWith("".concat(encodedName, "=")); });
+    if (!cookie)
+        return null;
+    return decodeCookieValue(cookie.slice(encodedName.length + 1));
 }
 function setCookie(name, value, days) {
     if (typeof document === 'undefined') {
         return;
     }
-    var expires = '';
+    var expires = "";
     if (days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    document.cookie = "".concat(encodeURIComponent(name), "=").concat(encodeURIComponent(value)).concat(expires, "; path=/");
 }
 function useCookie(name, initialValue, days) {
     var _a = __read(useState(function () { return getCookie(name) || initialValue; }), 2), value = _a[0], setValue = _a[1];
@@ -3950,22 +4221,40 @@ function useCookie(name, initialValue, days) {
     return [value, setValue];
 }
 
-function useConsoleLog() {
-    var _a = __read(useState([]), 2), logs = _a[0], setLogs = _a[1];
-    useEffect(function () {
-        var originalLog = console.log;
-        console.log = function () {
+var subscribers = new Set();
+var originalLog = null;
+var wrappedLog = null;
+function subscribe(subscriber) {
+    if (subscribers.size === 0) {
+        originalLog = console.log;
+        wrappedLog = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            // @ts-ignore
-            setLogs(function (prevLogs) { return __spreadArray(__spreadArray([], __read(prevLogs), false), [args.join(' ')], false); });
-            originalLog.apply(void 0, __spreadArray([], __read(args), false));
+            subscribers.forEach(function (currentSubscriber) { return currentSubscriber(args); });
+            originalLog === null || originalLog === void 0 ? void 0 : originalLog.apply(console, args);
         };
-        return function () {
-            console.log = originalLog;
-        };
+        console.log = wrappedLog;
+    }
+    subscribers.add(subscriber);
+    return function () {
+        subscribers.delete(subscriber);
+        if (subscribers.size === 0) {
+            if (wrappedLog && console.log === wrappedLog && originalLog) {
+                console.log = originalLog;
+            }
+            originalLog = null;
+            wrappedLog = null;
+        }
+    };
+}
+function useConsoleLog() {
+    var _a = __read(useState([]), 2), logs = _a[0], setLogs = _a[1];
+    useEffect(function () {
+        return subscribe(function (args) {
+            setLogs(function (previousLogs) { return __spreadArray(__spreadArray([], __read(previousLogs), false), [args.join(" ")], false); });
+        });
     }, []);
     return logs;
 }
@@ -4029,20 +4318,72 @@ function useDimensionsById(id) {
     return dimensions;
 }
 
-function useEyeDropper () {
+function getEyeDropperConstructor() {
+    if (typeof window === "undefined")
+        return undefined;
+    return window.EyeDropper;
+}
+/**
+ * Wraps the browser EyeDropper API in React state.
+ *
+ * The picker must be opened from a user interaction and is available only in
+ * browsers that implement the experimental EyeDropper API.
+ *
+ * @example
+ * ```tsx
+ * const { isSupported, sRGBHex, open } = useEyeDropper({
+ *   initialValue: "#ffffff",
+ * });
+ *
+ * <button disabled={!isSupported} onClick={() => void open()}>
+ *   Pick color: {sRGBHex}
+ * </button>
+ * ```
+ */
+function useEyeDropper(options) {
+    var _this = this;
+    if (options === void 0) { options = {}; }
+    var _a = options.initialValue, initialValue = _a === void 0 ? "" : _a;
+    var _b = __read(useState(false), 2), isSupported = _b[0], setIsSupported = _b[1];
+    var _c = __read(useState(initialValue), 2), sRGBHex = _c[0], setSRGBHex = _c[1];
+    var mountedRef = useRef(false);
+    useEffect(function () {
+        mountedRef.current = true;
+        setIsSupported(getEyeDropperConstructor() !== undefined);
+        return function () {
+            mountedRef.current = false;
+        };
+    }, []);
+    var open = useCallback(function (openOptions) { return __awaiter(_this, void 0, void 0, function () {
+        var EyeDropper, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    EyeDropper = getEyeDropperConstructor();
+                    if (!EyeDropper)
+                        return [2 /*return*/, undefined];
+                    return [4 /*yield*/, new EyeDropper().open(openOptions)];
+                case 1:
+                    result = _a.sent();
+                    if (mountedRef.current)
+                        setSRGBHex(result.sRGBHex);
+                    return [2 /*return*/, result];
+            }
+        });
+    }); }, []);
+    return { isSupported: isSupported, sRGBHex: sRGBHex, open: open };
 }
 
 function useHover(onHover) {
     var ref = useRef(null);
     useEffect(function () {
-        var handleHover = function (event) {
-            if (ref.current && !ref.current.contains(event.target)) {
-                onHover();
-            }
-        };
-        document.addEventListener("mouseover", handleHover);
+        var element = ref.current;
+        if (!element)
+            return;
+        var handleHover = function () { return onHover(); };
+        element.addEventListener("mouseenter", handleHover);
         return function () {
-            document.removeEventListener("mouseover", handleHover);
+            element.removeEventListener("mouseenter", handleHover);
         };
     }, [onHover]);
     return ref;
@@ -4063,6 +4404,7 @@ function useKeyPress(targetKey) {
         }
     };
     useEffect(function () {
+        setKeyPressed(false);
         window.addEventListener("keydown", downHandler);
         window.addEventListener("keyup", upHandler);
         return function () {
@@ -4078,6 +4420,13 @@ function useMediaQuery(query) {
     useEffect(function () {
         var mediaQueryList = window.matchMedia(query);
         var documentChangeHandler = function () { return setMatches(mediaQueryList.matches); };
+        setMatches(mediaQueryList.matches);
+        if (mediaQueryList.addEventListener) {
+            mediaQueryList.addEventListener("change", documentChangeHandler);
+            return function () {
+                mediaQueryList.removeEventListener("change", documentChangeHandler);
+            };
+        }
         mediaQueryList.addListener(documentChangeHandler);
         return function () {
             mediaQueryList.removeListener(documentChangeHandler);
@@ -4101,6 +4450,33 @@ function useMousePosition(trigger) {
     return mousePosition;
 }
 
+function getConnection() {
+    return navigator.connection;
+}
+function readNetworkStatus() {
+    var _a, _b;
+    var connection = getConnection();
+    if (!navigator.onLine) {
+        return {
+            online: false,
+            downlink: 0,
+            uplink: 0,
+            effectiveType: undefined,
+            rtt: undefined,
+            saveData: undefined,
+            type: undefined,
+        };
+    }
+    return {
+        online: true,
+        downlink: (_a = connection === null || connection === void 0 ? void 0 : connection.downlink) !== null && _a !== void 0 ? _a : 0,
+        uplink: (_b = connection === null || connection === void 0 ? void 0 : connection.uplink) !== null && _b !== void 0 ? _b : 0,
+        effectiveType: connection === null || connection === void 0 ? void 0 : connection.effectiveType,
+        rtt: connection === null || connection === void 0 ? void 0 : connection.rtt,
+        saveData: connection === null || connection === void 0 ? void 0 : connection.saveData,
+        type: connection === null || connection === void 0 ? void 0 : connection.type,
+    };
+}
 /**
  * @hook useNetworkStatus
  * @description A react hook for getting network status
@@ -4108,59 +4484,25 @@ function useMousePosition(trigger) {
  * @returns {NetworkStatus}
  */
 function useNetworkStatus(throttleInterval) {
-    var _a = __read(useState({
-        online: navigator.onLine,
-        // @ts-ignore
-        downlink: navigator.connection ? navigator.connection.downlink : 0,
-        // @ts-ignore
-        uplink: navigator.connection ? navigator.connection.uplink : 0,
-    }), 2), status = _a[0], setStatus = _a[1];
+    var _a = __read(useState(readNetworkStatus), 2), status = _a[0], setStatus = _a[1];
     var throttledUpdateStatus = useThrottle(function () {
         if ((throttleInterval !== null && throttleInterval !== void 0 ? throttleInterval : 0) < 17) {
             console.warn("throttleInterval is suggested to be greater than 16.67ms to avoid too much re-rendering");
         }
-        if (!navigator.onLine) {
-            setStatus({
-                online: false,
-                downlink: 0,
-                uplink: 0,
-                effectiveType: void 0,
-                rtt: void 0,
-            });
-            return;
-        }
-        // @ts-ignore
-        console.log("navigator.connection", navigator.connection);
-        setStatus({
-            online: navigator.onLine,
-            // @ts-ignore
-            downlink: navigator.connection ? navigator.connection.downlink : 0,
-            // @ts-ignore
-            uplink: navigator.connection ? navigator.connection.uplink : 0,
-            // @ts-ignore
-            effectiveType: navigator.connection
-                ? // @ts-ignore
-                    navigator.connection.effectiveType
-                : void 0,
-            // @ts-ignore
-            rtt: navigator.connection ? navigator.connection.rtt : void 0,
-        });
+        setStatus(readNetworkStatus());
     }, throttleInterval !== null && throttleInterval !== void 0 ? throttleInterval : 0);
     useEffect(function () {
+        var connection = getConnection();
         window.addEventListener("online", throttledUpdateStatus);
         window.addEventListener("offline", throttledUpdateStatus);
-        // @ts-ignore
-        if (navigator.connection) {
-            // @ts-ignore
-            navigator.connection.addEventListener("change", throttledUpdateStatus);
+        if (connection === null || connection === void 0 ? void 0 : connection.addEventListener) {
+            connection.addEventListener("change", throttledUpdateStatus);
         }
         return function () {
             window.removeEventListener("online", throttledUpdateStatus);
             window.removeEventListener("offline", throttledUpdateStatus);
-            // @ts-ignore
-            if (navigator.connection) {
-                // @ts-ignore
-                navigator.connection.removeEventListener("change", throttledUpdateStatus);
+            if (connection === null || connection === void 0 ? void 0 : connection.removeEventListener) {
+                connection.removeEventListener("change", throttledUpdateStatus);
             }
         };
     }, [throttledUpdateStatus]);
@@ -4229,7 +4571,7 @@ var useRaf = function (callback) {
         frameRef.current = requestAnimationFrame(loop);
         // 在组件卸载时取消动画帧
         return function () {
-            if (frameRef.current) {
+            if (frameRef.current !== undefined) {
                 cancelAnimationFrame(frameRef.current);
             }
         };
@@ -4237,17 +4579,27 @@ var useRaf = function (callback) {
 };
 
 var useRafState = function (initialState) {
-    var frame = useRef(0);
+    var frame = useRef(null);
     var _a = __read(useState(initialState), 2), state = _a[0], setState = _a[1];
     var setRafState = useCallback(function (value) {
-        cancelAnimationFrame(frame.current);
+        if (frame.current !== null) {
+            cancelAnimationFrame(frame.current);
+        }
         frame.current = requestAnimationFrame(function () {
+            frame.current = null;
             setState(function (prevState) {
                 return typeof value === "function"
                     ? value(prevState)
                     : value;
             });
         });
+    }, []);
+    useEffect(function () {
+        return function () {
+            if (frame.current !== null) {
+                cancelAnimationFrame(frame.current);
+            }
+        };
     }, []);
     return [state, setRafState];
 };
@@ -4262,7 +4614,7 @@ function useProtect(initialData) {
         return conditions
             .filter(function (condition) { return (typeof condition === "function" ? condition(data, data) : condition); })
             .map(function (result) { return (typeof result === "string" ? result : "Data is protected and cannot be modified."); });
-    }, [JSON.stringify(data), conditions]);
+    }, [data, conditions]);
     var updateData = function (newData) {
         if (messages.length) {
             messages.forEach(function (msg) {
@@ -4298,34 +4650,23 @@ function useProtect(initialData) {
     return [data, updateData];
 }
 
-// 创建一个外部数组来存储所有的回调函数
-var callbacks = [];
+function getScrollPosition() {
+    return {
+        x: window.scrollX,
+        y: window.scrollY,
+    };
+}
 var useScroll = function (callback) {
-    var _a = __read(useState({ x: 0, y: 0 }), 2), position = _a[0], setPosition = _a[1];
+    var _a = __read(useState(getScrollPosition), 2), position = _a[0], setPosition = _a[1];
     var handleScroll = function () {
-        var newPosition = {
-            x: window.scrollX,
-            y: window.scrollY,
-        };
+        var newPosition = getScrollPosition();
         setPosition(newPosition);
-        // 遍历 callbacks 数组并调用每个回调函数
-        callbacks.forEach(function (cb) { return cb(newPosition); });
+        callback === null || callback === void 0 ? void 0 : callback(newPosition);
     };
     useEffect(function () {
-        if (callback) {
-            // 将回调函数添加到 callbacks 数组
-            callbacks.push(callback);
-        }
         window.addEventListener("scroll", handleScroll, { passive: true });
         return function () {
             window.removeEventListener("scroll", handleScroll);
-            if (callback) {
-                // 在组件卸载时，移除该次调用注册的回调函数
-                var index = callbacks.indexOf(callback);
-                if (index > -1) {
-                    callbacks.splice(index, 1);
-                }
-            }
         };
     }, [callback]);
     return position;
@@ -4334,14 +4675,23 @@ var useScroll = function (callback) {
 // 防抖处理，避免 resize 频繁触发
 function debounce(fn, delay) {
     var timer;
-    return function () {
+    var debounced = (function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        clearTimeout(timer);
+        if (timer !== undefined) {
+            clearTimeout(timer);
+        }
         timer = setTimeout(function () { return fn.apply(void 0, __spreadArray([], __read(args), false)); }, delay);
+    });
+    debounced.cancel = function () {
+        if (timer !== undefined) {
+            clearTimeout(timer);
+            timer = undefined;
+        }
     };
+    return debounced;
 }
 /**
  * @hook useSafeArea
@@ -4361,7 +4711,7 @@ function useSafeArea() {
         document.body.appendChild(div);
         var style = window.getComputedStyle(div);
         var parse = function (val) {
-            var num = parseInt(val, 10);
+            var num = parseFloat(val);
             return isNaN(num) ? 0 : num;
         };
         setInsets({
@@ -4380,6 +4730,7 @@ function useSafeArea() {
         // iOS 方向变化可能需要 orientationchange
         window.addEventListener("orientationchange", compute);
         return function () {
+            debouncedCompute.cancel();
             window.removeEventListener("resize", debouncedCompute);
             window.removeEventListener("orientationchange", compute);
         };
@@ -4387,32 +4738,36 @@ function useSafeArea() {
     return insets;
 }
 
+var UNINITIALIZED = Symbol("useSingleton.uninitialized");
 function useSingleton(createInstance) {
-    var instanceRef = useRef(null);
-    if (instanceRef.current === null) {
+    var instanceRef = useRef(UNINITIALIZED);
+    if (instanceRef.current === UNINITIALIZED) {
         instanceRef.current = createInstance();
     }
     return instanceRef.current;
 }
 
 function useWhyDidYouUpdate(name, props) {
-    var previousProps = useRef({});
+    var previousProps = useRef(null);
     useEffect(function () {
-        if (previousProps.current) {
-            var allKeys = Object.keys(__assign(__assign({}, previousProps.current), props));
-            var changesObj_1 = {};
-            allKeys.forEach(function (key) {
-                if (previousProps.current[key] !== props[key]) {
-                    // @ts-ignore
-                    changesObj_1[key] = {
-                        from: previousProps.current[key],
-                        to: props[key],
-                    };
-                }
-            });
-            if (Object.keys(changesObj_1).length) {
-                console.log("[why-did-you-update]", name, changesObj_1);
+        if (previousProps.current === null) {
+            previousProps.current = props;
+            return;
+        }
+        var allKeys = Object.keys(__assign(__assign({}, previousProps.current), props));
+        var changesObj = {};
+        allKeys.forEach(function (key) {
+            var _a, _b;
+            if (((_a = previousProps.current) === null || _a === void 0 ? void 0 : _a[key]) !== props[key]) {
+                // @ts-ignore
+                changesObj[key] = {
+                    from: (_b = previousProps.current) === null || _b === void 0 ? void 0 : _b[key],
+                    to: props[key],
+                };
             }
+        });
+        if (Object.keys(changesObj).length) {
+            console.log("[why-did-you-update]", name, changesObj);
         }
         previousProps.current = props;
     }, [props]);
@@ -4490,6 +4845,7 @@ function useTitle(initialTitle) {
             characterData: true,
             subtree: true,
         });
+        isInternalUpdate.current = false;
         return function () {
             observer.disconnect();
             document.title = savedOriginalTitle;

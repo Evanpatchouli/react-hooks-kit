@@ -14,7 +14,7 @@
 - [x] useDimensions
 - [x] useDimensionsById
 - [x] useEmitter
-- [ ] useEyeDropper
+- [x] useEyeDropper
 - [x] useFavicon
 - [x] useFetch
 - [x] useForceUpdate

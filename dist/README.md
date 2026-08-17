@@ -34,6 +34,28 @@ react-hooks-kit is a lightweight library. Feature-specific dependencies such as 
 - **<font color="#2196f3">Typescript support</font>**: It is developed with typescript and provides excellent typescript support and type inference support.
 - **<font color="#2196f3">Innovation</font>**: It provides some innovative hooks like useWatch (partial listener), useRipple ([css houdini](https://developer.mozilla.org/en-US/docs/Web/Guide/Houdini) effect), etc.
 
+## Screen color picking
+
+`useEyeDropper` wraps the browser EyeDropper API and keeps the latest selected sRGB color in React state.
+
+```tsx
+import { useEyeDropper } from "@evanpatchouli/react-hooks-kit";
+
+const ColorPicker = () => {
+  const { isSupported, sRGBHex, open } = useEyeDropper({
+    initialValue: "#ffffff",
+  });
+
+  return (
+    <button disabled={!isSupported} onClick={() => void open()}>
+      Pick color: {sRGBHex}
+    </button>
+  );
+};
+```
+
+The native picker must be opened from a user interaction. `open` accepts an optional `AbortSignal`; user cancellation and other native errors reject the returned Promise. Unsupported browsers return `undefined` without opening a picker.
+
 ## QR code scanning
 
 `useQrcodeScan` lazily loads `html5-qrcode`, owns a scanner per Hook instance, and supports live camera scanning, image decoding, normalized result metadata, camera permission state, torch, and zoom.

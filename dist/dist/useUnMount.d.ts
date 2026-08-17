@@ -1,2 +1,2 @@
-declare function useUnmount(callback: Function): void;
+declare function useUnmount(callback: () => void): void;
 export default useUnmount;
