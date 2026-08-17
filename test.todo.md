@@ -49,7 +49,7 @@
 - [x] useSafeArea
 - [x] useScroll
 - [x] useSingleton
-- [ ] useTheme
+- [x] useTheme
 - [ ] useTitle
 - [ ] useToast
 - [ ] useUnMount

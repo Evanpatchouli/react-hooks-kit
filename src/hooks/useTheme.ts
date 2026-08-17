@@ -22,23 +22,28 @@ function useTheme(
   useEffect(() => {
     const matcher = window.matchMedia("(prefers-color-scheme: dark)");
     let handler: ((e: MediaQueryListEvent) => void) | null = null;
+    const shouldListen = typeof arg1 === "boolean" ? arg1 : true;
+    const onThemeChange =
+      typeof arg1 === "function" ? arg1 : arg2;
 
-    if (typeof arg1 === "boolean") {
-      if (arg1 && arg2) {
-        handler = handleThemeChange(arg2);
-        matcher.addEventListener("change", handler);
-      }
-    } else if (arg1) {
-      handler = handleThemeChange(arg1);
+    if (!shouldListen) {
+      return;
+    }
+
+    handler = handleThemeChange(onThemeChange ?? (() => {}));
+    if (matcher.addEventListener) {
       matcher.addEventListener("change", handler);
     } else {
-      handler = handleThemeChange(() => {});
-      matcher.addEventListener("change", handler);
+      matcher.addListener(handler);
     }
 
     return () => {
       if (handler) {
-        matcher.removeEventListener("change", handler);
+        if (matcher.removeEventListener) {
+          matcher.removeEventListener("change", handler);
+        } else {
+          matcher.removeListener(handler);
+        }
       }
     };
   }, [arg1, arg2, handleThemeChange]);
