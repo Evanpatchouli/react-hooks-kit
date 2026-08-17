@@ -26,7 +26,7 @@
 - [x] useInfiniteScroll
 - [x] useInject
 - [x] useKeyPress
-- [ ] useLazy
+- [x] useLazy
 - [ ] useLazyImg
 - [ ] useLocalStorage
 - [ ] useMediaQuery

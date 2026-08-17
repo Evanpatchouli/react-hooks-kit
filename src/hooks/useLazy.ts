@@ -13,16 +13,24 @@ function useLazy<T>(importFunction: () => Promise<T>) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    let active = true;
+
     importFunction()
       .then((mod) => {
+        if (!active) return;
         setModule(mod);
         setLoading(false);
       })
       .catch((err) => {
+        if (!active) return;
         setError(err);
         setLoading(false);
       });
-  }, [importFunction]);
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return { module, loading, error };
 }
