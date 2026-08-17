@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import useEmitter from "./useEmitter";
 import Ukey from "./utils/Ukey";
 import { Prettify } from "./typings";
@@ -46,16 +46,12 @@ function useReceiver(
     eventName = eventNameOrOptions.eventName;
     name = eventNameOrOptions.name || `_receiver_${Ukey()}`;
     namespace = eventNameOrOptions.namespace || "default";
-    cb = eventNameOrOptions.callback;
-    if (cb) {
-      if (callback) {
-        console.warn(
-          "[react-hooks-kit][useReceiver] callback is ignored when options.callback is set"
-        );
-      } else {
-        cb = callback;
-      }
+    if (eventNameOrOptions.callback && callback) {
+      console.warn(
+        "[react-hooks-kit][useReceiver] callback is ignored when options.callback is set"
+      );
     }
+    cb = eventNameOrOptions.callback || callback;
   }
 
   const { subscribe, unsubscribe, emit } = useEmitter({
@@ -64,10 +60,13 @@ function useReceiver(
   });
   const [isListening, setIsListening] = useState(true);
   const [eventResult, setEventResult] = useState<any[] | null>(null);
+  const callbackRef = useRef<EventCallback | undefined>(cb);
+
+  callbackRef.current = cb;
 
   const eventListener = useCallback((...args: any[]) => {
     setEventResult(args);
-    cb?.(...args);
+    callbackRef.current?.(...args);
   }, []);
 
   useEffect(() => {

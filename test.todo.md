@@ -41,7 +41,7 @@
 - [x] useProvide
 - [x] useRaf
 - [x] useRafState
-- [ ] useReceiver
+- [x] useReceiver
 - [ ] useRecord
 - [ ] useReflect
 - [ ] useResize
