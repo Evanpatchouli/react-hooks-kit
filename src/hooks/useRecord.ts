@@ -34,7 +34,7 @@ export default function useRecord<T extends object = Record<string, any>>(initia
       const mode = args[1] || 'rehydrate';
       setRecord((prev) => {
         return mode === 'override'
-          ? { ...state, ...prev }
+          ? { ...state }
           : { ...prev, ...state };
       });
     } else if (typeof args[0] === 'function') {

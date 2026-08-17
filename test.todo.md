@@ -42,7 +42,7 @@
 - [x] useRaf
 - [x] useRafState
 - [x] useReceiver
-- [ ] useRecord
+- [x] useRecord
 - [ ] useReflect
 - [ ] useResize
 - [ ] useRipple
