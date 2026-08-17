@@ -39,7 +39,7 @@
 - [x] usePromise
 - [x] useProtect
 - [x] useProvide
-- [ ] useRaf
+- [x] useRaf
 - [ ] useRafState
 - [ ] useReceiver
 - [ ] useRecord

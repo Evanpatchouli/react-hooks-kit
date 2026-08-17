@@ -45,7 +45,7 @@ const useRaf = (callback: FrameRequestCallback): void => {
     frameRef.current = requestAnimationFrame(loop);
     // 在组件卸载时取消动画帧
     return () => {
-      if (frameRef.current) {
+      if (frameRef.current !== undefined) {
         cancelAnimationFrame(frameRef.current);
       }
     };
