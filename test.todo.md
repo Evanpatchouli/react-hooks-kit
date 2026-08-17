@@ -53,7 +53,7 @@
 - [x] useTitle
 - [x] useToast
 - [x] useUnMount
-- [ ] useUpdate
+- [x] useUpdate
 - [ ] useUpdateEffect
 - [ ] useUrl
 - [ ] useVirtualArea
