@@ -18,7 +18,7 @@ export default function useProtect<T>(
       conditions
         .filter((condition) => (typeof condition === "function" ? condition(data, data) : condition))
         .map((result) => (typeof result === "string" ? result : "Data is protected and cannot be modified.")),
-    [JSON.stringify(data), conditions]
+    [data, conditions]
   );
 
   const updateData = (newData: T | ((oldData: T) => T)) => {

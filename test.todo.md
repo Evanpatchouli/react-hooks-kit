@@ -37,7 +37,7 @@
 - [x] useOverflow
 - [x] useParticle
 - [x] usePromise
-- [ ] useProtect
+- [x] useProtect
 - [ ] useProvide
 - [ ] useRaf
 - [ ] useRafState
