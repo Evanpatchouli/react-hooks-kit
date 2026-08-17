@@ -57,7 +57,7 @@
 - [x] useUpdateEffect
 - [x] useUrl
 - [x] useVirtualArea
-- [ ] useWhyDidYouUpdate
+- [x] useWhyDidYouUpdate
 
 ## 已有测试
 
