@@ -54,7 +54,7 @@
 - [x] useToast
 - [x] useUnMount
 - [x] useUpdate
-- [ ] useUpdateEffect
+- [x] useUpdateEffect
 - [ ] useUrl
 - [ ] useVirtualArea
 - [ ] useWhyDidYouUpdate
