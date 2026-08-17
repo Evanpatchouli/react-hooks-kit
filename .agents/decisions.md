@@ -4,6 +4,14 @@
 
 The library exposes `QrcodeScanWechatAdapter` instead of embedding a business app ID, signature endpoint, or SDK bootstrap logic. This keeps the public package reusable and lets applications own WeChat security configuration.
 
+## 2026-08-17: Skip unimplemented hooks without inventing behavior
+
+`useEyeDropper` exports an empty function and has no usable API contract, so it remains unchecked in `test.todo.md` until an implementation exists. Tests were added only for hooks with observable implemented behavior.
+
+## 2026-08-17: Treat browser resources as hook-owned
+
+The tested fixes keep listeners, timers, observer subscriptions, toast roots, and temporary DOM nodes scoped to the hook instance and clean them up on lifecycle exit. This avoids cross-instance callbacks and stale asynchronous updates.
+
 ## 2026-08-11: Create one scanner service per Hook
 
 `useQrcodeScan` lazily creates its own `QrcodeScanService`. Only the `html5-qrcode` module promise is shared. This prevents one component from stopping or overwriting another component's scanner.

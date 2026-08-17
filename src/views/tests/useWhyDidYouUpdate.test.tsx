@@ -32,7 +32,11 @@ describe("useWhyDidYouUpdate", () => {
     const { rerender } = renderHook(
       ({ props }: { props: Record<string, unknown> }) =>
         useWhyDidYouUpdate("Props", props),
-      { initialProps: { props: { existing: true } } }
+      {
+        initialProps: {
+          props: { existing: true } as Record<string, unknown>,
+        },
+      }
     );
 
     rerender({ props: { existing: true, added: 1 } });

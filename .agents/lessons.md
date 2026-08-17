@@ -8,6 +8,14 @@
 - `html5-qrcode` treats per-frame decode misses as normal scanner feedback, so they must not be stored as operational errors.
 - The previous TypeScript Rollup plugin could not parse public `export type` declarations; the official Rollup TypeScript plugin supports the required declaration build.
 
+## 2026-08-17: Hook TODO 测试与修复
+
+- 浏览器型 hook 的回归测试应显式控制 `matchMedia`、观察器、动画帧、定时器、History 和 DOM 生命周期，避免测试环境默认实现掩盖资源清理问题。
+- 异步观察器回调不能只依赖 state 作为并发锁；应使用 ref 锁，并在 `finally` 中复位状态，同时保护卸载后的 state 更新。
+- URL 参数应交给 `URLSearchParams` 解析，手写 `split("=")` 会损坏等号、加号和编码值；返回的 History 方法需要绑定正确的 `this`。
+- 只在卸载或更新 effect 中调用回调的 hook，应使用 ref 保存最新回调，避免 effect 依赖策略导致闭包过期。
+- 每个 hook 单独测试、暂存和提交，能把失败定位到具体生命周期或配置边界，并让任务进度可恢复。
+
 ## 2026-08-11: QR scanner capability extensions
 
 - `Html5Qrcode.clear()` clears its whole target element, so sharing the caller's element directly creates a delayed-cleanup race; use one owned child element per scanner.
