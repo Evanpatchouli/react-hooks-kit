@@ -31,7 +31,7 @@
 - [x] useLocalStorage
 - [x] useMediaQuery
 - [x] useMixRef
-- [ ] useMount
+- [x] useMount
 - [ ] useMousePosition
 - [ ] useNetWork
 - [ ] useOverflow
