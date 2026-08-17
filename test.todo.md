@@ -44,7 +44,7 @@
 - [x] useReceiver
 - [x] useRecord
 - [x] useReflect
-- [ ] useResize
+- [x] useResize
 - [ ] useRipple
 - [ ] useSafeArea
 - [ ] useScroll
