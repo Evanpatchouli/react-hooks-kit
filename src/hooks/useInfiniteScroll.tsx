@@ -146,19 +146,26 @@ export default function useInfiniteScroll<
   loadMoreRef.current = loadMore;
   hasMoreRef.current = hasMore;
 
-  const getActualMode = useCallback(() => mode === "auto"
-    ? containerElRef.current
-      ? "container"
-      : "viewport"
-    : mode, [mode]);
+  const resolveContainer = useCallback(() => {
+    const container = containerId
+      ? document.getElementById(containerId)
+      : containerRef?.current ?? null;
+    containerElRef.current = container;
+    return container;
+  }, [containerId, containerRef]);
+
+  const getActualMode = useCallback(() => {
+    const container = resolveContainer();
+    return mode === "auto"
+      ? container
+        ? "container"
+        : "viewport"
+      : mode;
+  }, [mode, resolveContainer]);
 
   useEffect(() => {
-    if (containerId) {
-      containerElRef.current = document.getElementById(containerId);
-    } else if (containerRef?.current) {
-      containerElRef.current = containerRef.current;
-    }
-  }, [containerId, containerRef]);
+    resolveContainer();
+  }, [resolveContainer]);
 
   useEffect(() => {
     return () => {
@@ -250,6 +257,18 @@ export default function useInfiniteScroll<
         return;
       }
 
+      const actualMode = getActualMode();
+      const container = containerElRef.current;
+      const hasContainerSource = Boolean(containerId || containerRef);
+      if (
+        !container &&
+        (actualMode === "container" ||
+          (mode === "auto" && hasContainerSource))
+      ) {
+        observerRef.current = null;
+        return;
+      }
+
       observerRef.current = new IntersectionObserver(
         (entries) => {
           if (entries[0]?.isIntersecting) {
@@ -257,7 +276,7 @@ export default function useInfiniteScroll<
           }
         },
         {
-          root: getActualMode() === "container" ? containerElRef.current : null,
+          root: actualMode === "container" ? container : null,
           rootMargin: `0px 0px ${preloadDistance}px 0px`,
           threshold: 0,
           ...observerOptions,
@@ -280,8 +299,25 @@ export default function useInfiniteScroll<
         }
       });
     },
-    [handleLoadMore, preloadDistance, observerOptions, disabled, isLoaderVisible, getActualMode]
+    [
+      handleLoadMore,
+      preloadDistance,
+      observerOptions,
+      disabled,
+      isLoaderVisible,
+      getActualMode,
+      containerId,
+      containerRef,
+      mode,
+    ]
   );
+
+  useEffect(() => {
+    resolveContainer();
+    if (loaderElRef.current && !observerRef.current) {
+      loaderRef(loaderElRef.current);
+    }
+  }, [resolveContainer, loaderRef]);
 
   const reset = useCallback(() => {
     setItems([]);

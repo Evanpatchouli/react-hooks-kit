@@ -23,7 +23,7 @@
 - [x] useGuide
 - [x] useHover
 - [x] useIndexDB
-- [ ] useInfiniteScroll
+- [x] useInfiniteScroll
 - [ ] useInject
 - [ ] useKeyPress
 - [ ] useLazy
