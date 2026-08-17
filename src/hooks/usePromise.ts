@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type PromiseStatus = "idle" | "pending" | "resolved" | "rejected";
 
@@ -40,32 +40,77 @@ export default function usePromise<T>(
     data: null,
     error: null,
   });
+  const promiseFnRef = useRef(promiseFn);
+  const callbacksRef = useRef(callbacks);
+  const requestIdRef = useRef(0);
+  const activeRequestRef = useRef<{
+    id: number;
+    controller: AbortController;
+  } | null>(null);
 
-  const abortController = new AbortController();
+  promiseFnRef.current = promiseFn;
+  callbacksRef.current = callbacks;
 
-  const execute = () => {
-    setState({ ...state, status: "pending" });
-    promiseFn()
+  const abort = useCallback(() => {
+    activeRequestRef.current?.controller.abort();
+  }, []);
+
+  const execute = useCallback(() => {
+    activeRequestRef.current?.controller.abort();
+
+    const id = requestIdRef.current + 1;
+    requestIdRef.current = id;
+    const controller = new AbortController();
+    activeRequestRef.current = { id, controller };
+
+    setState({ status: "pending", data: null, error: null });
+
+    let promise: Promise<T>;
+    try {
+      promise = promiseFnRef.current();
+    } catch (error) {
+      promise = Promise.reject(error);
+    }
+
+    Promise.resolve(promise)
       .then((data) => {
-        setState({ status: "resolved", data, error: null });
-        callbacks.onResolve?.(data);
+        const activeRequest = activeRequestRef.current;
+        if (
+          !controller.signal.aborted &&
+          activeRequest?.id === id
+        ) {
+          setState({ status: "resolved", data, error: null });
+          callbacksRef.current.onResolve?.(data);
+        }
       })
       .catch((error) => {
-        if (error.name === "AbortError") return;
+        const activeRequest = activeRequestRef.current;
+        if (
+          controller.signal.aborted ||
+          activeRequest?.id !== id
+        ) {
+          return;
+        }
+
         setState({ status: "rejected", data: null, error });
-        callbacks.onReject?.(error);
+        callbacksRef.current.onReject?.(error);
       })
       .finally(() => {
-        callbacks.onFinally?.();
+        const activeRequest = activeRequestRef.current;
+        if (
+          !controller.signal.aborted &&
+          activeRequest?.id === id
+        ) {
+          callbacksRef.current.onFinally?.();
+        }
       });
-  }
+  }, []);
 
-  /**
-   * Abort the promise
-   */
-  const abort = () => {
-    abortController.abort();
-  };
+  useEffect(() => {
+    execute();
+
+    return abort;
+  }, [execute, abort, ...(deps || [])]);
 
   return [state, abort, execute];
 }

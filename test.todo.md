@@ -36,7 +36,7 @@
 - [x] useNetWork
 - [x] useOverflow
 - [x] useParticle
-- [ ] usePromise
+- [x] usePromise
 - [ ] useProtect
 - [ ] useProvide
 - [ ] useRaf
