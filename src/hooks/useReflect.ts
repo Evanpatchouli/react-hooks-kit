@@ -29,7 +29,9 @@ function useReflect<T extends object, K extends keyof T>(initialValue: T) {
       return Reflect.has(ref.current, key);
     },
     apply: (func: (value: T) => void) => {
-      return Reflect.apply(func, ref.current, []);
+      const result = Reflect.apply(func, ref.current, [ref.current]);
+      fsr();
+      return result;
     },
   };
 }
