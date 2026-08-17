@@ -9,11 +9,20 @@ interface SafeAreaInsets {
 
 // 防抖处理，避免 resize 频繁触发
 function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
-  let timer: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timer);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const debounced = ((...args: Parameters<T>) => {
+    if (timer !== undefined) {
+      clearTimeout(timer);
+    }
     timer = setTimeout(() => fn(...args), delay);
+  }) as T & { cancel: () => void };
+  debounced.cancel = () => {
+    if (timer !== undefined) {
+      clearTimeout(timer);
+      timer = undefined;
+    }
   };
+  return debounced;
 }
 
 /**
@@ -42,7 +51,7 @@ export default function useSafeArea(): SafeAreaInsets {
 
     const style = window.getComputedStyle(div);
     const parse = (val: string) => {
-      const num = parseInt(val, 10);
+      const num = parseFloat(val);
       return isNaN(num) ? 0 : num;
     };
 
@@ -65,6 +74,7 @@ export default function useSafeArea(): SafeAreaInsets {
     window.addEventListener("orientationchange", compute);
 
     return () => {
+      debouncedCompute.cancel();
       window.removeEventListener("resize", debouncedCompute);
       window.removeEventListener("orientationchange", compute);
     };
