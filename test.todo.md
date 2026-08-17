@@ -24,7 +24,7 @@
 - [x] useHover
 - [x] useIndexDB
 - [x] useInfiniteScroll
-- [ ] useInject
+- [x] useInject
 - [ ] useKeyPress
 - [ ] useLazy
 - [ ] useLazyImg
