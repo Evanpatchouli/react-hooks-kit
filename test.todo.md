@@ -47,7 +47,7 @@
 - [x] useResize
 - [x] useRipple
 - [x] useSafeArea
-- [ ] useScroll
+- [x] useScroll
 - [ ] useSingleton
 - [ ] useTheme
 - [ ] useTitle
