@@ -38,43 +38,41 @@ function useParticle<T extends HTMLElement = HTMLButtonElement>(
     const element = ref.current;
     if (!element) return;
 
-    const trigger = config.trigger || "mousedown";
-    const duration = config.duration || 500;
-    const color = config.color || null;
-    const num = config.num || 10;
+    const trigger = config.trigger ?? "mousedown";
+    const duration = config.duration ?? 500;
+    const color = config.color ?? null;
+    const num = config.num ?? 10;
     const size = config.size ?? 3;
 
     let animationFrameId: number | null = null;
     const handleTrigger = (event: MouseEvent | PointerEvent) => {
       if (!enable) return;
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
       const x = event.clientX - element.getBoundingClientRect().left;
       const y = event.clientY - element.getBoundingClientRect().top;
       const startTime = performance.now();
-      console.log(`x: ${x}, y: ${y}`);
 
       element.style.setProperty("--particle-x", `${x}px`);
       element.style.setProperty("--particle-y", `${y}px`);
       element.style.setProperty("--particle-size", `${size}`);
-      element.style.setProperty(
-        "--particle-color",
-        null === color ? null : color
-      );
-      element.style.setProperty(
-        "--particle-time",
-        `${performance.now() / duration}`
-      ); // "0"
+      element.style.setProperty("--particle-color", color ?? "");
+      element.style.setProperty("--particle-time", "0");
       element.style.setProperty("--particle-num", `${num}`); // "10"
 
       element.style.backgroundImage = "paint(particle)";
 
       const animate = (time: number) => {
-        const progress = (time - startTime) / (config.duration ?? 500); // Convert time to seconds
+        const progress = duration === 0 ? 1 : (time - startTime) / duration;
         element.style.setProperty("--particle-time", `${progress}`);
         if (progress < 1) {
           animationFrameId = requestAnimationFrame(animate);
         } else {
-          if (animationFrameId) {
+          if (animationFrameId !== null) {
             cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
           }
         }
       };
@@ -86,8 +84,11 @@ function useParticle<T extends HTMLElement = HTMLButtonElement>(
 
     return () => {
       element.removeEventListener(trigger, handleTrigger);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
-  }, [ref, config]);
+  }, [ref, config, enable]);
 
   return ref;
 }
