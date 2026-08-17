@@ -62,6 +62,15 @@ function useMediaQuery(query: MediaQueryTemplate): boolean {
   useEffect(() => {
     const mediaQueryList = window.matchMedia(query);
     const documentChangeHandler = () => setMatches(mediaQueryList.matches);
+    setMatches(mediaQueryList.matches);
+
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", documentChangeHandler);
+
+      return () => {
+        mediaQueryList.removeEventListener("change", documentChangeHandler);
+      };
+    }
 
     mediaQueryList.addListener(documentChangeHandler);
 

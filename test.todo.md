@@ -29,7 +29,7 @@
 - [x] useLazy
 - [x] useLazyImg
 - [x] useLocalStorage
-- [ ] useMediaQuery
+- [x] useMediaQuery
 - [ ] useMixRef
 - [ ] useMount
 - [ ] useMousePosition
