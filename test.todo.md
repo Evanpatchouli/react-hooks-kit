@@ -27,7 +27,7 @@
 - [x] useInject
 - [x] useKeyPress
 - [x] useLazy
-- [ ] useLazyImg
+- [x] useLazyImg
 - [ ] useLocalStorage
 - [ ] useMediaQuery
 - [ ] useMixRef

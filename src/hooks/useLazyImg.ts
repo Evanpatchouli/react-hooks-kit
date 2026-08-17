@@ -1,12 +1,12 @@
 import { LazySource, Prettify, Writeable } from "./typings";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export type LazyImage = LazySource & {
   error?: boolean;
 };
 
 const LazySourceBuilder = (src: string, loaded?: boolean, error?: boolean) => {
-  const _src: Writeable<LazyImage> = src;
+  const _src = new String(src) as unknown as Writeable<LazyImage>;
   _src.loaded = loaded;
   _src.error = error;
   return _src as LazyImage;
@@ -58,7 +58,7 @@ const useLazyImage: UseLazyImage = (
     $actions = actions ?? {};
   } else if (typeof src === "string" && typeof defaultSrc === "object") {
     $src = src;
-    $defaultSrc = defaultSrc.src ?? "";
+    $defaultSrc = defaultSrc.defaultSrc ?? "";
     $errorSrc = defaultSrc.errorSrc ?? "";
     $actions = defaultSrc.actions ?? {};
   }
@@ -66,19 +66,41 @@ const useLazyImage: UseLazyImage = (
   const [source, setSource] = useState<LazyImage>(
     LazySourceBuilder($defaultSrc)
   );
+  const defaultSrcRef = useRef($defaultSrc);
+  const errorSrcRef = useRef($errorSrc);
+  const actionsRef = useRef($actions);
+
+  defaultSrcRef.current = $defaultSrc;
+  errorSrcRef.current = $errorSrc;
+  actionsRef.current = $actions;
 
   useEffect(() => {
+    let active = true;
     const img = new Image();
-    img.src = $src;
+
+    setSource(LazySourceBuilder(defaultSrcRef.current));
     img.onload = () => {
+      if (!active) return;
       setSource(LazySourceBuilder($src, true, false));
-      actions?.onLoad?.(true);
+      actionsRef.current.onLoad?.(true);
     };
     img.onerror = () => {
+      if (!active) return;
       setSource(
-        LazySourceBuilder(($errorSrc || $defaultSrc) ?? "", false, true)
+        LazySourceBuilder(
+          errorSrcRef.current || defaultSrcRef.current,
+          false,
+          true
+        )
       );
-      $actions?.onError?.(true);
+      actionsRef.current.onError?.(true);
+    };
+    img.src = $src;
+
+    return () => {
+      active = false;
+      img.onload = null;
+      img.onerror = null;
     };
   }, [$src]);
 
