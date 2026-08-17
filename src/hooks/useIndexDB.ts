@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type DBState = {
   db: IDBDatabase | null;
@@ -11,22 +11,54 @@ export default function useIndexedDB(
   upgradeCallback: (db: IDBDatabase) => void
 ): DBState {
   const [state, setState] = useState<DBState>({ db: null, error: null });
+  const upgradeCallbackRef = useRef(upgradeCallback);
 
   useEffect(() => {
-    const request = indexedDB.open(dbName, version);
+    upgradeCallbackRef.current = upgradeCallback;
+  }, [upgradeCallback]);
+
+  useEffect(() => {
+    let active = true;
+    let db: IDBDatabase | null = null;
+    let request: IDBOpenDBRequest | null = null;
+
+    setState({ db: null, error: null });
+
+    try {
+      request = indexedDB.open(dbName, version);
+    } catch (error) {
+      setState({ db: null, error });
+      return () => {
+        active = false;
+      };
+    }
 
     request.onupgradeneeded = (event) => {
-      upgradeCallback(request.result);
+      upgradeCallbackRef.current(request.result);
     };
 
     request.onsuccess = () => {
-      setState({ db: request.result, error: null });
+      const openedDb = request.result;
+      if (!active) {
+        openedDb.close();
+        return;
+      }
+      db = openedDb;
+      setState({ db: openedDb, error: null });
     };
 
     request.onerror = () => {
-      setState({ db: null, error: request.error });
+      if (active) {
+        setState({ db: null, error: request.error });
+      }
     };
-  }, [dbName, version, upgradeCallback]);
+
+    return () => {
+      active = false;
+      db?.close();
+      db = null;
+    };
+  }, [dbName, version]);
 
   return state;
 }

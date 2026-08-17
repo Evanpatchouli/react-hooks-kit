@@ -22,7 +22,7 @@
 - [x] useGenerator
 - [x] useGuide
 - [x] useHover
-- [ ] useIndexDB
+- [x] useIndexDB
 - [ ] useInfiniteScroll
 - [ ] useInject
 - [ ] useKeyPress
