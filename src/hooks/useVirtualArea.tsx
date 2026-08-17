@@ -50,13 +50,30 @@ export default function useVirtualArea(
 ) {
   const [loading, setLoading] = useState(false);
   const loaderRef = useRef<any>(null);
+  const loadingRef = useRef(false);
+  const mountedRef = useRef(true);
 
   const loadMore = useCallback(async () => {
-    if (loading || !hasMore) return;
+    if (loadingRef.current || !hasMore) return;
+    loadingRef.current = true;
     setLoading(true);
-    await loadMoreItems();
-    setLoading(false);
-  }, [loading, hasMore, loadMoreItems]);
+    try {
+      await loadMoreItems();
+    } catch {
+      // Loading errors do not have a separate error channel in this hook.
+    } finally {
+      loadingRef.current = false;
+      if (mountedRef.current) {
+        setLoading(false);
+      }
+    }
+  }, [hasMore, loadMoreItems]);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     const options = {
@@ -67,7 +84,7 @@ export default function useVirtualArea(
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0]?.isIntersecting) {
           loadMore();
         }
       },
