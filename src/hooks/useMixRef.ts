@@ -8,21 +8,17 @@ const useMixRef = <E = any>(
     | null
     | undefined
   )[]
-): React.MutableRefObject<E> => {
-  const setRefs = useCallback((node: E) => {
-    // Refs expect a DOM node. Pass it if it exists.
-    if (node) {
-      refs.forEach((ref) => {
-        if (typeof ref === "function") {
-          ref(node);
-        } else if (ref) {
-          // @ts-ignore
-          ref.current = node;
-        }
-      });
-    }
-  }, []);
-  return setRefs as any as React.MutableRefObject<E>;
+): React.RefCallback<E> => {
+  const setRefs = useCallback((node: E | null) => {
+    refs.forEach((ref) => {
+      if (typeof ref === "function") {
+        (ref as React.RefCallback<E>)(node);
+      } else if (ref) {
+        (ref as React.MutableRefObject<E | null>).current = node;
+      }
+    });
+  }, [refs]);
+  return setRefs;
 };
 
 export default useMixRef;

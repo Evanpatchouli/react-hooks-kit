@@ -30,7 +30,7 @@
 - [x] useLazyImg
 - [x] useLocalStorage
 - [x] useMediaQuery
-- [ ] useMixRef
+- [x] useMixRef
 - [ ] useMount
 - [ ] useMousePosition
 - [ ] useNetWork
