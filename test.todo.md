@@ -40,7 +40,7 @@
 - [x] useProtect
 - [x] useProvide
 - [x] useRaf
-- [ ] useRafState
+- [x] useRafState
 - [ ] useReceiver
 - [ ] useRecord
 - [ ] useReflect
