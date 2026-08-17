@@ -34,6 +34,50 @@ interface NetworkStatus {
     | "unknown";
 }
 
+interface NetworkConnection {
+  downlink?: number;
+  uplink?: number;
+  effectiveType?: NetworkStatus["effectiveType"];
+  rtt?: number;
+  saveData?: boolean;
+  type?: NetworkStatus["type"];
+  addEventListener?: (type: string, listener: (...args: any[]) => void) => void;
+  removeEventListener?: (
+    type: string,
+    listener: (...args: any[]) => void
+  ) => void;
+}
+
+function getConnection(): NetworkConnection | undefined {
+  return (navigator as Navigator & { connection?: NetworkConnection }).connection;
+}
+
+function readNetworkStatus(): NetworkStatus {
+  const connection = getConnection();
+
+  if (!navigator.onLine) {
+    return {
+      online: false,
+      downlink: 0,
+      uplink: 0,
+      effectiveType: undefined,
+      rtt: undefined,
+      saveData: undefined,
+      type: undefined,
+    };
+  }
+
+  return {
+    online: true,
+    downlink: connection?.downlink ?? 0,
+    uplink: connection?.uplink ?? 0,
+    effectiveType: connection?.effectiveType,
+    rtt: connection?.rtt,
+    saveData: connection?.saveData,
+    type: connection?.type,
+  };
+}
+
 /**
  * @hook useNetworkStatus
  * @description A react hook for getting network status
@@ -41,13 +85,7 @@ interface NetworkStatus {
  * @returns {NetworkStatus}
  */
 function useNetworkStatus(throttleInterval?: number): NetworkStatus {
-  const [status, setStatus] = useState<NetworkStatus>({
-    online: navigator.onLine,
-    // @ts-ignore
-    downlink: navigator.connection ? navigator.connection.downlink : 0,
-    // @ts-ignore
-    uplink: navigator.connection ? navigator.connection.uplink : 0,
-  });
+  const [status, setStatus] = useState<NetworkStatus>(readNetworkStatus);
 
   const throttledUpdateStatus = useThrottle(() => {
     if ((throttleInterval ?? 0) < 17) {
@@ -55,55 +93,25 @@ function useNetworkStatus(throttleInterval?: number): NetworkStatus {
         "throttleInterval is suggested to be greater than 16.67ms to avoid too much re-rendering"
       );
     }
-    if (!navigator.onLine) {
-      setStatus({
-        online: false,
-        downlink: 0,
-        uplink: 0,
-        effectiveType: void 0,
-        rtt: void 0,
-      });
-      return;
-    }
-    // @ts-ignore
-    console.log("navigator.connection", navigator.connection);
-    setStatus({
-      online: navigator.onLine,
-      // @ts-ignore
-      downlink: navigator.connection ? navigator.connection.downlink : 0,
-      // @ts-ignore
-      uplink: navigator.connection ? navigator.connection.uplink : 0,
-      // @ts-ignore
-      effectiveType: navigator.connection
-        ? // @ts-ignore
-          navigator.connection.effectiveType
-        : void 0,
-      // @ts-ignore
-      rtt: navigator.connection ? navigator.connection.rtt : void 0,
-    });
+    setStatus(readNetworkStatus());
   }, throttleInterval ?? 0);
 
   useEffect(() => {
+    const connection = getConnection();
+
     window.addEventListener("online", throttledUpdateStatus);
     window.addEventListener("offline", throttledUpdateStatus);
 
-    // @ts-ignore
-    if (navigator.connection) {
-      // @ts-ignore
-      navigator.connection.addEventListener("change", throttledUpdateStatus);
+    if (connection?.addEventListener) {
+      connection.addEventListener("change", throttledUpdateStatus);
     }
 
     return () => {
       window.removeEventListener("online", throttledUpdateStatus);
       window.removeEventListener("offline", throttledUpdateStatus);
 
-      // @ts-ignore
-      if (navigator.connection) {
-        // @ts-ignore
-        navigator.connection.removeEventListener(
-          "change",
-          throttledUpdateStatus
-        );
+      if (connection?.removeEventListener) {
+        connection.removeEventListener("change", throttledUpdateStatus);
       }
     };
   }, [throttledUpdateStatus]);

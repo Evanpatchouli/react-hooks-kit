@@ -30,10 +30,13 @@ describe("useMousePosition", () => {
   });
 
   it("supports mousedown as the trigger and switches listeners", () => {
+    const initialProps: { trigger: "mousemove" | "mousedown" } = {
+      trigger: "mousedown",
+    };
     const { result, rerender } = renderHook(
       ({ trigger }: { trigger: "mousemove" | "mousedown" }) =>
         useMousePosition(trigger),
-      { initialProps: { trigger: "mousedown" as const } }
+      { initialProps }
     );
 
     act(() => {

@@ -33,7 +33,7 @@
 - [x] useMixRef
 - [x] useMount
 - [x] useMousePosition
-- [ ] useNetWork
+- [x] useNetWork
 - [ ] useOverflow
 - [ ] useParticle
 - [ ] usePromise
