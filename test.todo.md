@@ -32,7 +32,7 @@
 - [x] useMediaQuery
 - [x] useMixRef
 - [x] useMount
-- [ ] useMousePosition
+- [x] useMousePosition
 - [ ] useNetWork
 - [ ] useOverflow
 - [ ] useParticle
