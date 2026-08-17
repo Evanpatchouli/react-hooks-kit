@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-function useUnmount(callback: Function) {
+function useUnmount(callback: () => void) {
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+
   useEffect(() => {
     return () => {
-      callback();
+      callbackRef.current();
     };
-  }, []); // 空数组表示这个 useEffect 只会在组件挂载后执行一次
+  }, []);
 }
 
 export default useUnmount;

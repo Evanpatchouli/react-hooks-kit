@@ -52,7 +52,7 @@
 - [x] useTheme
 - [x] useTitle
 - [x] useToast
-- [ ] useUnMount
+- [x] useUnMount
 - [ ] useUpdate
 - [ ] useUpdateEffect
 - [ ] useUrl
