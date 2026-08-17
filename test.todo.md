@@ -38,7 +38,7 @@
 - [x] useParticle
 - [x] usePromise
 - [x] useProtect
-- [ ] useProvide
+- [x] useProvide
 - [ ] useRaf
 - [ ] useRafState
 - [ ] useReceiver
