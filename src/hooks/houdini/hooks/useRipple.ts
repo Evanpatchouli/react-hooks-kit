@@ -42,6 +42,10 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
 
     let animationFrameId: number | null = null;
     const handleClick = (event: MouseEvent) => {
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
       const rect = button.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -60,8 +64,9 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
         if (progress < 1) {
           animationFrameId = requestAnimationFrame(animate);
         } else {
-          if (animationFrameId) {
+          if (animationFrameId !== null) {
             cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
           }
         }
       };
@@ -76,14 +81,14 @@ const useRipple = <T extends HTMLElement = HTMLButtonElement>(
     button.addEventListener("mouseleave", hiddenRipple);
 
     return () => {
-      if (animationFrameId) {
+      if (animationFrameId !== null) {
         cancelAnimationFrame(animationFrameId);
       }
       button.removeEventListener(config.trigger ?? "mousedown", handleClick);
       button.removeEventListener("mouseup", hiddenRipple);
       button.removeEventListener("mouseleave", hiddenRipple);
     };
-  }, []);
+  }, [config]);
 
   return ref;
 };

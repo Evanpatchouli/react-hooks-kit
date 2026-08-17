@@ -45,7 +45,7 @@
 - [x] useRecord
 - [x] useReflect
 - [x] useResize
-- [ ] useRipple
+- [x] useRipple
 - [ ] useSafeArea
 - [ ] useScroll
 - [ ] useSingleton
