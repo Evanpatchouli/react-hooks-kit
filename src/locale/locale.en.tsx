@@ -2770,8 +2770,14 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        importFunction: "Function that loads or creates the value on mount.",
+      },
+      return: {
+        module: "Resolved value, or null while loading or after failure.",
+        loading: "Whether the load operation is pending.",
+        error: "Loading error, or null when no error occurred.",
+      },
     },
   },
 
