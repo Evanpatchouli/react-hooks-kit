@@ -6,12 +6,12 @@ const View = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [name, setName] = useState("");
   const [submitted, setSubmitted] = useState("");
-  const form = useForm(
+  const form = useForm<{ name: string }>(
     {
       name: {
         value: name,
         required: true,
-        setter: setName,
+        setter: (value) => setName(value ?? ""),
       },
     },
     formRef
@@ -32,9 +32,13 @@ import { useRef, useState } from "react";
 const View = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [name, setName] = useState("");
-  const form = useForm(
+  const form = useForm<{ name: string }>(
     {
-      name: { value: name, required: true, setter: setName },
+      name: {
+        value: name,
+        required: true,
+        setter: (value) => setName(value ?? ""),
+      },
     },
     formRef
   );
