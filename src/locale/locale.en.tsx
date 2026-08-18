@@ -1453,12 +1453,48 @@ const locale_en = {
   },
 
   usePromise: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    desc: "A Hook for running promises with request state, cancellation, and lifecycle callbacks.",
+    detail: (
+      <>
+        <p>
+          <code>usePromise</code> executes an asynchronous function and exposes its current status, data, and error.
+          It starts once on mount and can be executed again with the returned function.
+        </p>
+        <p>
+          Starting a new request aborts the previous request, preventing stale results from replacing the active state.
+        </p>
+      </>
+    ),
+    $p1: "Use the controls to retry the request or abort it while it is pending.",
+    consideration: (
+      <ol>
+        <Li>Set the dependency list when the promise should re-run for changing inputs.</Li>
+        <Li>Handle rejected promises with the returned error or onReject callback.</Li>
+        <Li>Use abort for cancellation; an aborted request does not update the state.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Keep promise creation inside the promise function so each execution gets a fresh request.</Li>
+        <Li>Use onFinally for cleanup that should run after the active request settles.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: What is the initial status?
+        </Li>
+        <Li>
+          <strong>A</strong>: It is idle until the effect starts the first request, then it becomes pending.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What happens when execute is called twice?
+        </Li>
+        <Li>
+          <strong>A</strong>: The previous request is aborted and only the latest request may update the state.
+        </Li>
+      </ul>
+    ),
     $apis: {
       generics: <></>,
       params: {},

@@ -1,59 +1,64 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-  
 export default function UsePromise() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
-    // {
-    //   name: "valueMap",
-    //   type: "object",
-    //   defaultValue: { true: true, false: false },
-    //   desc: "mapping of returned values",
-    //   properties: [
-    //     {
-    //       name: "true",
-    //       type: "boolean | T",
-    //       defaultValue: true,
-    //        desc: "value returned when toggle is on",
-    //     },
-    //     {
-    //       name: "false",
-    //       type: "boolean | F",
-    //       defaultValue: false,
-    //       desc: "value returned when toggle is off",
-    //     },
-    //   ],
-    // },
+    {
+      name: "promiseFn",
+      type: "() => Promise<T>",
+      desc: "Function that creates the promise to execute.",
+    },
+    {
+      name: "callbacksOrDeps",
+      type: "Callbacks<T> | any[]",
+      defaultValue: "undefined",
+      desc: "Optional lifecycle callbacks or the dependency list.",
+      properties: [
+        {
+          name: "onResolve",
+          type: "(value: T) => void",
+          desc: "Called after the promise resolves.",
+        },
+        {
+          name: "onReject",
+          type: "(reason: unknown) => void",
+          desc: "Called after the promise rejects.",
+        },
+        {
+          name: "onFinally",
+          type: "() => void",
+          desc: "Called when the active request settles.",
+        },
+      ],
+    },
+    {
+      name: "deps",
+      type: "any[]",
+      defaultValue: "undefined",
+      desc: "Dependencies that trigger a new execution.",
+    },
   ];
   
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
+    {
+      name: "[0] state",
+      type: '{ status: "idle" | "pending" | "resolved" | "rejected"; data: T | null; error: unknown }',
+      desc: "Current promise status, resolved data, and error.",
+    },
+    {
+      name: "[1] abort",
+      type: "() => void",
+      desc: "Aborts the active request and ignores its result.",
+    },
+    {
+      name: "[2] execute",
+      type: "() => void",
+      desc: "Starts the request immediately and aborts any previous request.",
+    },
   ];
   
   return (
     <>
-      <SubTitle id="hook-api">Api of usePromise</SubTitle>
+      <SubTitle id="hook-api">API of usePromise</SubTitle>
       <SubTitle low top="20px">
         Parameters
       </SubTitle>
