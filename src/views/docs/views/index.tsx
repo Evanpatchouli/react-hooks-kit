@@ -43,6 +43,7 @@ export { default as UseGuide } from "./ui-ux-hooks/UseGuide";
 
 // Utility hooks
 export { default as UseForceUpdate } from "./utility-hooks/UseForceUpdate";
+export { default as UseForm } from "./utility-hooks/UseForm";
 export { default as UseInfiniteScroll } from "./utility-hooks/UseInfiniteScroll";
 export { default as UseAutoPageSize } from "./utility-hooks/UseAutoPageSize";
 

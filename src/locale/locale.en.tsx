@@ -1615,6 +1615,54 @@ const locale_en = {
     },
   },
 
+  useForm: {
+    desc: "A Hook for describing form fields, validating values, and reading or resetting form data.",
+    detail: (
+      <>
+        <p>
+          <code>useForm</code> connects a form element to a field schema. The schema can mark fields as required,
+          provide asynchronous validators, and update React state through field setters.
+        </p>
+        <p>Its submit helper prevents the browser default and invokes the handler only when validation succeeds.</p>
+      </>
+    ),
+    $p1: "Enter a name and submit the form. An empty required field is rejected before the submit handler runs.",
+    consideration: (
+      <ol>
+        <Li>Attach the returned form handler to the form's onSubmit event.</Li>
+        <Li>Every field that should be read must have a matching name attribute in the form.</Li>
+        <Li>Validators should resolve with an error message or undefined, rather than throw for normal validation failures.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Keep the schema aligned with the form controls and use setter callbacks for controlled state.</Li>
+        <Li>Pass a field list to onSubmit when only part of a form should be validated.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Does useForm render inputs for me?
+        </Li>
+        <Li>
+          <strong>A</strong>: No. It coordinates an existing form element and its controls.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What happens when a validator returns a string?
+        </Li>
+        <Li>
+          <strong>A</strong>: The field is invalid and the message is reported through the existing warning channel.
+        </Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
