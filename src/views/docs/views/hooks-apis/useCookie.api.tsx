@@ -1,66 +1,36 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-  
+
 export default function UseCookie() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
-    // {
-    //   name: "valueMap",
-    //   type: "object",
-    //   defaultValue: { true: true, false: false },
-    //   desc: "mapping of returned values",
-    //   properties: [
-    //     {
-    //       name: "true",
-    //       type: "boolean | T",
-    //       defaultValue: true,
-    //        desc: "value returned when toggle is on",
-    //     },
-    //     {
-    //       name: "false",
-    //       type: "boolean | F",
-    //       defaultValue: false,
-    //       desc: "value returned when toggle is off",
-    //     },
-    //   ],
-    // },
+    {
+      name: "name",
+      type: "string",
+      desc: "Cookie name used for reading and writing the document cookie.",
+    },
+    {
+      name: "initialValue",
+      type: "string",
+      desc: "Fallback value used when the cookie does not already exist.",
+    },
+    {
+      name: "days",
+      type: "number",
+      desc: "Number of days until the cookie expires. A falsy value creates a session cookie.",
+    },
   ];
-  
+
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
+    { name: "[0] value", type: "string", desc: "Current cookie value." },
+    { name: "[1] setValue", type: "(value: string) => void", desc: "Updates React state and writes the encoded cookie." },
   ];
-  
+
   return (
     <>
-      <SubTitle id="hook-api">Api of useCookie</SubTitle>
-      <SubTitle low top="20px">
-        Parameters
-      </SubTitle>
+      <SubTitle id="hook-api">API of useCookie</SubTitle>
+      <SubTitle low top="20px">Parameters</SubTitle>
       <ApiTable param rows={paramData} />
-      <SubTitle low top="20px">
-        ReturnValue (Array)
-      </SubTitle>
+      <SubTitle low top="20px">Return value (tuple)</SubTitle>
       <ApiTable return rows={returnData} />
     </>
   );

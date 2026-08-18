@@ -2493,22 +2493,65 @@ const locale_en = {
   },
 
   useCookie: {
-    desc: "",
+    desc: "Reads and writes a URL-encoded browser cookie through React state.",
     detail: (
       <>
+        <p>
+          <code>useCookie</code> reads the named cookie during initialization and falls back to
+          <code>initialValue</code> when it is absent. Every state change writes the value back to the
+          cookie with the requested expiration and a root path.
+        </p>
+        <p>
+          Cookie names and values are URL-encoded by the Hook. The Hook is browser-only and returns the
+          initial value when rendered without a document.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Use the returned setter to keep the React value and browser cookie synchronized.",
     consideration: (
       <ol>
+        <li>Cookies are limited in size and sent with matching requests, so do not store large or sensitive data here.</li>
+        <li>The cookie uses <code>path=/</code> and does not configure Secure, SameSite, or domain attributes.</li>
+        <li>Changing the cookie outside React does not update the Hook state until the component is initialized again.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Use a namespaced cookie name to avoid collisions with other application features.</li>
+        <li>Store preferences or small session values, not authentication secrets or large payloads.</li>
+        <li>Choose an explicit expiration period that matches the data's intended lifetime.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: What happens when the cookie is missing?</strong>
+          <br />
+          A: The Hook starts with <code>initialValue</code> and writes it during the first effect.
+        </li>
+        <li>
+          <strong>Q: Are cookie values encoded?</strong>
+          <br />
+          A: Yes. The Hook uses <code>encodeURIComponent</code> when writing and decodes values when reading.
+        </li>
+        <li>
+          <strong>Q: Can I remove a cookie with this Hook?</strong>
+          <br />
+          A: Set an appropriate empty value and expiration strategy, or use a dedicated cookie utility for deletion attributes.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        name: "Cookie name.",
+        initialValue: "Fallback value when the cookie does not exist.",
+        days: "Expiration period in days; falsy values create a session cookie.",
+      },
+      return: {
+        value: "Current cookie value.",
+        setValue: "Setter that updates state and writes the cookie.",
+      },
     },
   },
 
