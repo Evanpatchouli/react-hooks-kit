@@ -1,7 +1,7 @@
 # <h1 align="center">react-hooks-kit</h1>
 
 <p align="center">
-  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-2.0.0-yellowgreen.svg"/></a>
+  <a href="#"><img alt="version" src="https://img.shields.io/badge/latest-2.0.1-yellowgreen.svg"/></a>
   <a href="#"><img alt="npm" src="https://img.shields.io/badge/npm-√-yellowgreen.svg"></a>
   <a href="#"><img alt="react" src="https://img.shields.io/badge/react-18+-yellowgreen.svg"></a>
   <a href="#"><img alt="lisence" src="https://img.shields.io/badge/lisence-MIT-yellowgreen.svg"></a>
@@ -126,6 +126,10 @@ entirely stable. If a hook with prefix tag of **new**, it means it has passed te
 - If a new hook is created, the y in version x.y.z should be increased by 1.
 
 ## Report
+
+- v2.0.1
+  - Fix TypeScript declarations and test configurations across the Hook library and documentation examples
+  - Fix GitHub Pages project-site asset paths so the deployed documentation loads its resources correctly
 
 - v2.0.0
   - Add useEyeDropper with native color picking, capability detection, cancellation, public types, and lifecycle safety

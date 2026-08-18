@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v2.0.1 2026/08/18
+
+- Fix TypeScript declarations and test configurations across the Hook library and documentation examples.
+- Fix GitHub Pages project-site asset paths so the deployed documentation loads its resources correctly.
+
 ## v2.0.0 2026/08/17
 
 Version 2.0.0 marks the completion of automated coverage for every implemented Hook in the project test checklist. The changes below summarize the Git history after v1.4.0.

@@ -1,5 +1,11 @@
 # Handoff
 
+## 2026-08-18: v2.0.1 版本元数据
+
+根项目、源码包、发布包、根锁文件、README 徽章与变更记录已统一提升至 2.0.1；Vite 文档产物已重新构建，运行时版本字符串与 GitHub Pages `/react-hooks-kit/` 基路径均已同步。`npm run package` 因 Windows 清理已有 `dist` 目录时触发 EPERM 未能执行，本次保留现有发布目录并直接同步其可追踪元数据；未推送远端。
+
+验证通过：Vite 生产构建、TypeScript 零诊断、74 个测试文件/468 个测试通过、文档入口引用全部指向存在的项目路径资源、版本运行时字符串为 2.0.1、触碰文件 UTF-8 无 BOM。测试仍有既有 `useTicker` act、`useToast` 卸载、`useNetWork` 节流、Browserslist 陈旧和大分块警告。
+
 ## 2026-08-18: GitHub Pages 文档站资源路径
 
 文档站部署在 `/react-hooks-kit/`，但此前 Vite 以 `/` 为基础路径生成入口资源，导致线上 JS、CSS、图标和 manifest 请求 404。`vite.config.ts` 现已配置 `base: "/react-hooks-kit/"`，并刷新 `docs` 产物；`.gitattributes` 固定 HTML 为 LF，避免 Windows 构建产生混合换行。未推送远端。

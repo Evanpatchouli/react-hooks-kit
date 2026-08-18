@@ -1,5 +1,11 @@
 # Lessons
 
+## 2026-08-18: Patch version metadata synchronization
+
+- 版本推进不仅要更新根 `package.json`，还要同步源码包、跟踪的发布包、锁文件根元数据、README 徽章、changelog 和会把版本内联到页面的构建产物。
+- 重新生成带有依赖版本漂移的文档产物可能产生与版本无关的大 diff；若生成脚本可用，应确认资源路径、运行时版本和构建可重复性，再决定是否保留生成结果。
+- Windows 下发布脚本递归清理包含现有依赖目录的 `dist` 可能触发 `EPERM`；在不扩大清理范围时，可安全地同步版本元数据并单独构建不依赖该清理步骤的文档产物。
+
 ## 2026-08-18: Vite on GitHub Pages project sites
 
 - GitHub Pages 项目站位于 `/<repository>/`，Vite 必须设置对应 `base`；HashRouter 只解决客户端路由回退，不能修复脚本、样式和 public 资源的根路径。
