@@ -157,35 +157,75 @@ const locale_en = {
   },
 
   useProtect: {
-    desc: "A hook to protect your state.",
+    desc: "Guards state updates with boolean, message, or predicate conditions.",
     detail: (
       <>
-        useProtect is a hook that is used to protect your state being changed:
-        <ol>
-          <li>initialValue</li>
-          <li>Conditions to protect</li>
-        </ol>
-        For example:
+        <p>
+          <code>useProtect</code> behaves like a state Hook with a guarded setter. It accepts an initial
+          value followed by one or more protection conditions and returns the current value with a setter.
+        </p>
+        <p>
+          A blocked update throws an <code>Error</code>. Boolean and string conditions provide simple
+          guards, while predicate conditions can compare the current value with the proposed next value.
+        </p>
       </>
     ),
+    $p1: "Wrap protected updates in error handling when a rejected change should be reported in the UI.",
     consideration: (
       <ol>
-        <Li>initialValue is type of any</Li>
-        <Li>Conditions to protect could be type of boolean, string or null.</Li>
+        <Li><code>initialData</code> can have any application type.</Li>
+        <Li>Conditions can be boolean, string, null, undefined, or a predicate function.</Li>
         <ul>
           <Li>
-            <strong>boolean</strong>: if the condition is true, the state will be protected with default error message.
+            <strong>boolean</strong>: when true, updates are rejected with the default protection message.
           </Li>
           <Li>
-            <strong>string</strong>: if the condition is not empty string, the state will be protected with the string
-            as error message.
+            <strong>string</strong>: a non-empty string rejects updates and becomes the error message.
           </Li>
           <Li>
-            <strong>null</strong>: if the condition is null, the state will not be protected
+            <strong>predicate</strong>: a truthy return value rejects the proposed state; a returned string
+            becomes the error message.
           </Li>
         </ul>
       </ol>
     ),
+    $best: (
+      <ul>
+        <li>Use a predicate when the rule depends on both the old and candidate values.</li>
+        <li>Catch setter errors at the interaction boundary and show actionable feedback.</li>
+        <li>Use functional updates when the next value depends on the current state.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: What happens when an update is blocked?</strong>
+          <br />
+          A: The setter throws an <code>Error</code> and the state remains unchanged.
+        </li>
+        <li>
+          <strong>Q: Can a condition provide a custom message?</strong>
+          <br />
+          A: Yes. Return a non-empty string from a predicate or pass a non-empty string condition.
+        </li>
+        <li>
+          <strong>Q: Are equal values updated?</strong>
+          <br />
+          A: No. The Hook uses deep equality and skips updates when the value has not changed.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: <p><code>{"<T>"}</code> is the protected state type.</p>,
+      params: {
+        initialData: "Initial state value.",
+        conditions: "Boolean, string, or predicate guards applied to updates.",
+      },
+      return: {
+        data: "Current protected state.",
+        setData: "Guarded state setter that throws when a condition rejects the update.",
+      },
+    },
   },
 
   useToggle: {
