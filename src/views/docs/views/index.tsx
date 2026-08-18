@@ -38,6 +38,7 @@ export { default as UseInject } from "./event-hooks/UseInject";
 
 // UI & UX hooks
 export { default as UseTheme } from "./ui-ux-hooks/UseTheme";
+export { default as UseToast } from "./ui-ux-hooks/UseToast";
 export { default as UseRipple } from "./ui-ux-hooks/UseRipple";
 export { default as UseParticle } from "./ui-ux-hooks/UseParticle";
 export { default as UseGuide } from "./ui-ux-hooks/UseGuide";

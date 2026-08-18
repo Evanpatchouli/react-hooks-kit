@@ -2656,6 +2656,74 @@ const locale_en = {
     },
   },
 
+  useToast: {
+    desc: "Creates lightweight, automatically dismissing toast notifications from a React component.",
+    detail: (
+      <>
+        <p>
+          <code>useToast</code> returns a callable function that renders a toast outside the component's
+          normal DOM subtree. Each toast is removed after its configured duration, and delayed toasts
+          are tracked until they are shown or cancelled by unmount cleanup.
+        </p>
+        <p>
+          The returned function has <code>top</code>, <code>center</code>, and <code>bottom</code> helpers
+          for common placements. Per-toast settings override the defaults supplied to the Hook.
+        </p>
+      </>
+    ),
+    $p1: "Call the returned toast function from an event handler so notifications are tied to an explicit user action.",
+    consideration: (
+      <ol>
+        <li>
+          Toast elements are appended to <code>document.body</code> and rendered with a separate React
+          root, so coordinate their z-index with the rest of your application.
+        </li>
+        <li>
+          A negative duration or delay is clamped to zero. Choose a duration long enough for the message
+          to be read.
+        </li>
+        <li>
+          The Hook cleans up active and delayed toasts when its owner component unmounts.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Set shared visual defaults in the Hook configuration and override only what differs per toast.</li>
+        <li>Use the placement helpers for standard positions and coordinate placement for custom overlays.</li>
+        <li>Keep toast text concise and use a longer duration for important messages.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: How do I show a toast at the top or bottom?</strong>
+          <br />
+          A: Call <code>toast.top(text)</code> or <code>toast.bottom(text)</code>.
+        </li>
+        <li>
+          <strong>Q: Can one toast override the default duration?</strong>
+          <br />
+          A: Yes. Pass a second configuration object to the call.
+        </li>
+        <li>
+          <strong>Q: What happens when the component unmounts?</strong>
+          <br />
+          A: The Hook removes active toasts and clears delayed timers created by that Hook instance.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        config: "Default toast duration, delay, placement, color, and style settings.",
+      },
+      return: {
+        toast: "Callable toast function with top, center, and bottom placement helpers.",
+      },
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
