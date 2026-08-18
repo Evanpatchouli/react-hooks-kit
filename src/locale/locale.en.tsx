@@ -814,16 +814,69 @@ const locale_en = {
   },
 
   useEmitter: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    desc: "Creates a namespaced event emitter for publishing and subscribing to events across components.",
+    detail: (
+      <>
+        <p>
+          <code>useEmitter</code> returns an emitter with <code>emit</code>, <code>subscribe</code>,
+          <code>unsubscribe</code>, and <code>unsubscribeAll</code> methods. Emitters can communicate
+          through a shared namespace without requiring a prop chain.
+        </p>
+        <p>
+          The Hook supports a configuration object or positional arguments for registering an initial
+          event listener. Listeners owned by the component are removed automatically on unmount.
+        </p>
+      </>
+    ),
+    $p1: "Use the same namespace and event name in separate components when they should exchange an event.",
+    consideration: (
+      <ol>
+        <li>Use unique emitter names within a namespace so listener keys do not collide.</li>
+        <li>Unsubscribe listeners that were registered manually when their component no longer needs them.</li>
+        <li>Keep event payloads documented and stable because the emitter does not validate their shape.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use namespaces to isolate feature-level events with common names.</li>
+        <li>Prefer the configuration object when an emitter has more than one option.</li>
+        <li>Use <code>unsubscribeAll</code> when a component owns several subscriptions to the same emitter.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Can components communicate without sharing an emitter instance?</strong>
+          <br />
+          A: Yes. Use the same event name and namespace; the Hook uses a shared listener registry.
+        </li>
+        <li>
+          <strong>Q: What happens when an emitter component unmounts?</strong>
+          <br />
+          A: Its registered listeners are removed automatically.
+        </li>
+        <li>
+          <strong>Q: Can I pass multiple event arguments?</strong>
+          <br />
+          A: Yes. Pass additional arguments to <code>emit</code>; the listener receives them in the same order.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        nameOrConfig: "Emitter name or partial configuration object.",
+        initialEventName: "Optional initial event name for the positional overload.",
+        initialListener: "Optional listener registered for the initial event.",
+        config: "Optional partial emitter configuration.",
+      },
+      return: {
+        name: "Resolved emitter name.",
+        emit: "Publishes an event to listeners in the same namespace.",
+        subscribe: "Registers an event listener.",
+        unsubscribe: "Removes this emitter's listener for one event.",
+        unsubscribeAll: "Removes all listeners registered by this emitter.",
+      },
     },
   },
 

@@ -80,8 +80,31 @@ const View = () => {
 };
 
 const code = `
+import useEmitter from "@hooks/useEmitter";
+import { useEffect, useState } from "react";
 
-  `;
+const Sender = () => {
+  const emitter = useEmitter({ name: "sender", namespace: "demo" });
+
+  return (
+    <button onClick={() => emitter.emit("message", "Hello from the sender")}>
+      Send message
+    </button>
+  );
+};
+
+const Receiver = () => {
+  const emitter = useEmitter({ name: "receiver", namespace: "demo" });
+  const [message, setMessage] = useState("No message yet.");
+
+  useEffect(() => {
+    emitter.subscribe("message", setMessage);
+    return () => emitter.unsubscribe("message");
+  }, []);
+
+  return <p>{message}</p>;
+};
+`;
 
 export default {
   code,
