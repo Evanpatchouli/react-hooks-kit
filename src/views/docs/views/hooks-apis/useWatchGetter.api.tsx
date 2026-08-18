@@ -1,36 +1,35 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
 
 export default function UseWatchGetter() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "getter",
-      type: "getter function",
+      type: "() => T",
       required: true,
       defaultValue: void 0,
-      desc: "getter function should return a value",
+      desc: "Function that returns the value to watch.",
     },
     {
       name: "callback",
-      type: "(value: T) => void | undefined",
+      type: "(value: T) => void",
       defaultValue: void 0,
-      desc: "callback function when value changed",
+      desc: "Optional callback invoked when the getter result changes.",
     },
     {
       name: "updater",
       type: "boolean",
-      defaultValue: "false",
-      desc: "if true, return [value, updater]",
+      defaultValue: false,
+      desc: "Whether to return a manual update function with the value.",
     },
   ];
 
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
-      name: "value or array",
-      type: "T | [T, Function]",
+      name: "value or tuple",
+      type: "T | [T, () => void]",
       defaultValue: null,
-      desc: "value or Array([value, updater])",
+      desc: "Current value, or [value, update] when updater is true.",
     },
   ];
 

@@ -2413,18 +2413,39 @@ const locale_en = {
     ),
     $best: (
       <ul>
-        <Un />
+        <Li>Use a getter for derived values that should be observed without manually wiring dependencies.</Li>
+        <Li>Return updater as true when an external change must be checked immediately.</Li>
+        <Li>Keep the getter inexpensive because it is evaluated on every animation frame.</Li>
       </ul>
     ),
     $faqs: (
       <ul>
-        <Un />
+        <Li>
+          <strong>Q</strong>: How often is the getter evaluated?
+        </Li>
+        <Li>
+          <strong>A</strong>: The Hook evaluates it on animation frames and notifies the callback when the result changes.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What does updater change?
+        </Li>
+        <Li>
+          <strong>A</strong>: With updater true, the Hook returns [value, update] so you can trigger an immediate check.
+        </Li>
       </ul>
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        getter: "Function that returns the value to watch.",
+        callback: "Optional callback invoked when the getter result changes.",
+        updater: "Whether to return a manual update function with the value.",
+      },
+      return: {
+        value: "Current getter result when updater is false.",
+        tuple: "[value, update] when updater is true.",
+        update: "Manually evaluates the getter and updates the returned value when it changed.",
+      },
     },
   },
 
