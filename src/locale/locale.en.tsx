@@ -1220,6 +1220,65 @@ const locale_en = {
     },
   },
 
+  useSingleton: {
+    desc: "Creates one stable instance for the lifetime of a component instance.",
+    detail: (
+      <>
+        <p>
+          <code>useSingleton</code> calls the supplied factory on the first render and keeps the returned
+          value in a ref. Later renders return the same value without invoking the factory again.
+        </p>
+        <p>
+          The stability is scoped to one mounted component instance. Separate component instances receive
+          separate values, and the Hook does not automatically dispose an object when the component unmounts.
+        </p>
+      </>
+    ),
+    $p1: "Use the factory for expensive initialization or imperative objects that must remain stable across rerenders.",
+    consideration: (
+      <ol>
+        <li>The factory runs during render, so keep it synchronous and free from external side effects.</li>
+        <li>This Hook does not create a process-wide or application-wide singleton.</li>
+        <li>Dispose resources manually with an effect cleanup when the instance owns subscriptions or connections.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use it for stable clients, registries, mutable models, or other per-component imperative values.</li>
+        <li>Keep the factory independent of changing props; create a new component instance when identity should change.</li>
+        <li>Pair resource-owning instances with <code>useEffect</code> cleanup.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Is the instance shared by all components?</strong>
+          <br />
+          A: No. Each mounted component instance has its own stable value.
+        </li>
+        <li>
+          <strong>Q: Does the factory rerun when props change?</strong>
+          <br />
+          A: No. It runs once for the mounted component instance.
+        </li>
+        <li>
+          <strong>Q: Does the Hook call dispose automatically?</strong>
+          <br />
+          A: No. Add an effect cleanup for resources that need disposal.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: <p><code>{"<T>"}</code> is the instance type.</p>,
+      params: {
+        createInstance: "Synchronous factory called on the first render.",
+      },
+      return: {
+        instance: "Stable per-component instance.",
+      },
+    },
+  },
+
   useProvide: {
     desc: "Publishes named state for other components to consume with useInject.",
     detail: (

@@ -60,6 +60,7 @@ export { default as UseProtect } from "./other/UseProtect";
 export { default as UseBatchHooks } from "./other/UseBatchHooks";
 export { default as UseReflect } from "./other/UseReflect";
 export { default as UseConsoleLog } from "./other/UseConsoleLog";
+export { default as UseSingleTon } from "./other/UseSingleTon";
 export { default as UseTitle } from "./other/UseTitle";
 export { default as UseFavicon } from "./other/UseFavicon";
 export { default as UseDimensionsById } from "./other/UseDimensionsById";
