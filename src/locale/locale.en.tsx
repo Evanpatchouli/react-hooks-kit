@@ -2979,8 +2979,15 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        dbName: "IndexedDB database name.",
+        version: "Database schema version.",
+        upgradeCallback: "Callback invoked during an upgrade to create object stores and indexes.",
+      },
+      return: {
+        db: "Opened database connection, or null while opening or after failure.",
+        error: "IndexedDB opening error, or null.",
+      },
     },
   },
 
