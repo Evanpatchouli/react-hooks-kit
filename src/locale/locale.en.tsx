@@ -2660,8 +2660,12 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        callback: "Optional callback invoked with the previous render counter.",
+      },
+      return: {
+        forceUpdate: "Schedules a render without changing application state.",
+      },
     },
   },
 
