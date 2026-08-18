@@ -26,7 +26,6 @@ export { default as useResize } from "./useResize";
 // promise hooks
 export { default as usePromise } from "./usePromise";
 export { default as useFetch } from "./useFetch";
-export { default as useGenerator } from "./useGenerator";
 
 // utils hooks
 export { default as useForceUpdate } from "./useForceUpdate";
@@ -57,7 +56,6 @@ export { default as useTheme } from "./useTheme";
 // useColor
 export { default as useToast } from "./useToast";
 export { default as useGuide } from "./useGuide";
-export { default as useVirtualArea } from "./useVirtualArea";
 export { default as useRipple } from "./houdini/hooks/useRipple";
 export { default as useParticle } from "./houdini/hooks/useParticle";
 // useHoudini

@@ -21,7 +21,6 @@ export default function DocsIndex() {
         <ul>
           <li>useGuide</li>
           <li>useTicker</li>
-          <li>useVirtualArea</li>
           <li>...</li>
         </ul>
 

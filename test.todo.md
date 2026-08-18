@@ -19,7 +19,6 @@
 - [x] useFetch
 - [x] useForceUpdate
 - [x] useForm
-- [x] useGenerator
 - [x] useGuide
 - [x] useHover
 - [x] useIndexDB
@@ -56,7 +55,6 @@
 - [x] useUpdate
 - [x] useUpdateEffect
 - [x] useUrl
-- [x] useVirtualArea
 - [x] useWhyDidYouUpdate
 
 ## 已有测试

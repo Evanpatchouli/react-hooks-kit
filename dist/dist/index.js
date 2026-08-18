@@ -2668,90 +2668,6 @@ function useFetch(url, options, callbacks, deps) {
     return state;
 }
 
-/**
- * ### Example
- * ```tsx
- * import React from 'react';
- * import { useGenerator } from './useGenerator';
- *
- * function* fetchData() {
- *   const response1 = yield fetch('/api/data1');
- *   const data1 = yield response1.json();
- *
- *   const response2 = yield fetch('/api/data2');
- *   const data2 = yield response2.json();
- *
- *   return [data1, data2];
- * }
- *
- * function MyComponent() {
- *   const { value, done, error } = useGenerator(fetchData);
- *
- *   if (error) {
- *     return <div>Error: {error.message}</div>;
- *   }
- *
- *   if (!done) {
- *     return <div>Loading...</div>;
- *   }
- *
- *   return (
- *     <div>
- *       <div>Data 1: {JSON.stringify(value[0])}</div>
- *       <div>Data 2: {JSON.stringify(value[1])}</div>
- *     </div>
- *   );
- * }
- *
- * export default MyComponent;
- * ```
- */
-function useGenerator(generatorFn) {
-    var _a = __read(react.useState({
-        value: undefined,
-        done: false,
-        error: null,
-    }), 2), state = _a[0], setState = _a[1];
-    react.useEffect(function () {
-        var active = true;
-        var generator = generatorFn();
-        var handleError = function (error) {
-            if (active) {
-                setState(function (prevState) { return (__assign(__assign({}, prevState), { error: error })); });
-            }
-        };
-        var iterate = function (nextValue) {
-            var result;
-            try {
-                result = generator.next(nextValue);
-            }
-            catch (error) {
-                handleError(error);
-                return;
-            }
-            if (result.done) {
-                if (active) {
-                    setState(function (prevState) { return (__assign(__assign({}, prevState), { done: true })); });
-                }
-            }
-            else {
-                Promise.resolve(result.value).then(function (value) {
-                    if (!active)
-                        return;
-                    setState({ value: value, done: false, error: null });
-                    iterate(value);
-                }, handleError);
-            }
-        };
-        setState({ value: undefined, done: false, error: null });
-        iterate();
-        return function () {
-            active = false;
-        };
-    }, [generatorFn]);
-    return state;
-}
-
 var useForm = function (schema, formRef) {
     var formSchema = schema;
     var onSubmit = function (handler, validates) {
@@ -3780,104 +3696,6 @@ function useGuide(steps, callback, config) {
             unregister: unregister,
         },
     ];
-}
-
-function useVirtualArea(_a, depths) {
-    var _this = this;
-    var loadMoreItems = _a.loadMoreItems, items = _a.items, hasMore = _a.hasMore, height = _a.height, containerStyle = _a.style, renderTop = _a.renderTop, renderItem = _a.renderItem, itemComponent = _a.itemComponent, itemComponentProps = _a.itemComponentProps, renderEmpty = _a.renderEmpty, renderLoader = _a.renderLoader, renderUnLoaded = _a.renderUnLoaded, loaderComponent = _a.loaderComponent, loaderComponentProps = _a.loaderComponentProps, containerComponent = _a.containerComponent, containerComponentProps = _a.containerComponentProps, renderBottom = _a.renderBottom, observerOptions = _a.observerOptions;
-    var _b = __read(react.useState(false), 2), loading = _b[0], setLoading = _b[1];
-    var loaderRef = react.useRef(null);
-    var loadingRef = react.useRef(false);
-    var mountedRef = react.useRef(true);
-    var loadMore = react.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (loadingRef.current || !hasMore)
-                        return [2 /*return*/];
-                    loadingRef.current = true;
-                    setLoading(true);
-                    _b.label = 1;
-                case 1:
-                    _b.trys.push([1, 3, 4, 5]);
-                    return [4 /*yield*/, loadMoreItems()];
-                case 2:
-                    _b.sent();
-                    return [3 /*break*/, 5];
-                case 3:
-                    _b.sent();
-                    return [3 /*break*/, 5];
-                case 4:
-                    loadingRef.current = false;
-                    if (mountedRef.current) {
-                        setLoading(false);
-                    }
-                    return [7 /*endfinally*/];
-                case 5: return [2 /*return*/];
-            }
-        });
-    }); }, [hasMore, loadMoreItems]);
-    react.useEffect(function () {
-        return function () {
-            mountedRef.current = false;
-        };
-    }, []);
-    react.useEffect(function () {
-        var options = {
-            root: null,
-            rootMargin: "20px",
-            threshold: 1.0,
-        };
-        var observer = new IntersectionObserver(function (entries) {
-            var _a;
-            if ((_a = entries[0]) === null || _a === void 0 ? void 0 : _a.isIntersecting) {
-                loadMore();
-            }
-        }, __assign(__assign({}, options), observerOptions));
-        if (loaderRef.current) {
-            observer.observe(loaderRef.current);
-        }
-        return function () { return observer.disconnect(); };
-    }, [observerOptions, loadMore]);
-    var Container = react.useMemo(function () { return containerComponent || "div"; }, [containerComponent]);
-    var Item = react.useMemo(function () { return itemComponent || "div"; }, [itemComponent]);
-    var Loader = react.useMemo(function () { return loaderComponent || "div"; }, [loaderComponent]);
-    var _containerComponentProps = react.useMemo(function () {
-        var _a = containerComponentProps !== null && containerComponentProps !== void 0 ? containerComponentProps : {}, style = _a.style, rest = __rest(_a, ["style"]);
-        return __assign(__assign({}, rest), { style: __assign(__assign({ overflow: "auto", height: height }, containerStyle), style) });
-    }, [containerComponentProps, height, containerStyle]);
-    var render = react.useCallback(function () {
-        return (jsxRuntime.jsxs(Container, __assign({}, _containerComponentProps, { children: [typeof renderTop === "function" ? renderTop() : renderTop, 
-                /** @ts-ignore */
-                (items || []).length === 0 &&
-                    (typeof renderEmpty === "function" ? renderEmpty() : renderEmpty === void 0 ? "No data" : renderEmpty), items.map(function (item, index) { return (jsxRuntime.jsx(Item, __assign({}, itemComponentProps, { children: typeof renderItem === "function" ? renderItem(item) : renderItem }), index)); }), jsxRuntime.jsxs(Loader, __assign({ ref: loaderRef }, loaderComponentProps, { children: [loading &&
-                            (typeof renderLoader === "function"
-                                ? renderLoader()
-                                : renderLoader === void 0
-                                    ? "Loading..."
-                                    : renderLoader), !loading &&
-                            !hasMore &&
-                            (typeof renderUnLoaded === "function"
-                                ? renderUnLoaded()
-                                : renderUnLoaded === void 0
-                                    ? "No more data"
-                                    : renderUnLoaded)] })), typeof renderBottom === "function" ? renderBottom() : renderBottom] })));
-    }, __spreadArray([
-        _containerComponentProps,
-        renderTop,
-        items,
-        Item,
-        itemComponentProps,
-        renderItem,
-        loaderRef,
-        loaderComponentProps,
-        loading,
-        renderLoader,
-        hasMore,
-        renderUnLoaded,
-        renderBottom
-    ], __read((depths || [])), false));
-    return [loaderRef, loading, items, render];
 }
 
 var rippleWorklet = URL.createObjectURL(new Blob([
@@ -6751,7 +6569,6 @@ exports.useFavicon = useFavicon;
 exports.useFetch = useFetch;
 exports.useForceUpdate = useForceUpdate;
 exports.useForm = useForm;
-exports.useGenerator = useGenerator;
 exports.useGuide = useGuide;
 exports.useHover = useHover;
 exports.useIndexDB = useIndexedDB;
@@ -6802,7 +6619,6 @@ exports.useUnMount = useUnmount;
 exports.useUpdate = useUpdate;
 exports.useUpdateEffect = useUpdateEffect;
 exports.useUrl = useUrl;
-exports.useVirtualArea = useVirtualArea;
 exports.useWatch = useWatch;
 exports.useWatchGetter = useWatchGetter;
 exports.useWhyDidYouUpdate = useWhyDidYouUpdate;

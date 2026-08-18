@@ -84,21 +84,6 @@ export default {
       title: "UseReactor",
       status: "new",
     },
-    UseReactorStore: {
-      route: "useReactorStore",
-      title: "UseReactorStore",
-      status: "deprecated",
-    },
-    UseReactorStoreContext: {
-      route: "useReactorStoreContext",
-      title: "UseReactorStoreContext",
-      status: "deprecated",
-    },
-    UseReactorStoreRef: {
-      route: "useReactorStoreRef",
-      title: "UseReactorStoreRef",
-      status: "deprecated",
-    },
     UseTickState: {
       route: "useTickState",
       title: "UseTickState",
@@ -162,11 +147,6 @@ export default {
       route: "useFetch",
       title: "UseFetch",
       status: "preview",
-    },
-    UseGenerator: {
-      route: "useGenerator",
-      title: "UseGenerator",
-      status: "deprecated",
     },
   },
   UtilsHooks: {
@@ -283,11 +263,6 @@ export default {
       route: "useGuide",
       title: "UseGuide",
       status: "experimental",
-    },
-    UseVirtualArea: {
-      route: "useVirtualArea",
-      title: "UseVirtualArea",
-      status: "deprecated",
     },
     UseRipple: {
       route: "useRipple",
