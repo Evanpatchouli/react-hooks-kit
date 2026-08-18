@@ -2430,21 +2430,59 @@ const locale_en = {
   },
 
   useRaf: {
-    desc: "",
+    desc: "Runs a callback on every browser animation frame until the component unmounts.",
     detail: (
       <>
+        <p>
+          <code>useRaf</code> schedules a continuous <code>requestAnimationFrame</code> loop and passes
+          the browser timestamp to the callback. The callback reference is updated without restarting
+          the loop.
+        </p>
+        <p>
+          The scheduled frame is cancelled automatically during cleanup, so the Hook is suitable for
+          animation or continuously sampled browser values owned by a component.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Use the frame timestamp to calculate elapsed time rather than assuming a fixed frame rate.",
     consideration: (
       <ol>
+        <li>The callback runs approximately once per display frame and may be throttled in background tabs.</li>
+        <li>Do not perform expensive work or unconditional React state updates when the frame does not change visible output.</li>
+        <li>Use a ref for mutable animation bookkeeping that should not cause additional renders.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Derive animation progress from the timestamp and a start time.</li>
+        <li>Keep the callback lightweight so it finishes before the next frame.</li>
+        <li>Use a different observer or timer when frame-level scheduling is unnecessary.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: When does the loop stop?</strong>
+          <br />
+          A: It stops when the component unmounts and the pending animation frame is cancelled.
+        </li>
+        <li>
+          <strong>Q: What does the callback timestamp represent?</strong>
+          <br />
+          A: It is the high-resolution timestamp supplied by <code>requestAnimationFrame</code>.
+        </li>
+        <li>
+          <strong>Q: Does changing the callback restart the loop?</strong>
+          <br />
+          A: No. The Hook keeps the latest callback while retaining the same animation loop.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
+      params: {
+        callback: "Frame callback receiving the browser animation timestamp.",
+      },
       return: {},
     },
   },
