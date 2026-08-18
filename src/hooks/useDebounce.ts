@@ -7,7 +7,7 @@ function debounce<R = void>(
   callback?: (result: ReturnType<typeof fn>) => void,
 ) {
   // 1.定义一个定时器, 保存上一次的定时器
-  let timer: NodeJS.Timeout | null = null;
+  let timer: ReturnType<typeof setTimeout> | null = null;
   let isInvoke = false;
 
   // 2.真正执行的函数

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 const View = () => {
   const [count, setCount] = useState(0);
   const previousCount = usePrevoius(count);
-  const timer = useRef<NodeJS.Timer>();
+  const timer = useRef<ReturnType<typeof setInterval>>();
   useEffect(() => {
     timer.current = setInterval(() => {
       setCount((p) => ++p);
@@ -44,7 +44,7 @@ import { useEffect, useRef, useState } from "react";
 const View = () => {
   const [count, setCount] = useState(0);
   const previousCount = usePrevoius(count);
-  const timer = useRef<NodeJS.Timer>();
+  const timer = useRef<ReturnType<typeof setInterval>>();
   useEffect(() => {
     timer.current = setInterval(() => {
       setCount((p) => ++p);

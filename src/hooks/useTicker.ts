@@ -76,7 +76,7 @@ const useTicker: UseTicker = (
   const [paused, setPaused] = useState(_options.pauseAtFirst);
 
   const tickRef = useRef(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fnRef = useRef(fn);
 
   fnRef.current = fn;

@@ -8,7 +8,7 @@ const View = () => {
   const [title, setTitle] = useTitle("Timer: 00:00");
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (isRunning) {
       interval = setInterval(() => {
@@ -63,7 +63,7 @@ const View = () => {
   const [title, setTitle] = useTitle("Timer: 00:00");
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (isRunning) {
       interval = setInterval(() => {

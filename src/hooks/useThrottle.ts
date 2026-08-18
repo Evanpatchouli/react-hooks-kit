@@ -14,7 +14,7 @@ function throttle<R = void>(
   // 1.记录上一次的开始时间
   const { leading, trailing, callback } = options;
   let lastTime = 0;
-  let timer: NodeJS.Timeout | null = null;
+  let timer: ReturnType<typeof setTimeout> | null = null;
 
   // 2.事件触发时, 真正执行的函数
   const _throttle = function (...args: any[]) {
