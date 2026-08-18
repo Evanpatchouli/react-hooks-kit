@@ -2374,22 +2374,62 @@ const locale_en = {
   },
 
   useClickAway: {
-    desc: "",
+    desc: "Calls a callback when a mousedown occurs outside an element referenced by the Hook.",
     detail: (
       <>
+        <p>
+          <code>useClickAway</code> returns a ref that defines an inside region. It listens on the
+          document and invokes <code>onClickAway</code> when the event target is not contained by that
+          region.
+        </p>
+        <p>
+          The document listener is removed automatically during cleanup. This makes the Hook useful for
+          dismissing menus, popovers, dialogs, and temporary panels.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Attach the returned ref to the complete interactive region that should remain open for inside clicks.",
     consideration: (
       <ol>
+        <li>The Hook listens to <code>mousedown</code>, not click or touch events.</li>
+        <li>Use <code>useCallback</code> for a stable callback when the surrounding component rerenders frequently.</li>
+        <li>The callback is not invoked when the event target is contained by the referenced element.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Attach the ref to the outermost element that belongs to the open region.</li>
+        <li>Use the callback to close or reset transient UI state.</li>
+        <li>Keep controls that reopen the region outside the region when appropriate.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Which event triggers the callback?</strong>
+          <br />
+          A: A document-level <code>mousedown</code> event whose target is outside the referenced element.
+        </li>
+        <li>
+          <strong>Q: Can I include multiple elements inside the region?</strong>
+          <br />
+          A: Yes. Attach the ref to their common containing element.
+        </li>
+        <li>
+          <strong>Q: Does the Hook remove its listener?</strong>
+          <br />
+          A: Yes. The document listener is removed when the effect cleans up.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        onClickAway: "Callback invoked for an outside mousedown event.",
+      },
+      return: {
+        ref: "Ref to attach to the inside region element.",
+      },
     },
   },
 
