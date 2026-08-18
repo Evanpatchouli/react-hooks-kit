@@ -33,7 +33,13 @@ export default function UseAsyncEffect() {
     },
   ];
 
-  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "value",
+      type: "void",
+      desc: "The Hook manages the asynchronous effect lifecycle and does not return a value.",
+    },
+  ];
 
   return (
     <>

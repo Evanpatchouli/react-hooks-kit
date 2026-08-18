@@ -3795,7 +3795,9 @@ const locale_en = {
         deps: "Dependency list controlling effect execution. Defaults to an empty list.",
         options: "Optional onError and onFinally callbacks.",
       },
-      return: {},
+      return: {
+        value: "void; cleanup is managed by the effect lifecycle.",
+      },
     },
   },
 
