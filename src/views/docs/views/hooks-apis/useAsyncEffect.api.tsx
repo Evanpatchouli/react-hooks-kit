@@ -1,65 +1,49 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-  
+
 export default function UseAsyncEffect() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
-    // {
-    //   name: "valueMap",
-    //   type: "object",
-    //   defaultValue: { true: true, false: false },
-    //   desc: "mapping of returned values",
-    //   properties: [
-    //     {
-    //       name: "true",
-    //       type: "boolean | T",
-    //       defaultValue: true,
-    //        desc: "value returned when toggle is on",
-    //     },
-    //     {
-    //       name: "false",
-    //       type: "boolean | F",
-    //       defaultValue: false,
-    //       desc: "value returned when toggle is off",
-    //     },
-    //   ],
-    // },
+    {
+      name: "effect",
+      type: "() => Promise<void | (() => void)>",
+      desc: "Asynchronous effect callback. It may resolve to a cleanup function.",
+    },
+    {
+      name: "deps",
+      type: "React.DependencyList",
+      defaultValue: [],
+      desc: "Dependencies that control when the asynchronous effect reruns.",
+    },
+    {
+      name: "options",
+      type: "object",
+      desc: "Optional error and completion callbacks.",
+      properties: [
+        {
+          name: "onError",
+          type: "(error: unknown) => void",
+          desc: "Called when the asynchronous effect rejects.",
+        },
+        {
+          name: "onFinally",
+          type: "() => void",
+          desc: "Called after the effect resolves or rejects.",
+        },
+      ],
+    },
   ];
-  
-  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
-  ];
-  
+
+  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+
   return (
     <>
-      <SubTitle id="hook-api">Api of useAsyncEffect</SubTitle>
+      <SubTitle id="hook-api">API of useAsyncEffect</SubTitle>
       <SubTitle low top="20px">
         Parameters
       </SubTitle>
       <ApiTable param rows={paramData} />
       <SubTitle low top="20px">
-        ReturnValue (Array)
+        Return value
       </SubTitle>
       <ApiTable return rows={returnData} />
     </>

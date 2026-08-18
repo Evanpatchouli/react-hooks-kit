@@ -2171,21 +2171,76 @@ const locale_en = {
   },
 
   useAsyncEffect: {
-    desc: "",
+    desc: "Runs an asynchronous effect with dependency tracking, cleanup, error handling, and completion callbacks.",
     detail: (
       <>
+        <p>
+          <code>useAsyncEffect</code> runs an asynchronous function through the effect lifecycle. The
+          function may resolve to a cleanup callback, which runs when dependencies change or the
+          component unmounts.
+        </p>
+        <p>
+          The Hook tracks whether the effect is still active. If an async operation finishes after the
+          component has been replaced or unmounted, its resolved cleanup is invoked immediately instead
+          of being retained for an inactive effect.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Provide an onError handler for expected failures and keep the dependency list complete for every value used by the async effect.",
     consideration: (
       <ol>
+        <li>
+          The async function does not receive an AbortSignal. Abort network requests or other external
+          work yourself when the underlying API supports cancellation.
+        </li>
+        <li>
+          An effect rejection is sent to <code>onError</code> when provided. Without it, the rejection is
+          rethrown from the asynchronous task.
+        </li>
+        <li>
+          A cleanup function returned after unmount is executed immediately, so asynchronous resources
+          are not left attached to an inactive component.
+        </li>
+        <li>
+          Keep state updates behind your own cancellation or active checks when the async operation can
+          finish after the component has unmounted.
+        </li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Return a cleanup function for subscriptions, timers, sockets, and other resources.</li>
+        <li>Use <code>onFinally</code> to stop a loading indicator regardless of success or failure.</li>
+        <li>Use a dependency list that matches the inputs of the asynchronous operation.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Can the effect return a cleanup function?</strong>
+          <br />
+          A: Yes. Return a function from the resolved async result; it runs before reruns and on unmount.
+        </li>
+        <li>
+          <strong>Q: What is onFinally used for?</strong>
+          <br />
+          A: It runs after the async function resolves or rejects and is useful for clearing loading state.
+        </li>
+        <li>
+          <strong>Q: Does the Hook cancel the request automatically?</strong>
+          <br />
+          A: No. It manages effect activity and cleanup, but request cancellation must be implemented by
+          the caller when supported.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
+      params: {
+        effect: "Async effect callback that may resolve to a cleanup function.",
+        deps: "Dependency list controlling effect execution. Defaults to an empty list.",
+        options: "Optional onError and onFinally callbacks.",
+      },
       return: {},
     },
   },
