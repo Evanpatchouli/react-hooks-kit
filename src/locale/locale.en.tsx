@@ -1521,6 +1521,67 @@ const locale_en = {
     },
   },
 
+  useBattery: {
+    desc: "Reads Battery Status API information and subscribes to battery changes.",
+    detail: (
+      <>
+        <p>
+          <code>useBattery</code> calls <code>navigator.getBattery()</code> and returns charging state,
+          level, charging time, and discharging time once the browser resolves the BatteryManager.
+        </p>
+        <p>
+          Optional callbacks run when the corresponding Battery Status API event changes. The Hook
+          removes all listeners during cleanup, but browser support for this API is limited.
+        </p>
+      </>
+    ),
+    $p1: "Check for navigator.getBattery support before rendering the Hook and handle the initial null status while the promise resolves.",
+    consideration: (
+      <ol>
+        <li>The Battery Status API is unavailable or restricted in many browsers.</li>
+        <li>The current implementation assumes <code>navigator.getBattery()</code> exists when the Hook is rendered.</li>
+        <li>Battery level and time values are estimates and can change independently of application state.</li>
+        <li>Do not use battery data as a security, identity, or authorization signal.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use capability detection and provide a neutral fallback when battery data is unavailable.</li>
+        <li>Use level or charging state to adjust optional work, not to block essential functionality.</li>
+        <li>Keep event callbacks lightweight and stable.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why is the returned value null?</strong>
+          <br />
+          A: The BatteryManager promise has not resolved yet; it is also the fallback state before the first update.
+        </li>
+        <li>
+          <strong>Q: What if the browser has no getBattery method?</strong>
+          <br />
+          A: Do not render the Hook in that environment; show a fallback UI based on feature detection.
+        </li>
+        <li>
+          <strong>Q: Which callbacks are supported?</strong>
+          <br />
+          A: Charging, level, charging-time, and discharging-time change callbacks are supported.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        onChargingChange: "Optional positional charging-change callback.",
+        callbacks: "Optional callbacks for charging, level, charging-time, and discharging-time changes.",
+      },
+      return: {
+        batteryStatus: "Battery information or null while unavailable/loading.",
+      },
+    },
+  },
+
   useProvide: {
     desc: "Publishes named state for other components to consume with useInject.",
     detail: (

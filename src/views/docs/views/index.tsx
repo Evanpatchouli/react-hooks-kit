@@ -65,6 +65,7 @@ export { default as UseMediaQuery } from "./other/UseMediaQuery";
 export { default as UseNetwork } from "./other/UseNetWork";
 export { default as UseWhyDidYouUpdate } from "./other/UseWhyDidYouUpdate";
 export { default as UseEyeDropper } from "./other/UseEyeDropper";
+export { default as UseBattery } from "./other/UseBattery";
 export { default as UseTitle } from "./other/UseTitle";
 export { default as UseFavicon } from "./other/UseFavicon";
 export { default as UseDimensionsById } from "./other/UseDimensionsById";
