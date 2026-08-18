@@ -2,7 +2,13 @@ import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
 
 export default function UseDimensions() {
-  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "none",
+      type: "—",
+      desc: "This Hook takes no parameters; attach the returned ref to the element to measure.",
+    },
+  ];
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "[0] ref",

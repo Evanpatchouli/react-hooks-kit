@@ -3236,7 +3236,9 @@ const locale_en = {
     ),
     $apis: {
       generics: (<></>),
-      params: {},
+      params: {
+        none: "This Hook takes no parameters; attach the returned ref to the element to measure.",
+      },
       return: {
         ref: "Ref to attach to the measured element.",
         dimensions: "Observed width, height, top, and left values.",
