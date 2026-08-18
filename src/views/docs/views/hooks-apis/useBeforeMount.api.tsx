@@ -10,7 +10,13 @@ export default function UseBeforeMount() {
     },
   ];
 
-  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "value",
+      type: "void",
+      desc: "The Hook invokes the callback before mount and does not return a value.",
+    },
+  ];
 
   return (
     <>

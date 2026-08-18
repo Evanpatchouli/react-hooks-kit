@@ -3865,7 +3865,9 @@ const locale_en = {
       params: {
         callback: "Callback invoked once during the first render.",
       },
-      return: {},
+      return: {
+        value: "void; the callback is executed before the component mounts.",
+      },
     },
   },
 
