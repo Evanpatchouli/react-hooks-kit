@@ -1847,6 +1847,52 @@ const locale_en = {
     },
   },
 
+  useIndexDB: {
+    desc: "A Hook for opening an IndexedDB database and managing its lifecycle.",
+    detail: (
+      <>
+        <p>
+          <code>useIndexDB</code> opens an IndexedDB database and exposes the connection after it succeeds. The
+          upgrade callback is the place to create object stores and indexes when the schema version changes.
+        </p>
+        <p>The connection is closed automatically when the component unmounts or the database identity changes.</p>
+      </>
+    ),
+    $p1: "The example creates a notes object store during the first schema upgrade and reports the connection state.",
+    consideration: (
+      <ol>
+        <Li>Increase version when changing stores or indexes so IndexedDB enters the upgrade transaction.</Li>
+        <Li>Do not perform long-running asynchronous work inside upgradeCallback.</Li>
+        <Li>Check error before using db because IndexedDB may be unavailable or blocked.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Keep database names and store names stable across application versions.</Li>
+        <Li>Close or release application-level transactions after each operation.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: When is upgradeCallback called?
+        </Li>
+        <Li>
+          <strong>A</strong>: It runs when the requested version is newer than the existing database version.</Li>
+        <Li>
+          <strong>Q</strong>: Does the Hook provide CRUD helpers?
+        </Li>
+        <Li>
+          <strong>A</strong>: No. It returns the native IDBDatabase so you can use IndexedDB transactions directly.</Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
