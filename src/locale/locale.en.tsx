@@ -2356,7 +2356,9 @@ const locale_en = {
     $p1: "Click the button, and see whether the number changes only once during every second.",
     consideration: (
       <ol>
-        <Un />
+        <Li>At least one of leading and trailing must be true.</Li>
+        <Li>Use a non-negative interval; an interval of zero invokes the function directly.</Li>
+        <Li>The returned function keeps the latest call only when trailing execution is enabled.</Li>
       </ol>
     ),
     $best: (
