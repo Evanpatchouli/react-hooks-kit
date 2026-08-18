@@ -2893,22 +2893,60 @@ const locale_en = {
   },
 
   useOverflow: {
-    desc: "",
+    desc: "Detects whether a referenced element overflows its current offset dimensions.",
     detail: (
       <>
+        <p>
+          <code>useOverflow</code> returns a ref and a boolean. It compares the target's scroll width and
+          height with its offset width and height during mount and after window resize events.
+        </p>
+        <p>
+          The Hook is useful for showing truncation hints, overflow controls, or alternate layouts when
+          content does not fit within a fixed region.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Attach the ref to a measurable element and use isOverflowing to decide whether overflow UI should be shown.",
     consideration: (
       <ol>
+        <li>The initial check runs after the target mounts and the Hook checks again on window resize.</li>
+        <li>The current implementation does not observe arbitrary content or element resize mutations between window resize events.</li>
+        <li>Overflow depends on the target's CSS dimensions and scroll behavior.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Set explicit dimensions or max dimensions when overflow detection should be meaningful.</li>
+        <li>Use CSS <code>overflow</code> rules together with the boolean for accessible controls or labels.</li>
+        <li>Trigger a window resize or use a more specialized observer when content changes independently of the viewport.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: When is overflow checked?</strong>
+          <br />
+          A: Once after mount and again when the window emits a resize event.
+        </li>
+        <li>
+          <strong>Q: Does it observe every content change?</strong>
+          <br />
+          A: No. It does not use ResizeObserver; use one when arbitrary element size changes must be tracked.
+        </li>
+        <li>
+          <strong>Q: What dimensions are compared?</strong>
+          <br />
+          A: The Hook compares scrollWidth/scrollHeight with offsetWidth/offsetHeight.
+        </li>
+      </ul>
+    ),
     $apis: {
-      generics: (<></>),
+      generics: <p><code>{"<E extends HTMLElement = HTMLElement>"}</code></p>,
       params: {},
-      return: {},
+      return: {
+        ref: "Ref to attach to the measured element.",
+        isOverflowing: "Whether scroll dimensions exceed offset dimensions.",
+      },
     },
   },
 
