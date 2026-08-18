@@ -44,10 +44,10 @@ describe("useProtect", () => {
   });
 
   it("evaluates function conditions", () => {
-    const condition = vi.fn((oldValue: number, newValue?: number) =>
+    const condition = vi.fn((_oldValue: number, newValue?: number) =>
       (newValue ?? 0) > 5 ? "Value is too large" : null
     );
-    const { result } = renderHook(() => useProtect(1, condition));
+    const { result } = renderHook(() => useProtect<number>(1, condition));
 
     act(() => {
       result.current[1](3);

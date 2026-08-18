@@ -1,4 +1,5 @@
 import { act, cleanup, renderHook } from "@testing-library/react";
+import type { MutableRefObject } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import useOverflow from "../../hooks/useOverflow";
 
@@ -28,7 +29,9 @@ describe("useOverflow", () => {
   it("detects horizontal and vertical overflow on resize", () => {
     const { result } = renderHook(() => useOverflow<HTMLDivElement>());
     const element = document.createElement("div");
-    result.current[0].current = element;
+    (
+      result.current[0] as MutableRefObject<HTMLDivElement | null>
+    ).current = element;
 
     setDimensions(element, {
       offsetWidth: 100,

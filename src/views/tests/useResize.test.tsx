@@ -64,10 +64,15 @@ describe("useResize", () => {
     );
 
     expect(observer.observe).toHaveBeenCalledWith(element);
+    const entry: ResizeObserverEntry = {
+      target: element,
+      contentRect: element.getBoundingClientRect(),
+      borderBoxSize: [],
+      contentBoxSize: [],
+      devicePixelContentBoxSize: [],
+    };
     act(() => {
-      observerCallback?.([
-        { target: element } as ResizeObserverEntry,
-      ], {} as ResizeObserver);
+      observerCallback?.([entry], {} as ResizeObserver);
     });
     expect(result.current).toEqual({ width: 200, height: 100 });
     expect(callback).toHaveBeenCalledWith({ width: 200, height: 100 });

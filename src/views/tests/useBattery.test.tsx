@@ -28,7 +28,7 @@ describe("useBattery", () => {
   });
 
   afterEach(() => {
-    delete (navigator as Navigator & { getBattery?: unknown }).getBattery;
+    Reflect.deleteProperty(navigator, "getBattery");
   });
 
   it("loads the initial battery status", async () => {

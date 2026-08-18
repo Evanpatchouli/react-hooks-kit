@@ -1,15 +1,19 @@
 import { act, renderHook } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import useEyeDropper, {
-  EyeDropperOpenOptions,
-  EyeDropperResult,
+  type EyeDropperOpenOptions,
+  type EyeDropperResult,
 } from "../../hooks/useEyeDropper";
 
+type OpenEyeDropper = (
+  options?: EyeDropperOpenOptions
+) => Promise<EyeDropperResult>;
+
 describe("useEyeDropper", () => {
-  let openMock: ReturnType<typeof vi.fn>;
+  let openMock: Mock<OpenEyeDropper>;
 
   beforeEach(() => {
-    openMock = vi.fn();
+    openMock = vi.fn<OpenEyeDropper>();
 
     class MockEyeDropper {
       open(options?: EyeDropperOpenOptions): Promise<EyeDropperResult> {

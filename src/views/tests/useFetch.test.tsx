@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import useFetch from "../../hooks/useFetch";
 
@@ -109,7 +109,7 @@ describe("useFetch", () => {
   it("aborts an in-flight request on unmount", () => {
     let requestSignal: AbortSignal | undefined;
     vi.spyOn(globalThis, "fetch").mockImplementation((_input, init) => {
-      requestSignal = init?.signal;
+      requestSignal = init?.signal ?? undefined;
       return new Promise<Response>(() => undefined);
     });
 

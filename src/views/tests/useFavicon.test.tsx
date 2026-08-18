@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import useFavicon, { createTextFavicon } from "../../hooks/useFavicon";
 
@@ -90,7 +90,7 @@ describe("useFavicon", () => {
     renderHook(() => useFavicon("/source.png", 150));
 
     await waitFor(() =>
-      expect(document.head.querySelector("link[rel='icon']")?.href).toContain(
+      expect(document.head.querySelector<HTMLLinkElement>("link[rel='icon']")?.href).toContain(
         "data:image/png;base64,badged"
       )
     );
@@ -113,7 +113,7 @@ describe("useFavicon", () => {
     renderHook(() => useFavicon("/broken.png", { badge: { content: 1 } }));
 
     await waitFor(() =>
-      expect(document.head.querySelector("link[rel='icon']")?.href).toContain(
+      expect(document.head.querySelector<HTMLLinkElement>("link[rel='icon']")?.href).toContain(
         "/broken.png"
       )
     );
