@@ -1038,29 +1038,63 @@ const locale_en = {
   },
 
   useProvide: {
-    desc: "A hook to share a state with other components.",
+    desc: "Publishes named state for other components to consume with useInject.",
     detail: (
       <>
-        useProvide is a hook that is used to share a state with other components, and it is based on{" "}
-        <a href="#/docs/useEmitter">useEmitter</a>:<h4>Parameters : </h4>
-        <ol>
-          <li>
-            <strong>name</strong> : the name of the state, should be unique
-          </li>
-          <li>
-            <strong>state</strong> : any state from useState
-          </li>
-        </ol>
-        For example:
+        <p>
+          <code>useProvide</code> publishes a value under a name so other components can read it with
+          <a href="#/docs/useInject">useInject</a>. It uses the library event layer internally and
+          broadcasts the current value whenever the provider renders with a changed state.
+        </p>
+        <p>
+          Pass a state setter through <code>options.setState</code> when consumers should be able to
+          update the provider. Use the same custom namespace in both Hooks when isolating multiple stores.
+        </p>
       </>
     ),
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $p1: "Call useProvide from the component that owns the source state, then use the same name from each consumer.",
+    consideration: (
+      <ol>
+        <li>The provider name must match the injector name exactly.</li>
+        <li>Provide a setter only when consumers are intentionally allowed to change the source state.</li>
+        <li>The injected value can be undefined on the first render because provider discovery is event-driven.</li>
+        <li>Use a custom namespace when separate parts of the application may reuse the same provider name.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Keep the provider close to the state owner and document the value shape with TypeScript.</li>
+        <li>Guard consumer rendering until the provider value is available.</li>
+        <li>Pass a stable setter from <code>useState</code> when exposing consumer updates.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: What happens if no matching provider exists?</strong>
+          <br />
+          A: Injectors receive <code>undefined</code> until a provider with the same name and namespace
+          becomes available.
+        </li>
+        <li>
+          <strong>Q: Can an injector update the provider?</strong>
+          <br />
+          A: Only when the provider passes a setter through <code>options.setState</code>.
+        </li>
+        <li>
+          <strong>Q: Does the provider need a React context?</strong>
+          <br />
+          A: No. It uses the shared emitter layer, so consumers do not need to be direct descendants.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: <></>,
-      params: {},
+      params: {
+        name: "Unique provider name.",
+        state: "Value published to matching injectors.",
+        options: "Optional setter and namespace configuration.",
+      },
       return: {},
     },
   },
