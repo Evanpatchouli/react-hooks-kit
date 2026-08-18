@@ -2258,6 +2258,79 @@ const locale_en = {
     },
   },
 
+  useMount: {
+    desc: "Runs an effect when a component mounts, with optional dependencies, error handling, and cleanup.",
+    detail: (
+      <>
+        <p>
+          <code>useMount</code> is an effect helper for initialization work. With its default empty
+          dependency list, the callback runs after the component mounts and its returned function runs
+          during cleanup.
+        </p>
+        <p>
+          The second argument can be either a dependency list or an error callback. When an error
+          callback is provided, the optional third argument supplies the dependencies.
+        </p>
+      </>
+    ),
+    $p1: "Use the cleanup function returned by the callback to release subscriptions, timers, and other resources created by the effect.",
+    consideration: (
+      <ol>
+        <li>
+          The callback runs after render, so it is safe for DOM and external side effects.
+        </li>
+        <li>
+          If the callback throws and no error handler is provided, <code>useMount</code> logs the error
+          to the console.
+        </li>
+        <li>
+          When dependencies are provided, the callback runs again whenever React detects a dependency
+          change, not only on the initial mount.
+        </li>
+        <li>
+          Keep dependency values complete and stable to avoid stale values or unnecessary reruns.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use the default form for one-time initialization.</li>
+        <li>Return a cleanup function whenever the callback allocates a resource.</li>
+        <li>Pass an explicit error handler when initialization failures need to update UI or telemetry.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Is this Hook limited to one execution?</strong>
+          <br />
+          A: Only when its dependency list remains empty. A supplied dependency list follows normal
+          effect dependency behavior.
+        </li>
+        <li>
+          <strong>Q: How can I handle errors?</strong>
+          <br />
+          A: Pass an error callback as the second argument, followed by an optional dependency list.
+        </li>
+        <li>
+          <strong>Q: When does cleanup run?</strong>
+          <br />
+          A: React runs the returned cleanup function before the effect reruns and when the component
+          unmounts.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        callback: "Effect callback. It may return a cleanup function.",
+        arg2: "An error callback or dependency list.",
+        arg3: "Dependency list used with an error callback. Defaults to an empty list.",
+      },
+      return: {},
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
