@@ -2083,8 +2083,16 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        initial: "Initial object converted into the Map state.",
+      },
+      return: {
+        map: "Readonly Map containing the current state.",
+        get: "Returns a value by key.",
+        set: "Updates one key or merges/replaces the Map using the supported overloads.",
+        del: "Deletes a property by key.",
+        add: "Adds a property to the Map.",
+      },
     },
   },
 
