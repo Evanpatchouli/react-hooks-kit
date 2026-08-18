@@ -1,66 +1,34 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-  
+
 export default function UseDimensions() {
-  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
-    // {
-    //   name: "valueMap",
-    //   type: "object",
-    //   defaultValue: { true: true, false: false },
-    //   desc: "mapping of returned values",
-    //   properties: [
-    //     {
-    //       name: "true",
-    //       type: "boolean | T",
-    //       defaultValue: true,
-    //        desc: "value returned when toggle is on",
-    //     },
-    //     {
-    //       name: "false",
-    //       type: "boolean | F",
-    //       defaultValue: false,
-    //       desc: "value returned when toggle is off",
-    //     },
-    //   ],
-    // },
-  ];
-  
+  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [];
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
+    {
+      name: "[0] ref",
+      type: "React.RefObject<HTMLDivElement | null>",
+      desc: "Ref to attach to the element that should be measured.",
+    },
+    {
+      name: "[1] dimensions",
+      type: "{ width: number; height: number; top: number; left: number }",
+      defaultValue: { width: 0, height: 0, top: 0, left: 0 },
+      desc: "Latest observed content dimensions and offsets.",
+      properties: [
+        { name: "width", type: "number", desc: "Observed content width." },
+        { name: "height", type: "number", desc: "Observed content height." },
+        { name: "top", type: "number", desc: "Observed content top offset." },
+        { name: "left", type: "number", desc: "Observed content left offset." },
+      ],
+    },
   ];
-  
+
   return (
     <>
-      <SubTitle id="hook-api">Api of useDimensions</SubTitle>
-      <SubTitle low top="20px">
-        Parameters
-      </SubTitle>
+      <SubTitle id="hook-api">API of useDimensions</SubTitle>
+      <SubTitle low top="20px">Parameters</SubTitle>
       <ApiTable param rows={paramData} />
-      <SubTitle low top="20px">
-        ReturnValue (Array)
-      </SubTitle>
+      <SubTitle low top="20px">Return value (tuple)</SubTitle>
       <ApiTable return rows={returnData} />
     </>
   );

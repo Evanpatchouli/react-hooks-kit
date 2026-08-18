@@ -2556,22 +2556,60 @@ const locale_en = {
   },
 
   useDimensions: {
-    desc: "",
+    desc: "Measures a referenced element with ResizeObserver and returns its current dimensions.",
     detail: (
       <>
+        <p>
+          <code>useDimensions</code> returns a ref and a dimensions object. Attach the ref to an
+          element and the Hook updates width, height, top, and left whenever its content box changes.
+        </p>
+        <p>
+          The observer is disconnected during cleanup. Dimensions start at zero until the target has
+          been observed.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Attach the returned ref to the element whose size should drive the layout or measurement UI.",
     consideration: (
       <ol>
+        <li>The target must be rendered and measurable when the effect runs.</li>
+        <li>The returned values are zero before the first ResizeObserver notification.</li>
+        <li>ResizeObserver reports content-box dimensions, so padding and borders may not be included in width and height.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Use the dimensions to derive layout decisions instead of reading DOM geometry during render.</li>
+        <li>Round or threshold values before rendering expensive visual updates.</li>
+        <li>Use a stable ref attachment and avoid replacing the measured node unnecessarily.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: When do dimensions become available?</strong>
+          <br />
+          A: After the target is mounted and ResizeObserver delivers its first entry.
+        </li>
+        <li>
+          <strong>Q: Does it track window resize automatically?</strong>
+          <br />
+          A: It tracks changes to the target element's observed size, including changes caused by layout or window resize.
+        </li>
+        <li>
+          <strong>Q: Is the observer cleaned up?</strong>
+          <br />
+          A: Yes. The target is unobserved when the component unmounts.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
       params: {},
-      return: {},
+      return: {
+        ref: "Ref to attach to the measured element.",
+        dimensions: "Observed width, height, top, and left values.",
+      },
     },
   },
 
