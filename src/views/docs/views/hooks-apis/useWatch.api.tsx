@@ -1,6 +1,5 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
 
 export default function UseWatch() {
   // object: T,
@@ -17,16 +16,16 @@ export default function UseWatch() {
       desc: "object state variable to watch",
     },
     {
-      name: "path",
-      type: "(value: T) => void | undefined",
+      name: "pathOrGetter",
+      type: "Path<T> | ((object: T, ...args: any[]) => V | undefined)",
       defaultValue: void 0,
-      desc: "callback function when value changed",
+      desc: "Property path or getter function used to resolve the watched value.",
     },
     {
       name: "callback",
       type: "Callback<V>",
       defaultValue: void 0,
-      desc: "callback function when value changed",
+      desc: "Optional callback invoked with the new and old values.",
     },
     {
       name: "configOrStrict",
@@ -50,22 +49,22 @@ export default function UseWatch() {
       name: "immediate",
       type: "boolean",
       defaultValue: false,
-      desc: "whether to execute callback immediately",
+      desc: "Positional flag that invokes the callback on mount.",
     },
   ];
 
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "value",
-      type: "T | undefined",
+      type: "V | undefined",
       defaultValue: null,
-      desc: "value watched",
+      desc: "Current value resolved from the path or getter.",
     },
   ];
 
   return (
     <>
-      <SubTitle id="hook-api">Api of useWatchGetter</SubTitle>
+      <SubTitle id="hook-api">API of useWatch</SubTitle>
       <SubTitle low top="20px">
         Parameters
       </SubTitle>

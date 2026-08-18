@@ -26,7 +26,7 @@ const locale_en = {
         For example:
       </>
     ),
-    $p1: "",
+    $p1: "Pass an object and a property path or getter, then change the source value to see the callback and returned value update.",
     consideration: (
       <ol>
         <Li>target object should be type of object</Li>
@@ -75,18 +75,57 @@ const locale_en = {
     ),
     $best: (
       <ul>
-        <Un />
+        <Li>Use an array path when keys may contain dots or when strict path handling is important.</Li>
+        <Li>Use a getter for derived values that cannot be expressed as a property path.</Li>
+        <Li>Keep the watched object and callback references stable when possible.</Li>
       </ul>
     ),
     $faqs: (
       <ul>
-        <Un />
+        <Li>
+          <strong>Q</strong>: Can I watch a nested property?
+        </Li>
+        <Li>
+          <strong>A</strong>: Yes. Pass a string path, an array path, or a getter function.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What does immediate do?
+        </Li>
+        <Li>
+          <strong>A</strong>: It invokes the callback once on mount with the current value and previous value.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What does the Hook return?
+        </Li>
+        <Li>
+          <strong>A</strong>: It returns the value resolved from the path or getter, or undefined when it cannot be resolved.
+        </Li>
       </ul>
     ),
     $apis: {
-      generics: <></>,
-      params: {},
-      return: {},
+      generics: (
+        <ul>
+          <li>
+            <strong>V</strong>: Resolved value type.
+          </li>
+          <li>
+            <strong>T</strong>: Watched object type.
+          </li>
+          <li>
+            <strong>P</strong>: Property path type.
+          </li>
+        </ul>
+      ),
+      params: {
+        object: "Object whose property or derived value is watched.",
+        path: "String/array property path or getter function used to resolve the value.",
+        callback: "Optional callback receiving the new and old values.",
+        configOrStrict: "Optional Config object or strict boolean.",
+        immediate: "Optional positional flag that invokes the callback on mount.",
+      },
+      return: {
+        value: "Current value resolved from the path or getter.",
+      },
     },
   },
   useUrl: {
