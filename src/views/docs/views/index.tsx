@@ -45,6 +45,7 @@ export { default as UseGuide } from "./ui-ux-hooks/UseGuide";
 export { default as UseForceUpdate } from "./utility-hooks/UseForceUpdate";
 export { default as UseForm } from "./utility-hooks/UseForm";
 export { default as UseLazy } from "./utility-hooks/UseLazy";
+export { default as UseLazyImg } from "./utility-hooks/UseLazyImg";
 export { default as UseInfiniteScroll } from "./utility-hooks/UseInfiniteScroll";
 export { default as UseAutoPageSize } from "./utility-hooks/UseAutoPageSize";
 

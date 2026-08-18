@@ -1709,6 +1709,52 @@ const locale_en = {
     },
   },
 
+  useLazyImg: {
+    desc: "A Hook for preloading an image and exposing fallback sources and load status.",
+    detail: (
+      <>
+        <p>
+          <code>useLazyImg</code> preloads an image with the browser's <code>Image</code> object and returns its current
+          source as a string-like value.
+        </p>
+        <p>Before the image resolves it can use defaultSrc; when loading fails it can switch to errorSrc.</p>
+      </>
+    ),
+    $p1: "The returned value includes loaded and error flags so the UI can show the appropriate state.",
+    consideration: (
+      <ol>
+        <Li>Use String(image) when passing the returned string-like value to an img src prop.</Li>
+        <Li>Provide a defaultSrc or errorSrc when a broken or empty image source would be visible to users.</Li>
+        <Li>Use onLoad and onError for side effects, not for rendering the image itself.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Use a small placeholder to avoid layout shifts while the real image loads.</Li>
+        <Li>Keep errorSrc local and reliable so a failed primary image does not create another broken request.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: What does the returned loaded flag mean?
+        </Li>
+        <Li>
+          <strong>A</strong>: It is true after the browser image has loaded successfully and false otherwise.</Li>
+        <Li>
+          <strong>Q</strong>: Can I pass positional fallback arguments?
+        </Li>
+        <Li>
+          <strong>A</strong>: Yes. The Hook supports both an options object and positional overloads.</Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
