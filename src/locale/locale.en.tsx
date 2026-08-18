@@ -2877,8 +2877,12 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        refs: "Array of object refs, callback refs, or null values that receive the element.",
+      },
+      return: {
+        mixedRef: "Callback ref that assigns each mounted or unmounted node to every supplied ref.",
+      },
     },
   },
 
