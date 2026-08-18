@@ -2488,22 +2488,62 @@ const locale_en = {
   },
 
   useRafState: {
-    desc: "",
+    desc: "Schedules React state updates on the next animation frame and coalesces pending updates.",
     detail: (
       <>
+        <p>
+          <code>useRafState</code> returns state and a setter with the familiar React state shape. The
+          setter waits for the next <code>requestAnimationFrame</code> before committing the update.
+        </p>
+        <p>
+          If the setter is called several times before the frame runs, the pending frame is cancelled and
+          replaced by the latest scheduled update. The pending frame is also cancelled on unmount.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Use it when state changes should align with the browser's rendering cadence rather than commit immediately.",
     consideration: (
       <ol>
+        <li>The state value does not change synchronously after calling the setter.</li>
+        <li>Only the latest pending update is retained before a frame runs.</li>
+        <li>Use the functional setter form when the next state depends on the previous value.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Use it for pointer, scroll, or animation-driven values that can be sampled once per frame.</li>
+        <li>Keep the scheduled update small so the next render remains responsive.</li>
+        <li>Use ordinary <code>useState</code> when immediate state visibility is required.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: When does state update?</strong>
+          <br />
+          A: On the next available animation frame.
+        </li>
+        <li>
+          <strong>Q: What happens when the setter is called repeatedly?</strong>
+          <br />
+          A: The pending frame is cancelled and scheduled again, so only the latest pending update runs.
+        </li>
+        <li>
+          <strong>Q: Does unmount leave a frame running?</strong>
+          <br />
+          A: No. The Hook cancels its pending animation frame during cleanup.
+        </li>
+      </ul>
+    ),
     $apis: {
-      generics: (<></>),
-      params: {},
-      return: {},
+      generics: <p><code>{"<T>"}</code> is the state value type.</p>,
+      params: {
+        initialState: "Initial state value.",
+      },
+      return: {
+        state: "Current state value.",
+        setRafState: "Schedules a value or functional update for the next animation frame.",
+      },
     },
   },
 
