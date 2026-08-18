@@ -2812,22 +2812,62 @@ const locale_en = {
   },
 
   useScroll: {
-    desc: "",
+    desc: "Tracks the browser window's horizontal and vertical scroll position.",
     detail: (
       <>
+        <p>
+          <code>useScroll</code> listens to the window's <code>scroll</code> event and returns the latest
+          <code>scrollX</code> and <code>scrollY</code> values. An optional callback receives the same
+          position object after each scroll event.
+        </p>
+        <p>
+          The listener is passive and removed during cleanup, so the Hook can safely be used by transient
+          components such as headers, progress indicators, and scroll-to-top controls.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Use the returned position for window-level scroll state; use an element observer when tracking a nested scroller.",
     consideration: (
       <ol>
+        <li>This Hook tracks the window, not an arbitrary scrollable element.</li>
+        <li>Scroll events can be frequent; keep rendering and callback work lightweight.</li>
+        <li>Use a stable callback such as <code>useCallback</code> to avoid rebinding the listener on every render.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Derive coarse thresholds or progress values from the position before rendering.</li>
+        <li>Use the callback for side effects and the returned position for rendered state.</li>
+        <li>Use passive scroll handling and CSS where possible for purely visual effects.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does it observe a scrollable div?</strong>
+          <br />
+          A: No. It reads window scroll offsets; nested elements need their own event or observer strategy.
+        </li>
+        <li>
+          <strong>Q: What are the initial values?</strong>
+          <br />
+          A: They are read from <code>window.scrollX</code> and <code>window.scrollY</code> during initialization.
+        </li>
+        <li>
+          <strong>Q: Does cleanup remove the listener?</strong>
+          <br />
+          A: Yes. The window listener is removed when the effect cleans up.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        callback: "Optional callback receiving the latest window scroll position.",
+      },
+      return: {
+        position: "Current x and y window scroll offsets.",
+      },
     },
   },
 
