@@ -1,14 +1,13 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
 
 export default function UseRecord() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "initial",
-      type: "object",
+      type: "T extends object",
       defaultValue: {},
-      desc: "an one-level record object",
+      desc: "Optional one-level record used as the initial state.",
     },
   ];
 
@@ -20,7 +19,7 @@ export default function UseRecord() {
       desc: "state of record",
     },
     {
-      name: "[1] setRecordAction",
+      name: "[1] setRecord",
       type: "Function",
       desc: (
         <div css={$css`text-align: left;`}>
@@ -51,11 +50,16 @@ export default function UseRecord() {
         </div>
       ),
     },
+    {
+      name: "[2] get",
+      type: "<K extends keyof T>(key: K) => T[K]",
+      desc: "Returns the value stored under a record key.",
+    },
   ];
 
   return (
     <>
-      <SubTitle id="hook-api">Api of useRecord</SubTitle>
+      <SubTitle id="hook-api">API of useRecord</SubTitle>
       <SubTitle low top="20px">
         Parameters
       </SubTitle>

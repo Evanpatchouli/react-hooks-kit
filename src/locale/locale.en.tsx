@@ -1252,32 +1252,50 @@ const locale_en = {
   },
 
   useRecord: {
-    desc: "useRecord is a hook that is used to manage an one-level record object.",
+    desc: "A React Hook for managing a typed, one-level record with convenient get and set operations.",
     detail: (
       <>
-        <h4>Parameters : </h4>
+        <p>
+          <code>useRecord</code> stores a plain object in React state and returns the current record together with
+          setter and getter functions. Updating through <code>set</code> creates a new record and triggers a render.
+        </p>
+        <h4>Parameters:</h4>
         <ol>
           <li>
-            <strong>initialValue</strong> : object
+            <strong>initial</strong>: an optional object used as the initial record value
           </li>
         </ol>
         For example:
       </>
     ),
-    $p1: "You can use setRecord to set a property of the record object.",
+    $p1: "Use setRecord for updates and getRecord when a value should be read through the Hook API.",
     consideration: (
       <ol>
-        <Un />
+        <Li>useRecord manages a shallow, one-level object; it does not deep-clone nested values.</Li>
+        <Li>Use the rehydrate mode to merge fields and override mode to replace the complete record.</Li>
+        <Li>Do not mutate the returned record directly because direct mutation does not trigger a render.</Li>
       </ol>
     ),
     $best: (
       <ul>
-        <Un />
+        <Li>Prefer the functional setter form when the next value depends on the previous value.</Li>
+        <Li>Use a stable object shape so TypeScript can infer keys and value types accurately.</Li>
       </ul>
     ),
     $faqs: (
       <ul>
-        <Un />
+        <Li>
+          <strong>Q</strong>: What is the difference between rehydrate and override?
+        </Li>
+        <Li>
+          <strong>A</strong>: Rehydrate merges new fields into the current record; override replaces it entirely.
+        </Li>
+        <Li>
+          <strong>Q</strong>: How do I update a field from its previous value?
+        </Li>
+        <Li>
+          <strong>A</strong>: Pass a function as the field value, such as setRecord("count", (value) =&gt; value + 1).
+        </Li>
       </ul>
     ),
     $apis: {
