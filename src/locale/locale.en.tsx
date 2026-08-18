@@ -673,8 +673,25 @@ const locale_en = {
           </li>
         </ul>
       ),
-      params: {},
-      return: {},
+      params: {
+        initialValue: "Required initial value held by the Reactor instance.",
+        plugins: "Optional Reactor plugins registered for actions and events.",
+      },
+      return: {
+        ReactorInstance: "Reactor object that manages the current state.",
+        value: "Current state value.",
+        get: "Reads a value by path.",
+        set: "Updates a value by path.",
+        reset: "Restores the current value to the default value.",
+        setValue: "Replaces the current value or applies a state updater.",
+        setDefaultValue: "Replaces the value used by reset.",
+        getDefaultValue: "Returns the current default value.",
+        clone: "Creates a Reactor clone sharing the same state.",
+        cloneValue: "Creates a clone of the current state value.",
+        dispatch: "Invokes a registered plugin action.",
+        emit: "Emits an event through the Reactor event bus.",
+        on: "Registers a handler for a Reactor event.",
+      },
     },
   },
 
