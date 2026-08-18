@@ -2832,22 +2832,60 @@ const locale_en = {
   },
 
   useSafeArea: {
-    desc: "",
+    desc: "Reads the device safe-area insets for notches and rounded screen edges.",
     detail: (
       <>
+        <p>
+          <code>useSafeArea</code> measures the browser's <code>env(safe-area-inset-*)</code> values and
+          returns top, right, bottom, and left pixel insets. It is useful for padding content away from
+          device cutouts and home indicators.
+        </p>
+        <p>
+          The Hook computes once on mount and recomputes after resize or orientation changes. Resize
+          updates are debounced to avoid excessive measurements.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Apply the returned inset values to padding or positioning around content that must avoid device edges.",
     consideration: (
       <ol>
+        <li>Values are zero on browsers or devices that do not expose safe-area insets.</li>
+        <li>The Hook measures browser CSS environment values and does not detect hardware directly.</li>
+        <li>Use the values as layout inputs and preserve adequate visual spacing even when all insets are zero.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Combine the inset with your design spacing instead of replacing all padding with it.</li>
+        <li>Apply top and bottom insets to fixed headers, footers, and full-screen surfaces.</li>
+        <li>Test orientation changes on devices with notches and home indicators.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why are all values zero on desktop?</strong>
+          <br />
+          A: Desktop browsers usually have no safe-area inset, so zero is the expected value.
+        </li>
+        <li>
+          <strong>Q: Does it update on rotation?</strong>
+          <br />
+          A: Yes. The Hook listens for orientation changes and resize events.
+        </li>
+        <li>
+          <strong>Q: Does it require a special browser API?</strong>
+          <br />
+          A: It relies on CSS environment variables and falls back to zero when they are unavailable.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
       params: {},
-      return: {},
+      return: {
+        insets: "Top, right, bottom, and left safe-area inset values in pixels.",
+      },
     },
   },
 

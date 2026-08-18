@@ -1,66 +1,29 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-  
+
 export default function UseSafeArea() {
-  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
-    // {
-    //   name: "valueMap",
-    //   type: "object",
-    //   defaultValue: { true: true, false: false },
-    //   desc: "mapping of returned values",
-    //   properties: [
-    //     {
-    //       name: "true",
-    //       type: "boolean | T",
-    //       defaultValue: true,
-    //        desc: "value returned when toggle is on",
-    //     },
-    //     {
-    //       name: "false",
-    //       type: "boolean | F",
-    //       defaultValue: false,
-    //       desc: "value returned when toggle is off",
-    //     },
-    //   ],
-    // },
-  ];
-  
+  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [];
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
+    {
+      name: "insets",
+      type: "{ top: number; right: number; bottom: number; left: number }",
+      defaultValue: { top: 0, right: 0, bottom: 0, left: 0 },
+      desc: "Safe-area inset values measured from CSS env variables.",
+      properties: [
+        { name: "top", type: "number", desc: "Top safe-area inset in pixels." },
+        { name: "right", type: "number", desc: "Right safe-area inset in pixels." },
+        { name: "bottom", type: "number", desc: "Bottom safe-area inset in pixels." },
+        { name: "left", type: "number", desc: "Left safe-area inset in pixels." },
+      ],
+    },
   ];
-  
+
   return (
     <>
-      <SubTitle id="hook-api">Api of useSafeArea</SubTitle>
-      <SubTitle low top="20px">
-        Parameters
-      </SubTitle>
+      <SubTitle id="hook-api">API of useSafeArea</SubTitle>
+      <SubTitle low top="20px">Parameters</SubTitle>
       <ApiTable param rows={paramData} />
-      <SubTitle low top="20px">
-        ReturnValue (Array)
-      </SubTitle>
+      <SubTitle low top="20px">Return value</SubTitle>
       <ApiTable return rows={returnData} />
     </>
   );
