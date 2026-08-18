@@ -2137,8 +2137,14 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        initial: "Optional one-level record used as the initial state.",
+      },
+      return: {
+        state: "The current record state.",
+        setRecord: "Updates one field or replaces/merges the record using rehydrate or override mode.",
+        get: "Returns the value stored under a record key.",
+      },
     },
   },
 
