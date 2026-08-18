@@ -3715,7 +3715,9 @@ const locale_en = {
     ),
     $apis: {
       generics: (<></>),
-      params: {},
+      params: {
+        none: "This Hook takes no parameters; it reads safe-area CSS environment values.",
+      },
       return: {
         insets: "Top, right, bottom, and left safe-area inset values in pixels.",
       },

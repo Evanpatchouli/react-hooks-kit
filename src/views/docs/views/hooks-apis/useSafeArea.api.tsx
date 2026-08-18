@@ -2,7 +2,13 @@ import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
 
 export default function UseSafeArea() {
-  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "none",
+      type: "—",
+      desc: "This Hook takes no parameters; it reads safe-area CSS environment values.",
+    },
+  ];
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "insets",
