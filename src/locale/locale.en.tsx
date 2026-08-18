@@ -1,8 +1,6 @@
 import Code from "@/components/code";
 import Li from "@/components/layout/Li";
 
-const Un = () => <span css={$css`color: gray;`}>Going to complete</span>;
-
 const locale_en = {
   $article: {
     Consideration: "Consideration",
