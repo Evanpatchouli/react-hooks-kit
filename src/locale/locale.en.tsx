@@ -3474,7 +3474,9 @@ const locale_en = {
     ),
     $apis: {
       generics: <p><code>{"<E extends HTMLElement = HTMLElement>"}</code></p>,
-      params: {},
+      params: {
+        none: "This Hook takes no parameters; attach the returned ref to the element to measure.",
+      },
       return: {
         ref: "Ref to attach to the measured element.",
         isOverflowing: "Whether scroll dimensions exceed offset dimensions.",
