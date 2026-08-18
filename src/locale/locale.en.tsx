@@ -1568,6 +1568,53 @@ const locale_en = {
     },
   },
 
+  useForceUpdate: {
+    desc: "A Hook that requests a render without changing a state value.",
+    detail: (
+      <>
+        <p>
+          <code>useForceUpdate</code> returns a stable function that increments an internal counter to schedule a
+          render. It is useful when an external mutable resource changes outside React state.
+        </p>
+        <p>Prefer ordinary state updates when the value belongs to the component's data model.</p>
+      </>
+    ),
+    $p1: "Update state when the value changes, or call forceUpdate when an external value changes without a setter.",
+    consideration: (
+      <ol>
+        <Li>Force rendering does not make mutable data reactive; the component must read the latest value during render.</Li>
+        <Li>Do not use this Hook as a replacement for state when React state can represent the value.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Use it at integration boundaries such as imperative widgets or external stores.</Li>
+        <Li>Keep the callback side-effect free with respect to rendering.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Does forceUpdate change a state value?
+        </Li>
+        <Li>
+          <strong>A</strong>: It increments an internal counter only to schedule a render; it does not expose that counter.
+        </Li>
+        <Li>
+          <strong>Q</strong>: When should I use useState instead?
+        </Li>
+        <Li>
+          <strong>A</strong>: Use useState whenever the changing value is part of the component's data or UI state.
+        </Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
