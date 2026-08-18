@@ -9,7 +9,9 @@ const iconMap = {
   deprecated: <Icon.DeleteForeverRounded color="error" />,
 };
 
-export default function Status({ type }: { type: keyof typeof iconMap }) {
+export type StatusType = keyof typeof iconMap;
+
+export default function Status({ type }: { type: StatusType }) {
   const Component = iconMap[type];
   return Component;
 }

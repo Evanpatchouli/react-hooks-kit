@@ -1,4 +1,31 @@
-export default {
+import type { StatusType } from "@/components/Status";
+
+interface DocsRoute {
+  route: string;
+  title: string;
+}
+
+interface HookDocsRoute extends DocsRoute {
+  status: StatusType;
+}
+
+type HookDocsSection =
+  | "StatefulHooks"
+  | "CallbackHooks"
+  | "PromiseHooks"
+  | "UtilsHooks"
+  | "LifecycleHooks"
+  | "UiUxHooks"
+  | "EventHooks"
+  | "OtherHooks";
+
+type DocsMap = Record<HookDocsSection, Record<string, HookDocsRoute>> & {
+  GettingStarted: Record<string, DocsRoute>;
+  SentMail: Record<string, DocsRoute>;
+  Draft: Record<string, DocsRoute>;
+};
+
+const docsMap: DocsMap = {
   GettingStarted: {
     Overview: {
       route: "overview",
@@ -409,4 +436,6 @@ export default {
       status: "new",
     },
   },
-} as const;
+};
+
+export default docsMap;
