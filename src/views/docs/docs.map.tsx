@@ -170,25 +170,10 @@ export default {
       title: "UseLazyImg",
       status: "preview",
     },
-    UseLazyAudio: {
-      route: "useLazyAudio",
-      title: "UseLazyAudio",
-      status: "preview",
-    },
-    UseLazyVideo: {
-      route: "useLazyVideo",
-      title: "UseLazyVideo",
-      status: "preview",
-    },
     UseMixRef: {
       route: "useMixRef",
       title: "UseMixRef",
       status: "experimental",
-    },
-    UseSafe: {
-      route: "useSafe",
-      title: "UseSafe",
-      status: "preview",
     },
     UseLocalStorage: {
       route: "useLocalStorage",
