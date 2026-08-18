@@ -2838,6 +2838,81 @@ const locale_en = {
     },
   },
 
+  useParticle: {
+    desc: "Adds a CSS Houdini paint-worklet particle animation to an element through a React ref.",
+    detail: (
+      <>
+        <p>
+          <code>useParticle</code> returns a ref for an element that should emit particles from the
+          pointer position. It registers the bundled CSS Paint API worklet when supported and animates
+          the configured number and size of particles.
+        </p>
+        <p>
+          Set <code>enable</code> to <code>false</code> when the element should remain interactive but
+          particle feedback should be temporarily disabled.
+        </p>
+      </>
+    ),
+    $p1: "Attach the returned ref to the element that should emit particles and interact with it using the configured trigger.",
+    consideration: (
+      <ol>
+        <li>
+          The effect depends on the browser's CSS Paint API and <code>CSS.paintWorklet</code>. Unsupported
+          browsers log a warning and do not render the paint worklet.
+        </li>
+        <li>
+          The default trigger is <code>mousedown</code>; use <code>click</code> or
+          <code>pointerdown</code> when that better matches the surrounding interaction.
+        </li>
+        <li>
+          The returned ref must be attached to an HTMLElement so the Hook can read pointer coordinates
+          and set CSS custom properties.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Keep the particle count and size modest on low-powered devices.</li>
+        <li>Use <code>enable</code> to respect reduced-motion or interaction preferences in your UI.</li>
+        <li>Keep the configuration stable when animation settings do not need to change.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why are no particles visible?</strong>
+          <br />
+          A: Check CSS Paint API support, confirm the ref is attached, and ensure <code>enable</code> is
+          true.
+        </li>
+        <li>
+          <strong>Q: Can I change the particle count?</strong>
+          <br />
+          A: Yes. Set <code>config.num</code> to the desired number of particles.
+        </li>
+        <li>
+          <strong>Q: Does the Hook clean up listeners and animations?</strong>
+          <br />
+          A: Yes. It removes the trigger listener and cancels an active animation on cleanup.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (
+        <p>
+          <code>{"<T extends HTMLElement = HTMLButtonElement>"}</code>
+        </p>
+      ),
+      params: {
+        config: "Optional color, duration, trigger, particle count, and size settings.",
+        enable: "Whether the particle animation can start. Defaults to true.",
+      },
+      return: {
+        ref: "Ref to attach to the target HTMLElement.",
+      },
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
