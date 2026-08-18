@@ -13,25 +13,25 @@ export default function UseDebounce() {
       name: "fn",
       type: "(args: any[]) => R",
       defaultValue: void 0,
-      desc: "debounce function",
+      desc: "Function whose calls should be delayed.",
     },
     {
       name: "delay",
       type: "number",
       defaultValue: 200,
-      desc: "delay time",
+      desc: "Delay in milliseconds; defaults to 200.",
     },
     {
       name: "immediate",
       type: "boolean",
       defaultValue: false,
-      desc: "whether to execute immediately",
+      desc: "Whether the first call in a burst runs immediately.",
     },
     {
       name: "callback",
       type: "(result: R) => void",
       defaultValue: void 0,
-      desc: "callback function",
+      desc: "Optional callback invoked with the wrapped function result.",
     },
   ];
 
@@ -39,12 +39,12 @@ export default function UseDebounce() {
     {
       name: "debounceFn",
       type: "function & { cancel: () => void }",
-      desc: "debounce function",
+      desc: "Debounced function that returns a Promise and exposes cancel().",
       properties: [
         {
           name: "cancel",
           type: "() => void",
-          desc: "cancel function",
+          desc: "Cancels the pending invocation and clears the debounce window.",
         },
       ],
     },

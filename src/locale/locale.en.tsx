@@ -2045,8 +2045,16 @@ const locale_en = {
           </li>
         </ul>
       ),
-      params: {},
-      return: {},
+      params: {
+        fn: "Function whose calls should be delayed.",
+        delay: "Delay in milliseconds; defaults to 200.",
+        immediate: "Whether the first call in a burst runs immediately.",
+        callback: "Optional callback invoked with the wrapped function result.",
+      },
+      return: {
+        debounceFn: "Debounced function that returns a Promise and exposes cancel().",
+        cancel: "Cancels the pending invocation and clears the debounce window.",
+      },
     },
   },
 
