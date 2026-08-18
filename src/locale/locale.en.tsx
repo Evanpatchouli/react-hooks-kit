@@ -1512,7 +1512,9 @@ const locale_en = {
         name: "Diagnostic label included in the console output.",
         props: "Current top-level values to compare.",
       },
-      return: {},
+      return: {
+        value: "void; changes are reported through console.log.",
+      },
     },
   },
 
