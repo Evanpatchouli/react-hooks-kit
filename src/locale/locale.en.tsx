@@ -2143,30 +2143,66 @@ const locale_en = {
   },
 
   useResize: {
-    desc: "",
-    detail: <></>,
-    $p1: "Prop nothing, listen the resize event of window. Try to resize the window and see the changes.",
-    $h2: "Listen an element",
-    $p2: "Prop a ref, listen the resize event of the ref element. Try to drag the sliders to see the changes.",
+    desc: "Tracks window or element dimensions and notifies the component when the size changes.",
+    detail: (
+      <>
+        <p>
+          <code>useResize</code> measures the browser window when no target is supplied. With a target
+          id or ref, it observes that element with <code>ResizeObserver</code> and returns its client width
+          and height.
+        </p>
+        <p>
+          An optional callback receives the same size object. The dependency list controls when the
+          listener or observer is created again, so include changing target or callback values when needed.
+        </p>
+      </>
+    ),
+    $p1: "Omit target to track the window; resize the browser to see the returned width and height change.",
+    $h2: "Observe an element",
+    $p2: "Pass an element id or ref to observe its size; change the demo sliders to see ResizeObserver updates.",
     consideration: (
       <ol>
-        <Un />
+        <li>Without a target, the Hook listens to window resize events.</li>
+        <li>With a target, the Hook observes the element and does not use window resize directly.</li>
+        <li>Include changing target, callback, or configuration values in deps when the effect should be recreated.</li>
+        <li>The initial value is zero until the first measurement is performed.</li>
       </ol>
     ),
     $best: (
       <ul>
-        <Un />
+        <li>Use the callback for side effects and the returned size for rendered layout state.</li>
+        <li>Use a stable ref and callback to avoid unnecessary observer recreation.</li>
+        <li>Prefer CSS for styling-only responsive behavior and use this Hook when JavaScript needs the dimensions.</li>
       </ul>
     ),
     $faqs: (
       <ul>
-        <Un />
+        <li>
+          <strong>Q: What does useResize observe by default?</strong>
+          <br />
+          A: It observes the browser window when <code>target</code> is omitted.
+        </li>
+        <li>
+          <strong>Q: Can I observe an element by id?</strong>
+          <br />
+          A: Yes. Pass its id string, or pass a ref object for a directly rendered element.
+        </li>
+        <li>
+          <strong>Q: Why does changing target not switch the observer?</strong>
+          <br />
+          A: The effect follows <code>deps</code>; include the target identity or a related value when it should be recreated.
+        </li>
       </ul>
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        options: "Optional callback and window or element target.",
+        deps: "Dependency list controlling listener or observer recreation.",
+      },
+      return: {
+        size: "Current width and height of the selected target.",
+      },
     },
   },
 

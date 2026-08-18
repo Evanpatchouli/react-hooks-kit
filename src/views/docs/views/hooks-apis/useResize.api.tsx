@@ -1,26 +1,24 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-
 export default function UseResize() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "options",
       type: "{ callback?; target? }",
       defaultValue: {},
-      desc: "if target is undefined, it will listen to window resize. target chould be id string or ref object",
+      desc: "Listens to the window when target is omitted, or observes the target element when an id or ref is supplied.",
       properties: [
         {
           name: "callback",
-          type: "(size) => void | undefined",
+          type: "(size: { width: number; height: number }) => void",
           defaultValue: void 0,
-          desc: "callback function when size changed",
+          desc: "Callback invoked when the observed size changes.",
         },
         {
           name: "target",
-          type: "string | RefObject | undefined",
+          type: "string | React.RefObject<HTMLElement> | undefined",
           defaultValue: void 0,
-          desc: "target element to listen resize",
+          desc: "Element id or ref to observe with ResizeObserver.",
         },
       ],
     },
@@ -28,7 +26,7 @@ export default function UseResize() {
       name: "deps",
       type: "any[]",
       defaultValue: [],
-      desc: "dependencies list",
+      desc: "Dependencies that control when the resize effect is recreated.",
     },
   ];
 
@@ -37,7 +35,7 @@ export default function UseResize() {
       name: "size",
       type: "{ width: number, height: number }",
       defaultValue: null,
-      desc: "size object",
+      desc: "Current width and height of the window or observed element.",
     },
   ];
 
@@ -49,7 +47,7 @@ export default function UseResize() {
       </SubTitle>
       <ApiTable param rows={paramData} />
       <SubTitle low top="20px">
-        ReturnValue (Object)
+        Return value (object)
       </SubTitle>
       <ApiTable return rows={returnData} />
     </>
