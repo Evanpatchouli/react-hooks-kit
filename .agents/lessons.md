@@ -1,5 +1,12 @@
 # Lessons
 
+## 2026-08-18: Vite on GitHub Pages project sites
+
+- GitHub Pages 项目站位于 `/<repository>/`，Vite 必须设置对应 `base`；HashRouter 只解决客户端路由回退，不能修复脚本、样式和 public 资源的根路径。
+- 诊断部署空白页时，可对比根路径与项目子路径下同一构建资源的 HTTP 状态；前者 404、后者 200 能直接证明是构建基路径问题。
+- 修复后既要检查生成 HTML 的 URL 前缀，也要确认每个引用映射到真实构建文件；只看到构建成功不足以证明部署路径正确。
+- Windows 下的 CRLF HTML 模板与 Vite 注入的 LF 标签可能形成混合换行；为 HTML 固定 `eol=lf` 可保持生成产物和 whitespace 检查稳定。
+
 ## 2026-08-18: Browser-facing TypeScript contracts
 
 - 浏览器 Hook 的定时器句柄应使用 `ReturnType<typeof setTimeout>` 或 `ReturnType<typeof setInterval>`，避免公共源码依赖 `NodeJS` 命名空间。

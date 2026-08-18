@@ -1,5 +1,11 @@
 # Handoff
 
+## 2026-08-18: GitHub Pages 文档站资源路径
+
+文档站部署在 `/react-hooks-kit/`，但此前 Vite 以 `/` 为基础路径生成入口资源，导致线上 JS、CSS、图标和 manifest 请求 404。`vite.config.ts` 现已配置 `base: "/react-hooks-kit/"`，并刷新 `docs` 产物；`.gitattributes` 固定 HTML 为 LF，避免 Windows 构建产生混合换行。未推送远端。
+
+验证通过：线上只读探测确认错误根路径 404、仓库子路径资源 200；生成 HTML 的 5 个入口引用均带正确前缀且文件存在；TypeScript 零诊断；74 个测试文件/468 个测试通过；Vite 生产构建通过。内置 Browser 因受信任连接不可用，经用户授权改用 Playwright：929×917 桌面首屏、Get started 到 `#/docs`、390×844 移动首屏均可渲染，8 个实际加载资源全部 200，控制台 0 error/0 warning。移动端顶部导航仍有既有拥挤/裁切，未在本次资源路径修复中扩展处理。
+
 ## 2026-08-18: TypeScript 类型诊断优化
 
 已按 8 个独立提交单元修复 SVG 资源声明、浏览器定时器类型、文档 `deprecated` 状态、React Ref、`useForm` 示例、`useWatchGetter` 元组返回值、浏览器 Hook 测试桩类型及 ES5 目标下的 BigInt 测试写法。`useWatchGetter` 现在使用重载表达 `updater: true` 的元组结果，并新增对应回归测试；其余修改不改变运行时行为。
