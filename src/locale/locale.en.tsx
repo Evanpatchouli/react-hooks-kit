@@ -909,61 +909,94 @@ const locale_en = {
   },
 
   useGuide: {
-    desc: "",
-    detail: <></>,
-    $p1: "Make guidence for elements with certain ids.",
+    desc: "Builds a step-by-step product guide that highlights elements and renders custom instructions.",
+    detail: (
+      <>
+        <p>
+          <code>useGuide</code> manages an ordered set of guide steps. Each step can highlight elements
+          by id, display custom content, and invoke a callback when the active step changes.
+        </p>
+        <p>
+          The Hook returns the current step index and a controller with start, stop, next, previous, and
+          direct navigation methods. The exported <code>Target</code> component can register an element
+          for portal-based custom guide content.
+        </p>
+      </>
+    ),
+    $p1: "Define the step list first, then call guider.start from a user action such as a help button or onboarding prompt.",
     $p2: (
       <>
         <p>
-          <strong>Try to wrapp the target element with Target component.</strong> The wrapped is different from the raw,
-          they have different method to render and insert the guide element into DOM tree.
+          <strong>Use the Target component when the guide content should be rendered through a portal.</strong>
+          The raw approach appends a generated container to the target element, while the Target approach
+          renders the content through React's portal mechanism.
         </p>
         <p>
-          By raw way, useGuide will create a div wrapper on every guidence element, and append it to the target element.
+          In the raw approach, <code>useGuide</code> creates a wrapper for each guide render and appends it
+          to the matching target element.
         </p>
         <p>
-          By Target wrapped way, useGuide will wrap the target element with pure fregment, and render the guidence
-          element into the fregment with
-          <code> React.createPortal </code>.
+          With <code>Target</code>, the target remains in the normal React tree and the guide content is
+          rendered into it with <code>ReactDOM.createPortal</code>.
         </p>
         <p>
-          The expressional difference in visiable is that the wrapped way will higher the zIndex of target element than
-          mask, and the raw way will not. (Actually, the raw way will higher target too, but for some reason, it may not
-          work.)
+          Both approaches raise the active target above the mask. Use the configured container styles and
+          class name to control the position and appearance of custom guide content.
         </p>
       </>
     ),
     consideration: (
       <ol>
-        <Li>target element should have id</Li>
-        <Li>the id should be unique</Li>
+        <Li>Each target id must exist in the DOM when its step becomes active.</Li>
+        <Li>Target ids should be unique so the guide does not highlight an unintended element.</Li>
+        <Li>Stop the guide before removing or replacing elements referenced by the active step.</Li>
+        <Li>Custom render functions run outside the normal target subtree and should not assume local context providers.</Li>
       </ol>
     ),
     $best: (
       <ul>
         <Li>
-          Ensure the parent element of the target element has a position of either 'relative' or 'absolute'. This allows
-          the guide element (with 'absolute' positioning) to be positioned relative to the parent element.
+          Ensure the target's parent has a position such as <code>relative</code> or <code>absolute</code>
+          when custom content uses absolute positioning.
         </Li>
         <Li>
-          If the parent element is a scroll container, ensure it has sufficient height and width to contain all its
-          content. This allows the guide element to correctly follow its target element when the user scrolls.
+          If the parent is a scroll container, give it enough dimensions for the guide content and verify
+          that the guide remains visible while the user scrolls.
         </Li>
         <Li>
-          Avoid using 'overflow: hidden' on the parent element if possible. This could cause the guide element to be
-          clipped or hidden.
+          Avoid <code>overflow: hidden</code> on the parent when it could clip the guide content.
         </Li>
         <Li>
-          If the parent element has a high 'z-index' value, you may need to adjust the 'z-index' of the guide element to
-          ensure it appears above the parent element.
+          If another layer has a high <code>z-index</code>, adjust the mask and container z-index values
+          so the active guide remains visible.
         </Li>
         <Li>
-          If the parent element has padding or borders, these values may need to be considered in the positioning
-          calculations for the guide element.
+          Account for parent padding and borders when positioning custom guide content.
         </Li>
       </ul>
     ),
-    $faqs: <ul></ul>,
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: How do I start the guide?</strong>
+          <br />
+          A: Call <code>guider.start()</code>; the active step changes from -1 to the first step.
+        </li>
+        <li>
+          <strong>Q: How do I move between steps?</strong>
+          <br />
+          A: Use <code>next()</code>, <code>last()</code>, or <code>go(index)</code> from the returned
+          guider object.
+        </li>
+        <li>
+          <strong>Q: Why is a custom render not shown?</strong>
+          <br />
+          A: Ensure the target id exists in the DOM and that the render id matches the current step's
+          target id. For the Target approach, render the exported <code>Target</code> component with the
+          same id and guider.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: <></>,
       params: {},
@@ -1563,8 +1596,15 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        steps: "Ordered guide steps containing target ids and optional custom render definitions.",
+        callback: "Called with the active step index and step configuration when the step changes.",
+        config: "Optional custom container and mask configuration.",
+      },
+      return: {
+        step: "Current step index; -1 means the guide is stopped.",
+        guider: "Controller with navigation methods and Target registration helpers.",
+      },
     },
   },
 
