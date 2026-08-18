@@ -2550,8 +2550,16 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        promiseFn: "Function that creates the Promise to execute.",
+        callbacksOrDeps: "Optional lifecycle callbacks object or dependency list.",
+        deps: "Dependencies that trigger a new execution.",
+      },
+      return: {
+        state: "Current status, resolved data, and error.",
+        abort: "Aborts the active request and ignores its result.",
+        execute: "Starts a new request and aborts any previous request.",
+      },
     },
   },
 
