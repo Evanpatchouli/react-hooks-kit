@@ -2614,13 +2614,15 @@ const locale_en = {
     $apis: {
       generics: <></>,
       params: {
-        steps: "Ordered guide steps containing target ids and optional custom render definitions.",
-        callback: "Called with the active step index and step configuration when the step changes.",
-        config: "Optional custom container and mask configuration.",
+        url: "Request URL passed to fetch.",
+        options: "Optional fetch request options.",
+        callbacks: "Optional resolve, reject, and finally callbacks.",
+        deps: "Additional dependencies that trigger a new request.",
       },
       return: {
-        step: "Current step index; -1 means the guide is stopped.",
-        guider: "Controller with navigation methods and Target registration helpers.",
+        data: "Parsed JSON response data, or null.",
+        loading: "Whether the request is active.",
+        error: "Error from a failed request, or null.",
       },
     },
   },
