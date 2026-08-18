@@ -21,7 +21,7 @@ const View = () => {
   });
 
   if (error) return <p role="alert">Could not open database.</p>;
-  return <p>{db ? `Database ready: ${db.name}` : "Opening..."}</p>;
+  return <p>{db ? \`Database ready: \${db.name}\` : "Opening..."}</p>;
 };`;
 
 export default {

@@ -36,7 +36,7 @@ const View = () => {
       };
     },
     (error) => {
-      setStatus(`Initialization failed: \${String(error)}`);
+      setStatus(\`Initialization failed: \${String(error)}\`);
     }
   );
 
