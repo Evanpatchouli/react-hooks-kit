@@ -1161,6 +1161,65 @@ const locale_en = {
     },
   },
 
+  useConsoleLog: {
+    desc: "Captures console.log messages in React state while preserving the original console output.",
+    detail: (
+      <>
+        <p>
+          <code>useConsoleLog</code> subscribes the component to the global <code>console.log</code>
+          function and returns each captured call as a formatted string array. The original console
+          implementation is still called, so browser developer tools continue to receive the log.
+        </p>
+        <p>
+          Multiple Hook instances share one wrapper and are removed independently. When the last
+          subscriber unmounts, the original console function is restored.
+        </p>
+      </>
+    ),
+    $p1: "Use the captured array for a temporary in-app diagnostic panel, not as a replacement for structured application logging.",
+    consideration: (
+      <ol>
+        <li>The Hook observes global console output, including logs from unrelated code while subscribed.</li>
+        <li>Arguments are joined with spaces and stored as strings, so original types are not preserved.</li>
+        <li>Unbounded logging grows the returned array; clear or limit displayed logs at the application level.</li>
+        <li>Avoid logging from the render path of a component that displays captured logs to prevent feedback loops.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use it only in development tools, diagnostics, or an explicitly scoped debug view.</li>
+        <li>Show a bounded slice of recent logs instead of rendering the entire array.</li>
+        <li>Prefer a dedicated logger for production telemetry and structured metadata.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does useConsoleLog suppress browser logs?</strong>
+          <br />
+          A: No. It forwards every captured call to the original <code>console.log</code>.
+        </li>
+        <li>
+          <strong>Q: Does it capture console.error and console.warn?</strong>
+          <br />
+          A: No. The current Hook wraps only <code>console.log</code>.
+        </li>
+        <li>
+          <strong>Q: Is console.log restored on unmount?</strong>
+          <br />
+          A: Yes, after the final active subscriber is removed.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {},
+      return: {
+        logs: "Captured console.log messages formatted as strings.",
+      },
+    },
+  },
+
   useProvide: {
     desc: "Publishes named state for other components to consume with useInject.",
     detail: (
