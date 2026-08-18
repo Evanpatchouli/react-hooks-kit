@@ -2331,6 +2331,72 @@ const locale_en = {
     },
   },
 
+  useUnMount: {
+    desc: "Runs a callback when a component is about to unmount.",
+    detail: (
+      <>
+        <p>
+          <code>useUnMount</code> registers a cleanup callback that React invokes when the component
+          leaves the tree. The Hook keeps the latest callback in a ref, so the cleanup uses the most
+          recent callback without re-registering the effect on every render.
+        </p>
+        <p>
+          Use it for releasing resources owned by the component, such as subscriptions, timers, or
+          external connections.
+        </p>
+      </>
+    ),
+    $p1: "Register cleanup close to the resource or subscription that the component owns.",
+    consideration: (
+      <ol>
+        <li>
+          The callback runs during unmount, after the component is no longer available for normal UI
+          updates.
+        </li>
+        <li>
+          Do not rely on setting state in the callback; the component is already leaving the tree.
+        </li>
+        <li>
+          If a resource can change during the component's lifetime, keep the cleanup callback aware of
+          the latest resource value.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use it to unsubscribe, clear timers, close connections, and release browser resources.</li>
+        <li>Make cleanup idempotent when the underlying API may already be closed.</li>
+        <li>Use the returned cleanup of an effect when the resource also needs cleanup on dependency changes.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does the callback run after every render?</strong>
+          <br />
+          A: No. It runs only when the component unmounts.
+        </li>
+        <li>
+          <strong>Q: Does it use the callback from the first render?</strong>
+          <br />
+          A: The implementation stores the latest callback and invokes that callback during unmount.
+        </li>
+        <li>
+          <strong>Q: Should I set state inside the callback?</strong>
+          <br />
+          A: No. The component is being removed, so release resources instead of updating its UI.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        callback: "Callback invoked when the component unmounts.",
+      },
+      return: {},
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (

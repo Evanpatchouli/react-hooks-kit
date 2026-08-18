@@ -64,3 +64,4 @@ export { default as UseQrcodeScan } from "./other/UseQrcodeScan";
 // Lifecycle hooks
 export { default as UseBeforeMount } from "./lifecycle-hooks/UseBeforeMount";
 export { default as UseMount } from "./lifecycle-hooks/UseMount";
+export { default as UseUnmount } from "./lifecycle-hooks/UseUnmount";
