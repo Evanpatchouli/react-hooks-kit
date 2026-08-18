@@ -1110,12 +1110,48 @@ const locale_en = {
   },
 
   useDebounce: {
-    desc: "",
-    detail: <>useDebounce is a hook that is used to debounce a function.</>,
+    desc: "A React Hook that delays function execution until calls have stopped for a specified period.",
+    detail: (
+      <>
+        <p>
+          <code>useDebounce</code> returns a debounced function. Repeated calls reset the delay, so the wrapped
+          function runs only after the caller stops invoking it.
+        </p>
+        <p>
+          The returned function also exposes <code>cancel</code> to clear a pending invocation.
+        </p>
+      </>
+    ),
     $p1: "Try to click on the button frequently, and see whether the number changes 1 sec after your last click.",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    consideration: (
+      <ol>
+        <Li>Keep the debounced function stable when passing it to event handlers.</Li>
+        <Li>Use a non-negative delay; a zero delay executes the wrapped function directly.</Li>
+        <Li>Call cancel when a pending invocation must not run.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Use debouncing for search fields, resize handlers, and other high-frequency events.</Li>
+        <Li>Choose a delay that balances responsiveness with the number of requests you want to send.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: When does the wrapped function run?
+        </Li>
+        <Li>
+          <strong>A</strong>: It runs after the delay has elapsed without another call to the debounced function.
+        </Li>
+        <Li>
+          <strong>Q</strong>: How can I prevent a pending call?
+        </Li>
+        <Li>
+          <strong>A</strong>: Call the returned function's cancel method.
+        </Li>
+      </ul>
+    ),
     $apis: {
       generics: (
         <ul>
