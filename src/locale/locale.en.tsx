@@ -1696,7 +1696,9 @@ const locale_en = {
         state: "Value published to matching injectors.",
         options: "Optional setter and namespace configuration.",
       },
-      return: {},
+      return: {
+        value: "void; the Hook publishes state through the shared provider event layer.",
+      },
     },
   },
 
