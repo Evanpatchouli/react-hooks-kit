@@ -2974,22 +2974,61 @@ const locale_en = {
   },
 
   useKeyPress: {
-    desc: "",
+    desc: "Tracks whether a specific keyboard key is currently pressed.",
     detail: (
       <>
+        <p>
+          <code>useKeyPress</code> listens to window <code>keydown</code> and <code>keyup</code> events
+          and returns true while the selected <code>KeyboardEvent.key</code> value is pressed.
+        </p>
+        <p>
+          The state resets when <code>targetKey</code> changes and the listeners are removed when the
+          component unmounts.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Pass the exact KeyboardEvent.key string you want to track, such as Enter, Escape, or ArrowUp.",
     consideration: (
       <ol>
+        <li>The target string is compared with <code>KeyboardEvent.key</code>, not a key code or physical key location.</li>
+        <li>The Hook listens on the window, so it can observe keys outside a particular input element.</li>
+        <li>Use a stable target key and handle focus or editable-field behavior in the consuming component.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Use semantic key names such as <code>Enter</code> and <code>Escape</code>.</li>
+        <li>Combine the boolean with accessible focus and button behavior rather than replacing native keyboard support.</li>
+        <li>Ignore or scope shortcuts when the user is typing in an editable control.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: What value should I pass for the Enter key?</strong>
+          <br />
+          A: Pass <code>"Enter"</code>, matching <code>KeyboardEvent.key</code>.
+        </li>
+        <li>
+          <strong>Q: Does it detect keyup?</strong>
+          <br />
+          A: Yes. Keydown sets the value true and keyup sets it false.
+        </li>
+        <li>
+          <strong>Q: Are listeners cleaned up?</strong>
+          <br />
+          A: Yes. Both window listeners are removed during effect cleanup.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        targetKey: "KeyboardEvent.key string to track.",
+      },
+      return: {
+        keyPressed: "Whether the target key is currently pressed.",
+      },
     },
   },
 
