@@ -47,6 +47,7 @@ export { default as UseForm } from "./utility-hooks/UseForm";
 export { default as UseLazy } from "./utility-hooks/UseLazy";
 export { default as UseLazyImg } from "./utility-hooks/UseLazyImg";
 export { default as UseMixRef } from "./utility-hooks/UseMixRef";
+export { default as UseLocalStorage } from "./utility-hooks/UseLocalStorage";
 export { default as UseInfiniteScroll } from "./utility-hooks/UseInfiniteScroll";
 export { default as UseAutoPageSize } from "./utility-hooks/UseAutoPageSize";
 

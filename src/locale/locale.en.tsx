@@ -1801,6 +1801,52 @@ const locale_en = {
     },
   },
 
+  useLocalStorage: {
+    desc: "A Hook for synchronizing a typed value with browser localStorage.",
+    detail: (
+      <>
+        <p>
+          <code>useLocalStorage</code> reads a JSON value from localStorage and returns it with a setter. Updating the
+          value persists it and dispatches a storage event so other Hook instances using the same key can synchronize.
+        </p>
+        <p>If stored data cannot be parsed, the Hook falls back to initialValue.</p>
+      </>
+    ),
+    $p1: "Save a value, refresh the page, or open another tab to observe persistence and synchronization.",
+    consideration: (
+      <ol>
+        <Li>Use a stable key for the same logical value across component instances.</Li>
+        <Li>Only store values that can be serialized with JSON.</Li>
+        <Li>localStorage is browser-only and can fail in private or restricted browsing contexts.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Namespace keys by feature to avoid collisions with unrelated application code.</Li>
+        <Li>Keep persisted data small and validate important data after parsing.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Are objects and arrays supported?
+        </Li>
+        <Li>
+          <strong>A</strong>: Yes. They are serialized with JSON.stringify and parsed on read.</Li>
+        <Li>
+          <strong>Q</strong>: Does changing localStorage elsewhere update the Hook?
+        </Li>
+        <Li>
+          <strong>A</strong>: Yes, when the storage event has the same key.</Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
