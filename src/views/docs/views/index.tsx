@@ -62,6 +62,7 @@ export { default as UseReflect } from "./other/UseReflect";
 export { default as UseConsoleLog } from "./other/UseConsoleLog";
 export { default as UseSingleTon } from "./other/UseSingleTon";
 export { default as UseMediaQuery } from "./other/UseMediaQuery";
+export { default as UseNetwork } from "./other/UseNetWork";
 export { default as UseTitle } from "./other/UseTitle";
 export { default as UseFavicon } from "./other/UseFavicon";
 export { default as UseDimensionsById } from "./other/UseDimensionsById";

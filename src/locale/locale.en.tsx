@@ -1339,6 +1339,66 @@ const locale_en = {
     },
   },
 
+  useNetWork: {
+    desc: "Tracks browser online state and available network connection estimates.",
+    detail: (
+      <>
+        <p>
+          <code>useNetWork</code> combines <code>navigator.onLine</code> with optional Network Information
+          API values such as downlink, effective type, round-trip time, and data-saving preference.
+        </p>
+        <p>
+          It responds to online/offline events and connection changes when the browser exposes a
+          connection object. Updates can be throttled to reduce rerenders during rapid network changes.
+        </p>
+      </>
+    ),
+    $p1: "Use online state for user feedback and treat connection estimates as hints rather than guarantees.",
+    consideration: (
+      <ol>
+        <li>Network Information API fields are optional and unavailable in many browsers.</li>
+        <li><code>navigator.onLine</code> indicates a network connection heuristic, not successful access to a specific server.</li>
+        <li>Do not use downlink or effective type as a security or authorization signal.</li>
+        <li>Use a throttle interval above approximately 17ms when frequent updates would cause unnecessary renders.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Show reconnecting or offline UI based on <code>online</code>, then verify important requests independently.</li>
+        <li>Use <code>effectiveType</code> and <code>saveData</code> to choose optional quality or prefetch behavior.</li>
+        <li>Handle missing fields with fallbacks because connection metadata is browser-dependent.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why are speed fields undefined?</strong>
+          <br />
+          A: The browser may support online events without exposing the Network Information API.
+        </li>
+        <li>
+          <strong>Q: Does online mean the API server is reachable?</strong>
+          <br />
+          A: No. It is a browser connection hint; request success still needs to be checked directly.
+        </li>
+        <li>
+          <strong>Q: What does throttleInterval control?</strong>
+          <br />
+          A: It limits how often the Hook updates state after network events.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        throttleInterval: "Optional minimum interval for status updates.",
+      },
+      return: {
+        status: "Online state and optional connection estimates.",
+      },
+    },
+  },
+
   useProvide: {
     desc: "Publishes named state for other components to consume with useInject.",
     detail: (
