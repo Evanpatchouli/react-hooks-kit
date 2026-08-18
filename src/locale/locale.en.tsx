@@ -2397,6 +2397,73 @@ const locale_en = {
     },
   },
 
+  useUpdate: {
+    desc: "Runs a callback when dependencies change, while skipping the initial render.",
+    detail: (
+      <>
+        <p>
+          <code>useUpdate</code> has the same dependency-driven behavior as an effect, but deliberately
+          ignores the first render. The callback runs only after React observes a change in the supplied
+          dependency list.
+        </p>
+        <p>
+          This is useful for reacting to user-driven updates without running the same logic during
+          initial setup.
+        </p>
+      </>
+    ),
+    $p1: "Include every value read by the callback in the dependency list, then use the Hook for work that should happen only after the first update.",
+    consideration: (
+      <ol>
+        <li>
+          The callback does not run after the initial render, even when the initial dependency values
+          are defined.
+        </li>
+        <li>
+          The implementation accepts a callback returning <code>void</code>; use an effect cleanup for
+          resources that need cleanup between updates.
+        </li>
+        <li>
+          An incomplete dependency list can cause the callback to observe stale values.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use it for analytics, synchronization, or validation triggered by later changes.</li>
+        <li>Keep the dependency list aligned with values captured by the callback.</li>
+        <li>Use <code>useEffect</code> instead when the logic must also run on mount.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why did the callback not run on mount?</strong>
+          <br />
+          A: Skipping the initial render is the defining behavior of <code>useUpdate</code>.
+        </li>
+        <li>
+          <strong>Q: Does it run on every rerender?</strong>
+          <br />
+          A: No. It runs only when a value in the dependency list changes.
+        </li>
+        <li>
+          <strong>Q: Can the callback return a cleanup function?</strong>
+          <br />
+          A: No. The callback type is <code>() =&gt; void</code>; use an effect when cleanup is required.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        callback: "Callback invoked after dependency changes, excluding the initial render.",
+        dependencies: "Dependency list that controls subsequent callback execution.",
+      },
+      return: {},
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
