@@ -2712,8 +2712,20 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        schema: "Field values, required flags, validators, and optional setters.",
+        formRef: "Ref pointing to the form whose FormData should be read.",
+      },
+      return: {
+        onSubmit: "Creates a submit handler that validates selected fields before invoking the handler.",
+        get: "Reads one field value from the form.",
+        gets: "Reads selected or all field values from the form.",
+        set: "Writes a value through the field setter configured in the schema.",
+        sets: "Writes multiple values through configured field setters.",
+        validate: "Validates one field, including required and custom validator checks.",
+        validates: "Validates selected or all fields and resolves to a boolean.",
+        reset: "Clears selected fields or all configured fields.",
+      },
     },
   },
 
