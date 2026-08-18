@@ -21,7 +21,13 @@ export default function UseMount() {
     },
   ];
 
-  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "value",
+      type: "void",
+      desc: "The Hook runs the effect and lets React manage its cleanup; it does not return a value.",
+    },
+  ];
 
   return (
     <>

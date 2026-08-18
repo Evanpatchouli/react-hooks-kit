@@ -3940,7 +3940,9 @@ const locale_en = {
         arg2: "An error callback or dependency list.",
         arg3: "Dependency list used with an error callback. Defaults to an empty list.",
       },
-      return: {},
+      return: {
+        value: "void; React manages the effect cleanup returned by the callback.",
+      },
     },
   },
 
