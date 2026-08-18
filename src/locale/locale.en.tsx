@@ -2303,18 +2303,44 @@ const locale_en = {
     ),
     $best: (
       <ul>
-        <Un />
+        <Li>Use throttling for frequent events such as scrolling, dragging, and repeated button clicks.</Li>
+        <Li>Use leading for immediate feedback and trailing when the final event must be processed.</Li>
+        <Li>Call cancel when pending trailing work should be discarded.</Li>
       </ul>
     ),
     $faqs: (
       <ul>
-        <Un />
+        <Li>
+          <strong>Q</strong>: How is throttling different from debouncing?
+        </Li>
+        <Li>
+          <strong>A</strong>: Throttling limits execution to at most once per interval, while debouncing waits for calls to stop.
+        </Li>
+        <Li>
+          <strong>Q</strong>: Can both leading and trailing be false?
+        </Li>
+        <Li>
+          <strong>A</strong>: No. At least one edge must be enabled.
+        </Li>
+        <Li>
+          <strong>Q</strong>: How do I cancel a pending trailing call?
+        </Li>
+        <Li>
+          <strong>A</strong>: Call the returned function's cancel method.
+        </Li>
       </ul>
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        fn: "Function whose calls should be throttled.",
+        interval: "Minimum interval between executions in milliseconds; defaults to 200.",
+        options: "Controls leading, trailing, and result callback behavior.",
+      },
+      return: {
+        throttleFn: "Throttled function that returns a Promise and exposes cancel().",
+        cancel: "Cancels a pending trailing invocation and resets the throttle window.",
+      },
     },
   },
 
