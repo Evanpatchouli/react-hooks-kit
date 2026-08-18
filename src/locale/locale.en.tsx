@@ -1064,16 +1064,65 @@ const locale_en = {
   },
 
   useReflect: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    desc: "Keeps an object in a ref while exposing reactive Reflect-based access and mutation helpers.",
+    detail: (
+      <>
+        <p>
+          <code>useReflect</code> stores an object without replacing the object reference on every
+          mutation. Its <code>get</code>, <code>set</code>, <code>has</code>, and <code>apply</code>
+          methods use JavaScript reflection and force a React render after mutations.
+        </p>
+        <p>
+          This is useful for small mutable object models that need imperative updates while still
+          notifying the component when their visible values change.
+        </p>
+      </>
+    ),
+    $p1: "Use get for reads during render and set or apply for mutations that should trigger a rerender.",
+    consideration: (
+      <ol>
+        <li>The stored object is mutated in place; do not assume set returns a new object reference.</li>
+        <li>Use <code>get()</code> without an argument for the full object or pass a key for one property.</li>
+        <li>Prefer immutable React state when updates need predictable structural sharing or reducer history.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use <code>set</code> for a single property and <code>apply</code> for a coordinated mutation.</li>
+        <li>Use <code>has</code> before reading optional or dynamically named properties.</li>
+        <li>Keep the object shape stable when possible so TypeScript can infer property types.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does set trigger a React update?</strong>
+          <br />
+          A: Yes. The Hook forces a render after the Reflect.set operation.
+        </li>
+        <li>
+          <strong>Q: Does get() return a copy?</strong>
+          <br />
+          A: No. It returns the stored object reference when no property is supplied.
+        </li>
+        <li>
+          <strong>Q: When should I use useState instead?</strong>
+          <br />
+          A: Use useState when immutable updates, change history, or reducer-style transitions are more important than imperative mutation.
+        </li>
+      </ul>
+    ),
     $apis: {
-      generics: <></>,
-      params: {},
-      return: {},
+      generics: <p><code>{"<T extends object, K extends keyof T>"}</code></p>,
+      params: {
+        initialValue: "Initial object stored by the Hook.",
+      },
+      return: {
+        get: "Reads the whole object or a selected property.",
+        set: "Sets one property and triggers a render.",
+        has: "Checks whether a property exists.",
+        apply: "Applies a mutation callback and triggers a render.",
+      },
     },
   },
 

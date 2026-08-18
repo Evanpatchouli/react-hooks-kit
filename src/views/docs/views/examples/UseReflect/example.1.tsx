@@ -19,7 +19,23 @@ const View = () => {
 };
 
 const code = `
+import useReflect from "@hooks/useReflect";
 
+const View = () => {
+  const value = useReflect({ x: 0, label: "demo" });
+
+  return (
+    <div>
+      <p>{value.get("label")}: {value.get("x")}</p>
+      <button onClick={() => value.set("x", Number(value.get("x")) + 1)}>
+        Increment
+      </button>
+      <button onClick={() => value.apply((current) => { current.label = "updated"; })}>
+        Apply mutation
+      </button>
+    </div>
+  );
+};
 `;
 
 export default {
