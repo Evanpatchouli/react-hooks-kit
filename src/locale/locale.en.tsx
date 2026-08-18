@@ -1458,6 +1458,69 @@ const locale_en = {
     },
   },
 
+  useEyeDropper: {
+    desc: "Wraps the browser EyeDropper API for native screen color picking.",
+    detail: (
+      <>
+        <p>
+          <code>useEyeDropper</code> detects the native EyeDropper API, stores the latest selected sRGB
+          hexadecimal color, and exposes an <code>open</code> action for launching the picker.
+        </p>
+        <p>
+          The picker is experimental and must be opened from a user interaction such as a button click.
+          Native cancellation, abort signals, and other picker errors are propagated through the returned
+          Promise.
+        </p>
+      </>
+    ),
+    $p1: "Disable the picker button when isSupported is false and handle rejected open promises for cancellation or errors.",
+    consideration: (
+      <ol>
+        <li>The native picker must be opened from a user gesture; calling open during an effect may be rejected.</li>
+        <li>Unsupported browsers return undefined from <code>open</code> without opening a picker.</li>
+        <li>The selected value is sRGB hexadecimal text and remains at the initial value until a successful pick.</li>
+        <li>Use an <code>AbortSignal</code> when the surrounding interaction needs explicit cancellation.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use <code>isSupported</code> for capability-based UI and provide a fallback color input when needed.</li>
+        <li>Catch rejected promises so user cancellation does not become an unhandled rejection.</li>
+        <li>Use the stored <code>sRGBHex</code> value as the source for previews or color form state.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why is the button disabled?</strong>
+          <br />
+          A: The current browser does not expose the native EyeDropper API.
+        </li>
+        <li>
+          <strong>Q: What happens when the user presses Escape?</strong>
+          <br />
+          A: The native Promise rejects; catch the result if cancellation should be handled quietly.
+        </li>
+        <li>
+          <strong>Q: Does open return a color when unsupported?</strong>
+          <br />
+          A: No. It resolves to undefined without opening a picker.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        options: "Optional initial color value.",
+      },
+      return: {
+        isSupported: "Whether the native EyeDropper API is available.",
+        sRGBHex: "Latest selected sRGB hexadecimal color.",
+        open: "Opens the native picker and resolves with the selected result.",
+      },
+    },
+  },
+
   useProvide: {
     desc: "Publishes named state for other components to consume with useInject.",
     detail: (
