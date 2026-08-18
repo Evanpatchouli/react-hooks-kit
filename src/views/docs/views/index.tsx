@@ -28,7 +28,7 @@ export { default as UseResize } from "./callback-hooks/UseResize";
 
 // Promise hooks
 export { default as UsePromise } from "./promise-hooks/UsePromise";
-// export { default as UseFetch } from "./promise-hooks/UseFetch";
+export { default as UseFetch } from "./promise-hooks/UseFetch";
 
 // Event hooks
 export { default as UseEmitter } from "./event-hooks/UseEmitter";

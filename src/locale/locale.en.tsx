@@ -1502,6 +1502,54 @@ const locale_en = {
     },
   },
 
+  useFetch: {
+    desc: "A Hook for fetching JSON data with loading, error, cancellation, and lifecycle state.",
+    detail: (
+      <>
+        <p>
+          <code>useFetch</code> starts a request for the supplied URL and parses the response as JSON. It returns the
+          latest data together with loading and error state.
+        </p>
+        <p>Requests are aborted automatically when the URL or dependencies change, or when the component unmounts.</p>
+      </>
+    ),
+    $p1: "This example loads the app manifest and renders the response after the request completes.",
+    consideration: (
+      <ol>
+        <Li>Only successful HTTP responses are parsed; non-2xx responses are returned through error.</Li>
+        <Li>Use deps for values that affect the request but are not part of the URL string.</Li>
+        <Li>Do not assume data exists while loading or after an error.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Use a stable options object or keep changing request values in deps.</Li>
+        <Li>Use onFinally for request-level cleanup that must run after success or failure.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Does useFetch parse arbitrary response bodies?
+        </Li>
+        <Li>
+          <strong>A</strong>: It parses successful responses with response.json(). Use another Hook for a different body format.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What happens when the component unmounts?
+        </Li>
+        <Li>
+          <strong>A</strong>: The active request is aborted and cannot update state afterward.
+        </Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
