@@ -4146,7 +4146,9 @@ const locale_en = {
         callback: "Effect callback invoked after dependency changes, excluding the initial render.",
         dependencies: "Dependency list that controls subsequent effect execution.",
       },
-      return: {},
+      return: {
+        value: "void; the effect callback is managed by React's effect lifecycle.",
+      },
     },
   },
 
