@@ -1,5 +1,11 @@
 # Handoff
 
+## 2026-08-18: TypeScript 类型诊断优化
+
+已按 8 个独立提交单元修复 SVG 资源声明、浏览器定时器类型、文档 `deprecated` 状态、React Ref、`useForm` 示例、`useWatchGetter` 元组返回值、浏览器 Hook 测试桩类型及 ES5 目标下的 BigInt 测试写法。`useWatchGetter` 现在使用重载表达 `updater: true` 的元组结果，并新增对应回归测试；其余修改不改变运行时行为。
+
+验证通过：`npx tsc -p tsconfig.json --noEmit --pretty false` 零诊断，74 个测试文件/468 个测试全部通过，隔离输出目录的 Vite 生产构建成功，diff whitespace 与触碰文件 UTF-8 无 BOM 检查通过。仍存在既有非失败警告：`useTicker` 的 React `act(...)` 提示、`useToast` 的同步卸载提示、`useNetWork` 的节流建议、Browserslist 数据陈旧和大分块提示。
+
 ## 2026-08-17: v2.0.0 release metadata
 
 项目、源码包和发布包版本已统一提升至 2.0.0。`src/hooks/changeLog.md` 与发布副本基于 `cff1970..HEAD` 的 60 个提交整理，涵盖 useEyeDropper、新文档配置、39 个 Hook 修复、完整测试覆盖和生成产物同步；没有声明 Git 历史无法证明的破坏性变化。三份 README 的徽章与 Report 已同步。

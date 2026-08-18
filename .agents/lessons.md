@@ -1,5 +1,12 @@
 # Lessons
 
+## 2026-08-18: Browser-facing TypeScript contracts
+
+- 浏览器 Hook 的定时器句柄应使用 `ReturnType<typeof setTimeout>` 或 `ReturnType<typeof setInterval>`，避免公共源码依赖 `NodeJS` 命名空间。
+- React 18 的 `RefObject<T>` 已在 `current` 上包含 `null`；写成 `RefObject<T | null>` 会扩大元素类型并破坏 JSX Ref 兼容性。面向多种元素的 Hook 应提供元素泛型，由调用方绑定准确的 DOM 类型。
+- 运行时 `boolean` 参数不能让条件返回类型保留字面量信息；当 `true` 与 `false` 对应不同返回形状时，函数重载能同时描述调用约束与实现联合类型。
+- 浏览器 API 测试桩应完整表达可调用 Mock、可空 `AbortSignal`、DOM 元素和观察器条目契约。低于 ES2020 的编译目标可使用 `BigInt(...)` 测试 BigInt 行为，而不使用 BigInt 字面量语法。
+
 ## 2026-08-17: TypeScript narrowing in asynchronous callbacks
 
 - 可变的可空变量被事件回调闭包捕获后，TypeScript 不会保留外层赋值产生的非空窄化，因为回调执行前变量理论上可能再次变化。

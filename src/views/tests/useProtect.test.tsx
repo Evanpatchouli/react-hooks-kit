@@ -64,12 +64,12 @@ describe("useProtect", () => {
   });
 
   it("supports BigInt state without serializing it", () => {
-    const { result } = renderHook(() => useProtect(1n));
+    const { result } = renderHook(() => useProtect(BigInt(1)));
 
     act(() => {
-      result.current[1](2n);
+      result.current[1](BigInt(2));
     });
-    expect(result.current[0]).toBe(2n);
+    expect(result.current[0]).toBe(BigInt(2));
   });
 });
 
