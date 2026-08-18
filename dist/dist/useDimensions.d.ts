@@ -1,6 +1,6 @@
 import { type RefObject } from "react";
 declare function useDimensions(): [
-    RefObject<HTMLDivElement | null>,
+    RefObject<HTMLDivElement>,
     {
         width: number;
         height: number;

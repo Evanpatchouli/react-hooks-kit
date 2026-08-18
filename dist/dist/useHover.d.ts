@@ -1,3 +1,3 @@
 /// <reference types="react" />
-declare function useHover(onHover: () => void): import("react").MutableRefObject<HTMLElement | null>;
+declare function useHover<E extends HTMLElement>(onHover: () => void): import("react").MutableRefObject<E | null>;
 export default useHover;

@@ -2453,7 +2453,6 @@ function WatchGetterAnimation(getter, callback, updater) {
             callback === null || callback === void 0 ? void 0 : callback(newValue);
         }
     };
-    // @ts-ignore
     return updater ? [value, update] : value;
 }
 function useWatchGetter(getter, callback, updater) {

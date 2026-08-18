@@ -2451,7 +2451,6 @@ function WatchGetterAnimation(getter, callback, updater) {
             callback === null || callback === void 0 ? void 0 : callback(newValue);
         }
     };
-    // @ts-ignore
     return updater ? [value, update] : value;
 }
 function useWatchGetter(getter, callback, updater) {
@@ -6549,4 +6548,4 @@ var useQrcodeScan = function (options) {
     };
 };
 
-export { QrcodeScanService, useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useDimensions, useDimensionsById, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImg, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetWorkStatus as useNetWork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useQrcodeScan, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useReflect, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnMount as useUnMount, useUpdate, useUpdateEffect, useUrl, useWatch, useWatchGetter, useWhyDidYouUpdate };
+export { QrcodeScanService, useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useDimensions, useDimensionsById, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImg, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetWorkStatus as useNetWork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useQrcodeScan, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useReflect, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnMount, useUpdate, useUpdateEffect, useUrl, useWatch, useWatchGetter, useWhyDidYouUpdate };
