@@ -234,11 +234,6 @@ export default {
       title: "UseTheme",
       status: "preview",
     },
-    UseColor: {
-      route: "useColor",
-      title: "UseColor",
-      status: "preview",
-    },
     UseToast: {
       route: "useToast",
       title: "UseToast",
@@ -259,11 +254,6 @@ export default {
       title: "UseParticle",
       status: "experimental",
     },
-    UseHoudini: {
-      route: "useHoudini",
-      title: "UseHoudini",
-      status: "preview",
-    },
   },
   EventHooks: {
     UseEmitter: {
@@ -276,7 +266,7 @@ export default {
       title: "UseReceiver",
       status: "experimental",
     },
-    UseBroadCastChannel: {
+    UseBroadcastChannel: {
       route: "useBroadcastChannel",
       title: "UseBroadcastChannel",
       status: "experimental",

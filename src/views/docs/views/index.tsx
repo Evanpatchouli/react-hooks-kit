@@ -70,6 +70,17 @@ export { default as UseTitle } from "./other/UseTitle";
 export { default as UseFavicon } from "./other/UseFavicon";
 export { default as UseDimensionsById } from "./other/UseDimensionsById";
 export { default as UseQrcodeScan } from "./other/UseQrcodeScan";
+export { default as UseRaf } from "./other/UseRaf";
+export { default as UseRafState } from "./other/UseRafState";
+export { default as UseClickAway } from "./other/UseClickAway";
+export { default as UseCookie } from "./other/UseCookie";
+export { default as UseDimensions } from "./other/UseDimensions";
+export { default as UseSafeArea } from "./other/UseSafeArea";
+export { default as UseScroll } from "./other/UseScroll";
+export { default as UseMousePosition } from "./other/UseMousePosition";
+export { default as UseOverflow } from "./other/UseOverflow";
+export { default as UseHover } from "./other/UseHover";
+export { default as UseKeyPress } from "./other/UseKeyPress";
 
 // Lifecycle hooks
 export { default as UseBeforeMount } from "./lifecycle-hooks/UseBeforeMount";
@@ -77,3 +88,4 @@ export { default as UseMount } from "./lifecycle-hooks/UseMount";
 export { default as UseUnmount } from "./lifecycle-hooks/UseUnmount";
 export { default as UseUpdate } from "./lifecycle-hooks/UseUpdate";
 export { default as UseUpdateEffect } from "./lifecycle-hooks/UseUpdateEffect";
+export { default as UseAsyncEffect } from "./lifecycle-hooks/UseAsyncEffect";
