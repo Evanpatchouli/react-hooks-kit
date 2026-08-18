@@ -1,23 +1,56 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
 
 export default function UseTicker() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "fn",
       type: "(tick: number) => void",
-      desc: "callback function",
+      desc: "Callback invoked with the next tick number.",
     },
     {
-      name: "options or duration",
+      name: "durationOrOptions",
       type: "TickerOptions | number",
-      desc: "options or duration",
+      defaultValue: void 0,
+      desc: "Optional duration in milliseconds or a TickerOptions object.",
     },
     {
       name: "options",
       type: "TickerOptions",
-      desc: "options",
+      defaultValue: void 0,
+      desc: "Optional ticker configuration when durationOrOptions is a number.",
+      properties: [
+        {
+          name: "immediate",
+          type: '"mounted" | "first" | "every" | "all" | "none" | boolean',
+          defaultValue: '"none"',
+          desc: "Controls when the callback runs immediately.",
+        },
+        {
+          name: "callAtFirst",
+          type: "boolean",
+          defaultValue: true,
+          desc: "Whether the callback runs on the first scheduled tick.",
+        },
+        {
+          name: "pauseAtFirst",
+          type: "boolean",
+          defaultValue: false,
+          desc: "Whether the ticker starts paused.",
+        },
+        {
+          name: "duration",
+          type: "number",
+          defaultValue: 1000,
+          desc: "Interval between ticks in milliseconds.",
+        },
+        {
+          name: "delay",
+          type: "number",
+          defaultValue: 0,
+          desc: "Delay before an immediate callback runs.",
+        },
+      ],
     },
     // {
     //   name: "initial",
@@ -52,38 +85,38 @@ export default function UseTicker() {
       name: "tick",
       type: "number",
       defaultValue: 0,
-      desc: "tick count",
+      desc: "Current tick count.",
     },
     {
       name: "status",
       type: '"on" | "off"',
       defaultValue: '"off"',
-      desc: "status of ticker",
+      desc: "Whether the ticker is on or off.",
     },
     {
       name: "resume",
       type: "() => void",
-      desc: "resume ticker",
+      desc: "Resumes the ticker.",
     },
     {
       name: "pause",
       type: "() => void",
-      desc: "pause ticker",
+      desc: "Pauses the ticker.",
     },
     {
       name: "reset",
       type: "() => void",
-      desc: "reset ticker",
+      desc: "Resets the tick count to zero.",
     },
     {
       name: "delayedPause",
       type: "(delay: number) => void",
-      desc: "pause ticker after delay",
+      desc: "Pauses the ticker after the specified delay.",
     },
     {
       name: "delayedResume",
       type: "(delay: number) => void",
-      desc: "resume ticker after delay",
+      desc: "Resumes the ticker after the specified delay.",
     },
     // {
     //   name: 'setTick',

@@ -1940,26 +1940,57 @@ const locale_en = {
         For example:
       </>
     ),
-    $p1: "",
+    $p1: "The demo starts a one-second ticker. Use pause, resume, reset, and delayed controls to observe its tick count and status.",
     consideration: (
       <ol>
         <li>when immediate is true, only the first resume will call the callback immediately.</li>
       </ol>
     ),
     $best: (
-      <ol>
-        <Un />
-      </ol>
+      <ul>
+        <Li>Use pause and resume to control work that should run on a schedule.</Li>
+        <Li>Use reset when the tick count belongs to a new logical task.</Li>
+        <Li>Keep the callback lightweight because it runs from a timer.</Li>
+      </ul>
     ),
     $faqs: (
       <ul>
-        <Un />
+        <Li>
+          <strong>Q</strong>: What is the default duration?
+        </Li>
+        <Li>
+          <strong>A</strong>: The default duration is 1000 milliseconds.
+        </Li>
+        <Li>
+          <strong>Q</strong>: What does immediate control?
+        </Li>
+        <Li>
+          <strong>A</strong>: It controls whether the callback runs on mount, on ticks, on every start, or not immediately.
+        </Li>
+        <Li>
+          <strong>Q</strong>: Does reset pause the ticker?
+        </Li>
+        <Li>
+          <strong>A</strong>: No. Reset sets the tick count to zero; call pause separately when needed.
+        </Li>
       </ul>
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        fn: "Callback invoked with the next tick number.",
+        durationOrOptions: "Optional duration in milliseconds or a TickerOptions object.",
+        options: "Optional ticker configuration used with a duration argument.",
+      },
+      return: {
+        tick: "Current tick count.",
+        status: "Whether the ticker is on or off.",
+        resume: "Resumes the ticker.",
+        pause: "Pauses the ticker.",
+        reset: "Resets the tick count to zero.",
+        delayedPause: "Pauses the ticker after the specified delay.",
+        delayedResume: "Resumes the ticker after the specified delay.",
+      },
     },
   },
 
