@@ -1,7 +1,10 @@
+import useLocaleSelector from "@/locale/locale.selector";
 import { useEffect } from "react";
 import Article, { Body, Demo, SubTitle } from "@/components/layout/Article";
+import { Consideration, Best, FAQs } from "@components/layout/Article";
 import useRipple from "@/hooks/houdini/hooks/useRipple";
 import pkg from "@/../package.json";
+import UseRippleApi from "@/views/docs/views/hooks-apis/useRipple.api";
 
 const codes = [
   `
@@ -19,16 +22,22 @@ const Demo1 = () => {
 ];
 
 function UseRipple() {
+  const hooksName = "useRipple";
+  const $desc = useLocaleSelector(`${hooksName}.desc`);
+  const $detail = useLocaleSelector(`${hooksName}.detail`);
+  const $consider = useLocaleSelector(`${hooksName}.consideration`);
+  const $best = useLocaleSelector(`${hooksName}.$best`);
+  const $faqs = useLocaleSelector(`${hooksName}.$faqs`);
+
   useEffect(() => {
-    document.title = `useRipple - ${pkg.homepage}`;
+    document.title = `${hooksName} - ${pkg.homepage}`;
   }, []);
 
   const useRippleRef = useRipple<HTMLDivElement>();
-  const desc = "useRipple is a hook for using houdini particle effect.";
 
   return (
-    <Article title="UseRipple" desc={desc}>
-      <Body>A hook to render ripple effect by using houdini paintWorklet.</Body>
+    <Article title="UseRipple" desc={$desc}>
+      <Body>{$detail}</Body>
       <SubTitle>Usage</SubTitle>
       <Demo code={codes[0]}>
         <div css={styles.demo1} ref={useRippleRef}>
@@ -36,20 +45,10 @@ function UseRipple() {
         </div>
       </Demo>
       <SubTitle>Considerations</SubTitle>
-      <Body>
-        <ol>
-          <li>
-            <strong>useRipple</strong> is a hook to render ripple effect by using <strong>houdini</strong> paintWorklet.
-          </li>
-          <li>
-            <strong>mousedown</strong> is the default trigger to render ripple effect. You should avoid using the same
-            trigger on you component other click-like handler to avoid conflict.
-          </li>
-          <li>
-            Different triggers will make the effect a little <strong>different</strong>.
-          </li>
-        </ol>
-      </Body>
+      <Consideration>{$consider}</Consideration>
+      <Best>{$best}</Best>
+      <FAQs>{$faqs}</FAQs>
+      <UseRippleApi />
     </Article>
   );
 }

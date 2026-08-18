@@ -2764,6 +2764,80 @@ const locale_en = {
     },
   },
 
+  useRipple: {
+    desc: "Adds a CSS Houdini paint-worklet ripple animation to an element through a React ref.",
+    detail: (
+      <>
+        <p>
+          <code>useRipple</code> returns a ref for an element that should display a ripple from the
+          pointer position. It registers the bundled CSS Paint API worklet when supported and drives the
+          animation with requestAnimationFrame.
+        </p>
+        <p>
+          Attach the returned ref to a button or other interactive element. The Hook removes listeners
+          and cancels an active animation when the component unmounts or its configuration changes.
+        </p>
+      </>
+    ),
+    $p1: "Attach the returned ref to the interactive element that should receive the ripple effect.",
+    consideration: (
+      <ol>
+        <li>
+          The effect depends on the browser's CSS Paint API and <code>CSS.paintWorklet</code>. Unsupported
+          browsers log a warning and do not render the paint worklet.
+        </li>
+        <li>
+          The default trigger is <code>mousedown</code>. Choose a trigger that does not conflict with the
+          element's other pointer handlers.
+        </li>
+        <li>
+          The ref must be attached to an HTMLElement so the Hook can measure its bounds and set CSS
+          custom properties.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use a button or link-like control with a visible background for the paint effect.</li>
+        <li>Choose a duration that matches the rest of the interaction feedback.</li>
+        <li>Keep the configuration object stable when the ripple settings do not need to change.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why is the ripple not visible?</strong>
+          <br />
+          A: Check CSS Paint API support, ensure the returned ref is attached, and verify that the
+          element has a visible background.
+        </li>
+        <li>
+          <strong>Q: Can I trigger it with click or pointerdown?</strong>
+          <br />
+          A: Yes. Set <code>config.trigger</code> to one of the supported pointer event names.
+        </li>
+        <li>
+          <strong>Q: Does it clean up event listeners?</strong>
+          <br />
+          A: Yes. The Hook removes its listeners and cancels the active animation on cleanup.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (
+        <p>
+          <code>{"<T extends HTMLElement = HTMLButtonElement>"}</code>
+        </p>
+      ),
+      params: {
+        config: "Optional color, duration, trigger, and minimum alpha settings.",
+      },
+      return: {
+        ref: "Ref to attach to the target HTMLElement.",
+      },
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
