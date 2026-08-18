@@ -2464,6 +2464,73 @@ const locale_en = {
     },
   },
 
+  useUpdateEffect: {
+    desc: "Runs an effect after dependency changes while skipping the initial effect execution.",
+    detail: (
+      <>
+        <p>
+          <code>useUpdateEffect</code> is an effect variant that ignores the first render. After that
+          initial pass, it runs the callback when one of the supplied dependencies changes.
+        </p>
+        <p>
+          It is useful for synchronization or requests that should respond to later user input but
+          should not run with the initial state.
+        </p>
+      </>
+    ),
+    $p1: "Use it for post-mount synchronization and include every captured value in the dependency list.",
+    consideration: (
+      <ol>
+        <li>
+          The callback is skipped on the first render by design; use <code>useEffect</code> when the
+          effect must also run on mount.
+        </li>
+        <li>
+          The callback type is <code>() =&gt; void</code> in this implementation. Use an effect directly
+          when a cleanup function is needed.
+        </li>
+        <li>
+          Keep the dependency list complete to prevent stale values inside the callback.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use it for updates driven by search terms, filters, or controlled form values.</li>
+        <li>Guard expensive work inside the callback when empty or invalid values should be ignored.</li>
+        <li>Prefer a normal effect when initial synchronization is required.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: When does the effect first run?</strong>
+          <br />
+          A: It first runs after a dependency changes following the initial render.
+        </li>
+        <li>
+          <strong>Q: Is this different from useUpdate?</strong>
+          <br />
+          A: Both currently skip the initial render and react to dependency changes; they are separate
+          exports with the same core behavior.
+        </li>
+        <li>
+          <strong>Q: Can I return cleanup from the callback?</strong>
+          <br />
+          A: No. Use <code>useEffect</code> directly for an effect whose callback returns cleanup.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        callback: "Effect callback invoked after dependency changes, excluding the initial render.",
+        dependencies: "Dependency list that controls subsequent effect execution.",
+      },
+      return: {},
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (

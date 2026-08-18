@@ -66,3 +66,4 @@ export { default as UseBeforeMount } from "./lifecycle-hooks/UseBeforeMount";
 export { default as UseMount } from "./lifecycle-hooks/UseMount";
 export { default as UseUnmount } from "./lifecycle-hooks/UseUnmount";
 export { default as UseUpdate } from "./lifecycle-hooks/UseUpdate";
+export { default as UseUpdateEffect } from "./lifecycle-hooks/UseUpdateEffect";
