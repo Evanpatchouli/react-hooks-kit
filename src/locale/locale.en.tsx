@@ -1269,7 +1269,9 @@ const locale_en = {
     ),
     $apis: {
       generics: (<></>),
-      params: {},
+      params: {
+        none: "This Hook takes no parameters.",
+      },
       return: {
         logs: "Captured console.log messages formatted as strings.",
       },

@@ -2,7 +2,13 @@ import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
 
 export default function UseConsoleLog() {
-  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "none",
+      type: "—",
+      desc: "This Hook takes no parameters.",
+    },
+  ];
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
       name: "logs",
