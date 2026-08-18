@@ -4008,7 +4008,9 @@ const locale_en = {
       params: {
         callback: "Callback invoked when the component unmounts.",
       },
-      return: {},
+      return: {
+        value: "void; React invokes the callback during unmount cleanup.",
+      },
     },
   },
 
