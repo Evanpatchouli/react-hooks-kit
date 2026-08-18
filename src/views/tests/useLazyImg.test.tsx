@@ -1,6 +1,6 @@
 import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import useLazyImage from "../../hooks/useLazyImg";
+import useLazyImg from "../../hooks/useLazyImg";
 
 class MockImage {
   static instances: MockImage[] = [];
@@ -32,7 +32,7 @@ describe("useLazyImg", () => {
     const onLoad = vi.fn();
     vi.stubGlobal("Image", MockImage);
     const { result } = renderHook(() =>
-      useLazyImage({
+      useLazyImg({
         src: "full.png",
         defaultSrc: "placeholder.png",
         actions: { onLoad },
@@ -57,7 +57,7 @@ describe("useLazyImg", () => {
     const onError = vi.fn();
     vi.stubGlobal("Image", MockImage);
     const { result } = renderHook(() =>
-      useLazyImage("full.png", {
+      useLazyImg("full.png", {
         defaultSrc: "placeholder.png",
         errorSrc: "error.png",
         actions: { onError },
@@ -77,7 +77,7 @@ describe("useLazyImg", () => {
   it("supports the positional overload and default error fallback", () => {
     vi.stubGlobal("Image", MockImage);
     const { result } = renderHook(() =>
-      useLazyImage("full.png", "placeholder.png", "error.png")
+      useLazyImg("full.png", "placeholder.png", "error.png")
     );
 
     act(() => {

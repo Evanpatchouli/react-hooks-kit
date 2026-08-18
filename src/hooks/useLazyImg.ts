@@ -35,7 +35,7 @@ interface UseLazyImage {
   ): Prettify<LazyImage>;
 }
 
-const useLazyImage: UseLazyImage = (
+const useLazyImg: UseLazyImage = (
   src,
   defaultSrc?: string | LazyImageOptions,
   errorSrc?: string,
@@ -107,4 +107,4 @@ const useLazyImage: UseLazyImage = (
   return source;
 };
 
-export default useLazyImage;
+export default useLazyImg;

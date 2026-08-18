@@ -12,7 +12,7 @@ Version 2.0.0 marks the completion of automated coverage for every implemented H
 ### Fixed
 
 - Harden asynchronous and lifecycle behavior across `useAsyncEffect`, `useBeforeMount`, `useBattery`, `useFetch`, `useGenerator`, `useLazy`, `useLazyImg`, `usePromise`, `useRaf`, `useRafState`, `useUnMount`, and `useVirtualArea`.
-- Correct browser event, observer, and resource cleanup behavior across `useConsoleLog`, `useGuide`, `useHover`, `useInfiniteScroll`, `useKeyPress`, `useMediaQuery`, `useNetwork`, `useParticle`, `useRipple`, `useSafeArea`, `useScroll`, `useTheme`, and `useToast`.
+- Correct browser event, observer, and resource cleanup behavior across `useConsoleLog`, `useGuide`, `useHover`, `useInfiniteScroll`, `useKeyPress`, `useMediaQuery`, `useNetWork`, `useParticle`, `useRipple`, `useSafeArea`, `useScroll`, `useTheme`, and `useToast`.
 - Correct state, storage, and callback behavior across `useCookie`, `useForceUpdate`, `useForm`, `useIndexDB`, `useLocalStorage`, `useMixRef`, `useProtect`, `useReceiver`, `useRecord`, `useReflect`, `useSingleton`, `useTitle`, `useUrl`, and `useWhyDidYouUpdate`.
 - Eliminate nullable request diagnostics from the `useIndexDB` event callbacks without changing runtime behavior.
 

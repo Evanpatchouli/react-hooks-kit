@@ -79,12 +79,12 @@ function readNetworkStatus(): NetworkStatus {
 }
 
 /**
- * @hook useNetworkStatus
+ * @hook useNetWorkStatus
  * @description A react hook for getting network status
  * @param throttleInterval suggested to be greater than 16.67ms to avoid too much re-rendering
  * @returns {NetworkStatus}
  */
-function useNetworkStatus(throttleInterval?: number): NetworkStatus {
+function useNetWorkStatus(throttleInterval?: number): NetworkStatus {
   const [status, setStatus] = useState<NetworkStatus>(readNetworkStatus);
 
   const throttledUpdateStatus = useThrottle(() => {
@@ -119,4 +119,4 @@ function useNetworkStatus(throttleInterval?: number): NetworkStatus {
   return status;
 }
 
-export default useNetworkStatus;
+export default useNetWorkStatus;

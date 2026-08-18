@@ -223,7 +223,7 @@ export default {
       status: "preview",
     },
     UseUnmount: {
-      route: "useUnmount",
+      route: "useUnMount",
       title: "UseUnmount",
       status: "preview",
     },
@@ -292,8 +292,8 @@ export default {
       status: "experimental",
     },
     UseBroadCastChannel: {
-      route: "useBroadCastChannel",
-      title: "UseBroadCastChannel",
+      route: "useBroadcastChannel",
+      title: "UseBroadcastChannel",
       status: "experimental",
     },
     UseProvide: {
@@ -374,7 +374,7 @@ export default {
       status: "preview",
     },
     UseSingleTon: {
-      route: "useSingleTon",
+      route: "useSingleton",
       title: "UseSingleTon",
       status: "preview",
     },

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-function useUnmount(callback: () => void) {
+function useUnMount(callback: () => void) {
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
 
@@ -11,4 +11,4 @@ function useUnmount(callback: () => void) {
   }, []);
 }
 
-export default useUnmount;
+export default useUnMount;

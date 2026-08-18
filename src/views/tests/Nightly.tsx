@@ -1,7 +1,7 @@
 import useRipple from "@/hooks/houdini/hooks/useRipple";
 import useBatchHooks from "@/hooks/useBatchHooks";
 import useMemento from "@/hooks/useMemento";
-import useNetworkStatus from "@/hooks/useNetWork";
+import useNetWorkStatus from "@/hooks/useNetWork";
 import { Button } from "@mui/material";
 import Await from "./Await";
 import ProvJectView from "./prov-ject";
@@ -15,7 +15,7 @@ export function useRipples<T extends HTMLElement = HTMLButtonElement>(
 }
 
 export default function Nightly() {
-  const netWork = useNetworkStatus();
+  const netWork = useNetWorkStatus();
   const refs = useRipples<any>(2);
   const [state, setState, memento] = useMemento("initial");
   return (

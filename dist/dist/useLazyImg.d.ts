@@ -17,5 +17,5 @@ interface UseLazyImage {
     (src: string, options?: LazyImageOptions): Prettify<LazyImage>;
     (src: string, defaultSrc?: string, errorSrc?: string, actions?: LazyImageActions): Prettify<LazyImage>;
 }
-declare const useLazyImage: UseLazyImage;
-export default useLazyImage;
+declare const useLazyImg: UseLazyImage;
+export default useLazyImg;

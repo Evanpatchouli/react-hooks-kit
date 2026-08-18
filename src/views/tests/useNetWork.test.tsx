@@ -1,6 +1,6 @@
 import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import useNetworkStatus from "../../hooks/useNetWork";
+import useNetWorkStatus from "../../hooks/useNetWork";
 
 type Connection = {
   downlink: number;
@@ -68,7 +68,7 @@ describe("useNetWork", () => {
       value: connection,
     });
 
-    const { result } = renderHook(() => useNetworkStatus(0));
+    const { result } = renderHook(() => useNetWorkStatus(0));
 
     expect(result.current).toEqual({
       online: true,
@@ -98,7 +98,7 @@ describe("useNetWork", () => {
       value: connection,
     });
 
-    const { result, unmount } = renderHook(() => useNetworkStatus(0));
+    const { result, unmount } = renderHook(() => useNetWorkStatus(0));
 
     connection.downlink = 8;
     connection.uplink = 2;

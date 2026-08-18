@@ -2849,7 +2849,7 @@ var LazySourceBuilder = function (src, loaded, error) {
     _src.error = error;
     return _src;
 };
-var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
+var useLazyImg = function (src, defaultSrc, errorSrc, actions) {
     var _a, _b, _c, _d, _e, _f, _g;
     var $src = "";
     var $defaultSrc = "";
@@ -3068,7 +3068,7 @@ var useMount = function (callback, arg2, arg3) {
     }, deps);
 };
 
-function useUnmount(callback) {
+function useUnMount(callback) {
     var callbackRef = react.useRef(callback);
     callbackRef.current = callback;
     react.useEffect(function () {
@@ -4298,12 +4298,12 @@ function readNetworkStatus() {
     };
 }
 /**
- * @hook useNetworkStatus
+ * @hook useNetWorkStatus
  * @description A react hook for getting network status
  * @param throttleInterval suggested to be greater than 16.67ms to avoid too much re-rendering
  * @returns {NetworkStatus}
  */
-function useNetworkStatus(throttleInterval) {
+function useNetWorkStatus(throttleInterval) {
     var _a = __read(react.useState(readNetworkStatus), 2), status = _a[0], setStatus = _a[1];
     var throttledUpdateStatus = useThrottle(function () {
         if ((throttleInterval !== null && throttleInterval !== void 0 ? throttleInterval : 0) < 17) {
@@ -6575,7 +6575,7 @@ exports.useIndexDB = useIndexedDB;
 exports.useInject = useInject;
 exports.useKeyPress = useKeyPress;
 exports.useLazy = useLazy;
-exports.useLazyImage = useLazyImage;
+exports.useLazyImg = useLazyImg;
 exports.useList = useList;
 exports.useLoading = useLoading;
 exports.useLocalStorage = useLocalStorage;
@@ -6586,7 +6586,7 @@ exports.useMeta = useMeta;
 exports.useMixRef = useMixRef;
 exports.useMount = useMount;
 exports.useMousePosition = useMousePosition;
-exports.useNetwork = useNetworkStatus;
+exports.useNetWork = useNetWorkStatus;
 exports.useOverflow = useOverflow;
 exports.useParticle = useParticle;
 exports.usePrevious = usePrevious;
@@ -6615,7 +6615,7 @@ exports.useTitle = useTitle;
 exports.useToast = useToast;
 exports.useToggle = useToggle;
 exports.useTree = useTree;
-exports.useUnMount = useUnmount;
+exports.useUnMount = useUnMount;
 exports.useUpdate = useUpdate;
 exports.useUpdateEffect = useUpdateEffect;
 exports.useUrl = useUrl;

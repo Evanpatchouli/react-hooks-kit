@@ -2847,7 +2847,7 @@ var LazySourceBuilder = function (src, loaded, error) {
     _src.error = error;
     return _src;
 };
-var useLazyImage = function (src, defaultSrc, errorSrc, actions) {
+var useLazyImg = function (src, defaultSrc, errorSrc, actions) {
     var _a, _b, _c, _d, _e, _f, _g;
     var $src = "";
     var $defaultSrc = "";
@@ -3066,7 +3066,7 @@ var useMount = function (callback, arg2, arg3) {
     }, deps);
 };
 
-function useUnmount(callback) {
+function useUnMount(callback) {
     var callbackRef = useRef(callback);
     callbackRef.current = callback;
     useEffect(function () {
@@ -4296,12 +4296,12 @@ function readNetworkStatus() {
     };
 }
 /**
- * @hook useNetworkStatus
+ * @hook useNetWorkStatus
  * @description A react hook for getting network status
  * @param throttleInterval suggested to be greater than 16.67ms to avoid too much re-rendering
  * @returns {NetworkStatus}
  */
-function useNetworkStatus(throttleInterval) {
+function useNetWorkStatus(throttleInterval) {
     var _a = __read(useState(readNetworkStatus), 2), status = _a[0], setStatus = _a[1];
     var throttledUpdateStatus = useThrottle(function () {
         if ((throttleInterval !== null && throttleInterval !== void 0 ? throttleInterval : 0) < 17) {
@@ -6549,4 +6549,4 @@ var useQrcodeScan = function (options) {
     };
 };
 
-export { QrcodeScanService, useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useDimensions, useDimensionsById, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImage, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetworkStatus as useNetwork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useQrcodeScan, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useReflect, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnmount as useUnMount, useUpdate, useUpdateEffect, useUrl, useWatch, useWatchGetter, useWhyDidYouUpdate };
+export { QrcodeScanService, useAsyncEffect, useBatchHooks, useBattery, useBeforeMount, useBroadcastChannel, useClickAway, useConsoleLog, useCookie, useDebounce, useDimensions, useDimensionsById, useEmitter, useEyeDropper, useFavicon, useFetch, useForceUpdate, useForm, useGuide, useHover, useIndexedDB as useIndexDB, useInject, useKeyPress, useLazy, useLazyImg, useList, useLoading, useLocalStorage, useMap, useMediaQuery, useMemento, useMeta, useMixRef, useMount, useMousePosition, useNetWorkStatus as useNetWork, useOverflow, useParticle, usePrevious, usePromise, useProtect, useProvide, useQrcodeScan, useRaf, useRafState, useReactive, useReactor, useReactorListener, useReceiver, useRecord, useReflect, useResize, useRipple, useSafeArea, useScroll, useSingleton, useTheme, useThrottle, useTickState, useTicker, useTitle, useToast, useToggle, useTree, useUnMount as useUnMount, useUpdate, useUpdateEffect, useUrl, useWatch, useWatchGetter, useWhyDidYouUpdate };
