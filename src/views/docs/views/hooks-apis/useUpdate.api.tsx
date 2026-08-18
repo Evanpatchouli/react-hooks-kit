@@ -15,7 +15,13 @@ export default function UseUpdate() {
     },
   ];
 
-  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "value",
+      type: "void",
+      desc: "The Hook runs the callback after dependency changes and does not return a value.",
+    },
+  ];
 
   return (
     <>

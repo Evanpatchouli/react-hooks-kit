@@ -4077,7 +4077,9 @@ const locale_en = {
         callback: "Callback invoked after dependency changes, excluding the initial render.",
         dependencies: "Dependency list that controls subsequent callback execution.",
       },
-      return: {},
+      return: {
+        value: "void; the callback is managed by the effect lifecycle.",
+      },
     },
   },
 
