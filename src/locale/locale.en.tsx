@@ -2927,8 +2927,14 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        key: "localStorage key used to persist the value.",
+        initialValue: "Fallback value used when the key does not contain valid JSON.",
+      },
+      return: {
+        storedValue: "Current parsed localStorage value.",
+        setValue: "Serializes and stores a new value, then dispatches synchronization events.",
+      },
     },
   },
 
