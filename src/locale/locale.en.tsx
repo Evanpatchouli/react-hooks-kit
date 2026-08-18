@@ -1755,6 +1755,52 @@ const locale_en = {
     },
   },
 
+  useMixRef: {
+    desc: "A Hook that combines object and callback refs into one callback ref.",
+    detail: (
+      <>
+        <p>
+          <code>useMixRef</code> creates one ref callback that forwards the mounted element to every ref in an array.
+          This lets a component expose the same DOM node to local state, a parent, and an imperative integration.
+        </p>
+        <p>When the node is removed, each callback or mutable ref receives null.</p>
+      </>
+    ),
+    $p1: "The example writes the same element to both an object ref and a callback ref.",
+    consideration: (
+      <ol>
+        <Li>Keep the refs array stable when possible so the returned callback does not change unnecessarily.</Li>
+        <Li>Only include refs that are allowed to receive the element type.</Li>
+        <Li>Handle null in callback refs because React calls them during unmount.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Use useMixRef at component boundaries where multiple owners need the same DOM node.</Li>
+        <Li>Prefer a normal useRef when there is only one consumer.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Can the array contain callback refs?
+        </Li>
+        <Li>
+          <strong>A</strong>: Yes. Callback refs are invoked with the node and later with null on cleanup.</Li>
+        <Li>
+          <strong>Q</strong>: Does it clone or wrap the element?
+        </Li>
+        <Li>
+          <strong>A</strong>: No. It only returns a ref callback to attach to the existing element.</Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
