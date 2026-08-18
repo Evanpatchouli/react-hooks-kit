@@ -1663,6 +1663,52 @@ const locale_en = {
     },
   },
 
+  useLazy: {
+    desc: "A Hook for loading an asynchronous value once and exposing its loading and error state.",
+    detail: (
+      <>
+        <p>
+          <code>useLazy</code> runs an asynchronous loader after the component mounts. It is useful for deferred
+          imports, optional feature data, and other resources that should not be loaded before the component needs them.
+        </p>
+        <p>The loader result is stored as module, while failures are exposed through error.</p>
+      </>
+    ),
+    $p1: "The example delays a value to make the loading state visible before the module is rendered.",
+    consideration: (
+      <ol>
+        <Li>The loader runs once for each mounted Hook instance.</Li>
+        <Li>Keep the loader free of state updates that depend on an unmounted component.</Li>
+        <Li>Render a fallback for both loading and error states before reading module.</Li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <Li>Use dynamic import for code splitting so the loaded module is actually deferred.</Li>
+        <Li>Keep the loaded value small or expose a focused feature API from the imported module.</Li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <Li>
+          <strong>Q</strong>: Does useLazy retry automatically?
+        </Li>
+        <Li>
+          <strong>A</strong>: No. It runs the loader once; mount a new instance if a fresh attempt is needed.</Li>
+        <Li>
+          <strong>Q</strong>: What happens when the component unmounts during loading?
+        </Li>
+        <Li>
+          <strong>A</strong>: The Hook ignores the result and does not update state after unmount.</Li>
+      </ul>
+    ),
+    $apis: {
+      generics: <></>,
+      params: {},
+      return: {},
+    },
+  },
+
   useFavicon: {
     desc: "A React Hook for dynamically setting the page favicon with optional badge support.",
     detail: (
