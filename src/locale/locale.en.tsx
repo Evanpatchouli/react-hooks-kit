@@ -2395,22 +2395,74 @@ const locale_en = {
   },
 
   useAutoPageSize: {
-    desc: "",
+    desc: "Calculates a practical page size from a scroll container's height and an estimated item height.",
     detail: (
       <>
+        <p>
+          <code>useAutoPageSize</code> measures the element identified by <code>containerId</code> and
+          calculates how many items fit in its visible height. It observes the container with
+          <code>ResizeObserver</code>, so the result follows layout changes by default.
+        </p>
+        <p>
+          The returned value is never smaller than <code>minSize</code>. The optional
+          <code>buffer</code> adds extra items to reduce the chance of another request immediately
+          after the user starts scrolling.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Use the returned pageSize when requesting or slicing the next page of list data.",
     consideration: (
       <ol>
+        <li>
+          The container must exist in the DOM and have a measurable, non-zero height when the
+          effect runs. If it cannot be found, the hook keeps its current value.
+        </li>
+        <li>
+          <code>estimatedItemHeight</code> is an estimate rather than a measurement of every item;
+          choose a representative value for the list layout.
+        </li>
+        <li>
+          The hook requires <code>ResizeObserver</code>. Provide a browser or test environment that
+          supports it before rendering the hook.
+        </li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Set <code>minSize</code> to a safe lower bound for the API or list component.</li>
+        <li>Use a small <code>buffer</code> to keep scrolling smooth without over-fetching data.</li>
+        <li>Set <code>once</code> to <code>true</code> for a fixed layout where resize updates are unnecessary.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: What happens if the container cannot be found?</strong>
+          <br />
+          A: The hook leaves <code>pageSize</code> at its current value and does not start an observer.
+        </li>
+        <li>
+          <strong>Q: Why is the result larger than the number of visible items?</strong>
+          <br />
+          A: The calculation adds <code>buffer</code> to the estimated number of visible items.
+        </li>
+        <li>
+          <strong>Q: How do I stop recalculation after the first measurement?</strong>
+          <br />
+          A: Pass <code>{`{ once: true }`}</code> as the third argument.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        containerId: "ID of the container element to measure.",
+        estimatedItemHeight: "Estimated item height in pixels. Defaults to 150.",
+        options: "Optional settings for one-time calculation, minimum size, and extra buffer items.",
+      },
+      return: {
+        pageSize: "The calculated page size, clamped to at least minSize.",
+      },
     },
   },
   __end: "end of locale mappings, please do not delete this line",

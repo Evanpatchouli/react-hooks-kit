@@ -1,56 +1,54 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-  
+
 export default function UseAutoPageSize() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
-    // {
-    //   name: "valueMap",
-    //   type: "object",
-    //   defaultValue: { true: true, false: false },
-    //   desc: "mapping of returned values",
-    //   properties: [
-    //     {
-    //       name: "true",
-    //       type: "boolean | T",
-    //       defaultValue: true,
-    //        desc: "value returned when toggle is on",
-    //     },
-    //     {
-    //       name: "false",
-    //       type: "boolean | F",
-    //       defaultValue: false,
-    //       desc: "value returned when toggle is off",
-    //     },
-    //   ],
-    // },
+    {
+      name: "containerId",
+      type: "string",
+      desc: "ID of the container whose height is measured.",
+    },
+    {
+      name: "estimatedItemHeight",
+      type: "number",
+      defaultValue: 150,
+      desc: "Estimated height in pixels of one list item.",
+    },
+    {
+      name: "options",
+      type: "UseAutoPageSizeOptions",
+      desc: "Optional calculation settings.",
+      properties: [
+        {
+          name: "once",
+          type: "boolean",
+          defaultValue: false,
+          desc: "Calculates once and stops observing resize changes.",
+        },
+        {
+          name: "minSize",
+          type: "number",
+          defaultValue: 5,
+          desc: "Minimum page size returned by the hook.",
+        },
+        {
+          name: "buffer",
+          type: "number",
+          defaultValue: 2,
+          desc: "Extra items added to the calculated page size.",
+        },
+      ],
+    },
   ];
-  
+
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
+    {
+      name: "pageSize",
+      type: "number",
+      desc: "Number of items that should be loaded for the current container height.",
+    },
   ];
-  
+
   return (
     <>
       <SubTitle id="hook-api">Api of useAutoPageSize</SubTitle>
