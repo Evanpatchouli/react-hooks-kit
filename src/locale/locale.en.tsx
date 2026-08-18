@@ -1954,8 +1954,14 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        target: "Reactor instance whose state changes should be observed.",
+        callback: "Listener invoked with the current Reactor state.",
+        immediate: "Whether to invoke the callback immediately with the current value.",
+      },
+      return: {
+        value: "void; the listener is removed automatically when the component unmounts or the target changes.",
+      },
     },
   },
 

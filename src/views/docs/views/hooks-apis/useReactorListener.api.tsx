@@ -14,7 +14,13 @@ export default function UseReactorListener() {
       name: "callback",
       type: TagFC.Function("(value: T) => void"),
       defaultValue: TagFC.Undefined(),
-      desc: "callback function",
+      desc: "Listener invoked with the current Reactor state.",
+    },
+    {
+      name: "immediate",
+      type: "boolean",
+      defaultValue: false,
+      desc: "Whether to invoke the callback immediately with the current Reactor value.",
     },
     // {
     //   name: "valueMap",
@@ -39,22 +45,11 @@ export default function UseReactorListener() {
   ];
 
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
+    {
+      name: "value",
+      type: "void",
+      desc: "The Hook does not return a value; it registers and cleans up a listener.",
+    },
   ];
 
   return (
@@ -67,7 +62,7 @@ export default function UseReactorListener() {
       <SubTitle low top="20px">
         ReturnValue (Void)
       </SubTitle>
-      {/* <ApiTable return rows={returnData} /> */}
+      <ApiTable return rows={returnData} />
     </>
   );
 }

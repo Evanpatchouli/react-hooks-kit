@@ -1,4 +1,5 @@
 import useEyeDropper from "@hooks/useEyeDropper";
+import { Button } from "@mui/material";
 import { useState } from "react";
 
 const View = () => {
@@ -7,7 +8,7 @@ const View = () => {
 
   return (
     <div>
-      <button
+      <Button
         disabled={!isSupported}
         onClick={() => {
           setError("");
@@ -15,7 +16,7 @@ const View = () => {
         }}
       >
         Pick a screen color
-      </button>
+      </Button>
       <span style={{ marginLeft: 8, color: sRGBHex }}>Current color: {sRGBHex}</span>
       {error ? <p role="alert">{error}</p> : null}
     </div>
@@ -24,14 +25,15 @@ const View = () => {
 
 const code = `
 import useEyeDropper from "@hooks/useEyeDropper";
+import { Button } from "@mui/material";
 
 const View = () => {
   const { isSupported, sRGBHex, open } = useEyeDropper({ initialValue: "#ffffff" });
 
   return (
-    <button disabled={!isSupported} onClick={() => void open()}>
+    <Button disabled={!isSupported} onClick={() => void open()}>
       Pick a screen color: {sRGBHex}
-    </button>
+    </Button>
   );
 };
 `;
