@@ -1,7 +1,6 @@
 import Required from "@/components/Required";
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import { Chip } from "@mui/material";
 
 export default function UseInject() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
@@ -9,39 +8,40 @@ export default function UseInject() {
       name: "name",
       type: "string",
       defaultValue: <Required children="Required" />,
-      desc: "The unique name of the state to be provided globally",
+      desc: "Provider name to read from useProvide.",
+    },
+    {
+      name: "options",
+      type: "object",
+      desc: "Optional namespace and value-change callback configuration.",
+      properties: [
+        { name: "namespace", type: "N", defaultValue: "__provide_inject__", desc: "Namespace shared with the provider." },
+        { name: "callback", type: "(value: V) => any", desc: "Called whenever a provider value is received." },
+      ],
     },
   ];
 
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
     {
-      name: "[0]state",
-      type: "T[K] | undefined",
-      defaultValue: null,
-      desc: "state injected from provided globally, if the state is not provided, it will be undefined, and because of the delay of event, the state will be undefined at the first render",
+      name: "[0] value",
+      type: "V | undefined",
+      defaultValue: undefined,
+      desc: "Current provider value, or undefined before a provider responds.",
     },
     {
-      name: "[1]setState",
-      type: (
-        <>
-          <Chip label="(value: T[K] | undefined) => void" /> |{" "}
-          <Chip label="undefined" />
-        </>
-      ),
-      desc: "set state function, if the state is not provided, it will be undefined",
+      name: "[1] setValue",
+      type: "React.Dispatch<React.SetStateAction<V>> | undefined",
+      defaultValue: undefined,
+      desc: "Provider setter when useProvide supplied options.setState; otherwise undefined.",
     },
   ];
 
   return (
     <>
-      <SubTitle id="hook-api">Api of useInject</SubTitle>
-      <SubTitle low top="20px">
-        Parameters
-      </SubTitle>
+      <SubTitle id="hook-api">API of useInject</SubTitle>
+      <SubTitle low top="20px">Parameters</SubTitle>
       <ApiTable param rows={paramData} />
-      <SubTitle low top="20px">
-        ReturnValue (Array)
-      </SubTitle>
+      <SubTitle low top="20px">Return value (tuple)</SubTitle>
       <ApiTable return rows={returnData} />
     </>
   );

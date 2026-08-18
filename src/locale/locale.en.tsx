@@ -1100,27 +1100,70 @@ const locale_en = {
   },
 
   useInject: {
-    desc: "A hook to inject a state from other components.",
+    desc: "Reads named state from a useProvide publisher and optionally exposes its setter.",
     detail: (
       <>
-        useInject is a hook that is used to inject a state from other components, and it is based on{" "}
-        <a href="#/docs/useReceiver">useReceiver</a>:<h4>Parameters : </h4>
-        <ol>
-          <li>
-            <strong>name</strong> : the name of the state, should be unique
-          </li>
-        </ol>
-        For example:
+        <p>
+          <code>useInject</code> subscribes to the provider with the supplied name and returns a tuple
+          containing the current value and an optional setter. It requests the current provider value
+          when the injector mounts.
+        </p>
+        <p>
+          TypeScript generics can describe the provider namespace and value shape. Pass a callback when
+          consumers need to react to provider updates without deriving that behavior from render state.
+        </p>
       </>
     ),
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $p1: "Use the same name and namespace as useProvide, and handle the initial undefined value before the provider responds.",
+    consideration: (
+      <ol>
+        <li>The injected value is undefined on the first render when the provider has not responded yet.</li>
+        <li>The setter is undefined unless the provider passed options.setState.</li>
+        <li>Keep the provider name and namespace consistent between both Hooks.</li>
+        <li>Use the callback option for side effects and keep rendering derived from the returned value.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Declare a type map so the injected value and setter are inferred precisely.</li>
+        <li>Render loading or fallback UI while the provider value is undefined.</li>
+        <li>Expose a setter only for state that is intentionally shared and mutable.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why is the value undefined at first?</strong>
+          <br />
+          A: Provider discovery happens through an effect and event exchange after the initial render.
+        </li>
+        <li>
+          <strong>Q: When is setValue available?</strong>
+          <br />
+          A: Only when the matching provider passes its state setter through <code>options.setState</code>.
+        </li>
+        <li>
+          <strong>Q: Can I use a custom namespace?</strong>
+          <br />
+          A: Yes. Pass the same namespace to both <code>useProvide</code> and <code>useInject</code>.
+        </li>
+      </ul>
+    ),
     $apis: {
-      generics: <></>,
-      params: {},
-      return: {},
+      generics: (
+        <p>
+          <code>{"<T, N, K, V, C>"}</code> describes the namespace map, namespace, key, value, and
+          callback result types.
+        </p>
+      ),
+      params: {
+        name: "Provider name to inject.",
+        options: "Optional namespace and value callback.",
+      },
+      return: {
+        value: "Current provider value or undefined before the first response.",
+        setValue: "Provider state setter when one was exposed, otherwise undefined.",
+      },
     },
   },
 
