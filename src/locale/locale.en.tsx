@@ -943,6 +943,86 @@ const locale_en = {
     },
   },
 
+  useBroadcastChannel: {
+    desc: "Communicates serialized messages between same-origin browser contexts with BroadcastChannel.",
+    detail: (
+      <>
+        <p>
+          <code>useBroadcastChannel</code> opens a browser <code>BroadcastChannel</code> for the supplied
+          name and calls <code>messageHandler</code> when another channel instance posts a message.
+          The channel is closed automatically when the component unmounts or the channel name changes.
+        </p>
+        <p>
+          Messages are JSON-stringified by <code>postMessage</code>. The default parser reads them back
+          as JSON; pass <code>false</code> to receive the serialized string or provide a custom parser.
+        </p>
+      </>
+    ),
+    $p1: "Use the same channel name in tabs, windows, workers, or Hook instances that need to exchange messages.",
+    consideration: (
+      <ol>
+        <li>
+          BroadcastChannel is same-origin and browser-dependent. It is not a replacement for a server
+          connection or cross-origin messaging.
+        </li>
+        <li>
+          A BroadcastChannel does not deliver a message back to the channel object that sent it. Use a
+          second instance when a local sender also needs to observe the message.
+        </li>
+        <li>
+          The current implementation serializes every outgoing message with <code>JSON.stringify</code>.
+          Avoid values that cannot be serialized as JSON.
+        </li>
+        <li>
+          Keep the message handler stable with <code>useCallback</code> when possible to avoid reopening
+          the channel on every render.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use a feature-specific channel name to avoid unrelated message collisions.</li>
+        <li>Define a small, versioned message shape for long-lived channels.</li>
+        <li>Close or let the Hook clean up channels when the receiving UI is no longer active.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why did the sender not receive its own message?</strong>
+          <br />
+          A: BroadcastChannel excludes the sending channel object from delivery. Open another instance
+          if the sender also needs to display the message.
+        </li>
+        <li>
+          <strong>Q: Can I send an object?</strong>
+          <br />
+          A: Yes, as long as it can be serialized by <code>JSON.stringify</code>.
+        </li>
+        <li>
+          <strong>Q: Does unmount close the channel?</strong>
+          <br />
+          A: Yes. The Hook calls <code>close()</code> during cleanup.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (
+        <p>
+          <code>{"<T>"}</code> is the application message type.
+        </p>
+      ),
+      params: {
+        channelName: "Same-origin channel name.",
+        messageHandler: "Callback for messages received from another channel instance.",
+        parser: "JSON parsing flag or custom parser for serialized messages.",
+      },
+      return: {
+        postMessage: "Function that serializes and posts a message.",
+      },
+    },
+  },
+
   useReflect: {
     desc: "",
     detail: <></>,

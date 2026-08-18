@@ -33,6 +33,7 @@ export { default as UseFetch } from "./promise-hooks/UseFetch";
 // Event hooks
 export { default as UseEmitter } from "./event-hooks/UseEmitter";
 export { default as UseReceiver } from "./event-hooks/UseReceiver";
+export { default as UseBroadcastChannel } from "./event-hooks/UseBroadcastChannel";
 export { default as UseProvide } from "./event-hooks/UseProvide";
 export { default as UseInject } from "./event-hooks/UseInject";
 
