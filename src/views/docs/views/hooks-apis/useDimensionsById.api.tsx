@@ -45,13 +45,13 @@ export default function UseDimensionsById() {
   
   return (
     <>
-      <SubTitle id="hook-api">Api of useDimensionsById</SubTitle>
+      <SubTitle id="hook-api">API of useDimensionsById</SubTitle>
       <SubTitle low top="20px">
         Parameters
       </SubTitle>
       <ApiTable param rows={paramData} />
       <SubTitle low top="20px">
-        ReturnValue (Array)
+        Return value (object)
       </SubTitle>
       <ApiTable return rows={returnData} />
     </>

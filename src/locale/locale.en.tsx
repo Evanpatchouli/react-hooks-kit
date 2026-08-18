@@ -3555,23 +3555,64 @@ const locale_en = {
   },
 
   useDimensionsById: {
-    desc: "Observe the dimensions of a DOM element selected by id.",
+    desc: "Observes the dimensions of a DOM element selected by id.",
     detail: (
       <>
-        <p><code>useDimensionsById</code> tracks an element with <code>ResizeObserver</code> and returns its width, height, top, and left values.</p>
+        <p>
+          <code>useDimensionsById</code> finds the element with the supplied id, observes it with
+          <code>ResizeObserver</code>, and returns its width, height, top, and left values.
+        </p>
+        <p>
+          When the id changes, the Hook disconnects from the previous target and observes the new one.
+          If no matching element exists, the current dimensions remain at their initial values.
+        </p>
       </>
     ),
     $p1: "The target element must exist in the document and have the supplied id.",
     consideration: (
       <ol>
+        <li>The id must be unique and the target must be mounted when the effect runs.</li>
+        <li>The returned dimensions start at zero until ResizeObserver reports the target.</li>
+        <li>The Hook observes content-box dimensions and does not create the target element.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Use a stable, semantic id when the target is rendered outside the component's direct subtree.</li>
+        <li>Change the id only when the measurement target genuinely changes.</li>
+        <li>Use <code>useDimensions</code> instead when a ref is available and id lookup is unnecessary.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: What happens if the id is not found?</strong>
+          <br />
+          A: No observer is created and the dimensions retain their current values.
+        </li>
+        <li>
+          <strong>Q: Does changing the id switch the observer?</strong>
+          <br />
+          A: Yes. The effect cleans up the old observer and looks up the new id.
+        </li>
+        <li>
+          <strong>Q: Is this different from useDimensions?</strong>
+          <br />
+          A: It uses an element id instead of returning a ref, which is useful when the target is located elsewhere in the document.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        id: "Id of the element to observe.",
+      },
+      return: {
+        width: "Observed content width.",
+        height: "Observed content height.",
+        top: "Observed content top offset.",
+        left: "Observed content left offset.",
+      },
     },
   },
 
