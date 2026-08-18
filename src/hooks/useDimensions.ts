@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, type RefObject } from "react";
 
 function useDimensions(): [
-  RefObject<HTMLDivElement | null>,
+  RefObject<HTMLDivElement>,
   { width: number; height: number; top: number; left: number },
 ] {
   const ref = useRef<HTMLDivElement>(null);

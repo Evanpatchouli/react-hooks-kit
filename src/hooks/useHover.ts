@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-function useHover(onHover: () => void) {
-  const ref = useRef<HTMLElement | null>(null);
+function useHover<E extends HTMLElement>(onHover: () => void) {
+  const ref = useRef<E | null>(null);
 
   useEffect(() => {
     const element = ref.current;

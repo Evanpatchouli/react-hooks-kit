@@ -1,10 +1,9 @@
 import { fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import React from "react";
 import useHover from "../../hooks/useHover";
 
 function HoverTarget({ onHover }: { onHover: () => void }) {
-  const ref = useHover(onHover);
+  const ref = useHover<HTMLDivElement>(onHover);
 
   return (
     <div ref={ref} data-testid="hover-target">

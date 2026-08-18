@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 const View = () => {
   const [count, setCount] = useState(0);
   const handleHover = useCallback(() => setCount((value) => value + 1), []);
-  const ref = useHover(handleHover);
+  const ref = useHover<HTMLDivElement>(handleHover);
 
   return (
     <div>
@@ -23,7 +23,7 @@ import { useCallback, useState } from "react";
 const View = () => {
   const [count, setCount] = useState(0);
   const handleHover = useCallback(() => setCount((value) => value + 1), []);
-  const ref = useHover(handleHover);
+  const ref = useHover<HTMLDivElement>(handleHover);
 
   return <div ref={ref}>Move the pointer here. Enters: {count}</div>;
 };
