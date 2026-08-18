@@ -8,6 +8,20 @@ describe("useWatchGetter", () => {
     expect(result.current).toBe(10);
   });
 
+  it("should return an updater tuple when requested", () => {
+    let source = 10;
+    const { result } = renderHook(() =>
+      useWatchGetter(() => source, undefined, true)
+    );
+
+    act(() => {
+      source = 20;
+      result.current[1]();
+    });
+
+    expect(result.current[0]).toBe(20);
+  });
+
   it("should watch value from state", () => {
     const { result: stateResult } = renderHook(() => useState(10));
     const { result, rerender } = renderHook(() => useWatchGetter(() => stateResult.current[0]));

@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 
-function WatchGetterAnimation<T>(getter: () => T, callback: (v: T) => void, updater?: boolean):
-  typeof updater extends true ? [T, () => void] : T {
+type WatchGetterResult<T> = T | [T, () => void];
+
+function WatchGetterAnimation<T>(
+  getter: () => T,
+  callback: (v: T) => void,
+  updater: boolean,
+): WatchGetterResult<T> {
   const [value, setValue] = useState(getter());
   const valueRef = useRef(value);
 
@@ -32,16 +37,29 @@ function WatchGetterAnimation<T>(getter: () => T, callback: (v: T) => void, upda
       setValue(newValue);
       callback?.(newValue);
     }
-  }
-  // @ts-ignore
+  };
+
   return updater ? [value, update] : value;
 }
 
+/**
+ * Watches a getter and optionally exposes an imperative update function.
+ */
+function useWatchGetter<T>(
+  getter: () => T,
+  callback?: (v: T) => void,
+  updater?: false,
+): T;
+function useWatchGetter<T>(
+  getter: () => T,
+  callback: ((v: T) => void) | undefined,
+  updater: true,
+): [T, () => void];
 function useWatchGetter<T>(
   getter: () => T,
   callback: (v: T) => void = () => { },
-  updater: boolean = false
-): typeof updater extends true ? [T, () => void] : T {
+  updater: boolean = false,
+): WatchGetterResult<T> {
   return WatchGetterAnimation(getter, callback, updater);
 }
 
