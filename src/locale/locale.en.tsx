@@ -2586,6 +2586,76 @@ const locale_en = {
     },
   },
 
+  useTheme: {
+    desc: "Tracks the user's system light or dark color-scheme preference.",
+    detail: (
+      <>
+        <p>
+          <code>useTheme</code> reads the initial value from <code>prefers-color-scheme</code> and returns
+          either <code>"light"</code> or <code>"dark"</code>. By default it listens for later system
+          preference changes and updates the returned value.
+        </p>
+        <p>
+          The Hook can also notify your application through a callback. It observes the operating
+          system or browser preference; it does not provide a manual theme toggle.
+        </p>
+      </>
+    ),
+    $p1: "Use the returned theme value to choose styles or synchronize a component with the system color-scheme preference.",
+    consideration: (
+      <ol>
+        <li>
+          The initial value reads <code>window.matchMedia</code>, so render this Hook in a browser
+          environment or provide a browser-compatible test setup.
+        </li>
+        <li>
+          The Hook follows system preference, not an application setting stored in local storage or a
+          theme provider.
+        </li>
+        <li>
+          Pass <code>false</code> as the first argument to disable change listening. The initial theme
+          value is still returned.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use the theme value to set a root class, data attribute, or component palette.</li>
+        <li>Use the callback for logging or synchronizing external systems when the preference changes.</li>
+        <li>Keep the callback lightweight because it runs for every detected preference change.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does useTheme add a manual toggle?</strong>
+          <br />
+          A: No. It reports and listens to the browser's system color-scheme preference.
+        </li>
+        <li>
+          <strong>Q: How do I stop listening?</strong>
+          <br />
+          A: Pass <code>false</code> as the first argument.
+        </li>
+        <li>
+          <strong>Q: How can I receive change notifications?</strong>
+          <br />
+          A: Pass a callback as the first argument, or pass a boolean followed by a callback.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        arg1: "Boolean listening flag or theme change callback. Defaults to listening when omitted.",
+        arg2: "Theme change callback when arg1 is a boolean.",
+      },
+      return: {
+        theme: "Current system color-scheme preference: light or dark.",
+      },
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
