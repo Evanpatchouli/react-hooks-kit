@@ -2915,22 +2915,61 @@ const locale_en = {
   },
 
   useHover: {
-    desc: "",
+    desc: "Invokes a callback when the pointer enters a referenced element.",
     detail: (
       <>
+        <p>
+          <code>useHover</code> returns a ref that listens for <code>mouseenter</code> on the attached
+          element. It calls <code>onHover</code> each time the pointer enters that element.
+        </p>
+        <p>
+          The Hook is a notification helper rather than an <code>isHovered</code> state Hook; use CSS or
+          component state when the UI needs to represent both enter and leave states.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Attach the returned ref to the complete element whose mouse-enter events should trigger the callback.",
     consideration: (
       <ol>
+        <li>The callback runs on <code>mouseenter</code>, not continuously while the pointer remains over the element.</li>
+        <li>Use a stable callback such as <code>useCallback</code> to avoid rebinding the listener on every render.</li>
+        <li>The Hook does not listen for mouseleave and does not return a hover boolean.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Use it for one-time enter actions such as prefetching or showing a notification.</li>
+        <li>Use CSS <code>:hover</code> for styling-only hover effects.</li>
+        <li>Keep the callback lightweight and idempotent when repeated enters are possible.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does it tell me whether the pointer is currently over the element?</strong>
+          <br />
+          A: No. It invokes a callback on enter; track state separately if needed.
+        </li>
+        <li>
+          <strong>Q: Which event is used?</strong>
+          <br />
+          A: The Hook listens to <code>mouseenter</code>.
+        </li>
+        <li>
+          <strong>Q: Is the listener removed?</strong>
+          <br />
+          A: Yes. It is removed when the callback or component effect is cleaned up.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        onHover: "Callback invoked on mouseenter.",
+      },
+      return: {
+        ref: "Ref to attach to the target HTMLElement.",
+      },
     },
   },
 
