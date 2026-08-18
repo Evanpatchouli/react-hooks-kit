@@ -39,7 +39,26 @@ const View = () => {
 };
 
 const code = `
+import useEmitter from "@hooks/useEmitter";
+import useReceiver from "@hooks/useReceiver";
 
+const View = () => {
+  const emitter = useEmitter({ name: "sender" });
+  const [data, receiver] = useReceiver({
+    name: "receiver",
+    eventName: "message",
+    callback: (...args) => console.log("Received", args),
+  });
+
+  return (
+    <div>
+      <button onClick={() => emitter.emit("message", "Hello")}>Send</button>
+      <button onClick={receiver.stop} disabled={!receiver.isListening}>Stop</button>
+      <button onClick={receiver.start} disabled={receiver.isListening}>Start</button>
+      <p>{JSON.stringify(data)}</p>
+    </div>
+  );
+};
 `;
 
 export default {

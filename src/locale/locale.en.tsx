@@ -881,16 +881,65 @@ const locale_en = {
   },
 
   useReceiver: {
-    desc: "",
-    detail: <></>,
-    $p1: "",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    desc: "Subscribes to a named event and exposes its latest arguments and listening controls.",
+    detail: (
+      <>
+        <p>
+          <code>useReceiver</code> listens for events published through the shared emitter registry. It
+          returns the latest event arguments as an array and a controller for starting, stopping, and
+          resetting the receiver.
+        </p>
+        <p>
+          Use the string overload for a simple event name, or the options overload when the receiver
+          needs a stable name, namespace, or callback.
+        </p>
+      </>
+    ),
+    $p1: "Use the same event name and namespace in useEmitter and useReceiver so the receiver can receive the emitted payload.",
+    consideration: (
+      <ol>
+        <li>Choose a unique receiver name within its namespace to avoid listener collisions.</li>
+        <li>The first tuple value is <code>null</code> until the receiver receives an event.</li>
+        <li>Stopping a receiver removes its subscription; call <code>start</code> to subscribe again.</li>
+        <li>The receiver callback receives the same argument list passed to <code>emit</code>.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use the options overload when event names or namespaces are shared across a feature.</li>
+        <li>Use <code>isListening</code> to keep start and stop controls consistent with subscription state.</li>
+        <li>Call <code>reset([])</code> when a view should clear its displayed event payload.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: What does eventResult contain?</strong>
+          <br />
+          A: It contains the arguments from the most recently received event, in order.
+        </li>
+        <li>
+          <strong>Q: How do I pause and resume receiving?</strong>
+          <br />
+          A: Call <code>receiver.stop()</code> to pause and <code>receiver.start()</code> to resume.
+        </li>
+        <li>
+          <strong>Q: Is cleanup automatic?</strong>
+          <br />
+          A: Yes. The subscription is removed when the component unmounts.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        eventNameOrOptions: "Event name or receiver options object.",
+        callback: "Optional positional event callback.",
+      },
+      return: {
+        eventResult: "Latest event arguments or null before the first event.",
+        receiver: "Receiver control object with start, stop, reset, and isListening.",
+      },
     },
   },
 
