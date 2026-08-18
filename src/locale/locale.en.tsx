@@ -1279,6 +1279,66 @@ const locale_en = {
     },
   },
 
+  useMediaQuery: {
+    desc: "Tracks whether a CSS media query currently matches the browser environment.",
+    detail: (
+      <>
+        <p>
+          <code>useMediaQuery</code> evaluates the supplied query with <code>window.matchMedia</code> and
+          returns a boolean. It listens for media query changes and updates the result when the viewport,
+          color scheme, input device, or another queried feature changes.
+        </p>
+        <p>
+          The Hook supports the modern <code>addEventListener</code> API and the legacy
+          <code>addListener</code> fallback for older browsers.
+        </p>
+      </>
+    ),
+    $p1: "Pass a stable query string and use the boolean result to select layout, behavior, or accessibility treatment.",
+    consideration: (
+      <ol>
+        <li>The Hook reads <code>window.matchMedia</code> during initialization and requires a browser environment.</li>
+        <li>Keep the query string stable unless the query itself should change.</li>
+        <li>Use CSS media queries for styling-only concerns and this Hook when JavaScript behavior must change.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Reuse named query constants to avoid small string differences across components.</li>
+        <li>Keep both matched and unmatched layouts accessible and functional.</li>
+        <li>Use the same breakpoints as CSS to keep behavior and visual layout aligned.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does it update when the viewport changes?</strong>
+          <br />
+          A: Yes. The media query list emits a change event when its match status changes.
+        </li>
+        <li>
+          <strong>Q: Can I query color scheme or reduced motion?</strong>
+          <br />
+          A: Yes. Any query supported by the browser's <code>matchMedia</code> implementation can be used.
+        </li>
+        <li>
+          <strong>Q: Can I use it during server rendering?</strong>
+          <br />
+          A: The current implementation accesses <code>window</code> during initialization, so provide a browser-compatible environment or an SSR wrapper.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        query: "CSS media query string evaluated by matchMedia.",
+      },
+      return: {
+        matches: "Whether the query currently matches.",
+      },
+    },
+  },
+
   useProvide: {
     desc: "Publishes named state for other components to consume with useInject.",
     detail: (
