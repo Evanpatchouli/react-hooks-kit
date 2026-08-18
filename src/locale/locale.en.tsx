@@ -3202,10 +3202,67 @@ const locale_en = {
       </>
     ),
     $p1: "Render the scanner container before calling start. Use scanImage when you only need to decode an image.",
-    consideration: <ol><li>Camera permission and device availability depend on the browser and active camera.</li><li>Stop the scanner when leaving the page to release the camera.</li></ol>,
-    $best: <ul><li>Handle scanner errors in the onError callback.</li><li>Check cameraCapabilities before using torch or zoom.</li></ul>,
-    $faqs: <ul><li>Camera scanning requires a secure context such as HTTPS or localhost.</li></ul>,
-    $apis: { generics: (<></>), params: {}, return: {} },
+    consideration: (
+      <ol>
+        <li>Camera permission and device availability depend on the browser and active camera.</li>
+        <li>Render the target container before calling <code>start</code> and stop the scanner when leaving the page.</li>
+        <li>Image scanning stops an active live scan first and does not request camera permission.</li>
+        <li>Metadata such as format, bounds, and content type can be null when a decoder does not provide it.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Handle scanner errors in the <code>onError</code> callback and show the current <code>status</code>.</li>
+        <li>Check <code>cameraCapabilities</code> before using torch or zoom, especially after switching cameras.</li>
+        <li>Limit image size and resize large phone photos before calling <code>scanImage</code>.</li>
+        <li>Use <code>reset</code> when leaving a scanning flow and <code>clearResult</code> when starting a new result state.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why does camera scanning fail on an HTTP page?</strong>
+          <br />
+          A: Camera access requires a secure context such as HTTPS or localhost. Image scanning does not request camera permission.
+        </li>
+        <li>
+          <strong>Q: Why are format, bounds, or content type sometimes null?</strong>
+          <br />
+          A: The selected browser decoder does not always provide every metadata field.
+        </li>
+        <li>
+          <strong>Q: Why are torch or zoom unsupported on a device with a camera?</strong>
+          <br />
+          A: Support belongs to the currently active camera track and can change after switching cameras.
+        </li>
+        <li>
+          <strong>Q: Does granted guarantee that camera startup will succeed?</strong>
+          <br />
+          A: No. Device availability, browser policy, and concurrent camera use can still prevent startup.
+        </li>
+        <li>
+          <strong>Q: Does the Hook configure the WeChat JS-SDK?</strong>
+          <br />
+          A: No. Inject a <code>wechatAdapter</code> so the application owns its app id, signature API, and SDK readiness.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        options: "Scanner mode, adapter, service, and default callbacks.",
+      },
+      return: {
+        status: "Current scanner lifecycle state.",
+        scanResult: "Latest normalized scan result.",
+        start: "Starts a live camera scan.",
+        stop: "Stops scanning and releases resources.",
+        scanImage: "Decodes an image without requesting camera permission.",
+        cameraCapabilities: "Torch and zoom capabilities for the active camera track.",
+        cameraPermission: "Observable camera permission state.",
+        reset: "Stops scanning and clears result and error state.",
+      },
+    },
   },
 
   useInfiniteScroll: {
