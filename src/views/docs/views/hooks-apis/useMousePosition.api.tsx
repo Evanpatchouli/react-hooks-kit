@@ -1,66 +1,35 @@
 import ApiTable from "@/components/api-table";
 import { SubTitle } from "@/components/layout/Article";
-import Required from "@/components/Required";
-  
+
 export default function UseMousePosition() {
   const paramData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "initial",
-    //   type: "boolean",
-    //   defaultValue: false,
-    //   desc: "initial state of toggle",
-    // },
-    // {
-    //   name: "valueMap",
-    //   type: "object",
-    //   defaultValue: { true: true, false: false },
-    //   desc: "mapping of returned values",
-    //   properties: [
-    //     {
-    //       name: "true",
-    //       type: "boolean | T",
-    //       defaultValue: true,
-    //        desc: "value returned when toggle is on",
-    //     },
-    //     {
-    //       name: "false",
-    //       type: "boolean | F",
-    //       defaultValue: false,
-    //       desc: "value returned when toggle is off",
-    //     },
-    //   ],
-    // },
+    {
+      name: "trigger",
+      type: "\"mousemove\" | \"mousedown\"",
+      defaultValue: "mousemove",
+      desc: "Window event that updates the pointer position.",
+    },
   ];
-  
+
   const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
-    // {
-    //   name: "[0] isOn",
-    //   type: "boolean | T | F",
-    //   defaultValue: null,
-    //   desc: "state of toggle",
-    // },
-    // {
-    //   name: "[1] toggle",
-    //   type: "() => void",
-    //   desc: "toggle function",
-    //   },
-    // {
-    //   name: "[2] setToggle",
-    //   type: "(value: boolean|(value => boolean)) => void",
-    //   desc: "set toggle function",
-    // },
+    {
+      name: "position",
+      type: "{ x: number | null; y: number | null }",
+      defaultValue: { x: null, y: null },
+      desc: "Latest client coordinates for the selected event.",
+      properties: [
+        { name: "x", type: "number | null", desc: "Horizontal client coordinate." },
+        { name: "y", type: "number | null", desc: "Vertical client coordinate." },
+      ],
+    },
   ];
-  
+
   return (
     <>
-      <SubTitle id="hook-api">Api of useMousePosition</SubTitle>
-      <SubTitle low top="20px">
-        Parameters
-      </SubTitle>
+      <SubTitle id="hook-api">API of useMousePosition</SubTitle>
+      <SubTitle low top="20px">Parameters</SubTitle>
       <ApiTable param rows={paramData} />
-      <SubTitle low top="20px">
-        ReturnValue (Array)
-      </SubTitle>
+      <SubTitle low top="20px">Return value</SubTitle>
       <ApiTable return rows={returnData} />
     </>
   );

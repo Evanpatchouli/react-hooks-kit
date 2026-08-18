@@ -2773,22 +2773,62 @@ const locale_en = {
   },
 
   useMousePosition: {
-    desc: "",
+    desc: "Tracks the browser window pointer coordinates from mouse movement or button presses.",
     detail: (
       <>
+        <p>
+          <code>useMousePosition</code> listens to a window mouse event and returns the latest client
+          <code>x</code> and <code>y</code> coordinates. It uses <code>mousemove</code> by default and can
+          update only when the pointer is pressed with <code>mousedown</code>.
+        </p>
+        <p>
+          Both coordinates start as <code>null</code> until the selected event is received. The window
+          listener is removed during cleanup.
+        </p>
       </>
     ),
-    $p1: "",
+    $p1: "Choose the event frequency that matches the interaction and use the returned client coordinates for lightweight UI feedback.",
     consideration: (
       <ol>
+        <li><code>mousemove</code> can fire frequently; keep dependent work lightweight.</li>
+        <li>Coordinates are viewport client coordinates, not document coordinates.</li>
+        <li>The initial values are null until the first selected mouse event occurs.</li>
       </ol>
     ),
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $best: (
+      <ul>
+        <li>Use <code>mousedown</code> when continuous movement tracking is unnecessary.</li>
+        <li>Throttle or derive coarse values when rendering expensive pointer-driven effects.</li>
+        <li>Handle null coordinates before using them in calculations.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why are coordinates null initially?</strong>
+          <br />
+          A: No selected mouse event has occurred yet.
+        </li>
+        <li>
+          <strong>Q: Does it track touch or pointer events?</strong>
+          <br />
+          A: No. The current API supports only <code>mousemove</code> and <code>mousedown</code>.
+        </li>
+        <li>
+          <strong>Q: Are coordinates relative to the document?</strong>
+          <br />
+          A: They are <code>clientX</code> and <code>clientY</code>, relative to the viewport.
+        </li>
+      </ul>
+    ),
     $apis: {
       generics: (<></>),
-      params: {},
-      return: {},
+      params: {
+        trigger: "Window mouse event: mousemove or mousedown.",
+      },
+      return: {
+        position: "Latest client x and y pointer coordinates.",
+      },
     },
   },
 
