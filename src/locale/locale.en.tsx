@@ -1859,8 +1859,15 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        steps: "Ordered guide steps with target ids and optional custom renders.",
+        callback: "Optional callback invoked with the active step index and step configuration.",
+        config: "Optional container and mask configuration.",
+      },
+      return: {
+        step: "Current step index; -1 means the guide is stopped.",
+        guider: "Controller with navigation and Target registration methods.",
+      },
     },
   },
   useTickState: {
