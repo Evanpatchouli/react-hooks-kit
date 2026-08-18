@@ -2,6 +2,7 @@ import useLocaleSelector from "@/locale/locale.selector";
 import Article, { Body, Consideration, Demo, FAQs, SubTitle, Usage, Best } from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "@/views/docs/views/examples/UseMemento/example.1";
+import example2 from "@/views/docs/views/examples/UseMemento/example.2";
 import pkg from "@/../package.json";
 import UseMementoApi from "@/views/docs/views/hooks-apis/useMemento.api";
 
@@ -24,6 +25,7 @@ export default function UseMemento() {
       <Usage>
         <p>{$p1}</p>
         <Demo code={example1.code}>{<example1.View />}</Demo>
+        <Demo code={example2.code}>{<example2.View />}</Demo>
         <p>{$p2}</p>
       </Usage>
       <Consideration>{$consider}</Consideration>

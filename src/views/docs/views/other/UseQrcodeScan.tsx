@@ -3,6 +3,7 @@ import Article, { Body, Consideration, Demo, FAQs, Usage, Best } from "@componen
 import { useEffect } from "react";
 import pkg from "@/../package.json";
 import example1 from "@/views/docs/views/examples/UseQrcodeScan/example.1";
+import example2 from "@/views/docs/views/examples/UseQrcodeScan/example.2";
 import UseQrcodeScanApi from "@/views/docs/views/hooks-apis/useQrcodeScan.api";
 
 export default function UseQrcodeScan() {
@@ -16,7 +17,10 @@ export default function UseQrcodeScan() {
 
   return <Article title={hooksName} desc={$desc}>
     <Body>{$detail}</Body>
-    <Usage><Demo code={example1.code}><example1.View /></Demo></Usage>
+    <Usage>
+      <Demo code={example1.code}><example1.View /></Demo>
+      <Demo code={example2.code}><example2.View /></Demo>
+    </Usage>
     <Consideration>{$consider}</Consideration>
     <Best>{$best}</Best>
     <FAQs>{$faqs}</FAQs>

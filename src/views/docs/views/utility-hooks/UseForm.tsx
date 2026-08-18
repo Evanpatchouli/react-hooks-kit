@@ -2,6 +2,7 @@ import useLocaleSelector from "@/locale/locale.selector";
 import Article, { Body, Consideration, Demo, FAQs, Usage, Best } from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "../examples/UseForm/example.1";
+import example2 from "../examples/UseForm/example.2";
 import pkg from "@/../package.json";
 import UseFormApi from "../hooks-apis/useForm.api";
 
@@ -23,6 +24,7 @@ export default function UseForm() {
       <Body>{$detail}</Body>
       <Usage>
         <Demo code={example1.code}>{<example1.View />}</Demo>
+        <Demo code={example2.code}>{<example2.View />}</Demo>
         <p>{$p1}</p>
       </Usage>
       <Consideration>{$consider}</Consideration>

@@ -10,6 +10,7 @@ import Article, {
 } from "@components/layout/Article";
 import { useEffect } from "react";
 import example1 from "@/views/docs/views/examples/UseInfiniteScroll/example.1";
+import example2 from "@/views/docs/views/examples/UseInfiniteScroll/example.2";
 import pkg from "@/../package.json";
 import UseInfiniteScrollApi from "@/views/docs/views/hooks-apis/useInfiniteScroll.api";
 
@@ -33,6 +34,7 @@ export default function UseInfiniteScroll() {
       <Body>{$detail}</Body>
       <Usage>
         <Demo code={example1.code}>{<example1.View />}</Demo>
+        <Demo code={example2.code}>{<example2.View />}</Demo>
         <p>{$p1}</p>
       </Usage>
       <Consideration>{$consider}</Consideration>
