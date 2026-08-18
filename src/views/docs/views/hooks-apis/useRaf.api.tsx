@@ -10,7 +10,13 @@ export default function UseRaf() {
     },
   ];
 
-  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [];
+  const returnData: Parameters<typeof ApiTable>["0"]["rows"] = [
+    {
+      name: "value",
+      type: "void",
+      desc: "The Hook runs the animation frame loop and does not return a value.",
+    },
+  ];
 
   return (
     <>

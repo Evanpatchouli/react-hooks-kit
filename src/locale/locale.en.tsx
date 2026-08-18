@@ -3538,7 +3538,9 @@ const locale_en = {
       params: {
         callback: "Frame callback receiving the browser animation timestamp.",
       },
-      return: {},
+      return: {
+        value: "void; the animation frame loop is cleaned up automatically.",
+      },
     },
   },
 
