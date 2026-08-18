@@ -2190,6 +2190,74 @@ const locale_en = {
     },
   },
 
+  useBeforeMount: {
+    desc: "Runs a callback once during the first render, before the component mounts.",
+    detail: (
+      <>
+        <p>
+          <code>useBeforeMount</code> invokes its callback synchronously during the first render and
+          never invokes it again for that component instance. This can be useful for preparing a
+          value that must exist before the initial markup is produced.
+        </p>
+        <p>
+          The callback runs before React commits the component to the DOM, so it does not have access
+          to mounted DOM nodes. Use <code>useEffect</code> or <code>useLayoutEffect</code> for work that
+          requires a committed element.
+        </p>
+      </>
+    ),
+    $p1: "Keep the callback synchronous and render-safe; use a ref or another render-time value when the initial output depends on it.",
+    consideration: (
+      <ol>
+        <li>
+          The callback runs during render. Do not perform subscriptions, timers, network requests, or
+          state updates that would trigger another render from it.
+        </li>
+        <li>
+          React may invoke render logic more than once in development or concurrent rendering. Avoid
+          relying on this Hook for one-time external side effects.
+        </li>
+        <li>
+          DOM nodes are not mounted yet, so browser measurements and event listener registration
+          belong in an effect.
+        </li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use it only to derive or prepare values needed by the initial render.</li>
+        <li>Keep the callback idempotent so repeated render attempts remain safe.</li>
+        <li>Prefer an effect when the work can happen after the component mounts.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Does the callback run after the component mounts?</strong>
+          <br />
+          A: No. It runs during the first render, before React commits the component.
+        </li>
+        <li>
+          <strong>Q: Can I access a DOM element in the callback?</strong>
+          <br />
+          A: No. Use <code>useLayoutEffect</code> or <code>useEffect</code> after the element is mounted.
+        </li>
+        <li>
+          <strong>Q: Can I use it to fetch data?</strong>
+          <br />
+          A: It is not recommended. Start asynchronous work from an effect or a data-fetching Hook.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        callback: "Callback invoked once during the first render.",
+      },
+      return: {},
+    },
+  },
+
   useDimensionsById: {
     desc: "Observe the dimensions of a DOM element selected by id.",
     detail: (
