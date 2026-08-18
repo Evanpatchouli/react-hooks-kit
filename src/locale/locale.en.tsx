@@ -737,30 +737,65 @@ const locale_en = {
   },
 
   useBatchHooks: {
-    desc: "A hook to batch hooks.",
+    desc: "Invokes a Hook several times and returns the resulting values as an ordered array.",
     detail: (
       <>
-        useBatchHooks is a hook that is used to batch hooks:
-        <h4>Parameters : </h4>
-        <ol>
-          <li>
-            <strong>hook</strong> : the hook to be executed
-          </li>
-          <li>
-            <strong>count</strong> (?) : number of times to execute the hook, default is 1
-          </li>
-        </ol>
-        For example:
+        <p>
+          <code>useBatchHooks</code> executes the same Hook for a fixed number of instances and returns
+          their results in creation order. The count overload passes the same arguments to each instance;
+          the array overload allows each instance to define its own arguments.
+        </p>
+        <p>
+          It is useful for repeated ref-based or stateful Hook instances, such as creating several
+          independent ripple refs for a list of controls.
+        </p>
       </>
     ),
-    $p1: "You can batch hooks to create a series of ripple refs and bind them to a series of elements.",
-    consideration: <ol></ol>,
-    $best: <ul></ul>,
-    $faqs: <ul></ul>,
+    $p1: "Keep the batch size and item order stable across renders so the underlying Hook calls remain consistent.",
+    consideration: (
+      <ol>
+        <li>The number and order of Hook calls must remain stable across renders to follow the Rules of Hooks.</li>
+        <li>Do not derive count from data that can change after mount unless the surrounding component remounts.</li>
+        <li>Every item must use the same Hook family in the count overload.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Use the count overload for identical arguments and the item-array overload for per-instance arguments.</li>
+        <li>Map the returned values by index to the same stable list of rendered elements.</li>
+        <li>Use a key at the rendered element level when displaying the returned results.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Can the count change dynamically?</strong>
+          <br />
+          A: It should remain stable for the component lifetime. Changing Hook call count can violate the Rules of Hooks.
+        </li>
+        <li>
+          <strong>Q: Can each Hook instance receive different arguments?</strong>
+          <br />
+          A: Yes. Use the array overload with <code>{`{ hook, args }`}</code> items.
+        </li>
+        <li>
+          <strong>Q: What does the result array contain?</strong>
+          <br />
+          A: It contains each Hook's return value in the same order as the batch definitions.
+        </li>
+      </ul>
+    ),
     $apis: {
-      generics: <></>,
-      params: {},
-      return: {},
+      generics: <p><code>{"<Hook>"}</code> is the batched Hook function type.</p>,
+      params: {
+        hook: "Hook function invoked for each batch item.",
+        count: "Number of Hook instances in the shared-argument overload.",
+        args: "Arguments passed to every instance.",
+        hooks: "Per-instance Hook and argument definitions in the array overload.",
+      },
+      return: {
+        results: "Return values from the Hook instances in order.",
+      },
     },
   },
 
