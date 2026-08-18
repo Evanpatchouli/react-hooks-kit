@@ -1399,6 +1399,65 @@ const locale_en = {
     },
   },
 
+  useWhyDidYouUpdate: {
+    desc: "Logs which values changed between renders to help diagnose unexpected updates.",
+    detail: (
+      <>
+        <p>
+          <code>useWhyDidYouUpdate</code> stores the previous props object and compares its keys with
+          the current object after each render. When a value changes by reference, it logs the previous
+          and next values with the supplied component name.
+        </p>
+        <p>
+          The first render only establishes the baseline, so no diagnostic message is emitted until a
+          later render contains a changed value.
+        </p>
+      </>
+    ),
+    $p1: "Use this Hook temporarily while investigating why a component rerenders or receives changing props.",
+    consideration: (
+      <ol>
+        <li>Comparison is shallow and uses strict reference comparison, not deep equality.</li>
+        <li>Do not leave verbose diagnostics enabled in production without an intentional logging strategy.</li>
+        <li>Inline objects and functions appear changed whenever their parent rerenders because their references are new.</li>
+      </ol>
+    ),
+    $best: (
+      <ul>
+        <li>Pass the actual props or values received by the component being investigated.</li>
+        <li>Use a descriptive name so console messages identify the component quickly.</li>
+        <li>Combine the output with React DevTools and memoization analysis rather than treating every change as a bug.</li>
+      </ul>
+    ),
+    $faqs: (
+      <ul>
+        <li>
+          <strong>Q: Why is nothing logged on mount?</strong>
+          <br />
+          A: The first render establishes the previous-props baseline.
+        </li>
+        <li>
+          <strong>Q: Does it compare nested objects deeply?</strong>
+          <br />
+          A: No. It compares each top-level value with strict inequality.
+        </li>
+        <li>
+          <strong>Q: Where are changes logged?</strong>
+          <br />
+          A: The Hook writes a <code>[why-did-you-update]</code> message to the browser console.
+        </li>
+      </ul>
+    ),
+    $apis: {
+      generics: (<></>),
+      params: {
+        name: "Diagnostic label included in the console output.",
+        props: "Current top-level values to compare.",
+      },
+      return: {},
+    },
+  },
+
   useProvide: {
     desc: "Publishes named state for other components to consume with useInject.",
     detail: (
