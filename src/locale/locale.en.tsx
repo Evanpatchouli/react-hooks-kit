@@ -2822,8 +2822,17 @@ const locale_en = {
     ),
     $apis: {
       generics: <></>,
-      params: {},
-      return: {},
+      params: {
+        src: "Image URL or an options object containing the source and fallbacks.",
+        defaultSrc: "Image shown before loading completes.",
+        errorSrc: "Image shown when loading fails.",
+        actions: "Optional onLoad and onError callbacks.",
+      },
+      return: {
+        image: "Current image source with loaded and error status flags.",
+        loaded: "Whether the image loaded successfully.",
+        error: "Whether loading failed.",
+      },
     },
   },
 
